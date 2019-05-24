@@ -88,4 +88,6 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-Sofa-config"
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.cmake.in"
                "${CMAKE_BINARY_DIR}/cmake/${PROJECT_NAME}Config.cmake")
 
-add_subdirectory(tests)
+if(SOFA_BUILD_TESTS)
+    add_subdirectory(tests)
+endif()
