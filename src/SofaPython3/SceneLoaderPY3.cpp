@@ -73,7 +73,7 @@ void SceneLoaderPY3::getExtensionList(ExtensionList* list)
     list->push_back("py");
 }
 
-sofa::simulation::Node::SPtr SceneLoaderPY3::load(const char *filename)
+sofa::simulation::Node::SPtr SceneLoaderPY3::doLoad(const char *filename)
 {
     sofa::simulation::Node::SPtr root;
     loadSceneWithArguments(filename, sofa::helper::ArgumentParser::extra_args(), &root);
@@ -86,7 +86,6 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
                                             Node::SPtr* root_out)
 {
     SOFA_UNUSED(arguments);
-    notifyLoadingScene();
     PythonEnvironment::gil lock(__func__);
 
     try{
