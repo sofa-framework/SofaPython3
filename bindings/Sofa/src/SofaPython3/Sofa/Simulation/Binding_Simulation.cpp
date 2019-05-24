@@ -16,7 +16,7 @@ void moduleAddSimulation(py::module &m)
   s.def("init", &Simulation::init, "node"_a);
   s.def("animate", &Simulation::animate, "node"_a, "dt"_a = 0.0);
   s.def("reset", &Simulation::reset, "node"_a);
-  s.def("load", &Simulation::load, "filename"_a);
+  s.def("load", &Simulation::load, "filename"_a, "reload"_a = false);
   s.def("unload", &Simulation::unload, "node"_a);
 }
 
