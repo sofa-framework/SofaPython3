@@ -5,7 +5,6 @@ class Vector(numpy.ndarray):
     def __new__(cls, input_array):
         # We first cast to be our class type
         obj = input_array.view(numpy.ndarray)
-        print("NUMPY: ", obj)
 
 class Vec3(numpy.ndarray):
     """ The Vec3 class implements the following:
@@ -47,23 +46,38 @@ class Vec3(numpy.ndarray):
         """
         import Sofa
 
-        print("==========================>" + str(len(args)))
-
         if len(args)==0:
             return super(Vec3,cls).__new__(cls, shape=(3,), dtype=float, buffer=numpy.array([0.,0.,0.]))
+
         if len(args) == 1:
+            ## Is this a list as in [1.0,2.0,3.0] ?
             if isinstance(args, list):
                 if hasattr(args[0],"__len__") and len(args[0])==3:           ##< Vec3([1.0,2.0,3.0])
                     return super(Vec3,cls).__new__(cls, shape=(3,), dtype=type(args[0][0]), buffer=numpy.array([args[0][0],args[0][1],args[0]][2]))
-                raise ValueError("Invalid type")                             ##< Invalid size.
+                raise AttributeError("Invalid list size. Expecting a 3D list, got a "+str()+"D one.")                             ##< Invalid size.
 
+
+            ## Type coercion to something that will work. It is nice from the user point of view.
+            ## but I wonder if this is not "too" much and add multiple way to do things.
             input_array = args[0]
+            if isinstance(input_array, list):
+                if len(input_array)==3:           ##< Vec3([1.0,2.0,3.0])
+                    return super(Vec3,cls).__new__(cls, shape=(3,), dtype=type(input_array[0]), buffer=numpy.array(input_array))
+                raise AttributeError("Invalid list size. Expecting a 3D list, got a "+str()+"D one.")                             ##< Invalid size.
+
+
+            if isinstance(input_array, Sofa.Core.Data):
+                input_array = input_array.value
+
             if isinstance(input_array, Sofa.Core.DataContainer):
                 cls.owner = input_array
                 input_array = input_array.toarray()
 
             if input_array.ndim != 1:
-                raise ValueError("Invalid dimension, expecting a 1D array, got "+str(input_array.ndim)+"D")
+                raise AttributeError("Invalid dimension, expecting a 1D array, got "+str(input_array.ndim)+"D")
+
+            if input_array.shape[0] != 3:
+                raise AttributeError("Invalid dimension, expecting a 3D array, got a "+str(input_array.shape[0])+"D one.")
 
             # Input array is an already formed ndarray instance
             # We first cast to be our class type

@@ -195,7 +195,6 @@ std::map<void*, py::array>& getObjectCache()
     static std::map<void*, py::array>* s_objectcache {nullptr} ;
     if(!s_objectcache)
     {
-        std::cout << "CREATE A NEW CACHE ENTRY" << std::endl ;
         s_objectcache=new std::map<void*, py::array>();
     }
     return *s_objectcache;
@@ -309,14 +308,6 @@ py::array resetArrayFor(BaseData* d)
                 ninfo.strides, ninfo.ptr, capsule);
 
     memcache[d] = a;
-
-    std::cout << "RECREATE A NEW CACHE ENTRY FOR: " << d->getName() << std::endl ;
-    std::cout << "                            : " << d->getValueVoidPtr() << std::endl ;
-    if(ninfo.ndim==2)
-        std::cout << "                            : " << ninfo.shape[0] << "," << ninfo.shape[1] << std::endl ;
-    else
-        std::cout << "                            : " << ninfo.shape[0] << std::endl ;
-
     return a;
 }
 
