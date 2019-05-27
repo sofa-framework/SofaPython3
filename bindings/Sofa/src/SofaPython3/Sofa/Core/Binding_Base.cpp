@@ -296,9 +296,7 @@ void BindingBase::SetAttrFromArray(py::object self, const std::string& s, const 
     }
 
     /// Well this should never happen unless there is no __dict__
-==== BASE ====
-    throw py::attribute_error();
-==== BASE ====
+    throw py::attribute_error("");
 }
 
 void moduleAddDataDict(py::module& m)
