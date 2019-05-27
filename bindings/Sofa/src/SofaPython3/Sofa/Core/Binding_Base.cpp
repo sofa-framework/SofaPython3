@@ -193,7 +193,8 @@ void BindingBase::SetAttr(Base& self, const std::string& s, py::object value)
     }
 
     /// Well this should never happen unless there is no __dict__
-    throw py::attribute_error();
+    /// @TODO : clean msg
+    throw py::attribute_error(self.name.getValue() + "has no __dict__");
 }
 
 
@@ -294,7 +295,8 @@ void BindingBase::SetAttrFromArray(py::object self, const std::string& s, const 
     }
 
     /// Well this should never happen unless there is no __dict__
-    throw py::attribute_error();
+    /// @TODO : clean msg
+    throw py::attribute_error(self_base.name.getValue() + "has no __dict__");
 }
 
 void moduleAddDataDict(py::module& m)
