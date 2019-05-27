@@ -1,5 +1,6 @@
 
 #include <pybind11/pybind11.h>
+
 #include <pybind11/numpy.h>
 
 #include <sofa/core/objectmodel/BaseData.h>
@@ -81,7 +82,7 @@ py::object BindingBase::GetAttr(Base* self, const std::string& s, bool doThrowEx
     ///    - The attribute is not existing:
     ///                raise an exception or search using difflib for close match.
     if(self==nullptr)
-        throw py::attribute_error("Cannot get a Sofa attribute from None.");
+        throw std::invalid_argument("Cannot get a Sofa attribute from None.");
 
     /// We are selecting first into data, then into link. Because
     /// this seems to be the most common use-case.
@@ -89,7 +90,7 @@ py::object BindingBase::GetAttr(Base* self, const std::string& s, bool doThrowEx
     /// Search if there is a data with the given name.
     /// If this is the case returns the corresponding python type.
     if(BaseData* d = self->findData(s))
-        return toPython(d);
+        return py::cast(d);
 
     /// Search if there is a link with the given name.
     /// If this is the case returns the corresponding python type.
@@ -102,7 +103,7 @@ py::object BindingBase::GetAttr(Base* self, const std::string& s, bool doThrowEx
         return py::cast( DataDict(self) );
 
     if(doThrowException)
-        throw py::attribute_error(s);
+        throw std::invalid_argument(s);
 
     return py::none();
 }
@@ -165,7 +166,7 @@ void BindingBase::SetAttr(py::object self, const std::string& s, py::object valu
     }
 
     /// Well this should never happen unless there is no __dict__
-    throw py::attribute_error("Unable to set attribute '"+s+"', unknow data type");
+    throw std::invalid_argument("Unable to set attribute '"+s+"', unknow data type");
 }
 
 void BindingBase::SetAttr(Base& self, const std::string& s, py::object value)
@@ -193,7 +194,7 @@ void BindingBase::SetAttr(Base& self, const std::string& s, py::object value)
     }
 
     /// Well this should never happen unless there is no __dict__
-    throw py::attribute_error();
+    throw std::invalid_argument("");
 }
 
 
@@ -294,7 +295,7 @@ void BindingBase::SetAttrFromArray(py::object self, const std::string& s, const 
     }
 
     /// Well this should never happen unless there is no __dict__
-    throw py::attribute_error();
+    throw std::invalid_argument("");
 }
 
 void moduleAddDataDict(py::module& m)
@@ -339,7 +340,7 @@ void moduleAddDataDict(py::module& m)
                 return py::cast(reinterpret_cast<DataAsString*>(d));
             return py::cast(d);
         }
-        throw py::attribute_error(s);
+        throw std::invalid_argument(s);
     });
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -408,7 +409,7 @@ void moduleAddBase(py::module &m)
     //base.def("getSourceFileName", &Base::getSourceFileName);
     //base.def("getSourceFileLoc", &Base::getSourceFileLoc);
     base.def("findData", &Base::findData, pybind11::return_value_policy::reference);
-    base.def("getDataFields", &Base::getDataFields, pybind11::return_value_policy::reference);
+    base.def("getDatasFields", &Base::getDataFields, pybind11::return_value_policy::reference);
     base.def("findLink", &Base::findLink, pybind11::return_value_policy::reference);
     base.def("getLinks", &Base::getLinks, pybind11::return_value_policy::reference);
 
