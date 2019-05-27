@@ -1,7 +1,6 @@
 import numpy
 import math
 
-
 class Vector(numpy.ndarray):
     def __new__(cls, input_array):
         # We first cast to be our class type
@@ -46,17 +45,31 @@ class Vec3(numpy.ndarray):
         >>> print(v)
         [1,2,3]
         """
+        import Sofa
+
+        print("==========================>" + str(len(args)))
+
         if len(args)==0:
             return super(Vec3,cls).__new__(cls, shape=(3,), dtype=float, buffer=numpy.array([0.,0.,0.]))
         if len(args) == 1:
-            if hasattr(args[0],"__len__") and len(args[0])==3:
-                return super(Vec3,cls).__new__(cls, shape=(3,), dtype=type(args[0][0]), buffer=numpy.array([args[0][0],args[0][1],args[0]][2]))
-            else:
-                return super(Vec3,cls).__new__(cls, shape=(3,), dtype=type(args[0]), buffer=numpy.array([args[0],args[0],args[0]]))
+            if isinstance(args, list):
+                if hasattr(args[0],"__len__") and len(args[0])==3:           ##< Vec3([1.0,2.0,3.0])
+                    return super(Vec3,cls).__new__(cls, shape=(3,), dtype=type(args[0][0]), buffer=numpy.array([args[0][0],args[0][1],args[0]][2]))
+                raise ValueError("Invalid type")                             ##< Invalid size.
+
+            input_array = args[0]
+            if isinstance(input_array, Sofa.Core.DataContainer):
+                cls.owner = input_array
+                input_array = input_array.toarray()
+
+            if input_array.ndim != 1:
+                raise ValueError("Invalid dimension, expecting a 1D array, got "+str(input_array.ndim)+"D")
+
+            # Input array is an already formed ndarray instance
+            # We first cast to be our class type
+            return numpy.asarray(input_array).view(cls)
         elif len(args)==3:
             return super(Vec3,cls).__new__(cls, shape=(3,), dtype=type(args[0]), buffer=numpy.array([args[0],args[1],args[2]]))
-
-        print(cls.__new__.__doc__)
 
         return super(Vec3,cls).__new__(cls, shape=(3,), dtype=float, buffer=numpy.array([args[0],args[0],args[0]]))
 

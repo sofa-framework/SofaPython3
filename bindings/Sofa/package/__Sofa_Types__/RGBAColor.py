@@ -24,7 +24,11 @@ class RGBAColor(numpy.ndarray):
                obj = super(RGBAColor, cls).__new__(cls, shape=(4), dtype=float)
                numpy.copyto(obj, numpy.asarray(input_array))
                return obj
-               
+
+           if isinstance(input_array, Sofa.Core.Data):
+               cls.owner = input_array
+               input_array = input_array.toarray()
+
            if isinstance(input_array, Sofa.Core.DataContainer):
                cls.owner = input_array
                input_array = input_array.toarray()
