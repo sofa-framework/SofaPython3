@@ -14,8 +14,11 @@ class Test(unittest.TestCase):
     def test_wrapAround(self):
         n = Sofa.Node("node")
         m = n.addObject("MechanicalObject", position=[[1.0,1.1,1.2],[2.0,2.1,2.2],[3.0,3.1,3.2]])
-        c = Vec3(m.position)
-        print("Vec3, ", c)
+        print("Vec3, ", m.position[0])
+        #c = Vec3(m.position[0])
+        #print("Vec3, ", c)
+        self.assertTrue(False) ##< the code before is crashin;... I'm not sure we should keep
+
 
 def runTests():
     suite = unittest.TestLoader().loadTestsFromTestCase(Test)

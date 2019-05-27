@@ -34,19 +34,23 @@ class Test(unittest.TestCase):
                 root = Sofa.Node("rootNode")
                 v=[[0,0,0],[1,1,1],[2,2,2]]
                 c = root.createObject("MechanicalObject", name="t", position=v)
-                self.assertEqual(len(c.position), 3)
-                self.assertSequenceEqual(list(c.position[0]), v[0])
-                self.assertSequenceEqual(list(c.position[1]), v[1])
-                self.assertSequenceEqual(list(c.position[2]), v[2])
+                self.assertEqual(len(c.position.value), 3)
+                print("VLAULE: "+str(c.position))
+                print("VLAULE: "+str(c.position.value))
+                print("VLAULE: "+str(c.position.value[0]))
+
+                self.assertSequenceEqual(list(c.position.value[0]), v[0])
+                self.assertSequenceEqual(list(c.position.value[1]), v[1])
+                self.assertSequenceEqual(list(c.position.value[2]), v[2])
 
         #@unittest.skip  # no reason needed
         def test_DataArray2DOperationInPlace(self):
                 root = Sofa.Node("rootNode")
                 v=numpy.array([[0,0,0],[1,1,1],[2,2,2],[3,3,3]])
                 c = root.createObject("MechanicalObject", name="t", position=v.tolist())
-                c.position *= 2.0
+                c.position.value *= 2.0
                 numpy.testing.assert_array_equal(c.position.toarray(), v*2.0)
-                c.position += 3.0
+                c.position.value += 3.0
                 numpy.testing.assert_array_equal(c.position.toarray(), (v*2.0)+3.0)
 
         #@unittest.skip  # no reason needed
@@ -107,18 +111,28 @@ class Test(unittest.TestCase):
                 v=numpy.array([[0,0,0],[1,1,1],[2,2,2],[3,3,3]])
                 c = root.createObject("MechanicalObject", name="t", position=v)
 
+        def test_UnknowAttribute(self):
+                """ Access a non-existing attribute of a data field so this should trigger AttributeError"""
+                root = Sofa.Node("root")                                    ##< Create a new node
+                c = root.createObject("MechanicalObject", name="t")         ##< Create a new object
+                p = c.position                                              ##< Retrive its position
+
+                ##< Check that accessing an invalid data field rise an attribute error and nothing
+                ##< else.
+                self.assertRaises(AttributeError, (lambda aa: aa.unvalid), p)
+
 
         #@unittest.skip  # no reason needed
         def test_DataArray2DOperation(self):
                 root = Sofa.Node("rootNode")
                 v=numpy.array([[0,0,0],[1,1,1],[2,2,2],[3,3,3]])
                 c = root.createObject("MechanicalObject", name="t", position=v.tolist())
+                c2 = c.position.value * 2.0
 
-                c2 = c.position * 2.0
                 numpy.testing.assert_array_equal(c.position.toarray(), v)
                 numpy.testing.assert_array_equal(c2, v*2.0)
 
-                c2 = c.position + 2.0
+                c2 = c.position.value + 2.0
                 numpy.testing.assert_array_equal(c.position.toarray(), v)
                 numpy.testing.assert_array_equal(c2, v+2.0)
 
@@ -127,7 +141,8 @@ class Test(unittest.TestCase):
                 root = Sofa.Node("rootNode")
                 v=[[0,0,0],[1,1,1],[2,2,2]]
                 c = root.createObject("MechanicalObject", name="t", position=v)
-                self.assertEqual(len(c.showColor), 4)
+                print("COLOR", c.showColor.value)
+                self.assertEqual(len(c.showColor.value), 4)
 
         #@unittest.skip  # no reason needed
         def test_DataWrapper1D(self):
@@ -138,7 +153,7 @@ class Test(unittest.TestCase):
                 c = RGBAColor(root.obj.showColor)
                 self.assertEqual(c.r(), 1.0)
 
-                with root.obj.showColor.writeable(RGBAColor) as color:
+                with root.obj.showColor.writable(RGBAColor) as color:
                     color[0] = 2.0
 
                 self.assertEqual(color.r(), 2.0)

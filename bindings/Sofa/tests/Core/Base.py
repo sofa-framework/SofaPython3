@@ -16,14 +16,14 @@ class Test(unittest.TestCase):
 
     def test_getsetData(self):
             root = Sofa.Node("root")
-            c = root.createObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])
+            c = root.addObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])
             c.setToData("newdata", 1.0)
             c.setToDict("newdict", 1.0)
 
-            self.assertTrue(isinstance(c.newdata, float))
+            self.assertTrue(isinstance(c.newdata, Sofa.Core.Data))
             self.assertTrue(isinstance(c.newdict, float))
 
-            self.assertTrue(isinstance(c.getFromData("newdata"), float))
+            self.assertTrue(isinstance(c.getFromData("newdata"), Sofa.Core.Data))
             self.assertTrue(isinstance(c.getFromDict("newdict"), float))
 
 
