@@ -67,8 +67,8 @@ bool checkParamUsage(Base* object, BaseObjectDescription& desc)
     }
     if(hasFailure)
     {
-        //throw py::type_error(tmp.str());
-        msg_warning(object) << tmp.str();
+        throw py::type_error(tmp.str());
+        //msg_warning(object) << tmp.str();
     }
     return hasFailure;
 }
@@ -213,7 +213,7 @@ void moduleAddNode(py::module &m) {
     /// Examples:
     ///     node1.removeChild(node2)
     ///     node1.removeChild("nodename")
-    p.def("removeChild", &Node::removeChild);
+    p.def("removeChild", [](Node& self, Node& n){ self.removeChild(&n); });
     p.def("removeChild", [](Node& n, const std::string name)
     {
         Node* node = n.getChild(name);

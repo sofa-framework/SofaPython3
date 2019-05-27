@@ -44,6 +44,17 @@ void moduleAddWriteAccessor(py::module& m);
 
 class DataContainer : public BaseData {} ;
 class DataAsString : public BaseData {} ;
+
+class WriteAccessor
+{
+public:
+    WriteAccessor(BaseData* data_, py::object fct_) : data(data_), fct(fct_){}
+
+    BaseData* data {nullptr};
+    py::object wrap;
+    py::object fct;
+};
+
 }
 
 #endif /// PYTHONMODULE_SOFA_BINDING_DATACONTAINER_H

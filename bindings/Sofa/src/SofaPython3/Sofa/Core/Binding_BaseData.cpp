@@ -15,6 +15,7 @@ using  sofa::core::objectmodel::BaseNode;
 
 #include "Binding_Base.h"
 #include "Binding_BaseData.h"
+#include "Binding_DataContainer.h"
 #include "DataHelper.h"
 
 namespace sofapython3
@@ -22,44 +23,107 @@ namespace sofapython3
 
 void moduleAddBaseData(py::module& m)
 {
-    py::class_<BaseData, raw_ptr<BaseData>> p(m, "Data");
-    p.def("setName", &BaseData::setName);
-    p.def("getName", &BaseData::getName);
-    p.def("getCounter", &BaseData::getCounter );
-    p.def("getHelp", &BaseData::getHelp);
-    p.def("unset", &BaseData::unset);
-    p.def("getOwner", &BaseData::getOwner);
-    p.def("typeName", [](BaseData& data){ return data.getValueTypeInfo()->name(); });
+    py::class_<BaseData, raw_ptr<BaseData>> data(m, "Data");
+    data.def("setName", &BaseData::setName);
+    data.def("getName", &BaseData::getName);
+    data.def("getCounter", &BaseData::getCounter );
+    data.def("getHelp", &BaseData::getHelp);
+    data.def("unset", &BaseData::unset);
+    data.def("getOwner", &BaseData::getOwner);
+    data.def("typeName", [](BaseData& data){ return data.getValueTypeInfo()->name(); });
 
     // TODO: Implementation should look like: https://github.com/sofa-framework/sofa/issues/767
-    p.def("__setitem__", [](BaseData& self, py::object& key, py::object& value)
-    {
-        std::cout << "mapping protocol, __setitem__ to implement)" << std::endl ;
-        return py::none();
-    });
+//    p.def("__setitem__", [](BaseData& self, py::object& key, py::object& value)
+//    {
+//        std::cout << "mapping protocol, __setitem__ to implement)" << std::endl ;
+//        return py::none();
+//    });
 
-    p.def("__len__", [](BaseData& b) -> size_t
-    {
-        auto nfo = b.getValueTypeInfo();
-        return nfo->size(b.getValueVoidPtr()) / nfo->size();
-    });
+//    p.def("__len__", [](BaseData& b) -> size_t
+//    {
+//        auto nfo = b.getValueTypeInfo();
+//        return nfo->size(b.getValueVoidPtr()) / nfo->size();
+//    });
 
-    p.def("getPathName", [](BaseData& self)
+    data.def("getPathName", [](BaseData& self)
     {
         Base* b= self.getOwner();
         std::string prefix = getPathTo(b);
         return prefix+"."+self.getName();
     });
 
-    p.def("__str__", [](BaseData* self)
+    data.def("__str__", [](BaseData* self)
     {
-        return py::str(toPython(self));
+        std::stringstream tmp;
+        tmp << "Sofa.Core.Data <'" << self->getName() << "', " << self << ">";
+        return py::str(tmp.str());
     });
 
-    p.def("__repr__", [](BaseData* self)
+    data.def("__repr__", [](BaseData* self)
     {
         return py::repr(toPython(self));
     });
+
+    data.def("__setattr__", [](py::object self, const std::string& s, py::object value)
+    {
+        if(py::isinstance<DataContainer>(value))
+        {
+            BaseData* data = py::cast<BaseData*>(value);
+            py::array a = getPythonArrayFor(data);
+            BindingBase::SetAttrFromArray(self,s, a);
+            return;
+        }
+
+        if(py::isinstance<py::array>(value))
+        {
+            BindingBase::SetAttrFromArray(self,s, py::cast<py::array>(value));
+            return;
+        }
+
+        BindingBase::SetAttr(self,s,value,true);
+    });
+
+    data.def("tolist", [](BaseData* self){
+        return convertToPython(self);
+    });
+
+    data.def("toarray", [](BaseData* self){
+        auto capsule = py::capsule(new Base::SPtr(self->getOwner()));
+        py::buffer_info ninfo = toBufferInfo(*self);
+        py::array a(pybind11::dtype(ninfo), ninfo.shape,
+                    ninfo.strides, ninfo.ptr, capsule);
+        a.attr("flags").attr("writeable") = false;
+        return a;
+    });
+
+    data.def("writableArray", [](BaseData* self, py::object f) -> py::object
+    {
+        if(self!=nullptr)
+            return py::cast(new WriteAccessor(self, f));
+
+        return py::none();
+    });
+
+    data.def("writableArray", [](BaseData* self) -> py::object
+    {
+        if(self!=nullptr)
+            return py::cast(new WriteAccessor(self, py::none()));
+
+        return py::none();
+    });
+
+    data.def("__getattr__", [](py::object self, const std::string& s) -> py::object
+    {
+        /// If this is data.value we returns the content value of the data field converted into
+        /// a python object that is easy to manipulate. The conversion is done with the toPython
+        /// function.
+        if(s == "value")
+            return toPython(py::cast<BaseData*>(self));
+
+        /// For any other value we fall back to the internal dictionnary object.
+        return self.attr("__dict__")[s.c_str()];
+    });
+
 }
 
 } /// namespace sofapython3

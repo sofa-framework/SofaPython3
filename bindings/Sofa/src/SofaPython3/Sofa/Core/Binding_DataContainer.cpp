@@ -50,15 +50,6 @@ using  sofa::core::objectmodel::BaseNode;
 
 namespace sofapython3
 {
-class WriteAccessor
-{
-public:
-    WriteAccessor(BaseData* data_, py::object fct_) : data(data_), fct(fct_){}
-
-    BaseData* data {nullptr};
-    py::object wrap;
-    py::object fct;
-};
 
 void moduleAddDataAsString(py::module& m)
 {
@@ -82,6 +73,7 @@ void moduleAddDataContainer(py::module& m)
     {
         py::array a = getPythonArrayFor(self);
         py::buffer_info parentinfo = a.request();
+        return py::none();
     });
 
     p.def("__setitem__", [](DataContainer* self, size_t& index, py::object& value)
@@ -146,6 +138,12 @@ void moduleAddDataContainer(py::module& m)
                     ninfo.strides, ninfo.ptr, capsule);
         a.attr("flags").attr("writeable") = false;
         return a;
+    });
+
+    p.def("__len__", [](DataContainer* self){
+        auto nfo = self->getValueTypeInfo();
+        //return nfo->size(self->getValueVoidPtr()) / nfo->size();
+        return nfo->size();
     });
 
     p.def("writeable", [](DataContainer* self, py::object f) -> py::object
@@ -256,8 +254,12 @@ void moduleAddDataContainer(py::module& m)
         /// We don't want to keep this reference so we decref it to avoid memory leak.
         Py_DECREF(PyNumber_InPlaceMultiply(p.ptr(), value.ptr()));
 
-        /// Instead, returns the self object as we are in an in-place add operator.
-        return self;
+        std::cout << "WEED Y" << std::endl;
+        py::cast(self);
+        std::cout << "WEED X" << std::endl;
+
+        /// Instead, returns the self object as we are in an in-place operator.
+        return py::cast(self);
     });
 
     p.def("__mul__", [](DataContainer* self, py::object value)
@@ -273,6 +275,7 @@ void moduleAddDataContainer(py::module& m)
 
         return py::reinterpret_steal<py::object>(PyNumber_Multiply(p.ptr(), value.ptr()));
     });
+
 }
 
 void moduleAddWriteAccessor(py::module& m)
