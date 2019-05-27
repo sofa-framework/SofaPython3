@@ -86,6 +86,7 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
                                             Node::SPtr* root_out)
 {
     SOFA_UNUSED(arguments);
+    notifyLoadingSceneBefore();
     PythonEnvironment::gil lock(__func__);
 
     try{
@@ -109,6 +110,7 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
     {
         msg_error() << e.what();
     }
+    notifyLoadingSceneAfter(*root_out);
 }
 
 } // namespace sofapython3
