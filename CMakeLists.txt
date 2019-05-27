@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaPython3 VERSION 1.0)
 
+if(PLUGIN_SOFAPYTHON)
+    message(FATAL_ERROR "SofaPython3 cannot be built alongside SofaPython. Please set PLUGIN_SOFAPYTHON to OFF")
+endif()
 find_package(SofaFramework REQUIRED)
 find_package(SofaSimulation REQUIRED)
 
