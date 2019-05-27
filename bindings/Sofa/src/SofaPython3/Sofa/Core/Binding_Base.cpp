@@ -82,7 +82,7 @@ py::object BindingBase::GetAttr(Base* self, const std::string& s, bool doThrowEx
     ///    - The attribute is not existing:
     ///                raise an exception or search using difflib for close match.
     if(self==nullptr)
-        throw std::invalid_argument("Cannot get a Sofa attribute from None.");
+        throw py::attribute_error("Cannot get a Sofa attribute from None.");
 
     /// We are selecting first into data, then into link. Because
     /// this seems to be the most common use-case.
@@ -103,7 +103,7 @@ py::object BindingBase::GetAttr(Base* self, const std::string& s, bool doThrowEx
         return py::cast( DataDict(self) );
 
     if(doThrowException)
-        throw std::invalid_argument(s);
+        throw py::attribute_error(s);
 
     return py::none();
 }
@@ -166,7 +166,7 @@ void BindingBase::SetAttr(py::object self, const std::string& s, py::object valu
     }
 
     /// Well this should never happen unless there is no __dict__
-    throw std::invalid_argument("Unable to set attribute '"+s+"', unknow data type");
+    throw py::attribute_error("Unable to set attribute '"+s+"', unknow data type");
 }
 
 void BindingBase::SetAttr(Base& self, const std::string& s, py::object value)
@@ -194,7 +194,8 @@ void BindingBase::SetAttr(Base& self, const std::string& s, py::object value)
     }
 
     /// Well this should never happen unless there is no __dict__
-    throw std::invalid_argument("");
+    /// @TODO : clean msg
+    throw py::attribute_error(self.name.getValue() + "has no __dict__");
 }
 
 
@@ -295,7 +296,9 @@ void BindingBase::SetAttrFromArray(py::object self, const std::string& s, const 
     }
 
     /// Well this should never happen unless there is no __dict__
-    throw std::invalid_argument("");
+==== BASE ====
+    throw py::attribute_error();
+==== BASE ====
 }
 
 void moduleAddDataDict(py::module& m)
@@ -409,7 +412,7 @@ void moduleAddBase(py::module &m)
     //base.def("getSourceFileName", &Base::getSourceFileName);
     //base.def("getSourceFileLoc", &Base::getSourceFileLoc);
     base.def("findData", &Base::findData, pybind11::return_value_policy::reference);
-    base.def("getDatasFields", &Base::getDataFields, pybind11::return_value_policy::reference);
+    base.def("getDataFields", &Base::getDataFields, pybind11::return_value_policy::reference);
     base.def("findLink", &Base::findLink, pybind11::return_value_policy::reference);
     base.def("getLinks", &Base::getLinks, pybind11::return_value_policy::reference);
 
