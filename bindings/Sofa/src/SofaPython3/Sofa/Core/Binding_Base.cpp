@@ -103,7 +103,7 @@ py::object BindingBase::GetAttr(Base* self, const std::string& s, bool doThrowEx
         return py::cast( DataDict(self) );
 
     if(doThrowException)
-        throw py::attribute_error(s);
+        throw py::attribute_error("Missing attribute: "+s);
 
     return py::none();
 }

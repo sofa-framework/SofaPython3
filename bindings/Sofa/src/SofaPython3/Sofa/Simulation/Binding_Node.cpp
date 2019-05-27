@@ -164,7 +164,7 @@ void moduleAddNode(py::module &m) {
     }), ":rtype: Sofa.Simulation.Node", py::arg("name"));
 
     /// Method: init (beware this is not the python __init__, this is sofa's init())
-    p.def("init", &Node::init);
+    p.def("init", [](Node& self) { self.init(ExecParams::defaultInstance()); } );
 
     /// Method: addObjects
     /// Only addObject is needed now, the createObject is deprecated and will prints
@@ -254,17 +254,18 @@ p.def_property_readonly("objects", [](Node* node)
 
 p.def("__getattr__", [](Node& self, const std::string& name) -> py::object
 {
-    /// Custom properties.
-
+    /// Search in the object lists
     BaseObject *object = self.getObject(name);
     if (object)
         return py::cast(object);
 
+    /// Search in the child lists
     Node *child = self.getChild(name);
     if (child)
         return py::cast(child);
 
-    return BindingBase::GetAttr(&self, name);
+    /// Search in the data & link lists
+    return BindingBase::GetAttr(&self, name, true);
 });
 
 

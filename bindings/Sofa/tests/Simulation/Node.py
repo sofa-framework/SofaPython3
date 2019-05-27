@@ -6,11 +6,11 @@ import sys
 class Test(unittest.TestCase):
         def test_SimulationConstructor(self):
             root = Sofa.Simulation.Node("rootNode")
-            self.assertEqual(root.name, "rootNode")
+            self.assertEqual(root.name.value, "rootNode")
 
         def test_Constructor(self):
                 root = Sofa.Node("rootNode")                               
-                self.assertEqual(root.name, "rootNode")
+                self.assertEqual(root.name.value, "rootNode")
 
         def test_GetAttr(self):
                 root = Sofa.Node("rootNode")                               
@@ -32,7 +32,7 @@ class Test(unittest.TestCase):
                 root = Sofa.Node("rootNode")                               
                 c = root.createChild("child1")
                 self.assertTrue( c is not None )
-                self.assertEqual( c.name, "child1" )
+                self.assertEqual( c.name.value, "child1" )
                 self.assertTrue( hasattr(c, "child1") )
 
         def test_createChild(self):                
@@ -44,7 +44,7 @@ class Test(unittest.TestCase):
                 root = Sofa.Node("rootNode")                               
                 root.addChild(Sofa.Node("child1"))
                 self.assertTrue(hasattr(root,"child1"))
-                
+
         def test_removeChild(self):                
                 root = Sofa.Node("rootNode")                               
                 c = root.addChild(Sofa.Node("child1"))
@@ -54,6 +54,8 @@ class Test(unittest.TestCase):
                 self.assertTrue(hasattr(root,"child2"))
                 root.removeChild(c)
                 self.assertEqual(len(root.children), 1)
+                print("COUCOU"+str(hasattr(root,"child1")))
+
                 self.assertFalse(hasattr(root,"child1"))
                 root.removeChild("child2")
                 self.assertFalse(hasattr(root,"child2"))
