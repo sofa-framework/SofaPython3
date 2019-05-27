@@ -4,7 +4,7 @@ project(SofaPython3 VERSION 1.0)
 find_package(SofaFramework REQUIRED)
 find_package(SofaSimulation REQUIRED)
 
-find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+find_package(Python 3.6 COMPONENTS Interpreter Development REQUIRED)
 set(PYTHON_LIBRARIES ${Python3_LIBRARY_RELEASE})
 set(PYTHON_LIBRARY ${Python3_LIBRARY_RELEASE})
 set(PYTHON_INCLUDE_DIRS ${Python3_INCLUDE_DIR})
