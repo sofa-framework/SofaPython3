@@ -9,19 +9,19 @@ from Sofa.Types import RGBAColor
 class Test(unittest.TestCase):
         def test_typeName(self):
             root = Sofa.Node("rootNode")
-            c = root.createObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])
+            c = root.addObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])
             self.assertEqual(c.position.typeName(),"vector<Vec3d>")
             self.assertEqual(c.showColor.typeName(),"RGBAColor")
 
         def test_typeName(self):
             root = Sofa.Node("rootNode")
-            c = root.createObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])
+            c = root.addObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])
             self.assertEqual(c.position.typeName(), "vector<Vec3d>")
 
         #@unittest.skip  # no reason needed
         def test_ValidDataAccess(self):
                 root = Sofa.Node("rootNode")
-                c = root.createObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])
+                c = root.addObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])
                 self.assertTrue(c.position is not None)
 
         #@unittest.skip  # no reason needed
@@ -33,7 +33,7 @@ class Test(unittest.TestCase):
         def test_DataAsArray2D(self):
                 root = Sofa.Node("rootNode")
                 v=[[0,0,0],[1,1,1],[2,2,2]]
-                c = root.createObject("MechanicalObject", name="t", position=v)
+                c = root.addObject("MechanicalObject", name="t", position=v)
                 self.assertEqual(len(c.position.value), 3)
                 print("VLAULE: "+str(c.position))
                 print("VLAULE: "+str(c.position.value))
@@ -47,7 +47,7 @@ class Test(unittest.TestCase):
         def test_DataArray2DOperationInPlace(self):
                 root = Sofa.Node("rootNode")
                 v=numpy.array([[0,0,0],[1,1,1],[2,2,2],[3,3,3]])
-                c = root.createObject("MechanicalObject", name="t", position=v.tolist())
+                c = root.addObject("MechanicalObject", name="t", position=v.tolist())
                 c.position.value *= 2.0
                 numpy.testing.assert_array_equal(c.position.toarray(), v*2.0)
                 c.position.value += 3.0
@@ -57,7 +57,7 @@ class Test(unittest.TestCase):
         def test_DataArray2DSetFromList(self):
                 v=[[0,0,0],[1,1,1],[2,2,2],[3,3,3]]
                 root = Sofa.Node("rootNode")
-                c = root.createObject("MechanicalObject", name="t", position=v)
+                c = root.addObject("MechanicalObject", name="t", position=v)
                 c.position = [[1,1,1],[2,2,2],[3,3,3],[4,4,4]]
                 numpy.testing.assert_array_equal(c.position.toarray(), [[1.0,1.0,1.0],[2.0,2.0,2.0],[3.0,3.0,3.0],[4.0,4.0,4.0]])
 
@@ -65,7 +65,7 @@ class Test(unittest.TestCase):
         def test_DataArray2DResizeFromArray(self):
                 v=[[0,0,0],[1,1,1],[2,2,2],[3,3,3]]
                 root = Sofa.Node("rootNode")
-                c = root.createObject("MechanicalObject", name="t", position=v)
+                c = root.addObject("MechanicalObject", name="t", position=v)
                 zeros = numpy.zeros((100,3), dtype=numpy.float64)
                 c.position = zeros
                 numpy.testing.assert_array_equal(c.position.toarray(), zeros)
@@ -74,7 +74,7 @@ class Test(unittest.TestCase):
         def test_DataArray2DInvalidResizeFromArray(self):
                 v=[[0,0,0],[1,1,1],[2,2,2],[3,3,3]]
                 root = Sofa.Node("rootNode")
-                c = root.createObject("MechanicalObject", name="t", position=v)
+                c = root.addObject("MechanicalObject", name="t", position=v)
                 zeros = numpy.zeros((4,100), dtype=numpy.float64)
                 def d():
                     c.position = zeros
@@ -84,7 +84,7 @@ class Test(unittest.TestCase):
         def test_DataArray2DSetFromArray(self):
                 v=[[0,0,0],[1,1,1],[2,2,2],[3,3,3],[4,4,4]]
                 root = Sofa.Node("rootNode")
-                c = root.createObject("MechanicalObject", name="t", position=v)
+                c = root.addObject("MechanicalObject", name="t", position=v)
 
                 zeros = numpy.zeros((500,3), dtype=numpy.float64)
                 c.position = zeros
@@ -103,18 +103,18 @@ class Test(unittest.TestCase):
                 root = Sofa.Node("rootNode")
                 m=[[1,0,0],[0,1,0],[0,0,1]]
                 v=[[0,0,0],[1,1,1],[2,2,2],[3,3,3]]
-                c = root.createObject("MechanicalObject", name="t", position=v)
+                c = root.addObject("MechanicalObject", name="t", position=v)
                 c.position *= c.position
 
         def test_DataArrayCreateFromNumpy(self):
                 root = Sofa.Node("rootNode")
                 v=numpy.array([[0,0,0],[1,1,1],[2,2,2],[3,3,3]])
-                c = root.createObject("MechanicalObject", name="t", position=v)
+                c = root.addObject("MechanicalObject", name="t", position=v)
 
         def test_UnknowAttribute(self):
                 """ Access a non-existing attribute of a data field so this should trigger AttributeError"""
                 root = Sofa.Node("root")                                    ##< Create a new node
-                c = root.createObject("MechanicalObject", name="t")         ##< Create a new object
+                c = root.addObject("MechanicalObject", name="t")         ##< Create a new object
                 p = c.position                                              ##< Retrive its position
 
                 ##< Check that accessing an invalid data field rise an attribute error and nothing
@@ -126,7 +126,7 @@ class Test(unittest.TestCase):
         def test_DataArray2DOperation(self):
                 root = Sofa.Node("rootNode")
                 v=numpy.array([[0,0,0],[1,1,1],[2,2,2],[3,3,3]])
-                c = root.createObject("MechanicalObject", name="t", position=v.tolist())
+                c = root.addObject("MechanicalObject", name="t", position=v.tolist())
                 c2 = c.position.value * 2.0
 
                 numpy.testing.assert_array_equal(c.position.toarray(), v)
@@ -140,7 +140,7 @@ class Test(unittest.TestCase):
         def test_DataAsArray1D(self):
                 root = Sofa.Node("rootNode")
                 v=[[0,0,0],[1,1,1],[2,2,2]]
-                c = root.createObject("MechanicalObject", name="t", position=v)
+                c = root.addObject("MechanicalObject", name="t", position=v)
                 print("COLOR", c.showColor.value)
                 self.assertEqual(len(c.showColor.value), 4)
 
@@ -148,7 +148,7 @@ class Test(unittest.TestCase):
         def test_DataWrapper1D(self):
                 root = Sofa.Node("rootNode")
                 v=[[0,0,0],[1,1,1],[2,2,2]]
-                root.createObject("MechanicalObject", name="obj", position=v)
+                root.addObject("MechanicalObject", name="obj", position=v)
 
                 c = RGBAColor(root.obj.showColor)
                 self.assertEqual(c.r(), 1.0)
@@ -164,7 +164,7 @@ class Test(unittest.TestCase):
         def test_DataAsContainerNumpyArray(self):
                 root = Sofa.Node("rootNode")
                 v=numpy.array([[0,0,0],[1,1,1],[2,2,2],[3,3,3]])
-                c = root.createObject("MechanicalObject", name="t", position=v.tolist())
+                c = root.addObject("MechanicalObject", name="t", position=v.tolist())
 
                 with c.position.writeable() as wa:
                     self.assertEqual(wa.shape, (4,3))
@@ -176,7 +176,7 @@ class Test(unittest.TestCase):
         def test_DataAsContainerNumpyArrayRepeat(self):
                root = Sofa.Node("rootNode")
                v=numpy.array([[0,0,0],[1,1,1],[2,2,2],[3,3,3]])
-               c = root.createObject("MechanicalObject", name="t", position=v.tolist())
+               c = root.addObject("MechanicalObject", name="t", position=v.tolist())
 
                with c.position.writeable() as wa:
                    wa *= 2.0
