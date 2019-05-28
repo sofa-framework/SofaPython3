@@ -18,7 +18,10 @@ namespace sofapython3
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
 // @TODO: Remove with pybind11 > 2.2.4
-namespace py { using attribute_error = std::invalid_argument; }
+namespace py {
+    PYBIND11_RUNTIME_EXCEPTION(attribute_error, PyExc_AttributeError)
+}
+
 using namespace pybind11::literals;
 using sofa::core::objectmodel::Base;
 using sofa::core::objectmodel::BaseData;
