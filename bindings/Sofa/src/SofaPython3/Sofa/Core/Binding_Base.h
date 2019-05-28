@@ -38,7 +38,7 @@ public:
 
     /// Set the data field value from the array.
     static void SetDataFromArray(BaseData* data, const py::array& value);
-    static void SetData(BaseData* data, pybind11::object value);
+    static bool SetData(BaseData* data, pybind11::object value);
 };
 
 py::buffer_info toBufferInfo(BaseData& m);

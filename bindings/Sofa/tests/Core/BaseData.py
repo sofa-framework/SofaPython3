@@ -44,7 +44,6 @@ class Test(unittest.TestCase):
                 root = Sofa.Node("rootNode")
                 v=numpy.array([[0,0,0],[1,1,1],[2,2,2],[3,3,3]])
                 c = root.addObject("MechanicalObject", name="t", position=v.tolist())
-                print("TYPE: ", c.position.value[2])
                 c.position.value *= 2.0
 
                 numpy.testing.assert_array_equal(c.position.array(), v*2.0)
@@ -139,7 +138,6 @@ class Test(unittest.TestCase):
                 root = Sofa.Node("rootNode")
                 v=[[0,0,0],[1,1,1],[2,2,2]]
                 c = root.addObject("MechanicalObject", name="t", position=v)
-                print("COLOR", c.showColor.value)
                 self.assertEqual(len(c.showColor.value), 4)
 
         #@unittest.skip  # no reason needed

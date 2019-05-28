@@ -109,10 +109,10 @@ py::object BindingBase::GetAttr(Base* self, const std::string& s, bool doThrowEx
     return py::none();
 }
 
-void BindingBase::SetData(BaseData* d, py::object value)
+bool BindingBase::SetData(BaseData* d, py::object value)
 {
     if(d==nullptr)
-        return;
+        return false;
 
     const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
 
@@ -120,11 +120,10 @@ void BindingBase::SetData(BaseData* d, py::object value)
     if(nfo.Container())
     {
         fromPython(d,value);
-        return;
+        return true;
     }
     fromPython(d, value);
-    return;
-
+    return true;
 }
 
 
@@ -145,36 +144,35 @@ void BindingBase::SetAttr(py::object self, const std::string& s, py::object valu
         return;
     }
 
-    std::string id="none";
-    if(py::isinstance<py::float_>(value))
-        id = "double";
-    else if(py::isinstance<py::int_>(value))
-        id = "int";
-    else if(py::isinstance<py::str>(value))
-        id = "string";
-
-    BaseData* data = getFactoryInstance()->createObject(id, sofa::helper::NoArgument());
-    if(data)
+    if(!withDict)
     {
-        data->setName(s);
-        data->setGroup("Custom");
-        data->setDisplayed(true);
-        data->setPersistent(true);
-        self_d->addData(data, s);
-        fromPython(data, value);
+        std::string id="none";
+        if(py::isinstance<py::float_>(value))
+            id = "double";
+        else if(py::isinstance<py::int_>(value))
+            id = "int";
+        else if(py::isinstance<py::str>(value))
+            id = "string";
 
-        return;
-    }
-
-    /// We are falling back to dynamically adding the objet into the object dict.
-    if(withDict)
-    {
-        py::dict t = self.attr("__dict__");
-        if(!t.is_none())
+        BaseData* data = getFactoryInstance()->createObject(id, sofa::helper::NoArgument());
+        if(data)
         {
-            t[s.c_str()] = value;
+            data->setName(s);
+            data->setGroup("Custom");
+            data->setDisplayed(true);
+            data->setPersistent(true);
+            self_d->addData(data, s);
+            fromPython(data, value);
+
             return;
         }
+    }
+    /// We are falling back to dynamically adding the objet into the object dict.
+    py::dict t = self.attr("__dict__");
+    if(!t.is_none())
+    {
+        t[s.c_str()] = value;
+        return;
     }
 
     /// Well this should never happen unless there is no __dict__
@@ -466,7 +464,7 @@ void moduleAddBase(py::module &m)
 
     base.def("setToData", [](py::object self, const std::string& s, py::object value)
     {
-        BindingBase::SetAttr(self, s, value,false);
+        BindingBase::SetAttr(self, s, value, false);
     });
 
     base.def("getFromDict", [](py::object self, const std::string& s) -> py::object
