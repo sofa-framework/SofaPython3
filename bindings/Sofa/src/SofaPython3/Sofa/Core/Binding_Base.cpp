@@ -109,6 +109,25 @@ py::object BindingBase::GetAttr(Base* self, const std::string& s, bool doThrowEx
     return py::none();
 }
 
+void BindingBase::SetData(BaseData* d, py::object value)
+{
+    if(d==nullptr)
+        return;
+
+    const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
+
+    /// We go for the container path.
+    if(nfo.Container())
+    {
+        fromPython(d,value);
+        return;
+    }
+    fromPython(d, value);
+    return;
+
+}
+
+
 void BindingBase::SetAttr(py::object self, const std::string& s, py::object value, bool withDict)
 {
     Base* self_d = py::cast<Base*>(self);
@@ -116,15 +135,7 @@ void BindingBase::SetAttr(py::object self, const std::string& s, py::object valu
 
     if(d!=nullptr)
     {
-        const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
-
-        /// We go for the container path.
-        if(nfo.Container())
-        {
-            fromPython(d,value);
-            return;
-        }
-        fromPython(d, value);
+        SetData(d, value);
         return;
     }
 
@@ -199,7 +210,86 @@ void BindingBase::SetAttr(Base& self, const std::string& s, py::object value)
     throw py::attribute_error(self.name.getValue() + "has no __dict__");
 }
 
+void BindingBase::SetDataFromArray(BaseData* data, const py::array& value)
+{
+    if(data==nullptr)
+        return;
 
+    const AbstractTypeInfo& nfo{ *(data->getValueTypeInfo()) };
+
+    /// We go for the container path.
+    if(nfo.Container())
+    {
+        py::array dst = getPythonArrayFor(data);
+        py::buffer_info dstinfo = dst.request();
+
+        py::array src = value;
+        py::buffer_info srcinfo = src.request();
+        if( srcinfo.ptr == dstinfo.ptr )
+        {
+            /// Increment the change counter so other data field can keep track of
+            /// what happens.
+            data->beginEditVoidPtr();
+            data->endEditVoidPtr();
+            return;
+        }
+
+        /// Invalid dimmensions
+        if( srcinfo.ndim != dst.ndim() )
+            throw py::type_error("Invalid dimension");
+
+        bool needResize = false;
+        size_t resizeShape=0;
+        size_t srcSize = 1;
+        for(auto i=0;i<srcinfo.ndim;++i){
+            srcSize *= srcinfo.shape[i];
+            if( srcinfo.shape[i] != dstinfo.shape[i])
+            {
+                resizeShape = i;
+                needResize = true;
+            }
+        }
+
+        if(needResize)
+        {
+            if(nfo.FixedSize())
+                throw py::index_error("The destination is not large enough and cannot be resized. Please clamp the source data set before setting.");
+
+            if(resizeShape != 0)
+                throw py::index_error("The destination can only be resized on the first dimension. ");
+
+            /// Change the allocated memory of the data field, then update the
+            /// cache entry so keep up with the changes. As we use dstinfo in the following
+            /// we also update it.
+            nfo.setSize(data->beginEditVoidPtr(), srcSize);
+            dst = resetArrayFor(data);
+            dstinfo=dst.request();
+        }
+
+        bool sameDataType = (srcinfo.format == dstinfo.format);
+        if(sameDataType && (nfo.BaseType()->FixedSize() || nfo.SimpleCopy()))
+        {
+            scoped_writeonly_access guard(data);
+            memcpy(dstinfo.ptr, srcinfo.ptr, srcSize*dstinfo.itemsize);
+            return;
+        }
+
+        /// In this case we go for the fast path.
+        if(nfo.SimpleLayout())
+        {
+            if(srcinfo.format=="d")
+                return copyScalar<double>(data, nfo, src);
+            else if(srcinfo.format=="f")
+                return copyScalar<float>(data, nfo, src);
+            else
+                std::cout << "SetAttrFromArray :: unsupported fileformat" << std::endl ;
+        }
+
+    }
+
+    fromPython(data, value);
+    return;
+}
 
 void BindingBase::SetAttrFromArray(py::object self, const std::string& s, const py::array& value)
 {
@@ -210,81 +300,12 @@ void BindingBase::SetAttrFromArray(py::object self, const std::string& s, const 
     ///    - The attribute is an object or a child, raise an exception.
     ///    - The attribute is not existing, add it has data with type deduced from value ?
     Base& self_base = py::cast<Base&>(self);
-    BaseData* d = self_base.findData(s);
+    BaseData* data = self_base.findData(s);
 
-    if(d!=nullptr)
+    /// If there is a data with the given name we set the data value.
+    if(data!=nullptr)
     {
-        const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
-
-        /// We go for the container path.
-        if(nfo.Container())
-        {
-            py::array dst = getPythonArrayFor(d);
-            py::buffer_info dstinfo = dst.request();
-
-            py::array src = value;
-            py::buffer_info srcinfo = src.request();
-            if( srcinfo.ptr == dstinfo.ptr )
-            {
-                /// Increment the change counter so other data field can keep track of
-                /// what happens.
-                d->beginEditVoidPtr();
-                d->endEditVoidPtr();
-                return;
-            }
-
-            /// Invalid dimmensions
-            if( srcinfo.ndim != dst.ndim() )
-                throw py::type_error("Invalid dimension");
-
-            bool needResize = false;
-            size_t resizeShape=0;
-            size_t srcSize = 1;
-            for(auto i=0;i<srcinfo.ndim;++i){
-                srcSize *= srcinfo.shape[i];
-                if( srcinfo.shape[i] != dstinfo.shape[i])
-                {
-                    resizeShape = i;
-                    needResize = true;
-                }
-            }
-
-            if(needResize)
-            {
-                if(nfo.FixedSize())
-                    throw py::index_error("The destination is not large enough and cannot be resized. Please clamp the source data set before setting.");
-
-                if(resizeShape != 0)
-                    throw py::index_error("The destination can only be resized on the first dimension. ");
-
-                /// Change the allocated memory of the data field, then update the
-                /// cache entry so keep up with the changes. As we use dstinfo in the following
-                /// we also update it.
-                nfo.setSize(d->beginEditVoidPtr(), srcSize);
-                dst = resetArrayFor(d);
-                dstinfo=dst.request();
-            }
-
-            bool sameDataType = (srcinfo.format == dstinfo.format);
-            if(sameDataType && (nfo.BaseType()->FixedSize() || nfo.SimpleCopy()))
-            {
-                scoped_writeonly_access guard(d);
-                memcpy(dstinfo.ptr, srcinfo.ptr, srcSize*dstinfo.itemsize);
-                return;
-            }
-
-            /// In this case we go for the fast path.
-            if(nfo.SimpleLayout())
-            {
-                if(srcinfo.format=="d")
-                    copyScalar<double>(d, nfo, src);
-                else if(srcinfo.format=="f")
-                    copyScalar<float>(d, nfo, src);
-                else
-                    std::cout << "SetAttrFromArray :: unsupported fileformat" << std::endl ;
-            }
-        }
-        fromPython(d, value);
+        SetDataFromArray(data, value);
         return;
     }
 

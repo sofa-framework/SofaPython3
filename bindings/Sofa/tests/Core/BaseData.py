@@ -35,11 +35,6 @@ class Test(unittest.TestCase):
                 v=[[0,0,0],[1,1,1],[2,2,2]]
                 c = root.addObject("MechanicalObject", name="t", position=v)
                 self.assertEqual(len(c.position.value), 3)
-                print("VLAULE: "+str(c.position))
-                print("VLAULE: "+str(c.position.value))
-                print("VLAULE: "+str(type(c.position.value)))
-                print("VLAULE: "+str(type(c.position.value[0])))
-
                 self.assertSequenceEqual(list(c.position.value[0]), v[0])
                 self.assertSequenceEqual(list(c.position.value[1]), v[1])
                 self.assertSequenceEqual(list(c.position.value[2]), v[2])
@@ -49,7 +44,9 @@ class Test(unittest.TestCase):
                 root = Sofa.Node("rootNode")
                 v=numpy.array([[0,0,0],[1,1,1],[2,2,2],[3,3,3]])
                 c = root.addObject("MechanicalObject", name="t", position=v.tolist())
+                print("TYPE: ", c.position.value[2])
                 c.position.value *= 2.0
+
                 numpy.testing.assert_array_equal(c.position.array(), v*2.0)
                 c.position.value += 3.0
                 numpy.testing.assert_array_equal(c.position.array(), (v*2.0)+3.0)
@@ -68,7 +65,7 @@ class Test(unittest.TestCase):
                 root = Sofa.Node("rootNode")
                 c = root.addObject("MechanicalObject", name="t", position=v)
                 zeros = numpy.zeros((100,3), dtype=numpy.float64)
-                c.position = zeros
+                c.position.value = zeros
                 numpy.testing.assert_array_equal(c.position.array(), zeros)
 
         #@unittest.skip  # no reason needed
@@ -88,15 +85,15 @@ class Test(unittest.TestCase):
                 c = root.addObject("MechanicalObject", name="t", position=v)
 
                 zeros = numpy.zeros((500,3), dtype=numpy.float64)
-                c.position = zeros
+                c.position.value = zeros
                 numpy.testing.assert_array_equal(c.position.array(), zeros)
 
                 ones = numpy.ones((1000,3), dtype=numpy.float32)
-                c.position = ones
+                c.position.value = ones
                 numpy.testing.assert_array_equal(c.position.array(), ones)
 
                 zeros = numpy.zeros((500,3), dtype=numpy.float32)
-                c.position = zeros
+                c.position.value = zeros
                 numpy.testing.assert_array_equal(c.position.array(), zeros)
 
         @unittest.skip  # no reason needed
@@ -105,7 +102,7 @@ class Test(unittest.TestCase):
                 m=[[1,0,0],[0,1,0],[0,0,1]]
                 v=[[0,0,0],[1,1,1],[2,2,2],[3,3,3]]
                 c = root.addObject("MechanicalObject", name="t", position=v)
-                c.position *= c.position
+                c.position.value *= c.position.value
 
         def test_DataArrayCreateFromNumpy(self):
                 root = Sofa.Node("rootNode")
@@ -115,8 +112,8 @@ class Test(unittest.TestCase):
         def test_UnknowAttribute(self):
                 """ Access a non-existing attribute of a data field so this should trigger AttributeError"""
                 root = Sofa.Node("root")                                    ##< Create a new node
-                c = root.addObject("MechanicalObject", name="t")         ##< Create a new object
-                p = c.position                                              ##< Retrive its position
+                c = root.addObject("MechanicalObject", name="t")            ##< Create a new object
+                p = c.position.value                                        ##< Retrive its position
 
                 ##< Check that accessing an invalid data field rise an attribute error and nothing
                 ##< else.

@@ -95,21 +95,22 @@ void moduleAddBaseData(py::module& m)
 
     data.def("__setattr__", [](py::object self, const std::string& s, py::object value)
     {
+        BaseData* selfdata = py::cast<BaseData*>(self);
+
         if(py::isinstance<DataContainer>(value))
         {
-            BaseData* data = py::cast<BaseData*>(value);
-            py::array a = getPythonArrayFor(data);
-            BindingBase::SetAttrFromArray(self,s, a);
+            py::array a = getPythonArrayFor(selfdata);
+            BindingBase::SetDataFromArray(selfdata, a);
             return;
         }
 
         if(py::isinstance<py::array>(value))
         {
-            BindingBase::SetAttrFromArray(self,s, py::cast<py::array>(value));
+            BindingBase::SetDataFromArray(selfdata, py::cast<py::array>(value));
             return;
         }
 
-        BindingBase::SetAttr(self,s,value,true);
+        BindingBase::SetAttr(py::cast(selfdata->getOwner()),s,value,true);
     });
 
     data.def("__getattr__", [](py::object self, const std::string& s) -> py::object

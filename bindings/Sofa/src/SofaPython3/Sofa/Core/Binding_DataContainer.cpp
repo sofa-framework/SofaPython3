@@ -67,7 +67,7 @@ void moduleAddDataContainer(py::module& m)
 {
 
     py::class_<DataContainer, BaseData, raw_ptr<DataContainer>> p(m, "DataContainer",
-                                                                      py::buffer_protocol());
+                                                                  py::buffer_protocol());
 
     p.def("__getitem__", [](DataContainer* self, py::object& index) -> py::object
     {
@@ -255,10 +255,6 @@ void moduleAddDataContainer(py::module& m)
         /// We don't want to keep this reference so we decref it to avoid memory leak.
         Py_DECREF(PyNumber_InPlaceMultiply(p.ptr(), value.ptr()));
 
-        std::cout << "WEED Y" << std::endl;
-        py::cast(self);
-        std::cout << "WEED X" << std::endl;
-
         /// Instead, returns the self object as we are in an in-place operator.
         return py::cast(self);
     });
@@ -276,7 +272,6 @@ void moduleAddDataContainer(py::module& m)
 
         return py::reinterpret_steal<py::object>(PyNumber_Multiply(p.ptr(), value.ptr()));
     });
-
 }
 
 void moduleAddWriteAccessor(py::module& m)

@@ -30,10 +30,15 @@ using sofa::core::sptr;
 class BindingBase
 {
 public:
-    static py::object GetAttr(Base* self, const std::string& s, bool doThrowException=true);
-    static void SetAttr(py::object self, const std::string& s, pybind11::object value, bool withDict=false);
     static void SetAttr(Base& self, const std::string& s, py::object value);
+
+    static void SetAttr(py::object self, const std::string& s, pybind11::object value, bool withDict=false);
+    static py::object GetAttr(Base* self, const std::string& s, bool doThrowException=true);
     static void SetAttrFromArray(py::object self, const std::string& s, const pybind11::array &value);
+
+    /// Set the data field value from the array.
+    static void SetDataFromArray(BaseData* data, const py::array& value);
+    static void SetData(BaseData* data, pybind11::object value);
 };
 
 py::buffer_info toBufferInfo(BaseData& m);
