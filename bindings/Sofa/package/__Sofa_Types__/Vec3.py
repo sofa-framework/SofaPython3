@@ -71,7 +71,7 @@ class Vec3(numpy.ndarray):
 
             if isinstance(input_array, Sofa.Core.DataContainer):
                 cls.owner = input_array
-                input_array = input_array.toarray()
+                input_array = input_array.array()
 
             if input_array.ndim != 1:
                 raise AttributeError("Invalid dimension, expecting a 1D array, got "+str(input_array.ndim)+"D")

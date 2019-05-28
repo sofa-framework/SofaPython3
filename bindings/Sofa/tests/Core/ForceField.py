@@ -14,7 +14,7 @@ class MyForceField(Sofa.ForceField):
         Sofa.ForceField.__init__(self, *args, **kwargs)
                         
     def init(self):
-        self.initpos = self.mstate.position.toarray().copy()
+        self.initpos = self.mstate.position.array().copy()
         self.k = np.zeros((1,1))
         self.f = []
         self.d = 0.5

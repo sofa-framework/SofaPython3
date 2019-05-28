@@ -323,12 +323,6 @@ py::array getPythonArrayFor(BaseData* d)
                     ninfo.strides, ninfo.ptr, capsule);
 
         memcache[d] = a;
-
-        if(ninfo.ndim==2)
-            std::cout << "                            : " << ninfo.shape[0] << "," << ninfo.shape[1] << std::endl ;
-        else
-            std::cout << "                            : " << ninfo.shape[0] << std::endl ;
-
         return a;
     }
     return memcache[d];

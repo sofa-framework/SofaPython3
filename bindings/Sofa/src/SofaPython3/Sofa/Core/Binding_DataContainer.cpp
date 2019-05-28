@@ -69,11 +69,12 @@ void moduleAddDataContainer(py::module& m)
     py::class_<DataContainer, BaseData, raw_ptr<DataContainer>> p(m, "DataContainer",
                                                                       py::buffer_protocol());
 
-    p.def("__getitem__", [](DataContainer* self, py::size_t index) -> py::object
+    p.def("__getitem__", [](DataContainer* self, py::object& index) -> py::object
     {
         py::array a = getPythonArrayFor(self);
         py::buffer_info parentinfo = a.request();
-        return py::none();
+
+        return py::reinterpret_steal<py::object>(PyObject_GetItem(a.ptr(), index.ptr() ));
     });
 
     p.def("__setitem__", [](DataContainer* self, size_t& index, py::object& value)
@@ -127,11 +128,11 @@ void moduleAddDataContainer(py::module& m)
         return py::repr(convertToPython(self));
     });
 
-    p.def("tolist", [](DataContainer* self){
+    p.def("toList", [](DataContainer* self){
         return convertToPython(self);
     });
 
-    p.def("toarray", [](DataContainer* self){
+    p.def("array", [](DataContainer* self){
         auto capsule = py::capsule(new Base::SPtr(self->getOwner()));
         py::buffer_info ninfo = toBufferInfo(*self);
         py::array a(pybind11::dtype(ninfo), ninfo.shape,

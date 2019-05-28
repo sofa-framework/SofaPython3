@@ -27,11 +27,11 @@ class RGBAColor(numpy.ndarray):
 
            if isinstance(input_array, Sofa.Core.Data):
                cls.owner = input_array
-               input_array = input_array.toarray()
+               input_array = input_array.array()
 
            if isinstance(input_array, Sofa.Core.DataContainer):
                cls.owner = input_array
-               input_array = input_array.toarray()
+               input_array = input_array.array()
 
            if input_array.ndim != 1:
                raise ValueError("Invalid dimension, expecting a 1D array, got "+str(input_array.ndim)+"D")

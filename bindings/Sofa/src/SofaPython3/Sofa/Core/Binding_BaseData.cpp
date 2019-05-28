@@ -64,11 +64,11 @@ void moduleAddBaseData(py::module& m)
         return py::repr(toPython(self));
     });
 
-    data.def("tolist", [](BaseData* self){
+    data.def("toList", [](BaseData* self){
         return convertToPython(self);
     });
 
-    data.def("toarray", [](BaseData* self){
+    data.def("array", [](BaseData* self){
         auto capsule = py::capsule(new Base::SPtr(self->getOwner()));
         py::buffer_info ninfo = toBufferInfo(*self);
         py::array a(pybind11::dtype(ninfo), ninfo.shape,
@@ -77,7 +77,7 @@ void moduleAddBaseData(py::module& m)
         return a;
     });
 
-    data.def("writableArray", [](BaseData* self, py::object f) -> py::object
+    data.def("writeableArray", [](BaseData* self, py::object f) -> py::object
     {
         if(self!=nullptr)
             return py::cast(new WriteAccessor(self, f));
@@ -85,7 +85,7 @@ void moduleAddBaseData(py::module& m)
         return py::none();
     });
 
-    data.def("writableArray", [](BaseData* self) -> py::object
+    data.def("writeableArray", [](BaseData* self) -> py::object
     {
         if(self!=nullptr)
             return py::cast(new WriteAccessor(self, py::none()));

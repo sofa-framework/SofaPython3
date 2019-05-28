@@ -9,7 +9,7 @@ class MyForceField(Sofa.ForceField):
         Sofa.ForceField.__init__(self, *args, **kwargs)
                         
     def init(self):
-        self.initpos = self.mstate.position.toarray().copy()
+        self.initpos = self.mstate.position.array().copy()
         
     def addForce(self, m, out_force, pos, vel):
         out_force += ((self.initpos-pos) * self.ks) 

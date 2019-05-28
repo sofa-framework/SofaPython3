@@ -14,7 +14,7 @@ class Test(unittest.TestCase):
     def test_wrapAroundArray(self):
         n = Sofa.Node("node")
         m = n.addObject("MechanicalObject", position=[[1.0,1.1,1.2],[2.0,2.1,2.2],[3.0,3.1,3.2]])
-        self.assertRaises(AttributeError, Vec3, m.position.toarray())
+        self.assertRaises(AttributeError, Vec3, m.position.array())
 
     def test_wrapInvalidSize(self):
         n = Sofa.Node("node")
@@ -33,7 +33,7 @@ class Test(unittest.TestCase):
         c2 = Vec3(m.translation.value)
         self.assertEqual(c2.tolist(), [1.0,0.0,0.0])
 
-        c3 = Vec3(m.translation.toarray())
+        c3 = Vec3(m.translation.array())
         self.assertEqual(c3.tolist(), [1.0,0.0,0.0])
 
 

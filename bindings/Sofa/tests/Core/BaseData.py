@@ -37,7 +37,8 @@ class Test(unittest.TestCase):
                 self.assertEqual(len(c.position.value), 3)
                 print("VLAULE: "+str(c.position))
                 print("VLAULE: "+str(c.position.value))
-                print("VLAULE: "+str(c.position.value[0]))
+                print("VLAULE: "+str(type(c.position.value)))
+                print("VLAULE: "+str(type(c.position.value[0])))
 
                 self.assertSequenceEqual(list(c.position.value[0]), v[0])
                 self.assertSequenceEqual(list(c.position.value[1]), v[1])
@@ -49,9 +50,9 @@ class Test(unittest.TestCase):
                 v=numpy.array([[0,0,0],[1,1,1],[2,2,2],[3,3,3]])
                 c = root.addObject("MechanicalObject", name="t", position=v.tolist())
                 c.position.value *= 2.0
-                numpy.testing.assert_array_equal(c.position.toarray(), v*2.0)
+                numpy.testing.assert_array_equal(c.position.array(), v*2.0)
                 c.position.value += 3.0
-                numpy.testing.assert_array_equal(c.position.toarray(), (v*2.0)+3.0)
+                numpy.testing.assert_array_equal(c.position.array(), (v*2.0)+3.0)
 
         #@unittest.skip  # no reason needed
         def test_DataArray2DSetFromList(self):
@@ -59,7 +60,7 @@ class Test(unittest.TestCase):
                 root = Sofa.Node("rootNode")
                 c = root.addObject("MechanicalObject", name="t", position=v)
                 c.position = [[1,1,1],[2,2,2],[3,3,3],[4,4,4]]
-                numpy.testing.assert_array_equal(c.position.toarray(), [[1.0,1.0,1.0],[2.0,2.0,2.0],[3.0,3.0,3.0],[4.0,4.0,4.0]])
+                numpy.testing.assert_array_equal(c.position.array(), [[1.0,1.0,1.0],[2.0,2.0,2.0],[3.0,3.0,3.0],[4.0,4.0,4.0]])
 
         #@unittest.skip  # no reason needed
         def test_DataArray2DResizeFromArray(self):
@@ -68,7 +69,7 @@ class Test(unittest.TestCase):
                 c = root.addObject("MechanicalObject", name="t", position=v)
                 zeros = numpy.zeros((100,3), dtype=numpy.float64)
                 c.position = zeros
-                numpy.testing.assert_array_equal(c.position.toarray(), zeros)
+                numpy.testing.assert_array_equal(c.position.array(), zeros)
 
         #@unittest.skip  # no reason needed
         def test_DataArray2DInvalidResizeFromArray(self):
@@ -88,15 +89,15 @@ class Test(unittest.TestCase):
 
                 zeros = numpy.zeros((500,3), dtype=numpy.float64)
                 c.position = zeros
-                numpy.testing.assert_array_equal(c.position.toarray(), zeros)
+                numpy.testing.assert_array_equal(c.position.array(), zeros)
 
                 ones = numpy.ones((1000,3), dtype=numpy.float32)
                 c.position = ones
-                numpy.testing.assert_array_equal(c.position.toarray(), ones)
+                numpy.testing.assert_array_equal(c.position.array(), ones)
 
                 zeros = numpy.zeros((500,3), dtype=numpy.float32)
                 c.position = zeros
-                numpy.testing.assert_array_equal(c.position.toarray(), zeros)
+                numpy.testing.assert_array_equal(c.position.array(), zeros)
 
         @unittest.skip  # no reason needed
         def test_DataArray2DElementWiseOperation(self):
@@ -129,11 +130,11 @@ class Test(unittest.TestCase):
                 c = root.addObject("MechanicalObject", name="t", position=v.tolist())
                 c2 = c.position.value * 2.0
 
-                numpy.testing.assert_array_equal(c.position.toarray(), v)
+                numpy.testing.assert_array_equal(c.position.array(), v)
                 numpy.testing.assert_array_equal(c2, v*2.0)
 
                 c2 = c.position.value + 2.0
-                numpy.testing.assert_array_equal(c.position.toarray(), v)
+                numpy.testing.assert_array_equal(c.position.array(), v)
                 numpy.testing.assert_array_equal(c2, v+2.0)
 
         #@unittest.skip  # no reason needed
@@ -153,7 +154,7 @@ class Test(unittest.TestCase):
                 c = RGBAColor(root.obj.showColor)
                 self.assertEqual(c.r(), 1.0)
 
-                with root.obj.showColor.writable(RGBAColor) as color:
+                with root.obj.showColor.writeableArray(RGBAColor) as color:
                     color[0] = 2.0
 
                 self.assertEqual(color.r(), 2.0)
@@ -166,19 +167,19 @@ class Test(unittest.TestCase):
                 v=numpy.array([[0,0,0],[1,1,1],[2,2,2],[3,3,3]])
                 c = root.addObject("MechanicalObject", name="t", position=v.tolist())
 
-                with c.position.writeable() as wa:
+                with c.position.writeableArray() as wa:
                     self.assertEqual(wa.shape, (4,3))
                     self.assertEqual(wa[0,0], 0.0)
                     self.assertEqual(wa[1,1], 1.0)
                     self.assertEqual(wa[2,2], 2.0)
-                    numpy.testing.assert_array_equal(c.position.toarray(), v)
+                    numpy.testing.assert_array_equal(c.position.array(), v)
 
         def test_DataAsContainerNumpyArrayRepeat(self):
                root = Sofa.Node("rootNode")
                v=numpy.array([[0,0,0],[1,1,1],[2,2,2],[3,3,3]])
                c = root.addObject("MechanicalObject", name="t", position=v.tolist())
 
-               with c.position.writeable() as wa:
+               with c.position.writeableArray() as wa:
                    wa *= 2.0
                    self.assertEqual(wa.shape, (4,3))
                    self.assertEqual(wa[0,0], 0.0)
@@ -187,7 +188,7 @@ class Test(unittest.TestCase):
                    numpy.testing.assert_array_equal(wa, v*2.0)
 
                ### Checks that the data are correctly changed in the writeable block
-               numpy.testing.assert_array_equal(c.position.toarray(), v*2.0)
+               numpy.testing.assert_array_equal(c.position.array(), v*2.0)
 
                ### Checks that trying to access wa object in write correctly raise
                ### an error.
@@ -196,7 +197,7 @@ class Test(unittest.TestCase):
                self.assertRaises(ValueError, (lambda c: t(c)), wa )
 
                ### Checks that the previously defined blocks is correctly re-created.
-               with c.position.writeable() as wa:
+               with c.position.writeableArray() as wa:
                    wa *= 2.0
                    self.assertEqual(wa.shape, (4,3))
                    self.assertEqual(wa[0,0], 0.0)
