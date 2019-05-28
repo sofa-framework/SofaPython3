@@ -64,25 +64,6 @@ void moduleAddBaseData(py::module& m)
         return py::repr(toPython(self));
     });
 
-    data.def("__setattr__", [](py::object self, const std::string& s, py::object value)
-    {
-        if(py::isinstance<DataContainer>(value))
-        {
-            BaseData* data = py::cast<BaseData*>(value);
-            py::array a = getPythonArrayFor(data);
-            BindingBase::SetAttrFromArray(self,s, a);
-            return;
-        }
-
-        if(py::isinstance<py::array>(value))
-        {
-            BindingBase::SetAttrFromArray(self,s, py::cast<py::array>(value));
-            return;
-        }
-
-        BindingBase::SetAttr(self,s,value,true);
-    });
-
     data.def("tolist", [](BaseData* self){
         return convertToPython(self);
     });
@@ -112,6 +93,25 @@ void moduleAddBaseData(py::module& m)
         return py::none();
     });
 
+    data.def("__setattr__", [](py::object self, const std::string& s, py::object value)
+    {
+        if(py::isinstance<DataContainer>(value))
+        {
+            BaseData* data = py::cast<BaseData*>(value);
+            py::array a = getPythonArrayFor(data);
+            BindingBase::SetAttrFromArray(self,s, a);
+            return;
+        }
+
+        if(py::isinstance<py::array>(value))
+        {
+            BindingBase::SetAttrFromArray(self,s, py::cast<py::array>(value));
+            return;
+        }
+
+        BindingBase::SetAttr(self,s,value,true);
+    });
+
     data.def("__getattr__", [](py::object self, const std::string& s) -> py::object
     {
         /// If this is data.value we returns the content value of the data field converted into
@@ -120,8 +120,9 @@ void moduleAddBaseData(py::module& m)
         if(s == "value")
             return toPython(py::cast<BaseData*>(self));
 
-        /// For any other value we fall back to the internal dictionnary object.
-        return self.attr("__dict__")[s.c_str()];
+        /// BaseData does not support dynamic attributes, if you think this is an important feature
+        /// please request for its integration.
+        throw py::attribute_error("There is no attribute '"+s+"'");
     });
 
 }
