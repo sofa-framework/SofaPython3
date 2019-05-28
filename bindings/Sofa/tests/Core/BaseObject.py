@@ -9,7 +9,7 @@ class Test(unittest.TestCase):
                     
         def test_createObjectWithParam(self):
                 root = Sofa.Node("rootNode")
-                c = root.createObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])
+                c = root.addObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])
                 self.assertTrue( c is not None )
         
         def test_createObjectWithInvalidParamName(self):
@@ -20,12 +20,11 @@ class Test(unittest.TestCase):
         def test_createObjectWithInvalidParamValue(self):
                 ## This one should raise an error because of 'position=xx' should rise a type error.
                 root = Sofa.Node("rootNode")
-                root.createObject("MechanicalObject", name="tt", position="xmoi")
-                self.fail("We should find a solution not to emit a warning but an exception")
+                root.addObject("MechanicalObject", name="tt", position="xmoi")
 
         def test_data_property(self):
                 root = Sofa.Node("rootNode")
-                c = root.createObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])
+                c = root.addObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])
                 self.assertTrue(hasattr(c, "__data__"))
                 self.assertGreater(len(c.__data__), 0)
                 self.assertTrue("name" in c.__data__)

@@ -9,6 +9,9 @@ using sofa::core::objectmodel::BaseData;
 #include <SofaSimulationGraph/SimpleApi.h>
 namespace simpleapi = sofa::simpleapi;
 
+#include <sofa/helper/logging/Messaging.h>
+using sofa::helper::logging::Message;
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaSimulationGraph/DAGNode.h>
 using sofa::core::ExecParams;
@@ -68,7 +71,6 @@ bool checkParamUsage(Base* object, BaseObjectDescription& desc)
     if(hasFailure)
     {
         throw py::type_error(tmp.str());
-        //msg_warning(object) << tmp.str();
     }
     return hasFailure;
 }
@@ -125,6 +127,13 @@ py::object Node_addObject(Node* self, const std::string& type, const py::kwargs&
     auto object = simpleapi::createObject(self, desc);
     if(object)
         checkParamUsage(object.get(), desc);
+
+    /// Convert the logged messages in the object's internal logging into python exception.
+    /// this is not a very fast way to do that...but well...python is slow anyway. And serious
+    /// error management has a very high priority. If performance becomes an issue we will fix it
+    /// when needed.
+    if(object->countLoggedMessages({Message::Error}))
+        throw py::value_error(object->getLoggedMessagesAsString({Message::Error}));
 
     return py::cast(object);
 }
