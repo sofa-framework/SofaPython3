@@ -39,20 +39,27 @@ set(HEADER_FILES
     src/SofaPython3/config.h
     src/SofaPython3/initModule.h
     src/SofaPython3/PythonEnvironment.h
-    src/SofaPython3/PythonTest.h
     src/SofaPython3/SceneLoaderPY3.h
 )
 
 set(SOURCE_FILES
     src/SofaPython3/initModule.cpp
     src/SofaPython3/PythonEnvironment.cpp
-    src/SofaPython3/PythonTest.cpp
     src/SofaPython3/SceneLoaderPY3.cpp
 )
 
 set(EXTRA_FILES
     SofaPython3Config.cmake.in
     )
+
+if(SOFA_BUILD_TESTS)
+    list(APPEND HEADER_FILES
+        src/SofaPython3/PythonTest.h
+    )
+    list(APPEND SOURCE_FILES
+        src/SofaPython3/PythonTest.cpp
+    )
+endif(SOFA_BUILD_TESTS)
     
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAPYTHON3")
