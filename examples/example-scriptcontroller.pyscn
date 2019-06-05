@@ -9,7 +9,7 @@ class MyController(Sofa.PythonController):
                 ## Here we can do what we want...
                 print(" Python::__init__::"+str(self.name))
                 
-        def init():
+        def init(self):
                 print("Coucou")
                      
         def handleEvent(self, event):
@@ -21,6 +21,8 @@ class MyController(Sofa.PythonController):
              
                      
 def createScene(root):
-        #root.addObject(MyController())
+        root.addObject(MyController())
         root.addChild("child1")
         print("END CREATE SCENE")
+        
+        
