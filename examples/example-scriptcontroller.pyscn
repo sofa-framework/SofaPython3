@@ -1,0 +1,26 @@
+import Sofa
+
+
+class MyController(Sofa.PythonController):
+        def __init__(self, *args, **kwargs):
+                ## These are needed (and the normal way to override from a python class)
+                Sofa.PythonController.__init__(self, *args, **kwargs)
+                
+                ## Here we can do what we want...
+                print(" Python::__init__::"+str(self.name))
+                
+        def init():
+                print("Coucou")
+                     
+        def handleEvent(self, event):
+                print(" HandleEvent:: " + event["name"] )
+
+        def onAnimateBeginEvent(self, other):
+                print(" Python::onAnimationBeginEvent() at "+str(other))
+                self.iterations+=1
+             
+                     
+def createScene(root):
+        #root.addObject(MyController())
+        root.addChild("child1")
+        print("END CREATE SCENE")
