@@ -14,9 +14,9 @@ set(PYTHON_INCLUDE_DIRS ${Python3_INCLUDE_DIR})
 set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
 
 
-message("-- Python vars: ${PYTHON_INCLUDE_DIRS}")
-message("-- Python vars: ${PYTHON_LIBRARIES}")
-message("-- Python vars: ${PYTHON_LIBRARY}")
+message("-- Python include dirs: ${PYTHON_INCLUDE_DIRS}")
+message("-- Python libraries: ${PYTHON_LIBRARIES}")
+message("-- Python library: ${PYTHON_LIBRARY}")
 
 find_package(pybind11 QUIET)
 if(NOT pybind11_FOUND)#
@@ -24,16 +24,9 @@ if(NOT pybind11_FOUND)#
   return()
 endif()
 
-message("-- Python vars: ${PYTHON_INCLUDE_DIRS}")
-message("-- Python vars: ${PYTHON_LIBRARIES}")
-message("-- Python vars: ${PYTHON_LIBRARY}")
-
-
-#find_package(pybind11 QUIET)
-#if(NOT pybind11_FOUND)#
-#  message("-- Cannot build the python module 'Sofa', missing the pybind software to generate the bindings.")
-#  return()
-#endif()
+message("-- Python include dirs: ${PYTHON_INCLUDE_DIRS}")
+message("-- Python libraries: ${PYTHON_LIBRARIES}")
+message("-- Python library: ${PYTHON_LIBRARY}")
 
 set(HEADER_FILES
     src/SofaPython3/config.h
@@ -50,6 +43,7 @@ set(SOURCE_FILES
 
 set(EXTRA_FILES
     SofaPython3Config.cmake.in
+    README.md
     )
 
 if(SOFA_BUILD_TESTS)
