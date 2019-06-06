@@ -25,9 +25,9 @@ set(PYTHON_FILES
     Core/BaseData.py
     Core/Base.py
     Core/BaseObject.py
+    Core/Controller.py
     Core/ForceField.py
     Core/PythonRestShapeForceField.py
-    Core/ScriptController.py
     Helper/Message.py
     Types/RGBAColor.py
     Types/Vec3.py

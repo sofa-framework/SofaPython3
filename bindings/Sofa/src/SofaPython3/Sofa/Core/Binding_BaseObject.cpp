@@ -1,5 +1,5 @@
 #include "Binding_BaseObject.h"
-#include "Binding_PythonController.h"
+#include "Binding_Controller.h"
 
 namespace sofapython3
 {

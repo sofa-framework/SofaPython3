@@ -113,7 +113,7 @@ PythonEnvironmentData* PythonEnvironment::getStaticData()
 
 py::module PythonEnvironment::importFromFile(const std::string& module, const std::string& path, py::object& globals)
 {
-    PythonEnvironment::gil lock{__func__};
+    PythonEnvironment::gil lock;
     py::dict locals;
     locals["module_name"] = py::cast(module); // have to cast the std::string first
     locals["path"]        = py::cast(path);
@@ -162,7 +162,7 @@ void PythonEnvironment::Init()
     PyEval_InitThreads();
 
     // the first gil lock is here
-    gil lock(__func__);
+    gil lock;
 
     // Required for sys.path, used in addPythonModulePath().
     PyRun_SimpleString("import sys");
@@ -242,7 +242,7 @@ void PythonEnvironment::addPythonModulePath(const std::string& path)
         // an empty string must be at first so modules can be found in the current directory first.
 
         {
-            gil lock(__func__);
+            gil lock;
             PyRun_SimpleString(std::string("sys.path.insert(1,\""+path+"\")").c_str());
         }
 
@@ -308,7 +308,7 @@ static raii singleton;
 /// basic script functions
 std::string PythonEnvironment::getError()
 {
-    gil lock(__func__);
+    gil lock;
     std::string error;
 
     PyObject *ptype, *pvalue /* error msg */, *ptraceback /*stack snapshot and many other informations (see python traceback structure)*/;
@@ -321,7 +321,7 @@ std::string PythonEnvironment::getError()
 
 bool PythonEnvironment::runString(const std::string& script)
 {
-    gil lock(__func__);
+    gil lock;
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
     PyObject* result = PyRun_String(script.data(), Py_file_input, pDict, pDict);
 
@@ -339,7 +339,7 @@ bool PythonEnvironment::runString(const std::string& script)
 
 std::string PythonEnvironment::getStackAsString()
 {
-    gil lock(__func__);
+    gil lock;
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaPython"));
     PyObject* pFunc = PyDict_GetItemString(pDict, "getStackForSofa");
     if (PyCallable_Check(pFunc))
@@ -387,7 +387,7 @@ sofa::helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAs
 
 void PythonEnvironment::setArguments(const std::string& filename, const std::vector<std::string>& arguments)
 {
-    gil lock(__func__);
+    gil lock;
     const std::string basename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename.c_str());
 
     PythonEnvironmentData* data = getStaticData() ;
@@ -405,7 +405,7 @@ void PythonEnvironment::setArguments(const std::string& filename, const std::vec
 
 void PythonEnvironment::SceneLoaderListerner::rightBeforeLoadingScene()
 {
-    gil lock(__func__);
+    gil lock;
     // unload python modules to force importing their eventual modifications
     PyRun_SimpleString("SofaPython.unloadModules()");
 }
@@ -420,7 +420,7 @@ void PythonEnvironment::setAutomaticModuleReload( bool b )
 
 void PythonEnvironment::excludeModuleFromReload( const std::string& moduleName )
 {
-    gil lock(__func__);
+    gil lock;
     PyRun_SimpleString( std::string( "try: SofaPython.__SofaPythonEnvironment_modulesExcludedFromReload.append('" + moduleName + "')\nexcept:pass" ).c_str() );
 }
 
@@ -442,17 +442,6 @@ static PyGILState_STATE lock(const char* trace) {
     return PyGILState_Ensure();
 }
 
-
-PythonEnvironment::gil::gil(const char* trace)
-    : state(lock(trace)),
-      trace(trace) { }
-
-PythonEnvironment::gil::~gil() {
-    PyGILState_Release(state);
-    if(debug_gil && trace) {
-        std::clog << "<< " << trace << " released the gil" << std::endl;
-    }
-}
 
 PythonEnvironment::no_gil::no_gil(const char* trace)
     : state(PyEval_SaveThread()),

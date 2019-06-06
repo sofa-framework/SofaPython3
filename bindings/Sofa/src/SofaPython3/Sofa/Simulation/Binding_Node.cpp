@@ -20,6 +20,9 @@ using sofa::core::ExecParams;
 #include <SofaPython3/Sofa/Core/DataHelper.h>
 #include "Binding_Node.h"
 
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
+
 using sofa::core::objectmodel::BaseObjectDescription;
 
 namespace sofapython3
@@ -122,18 +125,33 @@ py::object Node_addChild(Node* self, const std::string& name, const py::kwargs& 
 /// Implement the addObject function.
 py::object Node_addObject(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
+    /// Prepare the description to hold the different python attributes as data field's
+    /// arguments then create the object.
     BaseObjectDescription desc {type.c_str(), type.c_str()};
     fillBaseObjectdescription(desc, kwargs);
-    auto object = simpleapi::createObject(self, desc);
-    if(object)
-        checkParamUsage(object.get(), desc);
+    auto object = ObjectFactory::getInstance()->createObject(self, &desc);
+
+    /// After calling createObject the returned value can be either a nullptr
+    /// or non-null but with error message or non-null.
+    /// Let's first handle the case when the returned pointer is null.
+    if(!object)
+    {
+        std::stringstream tmp ;
+        for(auto& s : desc.getErrors())
+            tmp << s << msgendl ;
+        throw py::value_error(tmp.str());
+    }
+
+    checkParamUsage(object.get(), desc);
 
     /// Convert the logged messages in the object's internal logging into python exception.
     /// this is not a very fast way to do that...but well...python is slow anyway. And serious
     /// error management has a very high priority. If performance becomes an issue we will fix it
     /// when needed.
     if(object->countLoggedMessages({Message::Error}))
+    {
         throw py::value_error(object->getLoggedMessagesAsString({Message::Error}));
+    }
 
     return py::cast(object);
 }

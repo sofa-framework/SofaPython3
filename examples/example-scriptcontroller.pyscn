@@ -1,28 +1,55 @@
 import Sofa
 
-
-class MyController(Sofa.PythonController):
-        def __init__(self, *args, **kwargs):
-                ## These are needed (and the normal way to override from a python class)
-                Sofa.PythonController.__init__(self, *args, **kwargs)
-                
-                ## Here we can do what we want...
-                print(" Python::__init__::"+str(self.name))
-                
-        def init(self):
-                print("Coucou")
-                     
-        def handleEvent(self, event):
-                print(" HandleEvent:: " + event["name"] )
-
-        def onAnimateBeginEvent(self, other):
-                print(" Python::onAnimationBeginEvent() at "+str(other))
-                self.iterations+=1
-             
-                     
-def createScene(root):
-        root.addObject(MyController())
-        root.addChild("child1")
-        print("END CREATE SCENE")
+class MyController(Sofa.Controller):
+    def __init__(self, *args, **kwargs):
+        Sofa.Controller.__init__(self, *args, *kwargs)
         
+    def init(self):
+        print("COuCOu")   
         
+    def onEvent(self, value):
+        print("EVEnt "+value)     
+
+    def onAnimateBeginEvent(self, value):
+        print("Animation Begin")         
+
+    def onAnimateEndEvent(self, value):
+        print("Animation End")    
+
+class MyForceField(Sofa.ForceField):
+    def __init__(self, *args, **kwargs):
+        kwargs["ks"] = kwargs.get("ks", 1.0)
+        kwargs["kd"] = kwargs.get("kd", 0.1)
+        Sofa.ForceField.__init__(self, *args, **kwargs)
+                        
+    def init(self):
+        self.initpos = self.mstate.position.array().copy()
+        
+    def addForce(self, m, out_force, pos, vel):
+        out_force += ((self.initpos-pos) * self.ks.value)
+        
+    def addDForce(self, df, dx, kFactor, bFactor):
+        df -= dx * self.ks.value * kFactor
+        
+def RestShapeObject(name="unnamed", position=[]):
+        node = Sofa.Node(name)
+        c = node.addObject("MechanicalObject", name="mechanical", position=position)
+        c.showObject = True
+        c.drawMode = 1
+        m = node.addObject("UniformMass", name="mass", vertexMass=0.1)        
+        return node
+ 
+def createScene(node):
+        node.addObject("OglLineAxis")
+        node.addObject("RequiredPlugin", name="SofaSparseSolver")
+        node.addObject("DefaultAnimationLoop", name="loop")
+        node.addObject("EulerImplicit")
+        node.addObject("CGLinearSolver", tolerance=1e-12, threshold=1e-12)
+        
+        a=node.addChild( RestShapeObject( 
+                name="python", position=[[i-10.0, 0, 0] for i in range(100)] ) )
+        a.mechanical.showColor = [1.0,0.0,0.0,1.0]
+        a.addObject( MyForceField("customFF", ks=5.0) )
+        a.addObject( MyController() )
+        return node
+

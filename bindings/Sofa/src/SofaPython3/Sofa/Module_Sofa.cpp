@@ -18,7 +18,7 @@ PYBIND11_MODULE(Sofa, m)
     py::module helper = addSubmoduleHelper(m);
 
     /// Import into the Sofa main package the class from theyr sub-module.
-    m.add_object("PythonController", core.attr("PythonController"));
+    m.add_object("Controller", core.attr("Controller"));
     m.add_object("ForceField", core.attr("ForceField"));
     m.add_object("Node", simulation.attr("Node"));
 

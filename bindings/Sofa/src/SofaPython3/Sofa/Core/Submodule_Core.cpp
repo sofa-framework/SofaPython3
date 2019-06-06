@@ -9,7 +9,7 @@
 #include "Binding_BaseData.h"
 #include "Binding_DataContainer.h"
 #include "Binding_ForceField.h"
-#include "Binding_PythonController.h"
+#include "Binding_Controller.h"
 #include "Submodule_Core.h"
 
 
@@ -29,7 +29,7 @@ pybind11::module addSubmoduleCore(py::module& p)
     moduleAddWriteAccessor(core);
     moduleAddDataContainer(core);
     moduleAddBaseObject(core);
-    moduleAddPythonController(core);
+    moduleAddController(core);
     moduleAddForceField(core);
 
     py::class_<sofa::core::objectmodel::BaseNode,

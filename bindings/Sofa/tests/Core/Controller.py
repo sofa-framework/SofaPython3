@@ -5,13 +5,13 @@ import gc
 import Sofa
 from Sofa.Simulation import SingleSimulation
 
-class MyController(Sofa.PythonController):
+class MyController(Sofa.Controller):
         """This is my custom controller
            when init is called from Sofa this should call the python init function
         """        
         def __init__(self, *args, **kwargs):
                 ## These are needed (and the normal way to override from a python class)
-                Sofa.PythonController.__init__(self, *args, **kwargs)
+                Sofa.Controller.__init__(self, *args, **kwargs)
                 print(" Python::__init__::"+str(self.name))
                 self.inited = 0
                 self.iterations = 0
@@ -24,7 +24,7 @@ class MyController(Sofa.PythonController):
                 self.inited += 1
 
         def handleEvent(self, event):
-                Sofa.PythonController.handleEvent(self, event)
+                Sofa.Controller.handleEvent(self, event)
                 print(" HandleEvent" )
 
         def onAnimateBeginEvent(self, other):
@@ -33,7 +33,7 @@ class MyController(Sofa.PythonController):
 
 class Test(unittest.TestCase):
          def test_constructor(self):
-                 c = Sofa.PythonController()
+                 c = Sofa.Controller()
                  c.init()
                  c.reinit()
 

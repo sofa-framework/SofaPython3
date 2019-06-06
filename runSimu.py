@@ -21,10 +21,11 @@ if len(sys.argv) != 2:
         print("USAGE: python3 runSimu.py scene.py")
         sys.exit(-1)
 
-## Init the simulation singleton. 
-SofaRuntime.reinit()
-c=SofaRuntime.load(sys.argv[1])
-SofaRuntime.getSimulation().init(rootNode)
+
+s = SofaRuntime.load(sys.argv[1])
+s.init()
+for i in range(10):
+        SofaRuntime.getSimulation().animate(s, 0.1)
 
         
         

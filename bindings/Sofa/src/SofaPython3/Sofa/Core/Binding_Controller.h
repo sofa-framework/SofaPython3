@@ -1,5 +1,5 @@
-#ifndef PYTHONMODULE_SOFA_BINDING_PYTHONCONTROLLER_H
-#define PYTHONMODULE_SOFA_BINDING_PYTHONCONTROLLER_H
+#ifndef PYTHONMODULE_SOFA_BINDING_CONTROLLER_H
+#define PYTHONMODULE_SOFA_BINDING_CONTROLLER_H
 
 #include "Binding_BaseObject.h"
 
@@ -14,24 +14,24 @@ namespace sofapython3
 {
 using sofa::core::behavior::BaseController;
 
-class PythonController : public BaseController
+class Controller : public BaseController
 {
 public:
-    SOFA_CLASS(PythonController, BaseController);
+    SOFA_CLASS(Controller, BaseController);
     void init() override ;
     void reinit() override;
 
-    PythonController()
+    Controller()
     {
     }
 
-    virtual ~PythonController()
+    ~Controller() override
     {
     }
 };
 
-void moduleAddPythonController(py::module &m);
+void moduleAddController(py::module &m);
 
 } /// namespace sofapython3
 
-#endif /// PYTHONMODULE_SOFA_BINDING_PYTHONCONTROLLER_H
+#endif /// PYTHONMODULE_SOFA_BINDING_CONTROLLER_H

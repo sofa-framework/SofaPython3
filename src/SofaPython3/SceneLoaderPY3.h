@@ -53,7 +53,7 @@ public:
 
     void loadSceneWithArguments(const char *filename,
                                 const std::vector<std::string>& arguments=std::vector<std::string>(0),
-                                Node::SPtr* root_out = nullptr);
+                                Node::SPtr root_out = nullptr);
 
     /// get the file type description
     virtual std::string getFileTypeDesc() override;

@@ -12,10 +12,10 @@ class MyForceField(Sofa.ForceField):
         self.initpos = self.mstate.position.array().copy()
         
     def addForce(self, m, out_force, pos, vel):
-        out_force += ((self.initpos-pos) * self.ks) 
+        out_force += ((self.initpos-pos) * self.ks.value)
         
     def addDForce(self, df, dx, kFactor, bFactor):
-        df -= dx * self.ks * kFactor 
+        df -= dx * self.ks.value * kFactor
         
 class CreateObject(object):
         def __init__(self, *args, **kwargs):
@@ -45,9 +45,7 @@ def createScene(node):
         
         a=node.addChild( RestShapeObject( MyForceField("customFF", ks=5.0) , name="python", position=[[i-10.0, 0, 0] for i in range(100)] ) )
         a.mechanical.showColor = [1.0,0.0,0.0,1.0]
-        
-        #b=node.addChild( RestShapeObject( CreateObject("RestShapeSpringsForceField", stiffness=5.0) , name="c++", position=[[i, 0, 0] for i in range(100)]))
-        #b.mechanical.showColor = [1.0,1.0,0.0,1.0]
+
         
 ######################################### TESTS ####################################################
 ## In the following is the code used to consider this example as a test.

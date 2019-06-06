@@ -23,22 +23,40 @@ using sofa::simulation::SceneLoader;
 #include <SofaPython3/SceneLoaderPY3.h>
 using sofapython3::SceneLoaderPY3;
 
-#include <src/pybind/Binding_Node.h>
-#include <src/pybind/Binding_Base.h>
+#include <sofa/helper/BackTrace.h>
 
 #include <SofaSimulationCommon/init.h>
 #include <SofaSimulationGraph/init.h>
 
-/// The first parameter must be named the same as the module file to load.
-PYBIND11_MODULE(SofaRuntime, m) {
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/Sofa/Simulation/Binding_Node.h>
+
+class SofaInitializer
+{
+public:
     // TODO, ces trucs sont fort laid. Normalement ce devrait être une joli plugin qui
     // appelle le init.
-    sofa::simulation::common::init();
-    sofa::simulation::graph::init();
+    SofaInitializer(){
+        sofa::simulation::common::init();
+        sofa::simulation::graph::init();
+    }
 
+    ~SofaInitializer(){
+        sofa::simulation::common::cleanup();
+        sofa::simulation::graph::cleanup();
+    }
+};
+
+static SofaInitializer s;
+
+/// The first parameter must be named the same as the module file to load.
+PYBIND11_MODULE(SofaRuntime, m) {
     // Add the plugin directory to PluginRepository
-    const std::string& pluginDir = Utils::getPluginDirectory();
+    const std::string& pluginDir = Utils::getExecutableDirectory();
     PluginRepository.addFirstPath(pluginDir);
+
+    if( !sofa::simulation::getSimulation() )
+        sofa::simulation::setSimulation(new DAGSimulation());
 
     /// We need to import the project dependencies
     py::module::import("Sofa");
@@ -48,6 +66,8 @@ PYBIND11_MODULE(SofaRuntime, m) {
     {
         std::cout << "Registering loader for python3 files" << std::endl ;
         SceneLoaderFactory::getInstance()->addEntry(new SceneLoaderPY3());
+
+        sofa::helper::BackTrace::autodump();
     }
 
     m.def("getSimulation", []()
@@ -77,15 +97,16 @@ PYBIND11_MODULE(SofaRuntime, m) {
         if(!loader)
         {
             return py::none();
+
         }
 
         Node::SPtr root = loader->load(filename.c_str());
         return py::cast(root);
     });
 
-    m.def("dev_getANode", []()
+    m.def("dev_getANode", []() -> py::object
     {
-        Node::SPtr n = Node::create("testNode");
-        return n;
-    });
+              Node::SPtr n = Node::create("testNode");
+              return py::cast(n);
+          });
 }

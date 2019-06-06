@@ -4,24 +4,28 @@ project(PythonModule_SofaRuntime)
 ####################################################################################################
 ### Module dependencies
 ####################################################################################################
-#find_package(PythonLibs 2.7 QUIET)
-#if(NOT PythonLibs_FOUND)
-#    message("-- Cannot build the python module 'SofaPython3', missing the required PythonLibs 2.7 cmake package.")
-#    return()
-#endif()
+find_package(SofaPython3 REQUIRED)
 
-# This must be done before doing the find_package(pybind11)
-#set(PYBIND11_PYTHON_VERSION 3.6m)
-#set(PYTHON_EXECUTABLE python3)
-
-#include(src/cython/CMakeBuilds.cmake)
-include(src/pybind/CMakeBuilds.cmake)
-
-set(EXAMPLES_FILES
-    # ${CMAKE_CURRENT_SOURCE_DIR}/examples/example1.py
-    )
+####################################################################################################
+### Module files
+####################################################################################################
+set(SOURCE_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Module_SofaRuntime.cpp
+)
 
 
+# sofa_add_pybind11_module( TARGET MyModule SOURCES ${SOURCE_FILES} DEPENDS Deps1 Deps2  OUTPUT ${CMAKE_CURRENT_BIN_DIR} NAME python_module_name)
+sofa_add_pybind11_module(
+        TARGET PythonModule_SofaRuntime
+        SOURCES  ${SOURCE_FILES}
+        DEPENDS SofaPython3 SofaSimulationGraph SofaPython3_Sofa
+        OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/package/"
+        NAME SofaRuntime
+)
+
+####################################################################################################
+### Module packaging
+####################################################################################################
 ## Python configuration file (build tree), the lib in the source dir (easier while developping .py files)
 file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/SofaRuntime" "${CMAKE_CURRENT_SOURCE_DIR}/package/")
 

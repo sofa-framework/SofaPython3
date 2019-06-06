@@ -32,8 +32,20 @@ using sofapython3::PythonTestList ;
 using sofapython3::PrintTo ;
 using std::string;
 
+#include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
+using sofa::helper::logging::MessageDispatcher;
+using sofa::helper::logging::MainPerComponentLoggingMessageHandler;
+
 namespace
 {
+
+bool init()
+{
+    MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+    return true;
+}
+
+static int _inited_=init();
 
 class Sofa : public PythonTest {};
 

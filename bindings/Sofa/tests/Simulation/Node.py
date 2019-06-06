@@ -28,12 +28,18 @@ class Test(unittest.TestCase):
                 c.createObject("MechanicalObject", position=[0.0,1.0,2.0]*100)
                 root.init()
 
-        def test_createChild(self):                
-                root = Sofa.Node("rootNode")                               
-                c = root.createChild("child1")
-                self.assertTrue( c is not None )
-                self.assertEqual( c.name.value, "child1" )
-                self.assertTrue( hasattr(c, "child1") )
+        def test_createObjectInvalid(self):
+                root = Sofa.Node("rootNode")
+                c = root.addChild("child1")
+                def d():
+                    c.addObject([1.0,0.0,0.0])
+                self.assertRaises(TypeError, d)
+
+                def d1():
+                    c.addObject("NOEXISTINGCOMPONENT")
+
+                self.assertRaises(ValueError, d1)
+                root.init()
 
         def test_createChild(self):                
                 root = Sofa.Node("rootNode")                               
@@ -54,7 +60,6 @@ class Test(unittest.TestCase):
                 self.assertTrue(hasattr(root,"child2"))
                 root.removeChild(c)
                 self.assertEqual(len(root.children), 1)
-                print("COUCOU"+str(hasattr(root,"child1")))
 
                 self.assertFalse(hasattr(root,"child1"))
                 root.removeChild("child2")

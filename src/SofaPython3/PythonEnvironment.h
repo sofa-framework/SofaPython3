@@ -103,13 +103,14 @@ public:
     /// in a scope. these should be surrounding any python code called from c++,
     /// i.e. in all the methods in PythonEnvironment and all the methods in
     /// PythonScriptController.
-    class SOFAPYTHON3_API gil {
-        const PyGILState_STATE state;
-        const char* const trace;
-    public:
-        gil(const char* trace = nullptr);
-        ~gil();
-    };
+    using gil = pybind11::gil_scoped_acquire;
+//    class SOFAPYTHON3_API gil {
+//        const PyGILState_STATE state;
+//        const char* const trace;
+//    public:
+//        gil(const char* trace = nullptr);
+//        ~gil();
+//    };
 
     class SOFAPYTHON3_API no_gil {
         PyThreadState* const state;

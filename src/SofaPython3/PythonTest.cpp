@@ -66,6 +66,7 @@ PythonTestData::PythonTestData(const std::string& filepath, const std::string &t
 ///////////////////////// PythonTest Definition  //////////////////////////////////////////////////
 PythonTest::PythonTest()
 {
+
 }
 
 PythonTest::~PythonTest()
@@ -84,7 +85,7 @@ void PythonTest::run( const PythonTestData& data )
         sofa::simulation::setSimulation(simpleapi::createSimulation().get());
 
         try{
-            PythonEnvironment::gil scoped_gil{__FUNCTION__};
+            PythonEnvironment::gil scoped_gil;
 
             py::module::import("Sofa");
             py::object globals = py::module::import("__main__").attr("__dict__");
@@ -124,7 +125,7 @@ void PythonTestList::addTest( const std::string& filename,
                               )
 {
     PythonEnvironment::Init();
-    PythonEnvironment::gil scoped_gil{__FUNCTION__};
+    PythonEnvironment::gil scoped_gil;
 
     py::module::import("Sofa");
     py::object globals = py::module::import("__main__").attr("__dict__");

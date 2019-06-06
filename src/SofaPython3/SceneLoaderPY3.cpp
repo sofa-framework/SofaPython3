@@ -75,19 +75,18 @@ void SceneLoaderPY3::getExtensionList(ExtensionList* list)
 
 sofa::simulation::Node::SPtr SceneLoaderPY3::doLoad(const char *filename)
 {
-    sofa::simulation::Node::SPtr root;
-    loadSceneWithArguments(filename, sofa::helper::ArgumentParser::extra_args(), &root);
+    sofa::simulation::Node::SPtr root = sofa::simulation::Node::create("root");
+    loadSceneWithArguments(filename, sofa::helper::ArgumentParser::extra_args(), root);
     return root;
 }
 
 
 void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
                                             const std::vector<std::string>& arguments,
-                                            Node::SPtr* root_out)
+                                            Node::SPtr root_out)
 {
     SOFA_UNUSED(arguments);
-    notifyLoadingSceneBefore();
-    PythonEnvironment::gil lock(__func__);
+    PythonEnvironment::gil lock;
 
     try{
         py::module::import("Sofa");
@@ -103,14 +102,13 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
             return ;
         }
 
-        *root_out = New<DAGNode>("root");
         py::object createScene = module.attr("createScene");
-        createScene(*root_out);
+        createScene( root_out );
     }catch(std::exception& e)
     {
         msg_error() << e.what();
     }
-    notifyLoadingSceneAfter(*root_out);
+
 }
 
 } // namespace sofapython3

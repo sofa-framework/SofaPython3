@@ -2,32 +2,32 @@
 #include <pybind11/detail/init.h>
 
 #include "Binding_Base.h"
-#include "Binding_PythonController.h"
+#include "Binding_Controller.h"
 #include "DataHelper.h"
 
 #include <sofa/core/objectmodel/Event.h>
 using sofa::core::objectmodel::Event;
 
-PYBIND11_DECLARE_HOLDER_TYPE(PythonController,
-                             sofapython3::py_shared_ptr<PythonController>, true)
+PYBIND11_DECLARE_HOLDER_TYPE(Controller,
+                             sofapython3::py_shared_ptr<Controller>, true)
 
 namespace sofapython3
 {
 
-    void PythonController::init() {
+    void Controller::init() {
     }
 
-    void PythonController::reinit() {
+    void Controller::reinit() {
     }
 
-    class PythonController_Trampoline : public PythonController, public PythonTrampoline
-    {    
+    class Controller_Trampoline : public Controller, public PythonTrampoline
+    {
     public:
-        PythonController_Trampoline()
+        Controller_Trampoline()
         {
         }
 
-        virtual ~PythonController_Trampoline()
+        virtual ~Controller_Trampoline()
         {
         }
 
@@ -41,35 +41,48 @@ namespace sofapython3
         virtual void handleEvent(Event* event) override ;
     };
 
-    void PythonController_Trampoline::init()
+    void Controller_Trampoline::init()
     {
-        PYBIND11_OVERLOAD(void, PythonController, init, );
+        PYBIND11_OVERLOAD(void, Controller, init, );
     }
 
-    void PythonController_Trampoline::reinit()
+    void Controller_Trampoline::reinit()
     {
-        PYBIND11_OVERLOAD(void, PythonController, reinit, );
+        PYBIND11_OVERLOAD(void, Controller, reinit, );
     }
 
-    void PythonController_Trampoline::handleEvent(Event* event)
+    void Controller_Trampoline::handleEvent(Event* event)
     {
         py::object self = py::cast(this);
         std::string name = std::string("on")+event->getClassName();
+
+        /// Is there a method with this name in the class ?
         if( py::hasattr(self, name.c_str()) )
         {
             py::object fct = self.attr(name.c_str());
-            py::object ret = fct("Hello");
+            py::object ret = fct(name);
+            return;
+        }
+
+        /// Is the fallback method available.
+        if( py::hasattr(self, "onEvent") )
+        {
+            py::object fct = self.attr("onEvent");
+            py::object ret = fct(name);
         }
     }
 
-    void moduleAddPythonController(py::module &m) {
-        py::class_<PythonController, BaseObject,
-                PythonController_Trampoline,
-                py_shared_ptr<PythonController>> f(m, "PythonController");
+    void moduleAddController(py::module &m) {
+        py::class_<Controller,
+                Controller_Trampoline,
+                BaseObject,
+                py_shared_ptr<Controller>> f(m, "Controller",
+                                                   py::dynamic_attr(),
+                                                   py::multiple_inheritance());
 
         f.def(py::init([](py::args& args, py::kwargs& kwargs)
         {
-                  PythonController_Trampoline* c = new PythonController_Trampoline();
+                  Controller_Trampoline* c = new Controller_Trampoline();
                   c->f_listening.setValue(true);
 
                   if(args.size() != 0)
@@ -78,7 +91,7 @@ namespace sofapython3
                       else throw py::type_error("Only one un-named arguments can be provided.");
                   }
 
-                  for(auto& kv : kwargs)
+                  for(auto kv : kwargs)
                   {
                       std::string key = py::cast<std::string>(kv.first);
                       py::object value = py::object(kv.second, true);
@@ -87,8 +100,8 @@ namespace sofapython3
                           if( args.size() != 0 )
                           {
                               throw py::type_error("The name is setted twice as a "
-                                                   "named argument='"+py::cast<std::string>(value)+"' and as a"
-                                                   "positional argument='"+py::cast<std::string>(args[0])+"'.");
+                              "named argument='"+py::cast<std::string>(value)+"' and as a"
+                              "positional argument='"+py::cast<std::string>(args[0])+"'.");
                           }
                       }
                       BindingBase::SetAttr(*c, key, value);
@@ -97,8 +110,8 @@ namespace sofapython3
                   return c;
               }));
 
-        f.def("init", &PythonController::init);
-        f.def("reinit", &PythonController::reinit);
+        f.def("init", &Controller::init);
+        f.def("reinit", &Controller::reinit);
     }
 
 
