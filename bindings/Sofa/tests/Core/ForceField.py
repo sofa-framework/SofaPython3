@@ -3,9 +3,7 @@
 import unittest
 import Sofa
 import numpy as np
-import ad
-from ad import *
-from Sofa.Simulation import SingleSimulation
+import SofaRuntime
 
 class MyForceField(Sofa.ForceField):
     def __init__(self, *args, **kwargs):
@@ -24,49 +22,20 @@ class MyForceField(Sofa.ForceField):
         ks = self.ks 
         kd = self.kd 
         of = out_force
-        p = pos #adnumber(pos, "pos")
+        p = pos
         v = vel
         u = ip-p
         res = (u * ks ) 
         
-        #self.res = np.ndarray.flatten(res)
-        #self.p = np.ndarray.flatten(p)
-                        
-        #def f(x):
-        #        return x.x
-        #vf=np.vectorize(f)
-        
-        #out_force += vf(res)
         out_force += res
-        
-        #print(" Python::addForce: ", u, "*", ks, "=", out_force)
-         
+                 
 
     def addDForce(self, df, dx, kFactor, bFactor):
-        #print("===============================")
-        #print(" F", self.res)
-        #print(" pos", self.p)
-        #print(" Python::addDForce df(in): ", df)
-        #print(" Python::addDForce dx: ", np.ndarray.flatten(dx))        
-        #print(" Python::addDForce kFactor: ", (kFactor, bFactor))        
-        #print("RES is ", self.res[0,0].d())
-        #print("RES is ", self.res[0,1].d())
-        #print("RES is ", self.res[0,2].d())
         return 
-        from ad import jacobian
-        j = jacobian(self.res, self.p)
-        #print(" Python::addDForce J:", j)
-        
-        tdf = j @ (np.ndarray.flatten(dx) * kFactor)
-        #print(" Python::addDForce df: ", tdf)
-        df += tdf.reshape((-1,3))
-        print(" Python::addDForce df: ", df)
         
     def addKToMatrix(self, a, b):
         print(" Python::addKToMatrix: ", a, " ", b)
 
-    #def updateForceMask(self):
-    #    print(" Python::updateFroceMask: ")
 
 class CreateObject(object):
         def __init__(self, *args, **kwargs):

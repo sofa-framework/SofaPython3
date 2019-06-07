@@ -5,7 +5,7 @@ import Sofa
 import numpy as np
 import ad
 from ad import *
-from Sofa.Simulation import SingleSimulation
+import SofaRuntime
 
 class MyForceField(Sofa.ForceField):
     def __init__(self, *args, **kwargs):

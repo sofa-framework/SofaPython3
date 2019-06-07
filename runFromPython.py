@@ -30,7 +30,6 @@ root = Sofa.Node("myroot")
 root.addChild("child1")
 root.addObject(MyController())
 
-root = Sofa.Simulation.load("toto.py")
 Sofa.Simulation.init(root)
 Sofa.Simulation.print(root)
 for i in range(0, 10):
