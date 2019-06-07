@@ -22,7 +22,7 @@ class MyController(Sofa.Controller):
                 print(" Python::init() at "+str(self))
                 self.inited += 1
 
-        def handleEvent(self, event):
+        def onEvent(self, event):
                 Sofa.Controller.handleEvent(self, event)
                 print(" HandleEvent" )
 
