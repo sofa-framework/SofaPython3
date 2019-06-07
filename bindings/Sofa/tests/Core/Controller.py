@@ -3,7 +3,6 @@
 import unittest
 import gc
 import Sofa
-import SofaRuntime
 
 class MyController(Sofa.Controller):
         """This is my custom controller
@@ -64,9 +63,9 @@ class Test(unittest.TestCase):
 
             self.assertTrue( hasattr(controller, "iterations") )
 
-            SofaRuntime.Simulation.init(node)
+            Sofa.Simulation.init(node)
             for i in range(10):
-                SofaRuntime.Simulation.animate(node, 0.01)
+                Sofa.Simulation.animate(node, 0.01)
 
             self.assertTrue( hasattr(controller, "iterations") )
             self.assertEqual( controller.iterations, 10 )
