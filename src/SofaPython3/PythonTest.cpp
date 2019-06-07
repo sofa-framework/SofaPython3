@@ -111,6 +111,10 @@ void PythonTest::run( const PythonTestData& data )
         }catch(std::exception& e)
         {
             msg_error() << e.what();
+            FAIL();
+        }catch(...)
+        {
+            FAIL();
         }
     }
 
@@ -166,7 +170,13 @@ void PythonTestList::addTestDir(const std::string& dir, const std::string& testg
         if( sofa::helper::starts_with(prefix, file)
                 && (sofa::helper::ends_with(".py", file) || sofa::helper::ends_with(".py3", file)))
         {
-            addTest(file, dir, testgroup);
+            try
+            {
+                addTest(file, dir, testgroup);
+            }catch(...)
+            {
+                msg_error("PythonTestList") << "File skipped " << file;
+            }
         }
     }
 }
