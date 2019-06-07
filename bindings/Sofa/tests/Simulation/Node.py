@@ -5,7 +5,7 @@ import sys
 
 class Test(unittest.TestCase):
         def test_SimulationConstructor(self):
-            root = Sofa.Simulation.Node("rootNode")
+            root = Sofa.Node("rootNode")
             self.assertEqual(root.name.value, "rootNode")
 
         def test_Constructor(self):
