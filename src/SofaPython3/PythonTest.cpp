@@ -173,9 +173,10 @@ void PythonTestList::addTestDir(const std::string& dir, const std::string& testg
             try
             {
                 addTest(file, dir, testgroup);
-            }catch(...)
+            }catch(std::exception& e)
             {
-                msg_error("PythonTestList") << "File skipped " << file;
+                msg_error("PythonTestList") << "File skipped: " << file << msgendl
+                                            << e.what();
             }
         }
     }
