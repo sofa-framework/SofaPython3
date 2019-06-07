@@ -436,12 +436,9 @@ void moduleAddBase(py::module &m)
 
     base.def("__dir__", [](Base* self)
     {
-        std::cout << "QUERY LIST ATTR:" << std::endl ;
-
         py::list list;
         for(auto i : self->getDataFields())
         {
-            std::cout << "GET ATTR:" << std::endl ;
             list.append(i->getName());
         }
         return list;
