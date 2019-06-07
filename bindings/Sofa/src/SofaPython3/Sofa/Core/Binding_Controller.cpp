@@ -27,7 +27,7 @@ namespace sofapython3
         {
         }
 
-        virtual ~Controller_Trampoline()
+        ~Controller_Trampoline() override
         {
         }
 

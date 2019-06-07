@@ -17,18 +17,25 @@ import SofaRuntime
 ## Register all the common component in the factory. 
 SofaRuntime.importPlugin("SofaAllCommonComponents")
 
-if len(sys.argv) != 2:
-        print("USAGE: python3 runSimu.py scene.py")
-        sys.exit(-1)
+class MyController(Sofa.Controller):
+        def __init__(self, *args, **kwargs):
+                Sofa.Controller.__init__(self,*args, **kwargs)
+                print("INITED")
+                
+        def onEvent(self, event):
+                print("Event: "+event)
+               
+                
+root = Sofa.Node("myroot")
+root.addChild("child1")
+root.addObject(MyController())
 
-## Version 1
-print("READY FOR INIT 0")
-s = SofaRuntime.loadSimulationFromFile(sys.argv[1])
+s = Sofa.Simulation()
+s.load("toto.py")
 s.init()
-for i in range(10):
-        print("Iteration: ...")
+s.dump()
+for i in range(0, 10):
+        print("step: "+str(i))
         s.animate(0.1)
-
-        
         
         

@@ -10,6 +10,9 @@
 #include "Binding_DataContainer.h"
 #include "Binding_ForceField.h"
 #include "Binding_Controller.h"
+#include "Binding_Node.h"
+#include "Binding_Simulation.h"
+
 #include "Submodule_Core.h"
 
 
@@ -43,6 +46,9 @@ pybind11::module addSubmoduleCore(py::module& p)
     py::class_<sofa::core::objectmodel::Context,
             sofa::core::objectmodel::BaseContext,
             sofa::core::objectmodel::Context::SPtr>(core, "Context");
+
+    moduleAddNode(core);
+    moduleAddSimulation(core);
 
     return core;
 }

@@ -6,6 +6,7 @@ using sofa::simulation::Node;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
+using sofa::simulation::Simulation;
 
 #include <SofaSimulationGraph/SimpleApi.h>
 namespace simpleapi = sofa::simpleapi;
@@ -29,7 +30,8 @@ using sofapython3::SceneLoaderPY3;
 #include <SofaSimulationGraph/init.h>
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaPython3/Sofa/Simulation/Binding_Node.h>
+#include <SofaPython3/Sofa/Core/Binding_Node.h>
+#include <SofaPython3/Sofa/Core/Binding_Simulation.h>
 
 class SofaInitializer
 {
@@ -39,6 +41,7 @@ public:
     SofaInitializer(){
         sofa::simulation::common::init();
         sofa::simulation::graph::init();
+        sofa::simulation::setSimulation(new DAGSimulation());
     }
 
     ~SofaInitializer(){
@@ -46,6 +49,8 @@ public:
         sofa::simulation::graph::cleanup();
     }
 };
+
+
 
 static SofaInitializer s;
 
@@ -55,8 +60,8 @@ PYBIND11_MODULE(SofaRuntime, m) {
     const std::string& pluginDir = Utils::getExecutableDirectory();
     PluginRepository.addFirstPath(pluginDir);
 
-    if( !sofa::simulation::getSimulation() )
-        sofa::simulation::setSimulation(new DAGSimulation());
+    //if( !sofa::simulation::getSimulation() )
+    //    sofa::simulation::setSimulation(new DAGSimulation());
 
     /// We need to import the project dependencies
     py::module::import("Sofa");
@@ -66,47 +71,13 @@ PYBIND11_MODULE(SofaRuntime, m) {
     {
         std::cout << "Registering loader for python3 files" << std::endl ;
         SceneLoaderFactory::getInstance()->addEntry(new SceneLoaderPY3());
-
         sofa::helper::BackTrace::autodump();
     }
 
-    m.def("getSimulation", []()
-    {
-        return sofa::simulation::getSimulation();
-    });
-    
     m.def("importPlugin", [](const std::string& name)
     {
         return simpleapi::importPlugin(name);
     });
 
-    m.def("reinit", []()
-    {
-        /// set the Simulation, replacing the existing one (which is automatically deleted)
-        if( !sofa::simulation::getSimulation() )
-            sofa::simulation::setSimulation(new DAGSimulation());
-    });
 
-    m.def("load", [](const std::string& filename) -> py::object
-    {
-        /// set the Simulation, replacing the existing one (which is automatically deleted)
-        if( !sofa::simulation::getSimulation() )
-            sofa::simulation::setSimulation(new DAGSimulation());
-
-        SceneLoader* loader=SceneLoaderFactory::getInstance()->getEntryFileName(filename);
-        if(!loader)
-        {
-            return py::none();
-
-        }
-
-        Node::SPtr root = loader->load(filename.c_str());
-        return py::cast(root);
-    });
-
-    m.def("dev_getANode", []() -> py::object
-    {
-              Node::SPtr n = Node::create("testNode");
-              return py::cast(n);
-          });
 }
