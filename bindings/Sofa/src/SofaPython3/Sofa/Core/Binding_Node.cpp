@@ -111,6 +111,16 @@ void moduleAddBaseIterator(py::module &m)
     {
         return py::cast(d.size(d.owner.get()));
     });
+
+    d.def("at", [](BaseIterator& d, size_t index) -> py::object
+    {
+        return py::cast(d.get(d.owner.get(), index));
+    });
+    d.def("remove_at", [](BaseIterator& d, size_t index)
+    {
+        BaseNode::SPtr n(dynamic_cast<BaseNode*>(d.get(d.owner.get(), index).get()));
+        d.owner->removeChild(n);
+    });
 }
 
 py::object Node_addChild(Node* self, const std::string& name, const py::kwargs& kwargs)

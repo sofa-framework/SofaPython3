@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*
 import Sofa
 import unittest
-import sys
 
 class Test(unittest.TestCase):
         def test_SimulationConstructor(self):
@@ -72,10 +71,17 @@ class Test(unittest.TestCase):
                         
         def test_children_property(self):                
                 root = Sofa.Node("rootNode")                               
-                c = root.addChild(Sofa.Node("child1"))
+                c1 = root.addChild(Sofa.Node("child1"))
                 self.assertEqual(len(root.children), 1)
-                c = root.addChild(Sofa.Node("child2"))                
+                c2 = root.addChild(Sofa.Node("child2"))
                 self.assertEqual(len(root.children), 2) 
+
+                self.assertEqual(root.children.at(0).name, c1.name)
+                self.assertEqual(root.children.at(1).name, c2.name)
+                root.children.remove_at(0)
+                self.assertEqual(len(root.children), 1)
+                self.assertEqual(root.children.at(0).name, c2.name)
+
 
         def test_parents_property(self):                
                 root = Sofa.Node("rootNode")                               

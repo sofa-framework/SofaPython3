@@ -6,6 +6,7 @@
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
+using sofa::core::objectmodel::BaseNode;
 
 template class pybind11::class_<sofa::core::objectmodel::BaseNode,
                                 sofa::core::objectmodel::Base,
