@@ -18,16 +18,7 @@ class MyForceField(Sofa.ForceField):
         self.d = 0.5
 
     def addForce(self, m, out_force, pos, vel):
-        ip = self.initpos
-        ks = self.ks 
-        kd = self.kd 
-        of = out_force
-        p = pos
-        v = vel
-        u = ip-p
-        res = (u * ks ) 
-        
-        out_force += res
+        out_force += ( (self.initpos-pos) * self.ks.value  )
                  
 
     def addDForce(self, df, dx, kFactor, bFactor):
