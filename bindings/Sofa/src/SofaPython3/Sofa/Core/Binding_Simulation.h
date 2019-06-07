@@ -11,8 +11,8 @@ template class pybind11::class_<Simulation, Simulation::SPtr>;
 namespace sofapython3
 {
 
+//void moduleAddSimulation(py::module &m);
 void moduleAddSimulation(py::module &m);
-void moduleAddRuntime(py::module &m);
 
 } ///sofapython3
 

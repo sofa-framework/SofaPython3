@@ -48,7 +48,7 @@ pybind11::module addSubmoduleCore(py::module& p)
             sofa::core::objectmodel::Context::SPtr>(core, "Context");
 
     moduleAddNode(core);
-    moduleAddSimulation(core);
+    //moduleAddSimulation(core);
 
     return core;
 }

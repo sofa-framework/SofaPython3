@@ -30,12 +30,11 @@ root = Sofa.Node("myroot")
 root.addChild("child1")
 root.addObject(MyController())
 
-s = Sofa.Simulation()
-s.load("toto.py")
-s.init()
-s.dump()
+root = Sofa.Simulation.load("toto.py")
+Sofa.Simulation.init(root)
+Sofa.Simulation.print(root)
 for i in range(0, 10):
         print("step: "+str(i))
-        s.animate(0.1)
+        Sofa.Simulation.animate(root, 0.1)
         
         

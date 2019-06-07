@@ -1,5 +1,6 @@
 #include "Core/Submodule_Core.h"
 #include "Helper/Submodule_Helper.h"
+#include "Simulation/Submodule_Simulation.h"
 
 namespace toto
 {
@@ -14,12 +15,12 @@ PYBIND11_MODULE(Sofa, m)
 {    
     py::module core = addSubmoduleCore(m);
     py::module helper = addSubmoduleHelper(m);
+    py::module simulation = addSubmoduleSimulation(m);
 
     /// Import into the Sofa main package the class from theyr sub-module if they can be instantiated
     m.add_object("Controller", core.attr("Controller"));
     m.add_object("ForceField", core.attr("ForceField"));
     m.add_object("Node", core.attr("Node"));
-    m.add_object("Simulation", core.attr("Simulation"));
 
     m.add_object("msg_info", helper.attr("msg_info"));
     m.add_object("msg_warning", helper.attr("msg_warning"));
@@ -32,7 +33,6 @@ PYBIND11_MODULE(Sofa, m)
     py::module stimpl = py::module::import("__Sofa_Types__");
     st.add_object("RGBAColor", stimpl.attr("RGBAColor"));
     st.add_object("Vec3", stimpl.attr("Vec3"));
-
 }
 
 } ///namespace sofapython3
