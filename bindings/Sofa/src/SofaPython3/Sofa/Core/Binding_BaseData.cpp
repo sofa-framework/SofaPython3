@@ -51,6 +51,12 @@ void moduleAddBaseData(py::module& m)
         std::string prefix = getPathTo(b);
         return prefix+"."+self.getName();
     });
+    data.def("getLink", [](BaseData& self)
+    {
+        Base* b= self.getOwner();
+        std::string prefix = getPathTo(b);
+        return "@"+prefix+"."+self.getName();
+    });
 
     data.def("__str__", [](BaseData* self)
     {

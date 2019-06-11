@@ -263,6 +263,9 @@ void moduleAddNode(py::module &m) {
 
     p.def("getRoot", &Node::getRoot);
     p.def("getPathName", &Node::getPathName);
+    p.def("getLink", [](Node* node) {
+        return ("@"+node->getPathName()).c_str();
+    });
 
     p.def_property_readonly("children", [](Node* node)
     {
