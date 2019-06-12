@@ -48,8 +48,8 @@ extensions = [
 
 import sys
 import os
-sys.path.append(os.getcwd()+"/../../../bindings/Sofa/package")
-sys.path.append(os.getcwd()+"/../../../bindings/SofaRuntime/package")
+#sys.path.append(os.getcwd()+"/../../../bindings/Sofa/package")
+#sys.path.append(os.getcwd()+"/../../../bindings/SofaRuntime/package")
 
 ## Include Python objects as they appear in source files
 ## Default: alphabetically ('alphabetical')
@@ -205,7 +205,7 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
             return MagicMock()
 
-MOCK_MODULES = ['numpy']
+MOCK_MODULES = ['numpy', "Sofa", "SofaRuntime"]
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 
