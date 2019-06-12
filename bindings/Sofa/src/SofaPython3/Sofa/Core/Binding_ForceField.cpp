@@ -100,7 +100,7 @@ void moduleAddForceField(py::module &m) {
               }
 
               py::object cc = py::cast(c);
-              for(auto& kv : kwargs)
+              for(auto kv : kwargs)
               {
                   std::string key = py::cast<std::string>(kv.first);
                   py::object value = py::reinterpret_borrow<py::object>(kv.second);

@@ -132,6 +132,12 @@ void moduleAddBaseData(py::module& m)
         throw py::attribute_error("There is no attribute '"+s+"'");
     });
 
+//    data.def("__mul__", [](py::object self, py::object d){
+//        std::cout << "RETURN VALUE..." << std::endl;
+//        return py::none();
+//        //return toPython(py::cast<BaseData*>(self)).attr("__mul__")(f);
+//    });
+
 }
 
 } /// namespace sofapython3

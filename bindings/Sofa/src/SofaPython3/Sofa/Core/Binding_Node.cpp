@@ -167,29 +167,21 @@ py::object Node_addObject(Node* self, const std::string& type, const py::kwargs&
 }
 
 void moduleAddNode(py::module &m) {
-    py::options options;
-    options.disable_function_signatures();
+    //py::options options;
+    //options.disable_function_signatures();
 
     moduleAddBaseIterator(m);
 
     py::class_<Node, sofa::core::objectmodel::BaseNode,
             sofa::core::objectmodel::Context, Node::SPtr>
             p(m, "Node",
-              R"(Array with associated photographic information.
+              R"(
+              Node of the scene graph
+              ---------------
 
-              ...
-
-              Attributes
-              ----------
-              exposure : float
-                  Exposure in seconds.
-
-              Methods
-              -------
-              colorspace(c='rgb')
-                  Represent the photo in the given colorspace.
-              gamma(n=1.0)
-                  Change the photo's gamma exposure.
+              .. autoclass:: Sofa.Node
+                :members:
+                :undoc-members:
 
               )");
 

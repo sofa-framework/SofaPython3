@@ -25,6 +25,18 @@ pybind11::module addSubmoduleCore(py::module& p)
 {   
     py::module core = p.def_submodule("Core");
 
+    core.doc() = R"doc(
+           Scene components
+           -----------------------
+
+           .. autosummary::
+               Sofa.Core.Controller
+               Sofa.Core.ForceField
+               Sofa.Core.Data
+               Sofa.Core.Node
+               Sofa.Core.BaseObject
+       )doc";
+
     moduleAddDataDict(core);
     moduleAddDataDictIterator(core);
     moduleAddBase(core);

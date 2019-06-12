@@ -82,6 +82,19 @@ pybind11::module addSubmoduleHelper(py::module& p)
 {   
     py::module helper = p.def_submodule("Helper");
 
+    helper.doc() = R"doc(
+           Utility functions
+           -----------------------
+
+           .. autosummary::
+               Sofa.Helper.msg_info
+               Sofa.Helper.msg_warning
+               Sofa.Helper.msg_error
+               Sofa.Helper.msg_deprecated
+               Sofa.Helper.msg_fatal
+
+       )doc";
+
     helper.def("msg_info", [](py::args args) { MESSAGE_DISPATCH(msg_info); },
             R"(Emit an info message from python.
             The 'info' messages are emitted *only* when the object.printLog is

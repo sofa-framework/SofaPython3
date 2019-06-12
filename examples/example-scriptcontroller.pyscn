@@ -1,35 +1,34 @@
 import Sofa
+import numpy as np
 
-class MyController(Sofa.Controller):
+def unsafe_multiply(a, b):
+        if isinstance(b, Sofa.Core.Data):
+                return np.multiply(a, b.value, casting="unsafe")
+        return np.multiply(a, b, casting="unsafe")
+                      
+np.set_numeric_ops(multiply=unsafe_multiply)
+
+class MyController(Sofa.BaseController):
     def __init__(self, *args, **kwargs):
-        Sofa.Controller.__init__(self, *args, *kwargs)
-        
-    def init(self):
-        print("COuCOu")   
-        
+        Sofa.BaseController.__init__(self, *args, *kwargs)
+                
     def onEvent(self, value):
         print("EVEnt "+value)     
-
-    def onAnimateBeginEvent(self, value):
-        print("Animation Begin")         
-
-    def onAnimateEndEvent(self, value):
-        print("Animation End")    
 
 class MyForceField(Sofa.ForceField):
     def __init__(self, *args, **kwargs):
         kwargs["ks"] = kwargs.get("ks", 1.0)
-        kwargs["kd"] = kwargs.get("kd", 0.1)
+        kwargs["kd"] = kwargs.get("kd", 2.0)
         Sofa.ForceField.__init__(self, *args, **kwargs)
                         
     def init(self):
         self.initpos = self.mstate.position.array().copy()
         
     def addForce(self, m, out_force, pos, vel):
-        out_force += ((self.initpos-pos) * self.ks.value)
+        out_force += ((self.initpos-pos) * self.ks)
         
-    def addDForce(self, df, dx, kFactor, bFactor):
-        df -= dx * self.ks.value * kFactor
+    def addDForce(self, out_df, dx, kFactor, bFactor):
+        out_df -= dx * self.kd * kFactor
         
 def RestShapeObject(name="unnamed", position=[]):
         node = Sofa.Node(name)
