@@ -30,6 +30,15 @@ class MyController(Sofa.Controller):
                 print(" Python::onAnimationBeginEvent() at "+str(other))
                 self.iterations+=1
 
+class MyController2(Sofa.Controller):
+    """This is another custom controller
+       it can take arguments as parameters (or can it..?)
+    """
+    def __init__(self, *args, **kw):
+        print ("Simple arguments list: " + str(args))
+        print ("Keyword arguments list: " + str(kw))
+
+
 class Test(unittest.TestCase):
          def test_constructor(self):
                  c = Sofa.Controller()
@@ -41,6 +50,14 @@ class Test(unittest.TestCase):
                  root.addObject(MyController("controller"))
                  root.controller.init()
                  root.controller.reinit()
+
+         def test_constructorOverriddenWithArgs(self):
+             root = Sofa.Node("rootNode")
+             root.addObject(MyController("controller", "value"))
+
+         def test_constructorOverriddenWithKWArgs(self):
+             root = Sofa.Node("rootNode")
+             root.addObject(MyController("controller", an_argument="value2"))
 
          def test_methodOverriding(self):
                  """Test that a custom controller 'MyController' correctly adds attributes when overridden.
