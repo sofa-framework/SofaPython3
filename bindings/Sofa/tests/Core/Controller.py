@@ -9,11 +9,11 @@ class MyController(Sofa.Controller):
            when init is called from Sofa this should call the python init function
         """        
         def __init__(self, *args, **kwargs):
-                ## These are needed (and the normal way to override from a python class)
-                Sofa.Controller.__init__(self, *args, **kwargs)
-                print(" Python::__init__::"+str(self.name))
-                self.inited = 0
-                self.iterations = 0
+            ## These are needed (and the normal way to override from a python class)
+            Sofa.Controller.__init__(self, *args, **kwargs)
+            print(" Python::__init__::"+str(self.name))
+            self.inited = 0
+            self.iterations = 0
 
         def __del__(self):
                 print(" Python::__del__")
@@ -30,14 +30,6 @@ class MyController(Sofa.Controller):
                 print(" Python::onAnimationBeginEvent() at "+str(other))
                 self.iterations+=1
 
-class MyController2(Sofa.Controller):
-    """This is another custom controller
-       it can take arguments as parameters (or can it..?)
-    """
-    def __init__(self, *args, **kw):
-        print ("Simple arguments list: " + str(args))
-        print ("Keyword arguments list: " + str(kw))
-
 
 class Test(unittest.TestCase):
          def test_constructor(self):
@@ -53,11 +45,11 @@ class Test(unittest.TestCase):
 
          def test_constructorOverriddenWithArgs(self):
              root = Sofa.Node("rootNode")
-             root.addObject(MyController("controller", "value"))
+             root.addObject(MyController("controller", "pval1", "pval2", "pval3"))
 
          def test_constructorOverriddenWithKWArgs(self):
              root = Sofa.Node("rootNode")
-             root.addObject(MyController("controller", an_argument="value2"))
+             root.addObject(MyController("controller", kval1="value1", kval2="value2", kval3="value3"))
 
          def test_methodOverriding(self):
                  """Test that a custom controller 'MyController' correctly adds attributes when overridden.

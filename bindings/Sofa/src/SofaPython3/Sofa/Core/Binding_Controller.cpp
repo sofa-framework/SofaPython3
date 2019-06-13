@@ -87,14 +87,17 @@ namespace sofapython3
 
                   if(args.size() != 0)
                   {
-                      if(args.size()==1) c->setName(py::cast<std::string>(args[0]));
-                      else throw py::type_error("Only one un-named arguments can be provided.");
+                      if(args.size()>=1) c->setName(py::cast<std::string>(args[0]));
+                      /// Why? It's not useful for datafield creation, but could totally be used internally,
+                      /// as a std python positional param
+//                      else throw py::type_error("Only one un-named arguments can be provided.");
                   }
 
                   for(auto kv : kwargs)
                   {
                       std::string key = py::cast<std::string>(kv.first);
                       py::object value = py::object(kv.second, true);
+
                       if( key == "name")
                       {
                           if( args.size() != 0 )
@@ -106,7 +109,6 @@ namespace sofapython3
                       }
                       BindingBase::SetAttr(*c, key, value);
                   }
-
                   return c;
               }));
 
