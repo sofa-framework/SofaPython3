@@ -16,6 +16,8 @@ using sofa::simulation::Simulation;
 
 template class pybind11::class_<Simulation, Simulation::SPtr>;
 
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawToolGL.h>
 
 namespace sofapython3
 {
@@ -57,6 +59,18 @@ py::module addSubmoduleSimulation(py::module &m)
     simulation.def("reset", [](Node* n){ sofa::simulation::getSimulation()->reset(n); });
     simulation.def("load", [](const std::string name){ return sofa::simulation::getSimulation()->load(name.c_str());});
     simulation.def("unload", [](Node* n){ sofa::simulation::getSimulation()->unload(n); });
+
+    simulation.def("updateVisual", [](Node* n){ sofa::simulation::getSimulation()->updateVisual(n); });
+    simulation.def("draw", [](Node* n){
+        auto* vparam = sofa::core::visual::VisualParams::defaultInstance();
+        vparam->drawTool() = new sofa::core::visual::DrawToolGL();
+        vparam->setSupported(sofa::core::visual::API_OpenGL);
+        sofa::simulation::getSimulation()->draw(vparam, n);
+    });
+
+    simulation.def("initTextures", [](Node* n){
+        sofa::simulation::getSimulation()->initTextures(n);
+    });
 
     return simulation;
 }
