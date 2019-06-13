@@ -203,9 +203,7 @@ void BindingBase::SetAttr(Base& self, const std::string& s, py::object value)
         return;
     }
 
-    /// Well this should never happen unless there is no __dict__
-    /// @TODO : clean msg
-    throw py::attribute_error(self.name.getValue() + "has no __dict__");
+    throw py::attribute_error(self.name.getValue() + " has no data field nor link named '" + s + "'");
 }
 
 void BindingBase::SetDataFromArray(BaseData* data, const py::array& value)
