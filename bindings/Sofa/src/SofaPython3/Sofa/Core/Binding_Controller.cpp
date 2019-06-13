@@ -60,8 +60,14 @@ namespace sofapython3
         if( py::hasattr(self, name.c_str()) )
         {
             py::object fct = self.attr(name.c_str());
-            py::object ret = fct(name);
-            return;
+            try {
+                /// I didn't find any introspection tool in pybind11 to check
+                /// if an attr is a callable or not. Using try/catch instead
+                py::object ret = fct(name);
+                return;
+            } catch (std::exception& /*e*/) {
+                /// fct is not a method. call the 'onEvent' fallback method instead
+            }
         }
 
         /// Is the fallback method available.
@@ -77,21 +83,13 @@ namespace sofapython3
                 Controller_Trampoline,
                 BaseObject,
                 py_shared_ptr<Controller>> f(m, "Controller",
-                                                   py::dynamic_attr(),
-                                                   py::multiple_inheritance());
+                                             py::dynamic_attr(),
+                                             py::multiple_inheritance());
 
-        f.def(py::init([](py::args& args, py::kwargs& kwargs)
+        f.def(py::init([](py::args& /*args*/, py::kwargs& kwargs)
         {
                   Controller_Trampoline* c = new Controller_Trampoline();
                   c->f_listening.setValue(true);
-
-                  if(args.size() != 0)
-                  {
-                      if(args.size()>=1) c->setName(py::cast<std::string>(args[0]));
-                      /// Why? It's not useful for datafield creation, but could totally be used internally,
-                      /// as a std python positional param
-//                      else throw py::type_error("Only one un-named arguments can be provided.");
-                  }
 
                   for(auto kv : kwargs)
                   {
@@ -99,15 +97,14 @@ namespace sofapython3
                       py::object value = py::object(kv.second, true);
 
                       if( key == "name")
-                      {
-                          if( args.size() != 0 )
-                          {
-                              throw py::type_error("The name is setted twice as a "
-                              "named argument='"+py::cast<std::string>(value)+"' and as a"
-                              "positional argument='"+py::cast<std::string>(args[0])+"'.");
-                          }
+                          c->setName(py::cast<std::string>(kv.second));
+                      try {
+                          BindingBase::SetAttr(*c, key, value);
+                      } catch (py::attribute_error& /*e*/) {
+                          /// kwargs are used to set datafields to their initial values,
+                          /// but they can also be used as simple python attributes, unrelated to SOFA.
+                          /// thus we catch & ignore the py::attribute_error thrown by SetAttr
                       }
-                      BindingBase::SetAttr(*c, key, value);
                   }
                   return c;
               }));

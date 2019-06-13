@@ -203,9 +203,7 @@ void BindingBase::SetAttr(Base& self, const std::string& s, py::object value)
         return;
     }
 
-    /// IMHO (@marques-bruno): this will ALWAYS happen (if not data / link is already exising with name "s")
-    /// since 'self' is not a py::object and thus has no __dict__:
-//    throw py::attribute_error(self.name.getValue() + " has no __dict__");
+    throw py::attribute_error(self.name.getValue() + " has no data field nor link named '" + s + "'");
 }
 
 void BindingBase::SetDataFromArray(BaseData* data, const py::array& value)
