@@ -22,8 +22,8 @@ namespace sofapython3
 
 py::module addSubmoduleSimulation(py::module &m)
 {
-//    if(!sofa::simulation::getSimulation())
-    sofa::simulation::setSimulation(new DAGSimulation());
+    if(!sofa::simulation::getSimulation())
+        sofa::simulation::setSimulation(new DAGSimulation());
 
     py::module simulation = m.def_submodule("Simulation");
 
