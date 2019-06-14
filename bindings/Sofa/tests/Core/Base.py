@@ -26,6 +26,62 @@ class Test(unittest.TestCase):
             self.assertTrue(isinstance(c.getFromData("newdata"), Sofa.Core.Data))
             self.assertTrue(isinstance(c.getFromDict("newdict"), float))
 
+    def test_addNewData_with_type(self):
+        node = Sofa.Node("a_node")
+        obj = node.addObject("MechanicalObject", name="an_object", position=[[0,0,0],[1,1,1],[2,2,2]])
+        # Check PSDEObjectFactory to see available types
+        node.addData(name="myData", value=42, type="int",  help="A simple integer value", group="MyAddedDataGroup")
+        obj.addData(name="myData", value=42, type="int",  help="A simple integer value", group="MyAddedDataGroup")
+
+        self.assertTrue(hasattr(node, "myData"))
+        self.assertEqual(node.myData.value, 42)
+
+        self.assertTrue(hasattr(obj, "myData"))
+        self.assertEqual(obj.myData.value, 42)
+
+    def test_addNewData_from_parent(self):
+        node = Sofa.Node("a_node")
+        obj1 = node.addObject("MechanicalObject", name="an_object", position=[[0,0,0],[1,1,1],[2,2,2]])
+        obj2 = node.addObject("MechanicalObject", name="another_object", position=[[0,0,0],[1,1,1],[2,2,2]])
+
+
+        obj2.addData(name="an_objectName", value="@an_object.name")
+
+        self.assertTrue(hasattr(obj2, "an_objectName"))
+        self.assertEqual(obj2.an_objectName.getParent(), obj1.name)
+        self.assertEqual(obj2.an_objectName.value, "an_object")
+
+        obj1.name = "I_Changed"
+        self.assertEqual(obj2.an_objectName.value, "I_Changed")
+
+        obj2.addData(name="an_objectName2", value=obj1.name)
+
+        self.assertTrue(hasattr(obj2, "an_objectName2"))
+        self.assertEqual(obj2.an_objectName2.getParent(), obj1.name)
+        self.assertEqual(obj2.an_objectName2.value, "I_Changed")
+
+        obj1.name = "I_Changed_Again"
+        self.assertEqual(obj2.an_objectName2.value, "I_Changed_Again")
+
+    def test_addExistingDataAsParentOfNewData(self):
+        ## TODO(@marques-bruno)
+        ## do a test like this:
+        # obj1 = root.createObject('AComposant', aDataField="pouet")
+        # obj2 = root.createobject('AnotherComposant')
+        # obj2.addData(obj1.aDataField)
+        # self.assertTrue(hasattr(obj2, "aDataField"))
+        # self.assertEqual(obj2.an_objectName.getParent(), obj1.aDataField)
+        # self.assertEqual(obj2.an_objectName.value, "pouet")
+
+        ## And another one like this:
+        # aData = createAnOrphanData(name="MyData", value="pouet", type="str")
+        # obj1 = root.createObject('AComposant', aDataField="pouet")
+        # obj1.addData(aData)
+        # self.assertTrue(hasattr(obj1, "aData"))
+        # self.assertEqual(obj2.aData.getOwner(), obj1)
+        # self.assertEqual(aData.getOwner(), obj1)
+        # self.assertEqual(obj2.aData.value, "pouet")
+
 
 def getTestsName():
     suite = unittest.TestLoader().loadTestsFromTestCase(Test)

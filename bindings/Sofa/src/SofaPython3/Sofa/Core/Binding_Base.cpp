@@ -19,6 +19,17 @@ using sofa::helper::WriteOnlyAccessor;
 #include "Binding_BaseData.h"
 #include "Binding_DataContainer.h"
 
+#include <sofa/simulation/Node.h>
+using sofa::simulation::Node;
+
+#include <sofa/core/objectmodel/BaseObject.h>
+using sofa::core::objectmodel::BaseObject;
+#include <sofa/core/objectmodel/BaseNode.h>
+using sofa::core::objectmodel::BaseNode;
+#include <sofa/core/objectmodel/BaseContext.h>
+using sofa::core::objectmodel::BaseContext;
+
+
 namespace sofapython3
 {
 template<typename DataType>
@@ -127,7 +138,7 @@ bool BindingBase::SetData(BaseData* d, py::object value)
 }
 
 
-void BindingBase::SetAttr(py::object self, const std::string& s, py::object value, bool withDict)
+void BindingBase::SetAttr(py::object self, const std::string& s, py::object value)
 {
     Base* self_d = py::cast<Base*>(self);
     BaseData* d = self_d->findData(s);
@@ -144,29 +155,29 @@ void BindingBase::SetAttr(py::object self, const std::string& s, py::object valu
         return;
     }
 
-    if(!withDict)
-    {
-        std::string id="none";
-        if(py::isinstance<py::float_>(value))
-            id = "double";
-        else if(py::isinstance<py::int_>(value))
-            id = "int";
-        else if(py::isinstance<py::str>(value))
-            id = "string";
+//    if(!withDict)
+//    {
+//        std::string id="none";
+//        if(py::isinstance<py::float_>(value))
+//            id = "double";
+//        else if(py::isinstance<py::int_>(value))
+//            id = "int";
+//        else if(py::isinstance<py::str>(value))
+//            id = "string";
 
-        BaseData* data = getFactoryInstance()->createObject(id, sofa::helper::NoArgument());
-        if(data)
-        {
-            data->setName(s);
-            data->setGroup("Custom");
-            data->setDisplayed(true);
-            data->setPersistent(true);
-            self_d->addData(data, s);
-            fromPython(data, value);
+//        BaseData* data = getFactoryInstance()->createObject(id, sofa::helper::NoArgument());
+//        if(data)
+//        {
+//            data->setName(s);
+//            data->setGroup("Custom");
+//            data->setDisplayed(true);
+//            data->setPersistent(true);
+//            self_d->addData(data, s);
+//            fromPython(data, value);
 
-            return;
-        }
-    }
+//            return;
+//        }
+//    }
     /// We are falling back to dynamically adding the objet into the object dict.
     py::dict t = self.attr("__dict__");
     if(!t.is_none())
@@ -355,8 +366,10 @@ void moduleAddDataDict(py::module& m)
                 py::array a = py::array(toBufferInfo(*d));
                 return a;
             }
-            if(nfo.Text())
-                return py::cast(reinterpret_cast<DataAsString*>(d));
+            if(nfo.Text()) {
+//                return py::cast(reinterpret_cast<DataAsString*>(d));
+                return py::cast(d->getValueString());
+            }
             return py::cast(d);
         }
         throw std::invalid_argument(s);
@@ -413,6 +426,38 @@ void moduleAddDataDictIterator(py::module &m)
     });
 }
 
+BaseData* deriveTypeFromParent(BaseData* parentData)
+{
+    BaseData* newData = parentData->getNewInstance();
+    newData->setParent(parentData);
+    newData->update();
+    return newData;
+}
+
+BaseData* deriveTypeFromParent(BaseContext* ctx, const std::string& link)
+{
+    if (!ctx)
+        return nullptr;
+
+    // if data is a link
+    if (link.empty() || link[0] != '@')
+        return nullptr;
+
+    std::string componentPath = link.substr(1, link.find('.') - 1);
+    std::string parentDataName = link.substr(link.find('.') + 1);
+    Base* component;
+    component = ctx->get<BaseObject>(componentPath);
+    if (!component)
+        component = static_cast<sofa::simulation::Node*>(ctx)->getNodeInGraph(componentPath);
+
+    if(!component)
+    {
+        msg_error("SofaPython") << "No object or node with path " << componentPath << " in scene graph.";
+        return nullptr;
+    }
+    BaseData* parentData = component->findData(parentDataName);
+    return deriveTypeFromParent(parentData);
+}
 
 void moduleAddBase(py::module &m)
 {
@@ -431,6 +476,73 @@ void moduleAddBase(py::module &m)
     base.def("getDataFields", &Base::getDataFields, pybind11::return_value_policy::reference);
     base.def("findLink", &Base::findLink, pybind11::return_value_policy::reference);
     base.def("getLinks", &Base::getLinks, pybind11::return_value_policy::reference);
+    base.def("addData", [](Base* self, const std::string& name,
+             py::object value = py::object(), const std::string& help = "",
+             const std::string& group = "", std::string type = "")
+    {
+        BaseData* data;
+        // create the data from the link passed as a string to the object
+        if (type.empty() && py::isinstance<py::str>(value))
+        {
+            if (dynamic_cast<BaseNode*>(self))
+                data = deriveTypeFromParent(dynamic_cast<BaseNode*>(self)->getContext(),
+                                            py::cast<py::str>(value));
+            else
+                data = deriveTypeFromParent(dynamic_cast<BaseObject*>(self)->getContext(),
+                                            py::cast<py::str>(value));
+            if (!data)
+                throw py::type_error("Cannot deduce type from value");
+            self->addData(data, name);
+        }
+        // create the data from another data (use as parent)
+        else if (type.empty() && py::cast<BaseData*>(value))
+        {
+            data = deriveTypeFromParent(py::cast<BaseData*>(value));
+            if (!data)
+                throw py::type_error("Cannot deduce type from value");
+            self->addData(data, name);
+        }
+        // create the data from the type given in `type` and fill it up
+        else
+        {
+            data = getFactoryInstance()->createObject(type, sofa::helper::NoArgument());
+            if (!data)
+            {
+                sofa::helper::vector<std::string> validTypes;
+                getFactoryInstance()->uniqueKeys(std::back_inserter(validTypes));
+                std::string typesString = "[";
+                for (const auto& i : validTypes)
+                    typesString += i + ", ";
+                typesString += "\b\b]";
+
+                throw py::type_error(std::string("Invalid Type string: available types are\n") + typesString);
+            }
+            self->addData(data, name);
+            fromPython(data, value);
+        }
+        data->setName(name);
+        data->setGroup(group.c_str());
+        data->setHelp(help.c_str());
+        data->setDisplayed(true);
+        data->setPersistent(true);
+
+    }, "name"_a, "value"_a = "", "help"_a = "", "group"_a = "", "type"_a = "");
+
+    base.def("addData", [](Base* self, py::object d) {
+        BaseData* data = py::cast<BaseData*>(d);
+        if (!data)
+            throw py::type_error("Argument is not a Data!");
+
+        if (data->getOwner() == nullptr)
+            self->addData(data, data->getName());
+        else
+        {
+            BaseData* newData = data->getNewInstance();
+            newData->setOwner(self);
+            newData->setParent(data);
+            newData->setName(data->getName());
+        }
+    });
 
     base.def("__dir__", [](Base* self)
     {
@@ -459,7 +571,7 @@ void moduleAddBase(py::module &m)
 
     base.def("setToData", [](py::object self, const std::string& s, py::object value)
     {
-        BindingBase::SetAttr(self, s, value, false);
+        BindingBase::SetAttr(self, s, value);
     });
 
     base.def("getFromDict", [](py::object self, const std::string& s) -> py::object
@@ -500,7 +612,7 @@ void moduleAddBase(py::module &m)
             return;
         }
 
-        BindingBase::SetAttr(self,s,value,true);
+        BindingBase::SetAttr(self,s,value);
     });
 }
 
