@@ -60,6 +60,8 @@ py::module addSubmoduleSimulation(py::module &m)
     simulation.def("load", [](const std::string name){ return sofa::simulation::getSimulation()->load(name.c_str());});
     simulation.def("unload", [](Node* n){ sofa::simulation::getSimulation()->unload(n); });
 
+
+
     simulation.def("updateVisual", [](Node* n){ sofa::simulation::getSimulation()->updateVisual(n); });
     simulation.def("draw", [](Node* n){
         auto* vparam = sofa::core::visual::VisualParams::defaultInstance();
@@ -68,9 +70,16 @@ py::module addSubmoduleSimulation(py::module &m)
         sofa::simulation::getSimulation()->draw(vparam, n);
     });
 
-    simulation.def("initTextures", [](Node* n){
+    simulation.def("initTextures", [](Node* n)
+    {
         sofa::simulation::getSimulation()->initTextures(n);
     });
+
+    simulation.def("glewInit", []()
+    {
+        glewInit();
+    });
+
 
     return simulation;
 }
