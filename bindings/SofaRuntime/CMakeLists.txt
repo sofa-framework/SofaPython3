@@ -12,14 +12,17 @@ endif()
 ### Module files
 ####################################################################################################
 set(SOURCE_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Module_SofaRuntime.cpp
-)
-
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/Module_SofaRuntime.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/Timer/Submodule_Timer.cpp
+    )
+set(HEADER_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/Timer/Submodule_Timer.h
+    )
 
 # sofa_add_pybind11_module( TARGET MyModule SOURCES ${SOURCE_FILES} DEPENDS Deps1 Deps2  OUTPUT ${CMAKE_CURRENT_BIN_DIR} NAME python_module_name)
 sofa_add_pybind11_module(
         TARGET PythonModule_SofaRuntime
-        SOURCES  ${SOURCE_FILES}
+        SOURCES  ${SOURCE_FILES} ${HEADER_FILES}
         DEPENDS SofaPython3 SofaSimulationGraph SofaPython3_Sofa
         OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/package/"
         NAME SofaRuntime

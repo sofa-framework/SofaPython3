@@ -36,6 +36,11 @@ using sofapython3::SceneLoaderPY3;
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/CategoryLibrary.h>
 
+#include "Timer/Submodule_Timer.h"
+
+namespace sofapython3
+{
+
 class SofaInitializer
 {
 public:
@@ -61,7 +66,6 @@ static SofaInitializer s;
 PYBIND11_MODULE(SofaRuntime, m) {
 
     py::module timer = addSubmoduleTimer(m);
-
 
 
     // Add the plugin directory to PluginRepository
@@ -144,3 +148,5 @@ PYBIND11_MODULE(SofaRuntime, m) {
                              " Optionally, takes a component name, and return the associated categories");
 
 }
+
+}  // namespace sofapython3
