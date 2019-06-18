@@ -74,7 +74,7 @@ void moduleAddDataDict(py::module& m);
 void moduleAddDataDictIterator(py::module& m);
 void moduleAddBase(py::module& m);
 
-
+bool isProtectedKeyword(const std::string& name);
 
 } /// namespace sofapython3
 

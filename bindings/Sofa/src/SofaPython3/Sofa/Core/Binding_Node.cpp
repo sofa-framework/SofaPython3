@@ -125,6 +125,8 @@ void moduleAddBaseIterator(py::module &m)
 
 py::object Node_addChild(Node* self, const std::string& name, const py::kwargs& kwargs)
 {
+    if (sofapython3::isProtectedKeyword(name))
+        throw py::value_error("addChild: Cannot call addChild with name " + name + ": Protected keyword");
     BaseObjectDescription desc (name.c_str());
     fillBaseObjectdescription(desc,kwargs);
     auto node=simpleapi::createChild(self, desc);
@@ -135,6 +137,12 @@ py::object Node_addChild(Node* self, const std::string& name, const py::kwargs& 
 /// Implement the addObject function.
 py::object Node_addObject(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
+    if (kwargs.contains("name"))
+    {
+        std::string name = py::str(kwargs["name"]);
+        if (sofapython3::isProtectedKeyword(name))
+            throw py::value_error("addObject: Cannot call addObject with name " + name + ": Protected keyword");
+    }
     /// Prepare the description to hold the different python attributes as data field's
     /// arguments then create the object.
     BaseObjectDescription desc {type.c_str(), type.c_str()};

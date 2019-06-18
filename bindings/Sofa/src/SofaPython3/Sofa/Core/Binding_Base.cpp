@@ -155,29 +155,6 @@ void BindingBase::SetAttr(py::object self, const std::string& s, py::object valu
         return;
     }
 
-//    if(!withDict)
-//    {
-//        std::string id="none";
-//        if(py::isinstance<py::float_>(value))
-//            id = "double";
-//        else if(py::isinstance<py::int_>(value))
-//            id = "int";
-//        else if(py::isinstance<py::str>(value))
-//            id = "string";
-
-//        BaseData* data = getFactoryInstance()->createObject(id, sofa::helper::NoArgument());
-//        if(data)
-//        {
-//            data->setName(s);
-//            data->setGroup("Custom");
-//            data->setDisplayed(true);
-//            data->setPersistent(true);
-//            self_d->addData(data, s);
-//            fromPython(data, value);
-
-//            return;
-//        }
-//    }
     /// We are falling back to dynamically adding the objet into the object dict.
     py::dict t = self.attr("__dict__");
     if(!t.is_none())
@@ -452,11 +429,77 @@ BaseData* deriveTypeFromParent(BaseContext* ctx, const std::string& link)
 
     if(!component)
     {
-        msg_error("SofaPython") << "No object or node with path " << componentPath << " in scene graph.";
-        return nullptr;
+        throw py::value_error("SofaPython: No object or node with path " + componentPath + " in scene graph.");
     }
     BaseData* parentData = component->findData(parentDataName);
     return deriveTypeFromParent(parentData);
+}
+
+bool isProtectedKeyword(const std::string& name)
+{
+    if (name == "children" || name == "objects" || name == "parents" ||
+            name == "data" || name == "links")
+    {
+        return true;
+    }
+    return false;
+}
+
+void checkAmbiguousCreation(BaseNode* self, const std::string& name, const std::string& type)
+{
+    if (!self) return;
+
+    if (type != "link")
+        for (const auto& link : self->getLinks())
+            if (link->getName() == name)
+                msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getPathName() << ": Component alread has a link with such name";
+
+    if (type != "data")
+        for (const auto& datafield : self->getDataFields())
+            if (datafield->getName() == name)
+                msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getPathName() << ": Component alread has a data field with such name";
+
+    if (type != "object")
+        for (const auto& o : dynamic_cast<Node*>(self)->object)
+            if (o->getName() == name)
+                msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getPathName() << ": Component alread has an object with such name";
+
+    if (type != "child")
+        for (const auto& child : self->getChildren())
+            if (child->getName() == name)
+                msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getPathName() << ": Component alread has a child node with such name";
+
+}
+
+void checkAmbiguousCreation(BaseObject* self, const std::string& name, const std::string& type)
+{
+    if (!self) return;
+
+    if (type != "link")
+        for (const auto& link : self->getLinks())
+            if (link->getName() == name)
+                msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getPathName() << ": Component alread has a link with such name";
+
+    if (type != "data")
+        for (const auto& datafield : self->getDataFields())
+            if (datafield->getName() == name)
+                msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getPathName() << ": Component alread has a data field with such name";
+}
+
+void checkAmbiguousCreation(Base* self, const std::string& name, const std::string& type)
+{
+    checkAmbiguousCreation(dynamic_cast<BaseNode*>(self), name, type);
+    checkAmbiguousCreation(dynamic_cast<BaseObject*>(self), name, type);
+}
+
+void checkAmbiguousCreation(py::object& py_self, const std::string& name, const std::string& type)
+{
+    Base* self = py::cast<Base*>(py_self);
+    checkAmbiguousCreation(dynamic_cast<BaseNode*>(self), name, type);
+    checkAmbiguousCreation(dynamic_cast<BaseObject*>(self), name, type);
+
+    if (py_self.attr("__dict__").contains(name))
+        msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getName() << ": Component alread has a python attribute with such name in __dict__";
 }
 
 void moduleAddBase(py::module &m)
@@ -476,10 +519,14 @@ void moduleAddBase(py::module &m)
     base.def("getDataFields", &Base::getDataFields, pybind11::return_value_policy::reference);
     base.def("findLink", &Base::findLink, pybind11::return_value_policy::reference);
     base.def("getLinks", &Base::getLinks, pybind11::return_value_policy::reference);
-    base.def("addData", [](Base* self, const std::string& name,
+    base.def("addData", [](py::object py_self, const std::string& name,
              py::object value = py::object(), const std::string& help = "",
              const std::string& group = "", std::string type = "")
     {
+        Base* self = py::cast<Base*>(py_self);
+        if (isProtectedKeyword(name))
+            throw py::value_error("addData: Cannot call addData with name " + name + ": Protected keyword");
+        checkAmbiguousCreation(py_self, name, "data");
         BaseData* data;
         // create the data from the link passed as a string to the object
         if (type.empty() && py::isinstance<py::str>(value))
@@ -564,26 +611,6 @@ void moduleAddBase(py::module &m)
         return py::none();
     });
 
-    base.def("getFromData", [](Base* self, const std::string& s) -> py::object
-    {
-        return BindingBase::GetAttr(self, s, false);
-    });
-
-    base.def("setToData", [](py::object self, const std::string& s, py::object value)
-    {
-        BindingBase::SetAttr(self, s, value);
-    });
-
-    base.def("getFromDict", [](py::object self, const std::string& s) -> py::object
-    {
-        return self.attr("__dict__")[s.c_str()];
-    });
-
-    base.def("setToDict", [](py::object self, const std::string& s, py::object value)
-    {
-        py::dict d = self.attr("__dict__");
-        d[s.c_str()] = value;
-    });
 
     base.def("__getattr__", [](py::object self, const std::string& s) -> py::object
     {
