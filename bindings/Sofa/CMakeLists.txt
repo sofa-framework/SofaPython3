@@ -8,7 +8,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 ####################################################################################################
 ### Module dependencies
 ####################################################################################################
-find_package(SofaPython3 REQUIRED)
+if (NOT TARGET SofaPython3)
+    find_package(SofaPython3 REQUIRED)
+endif()
 
 set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_Base.h
