@@ -57,7 +57,7 @@ Try it: ```python python3 minimalscene.py```
 - Make a full python GUI application (with UI framework like PySide2, pygame) and render an integrated sofa scene in an opengl context [POC]
  
 
-## RoadMap & development history:
+## Development history:
 ### June 19, 2019
 - documentation extraction from .cpp (Thierry)
 - refactoring the modules & SofaRuntime (Jean Nicolas)
@@ -72,5 +72,6 @@ p = root["child1.child2.dofs.position"]      ## Ffast access
 - improve onEvent() method in Controller (Bruno)
 - autodoc & docstring generation on https://sofapython3.readthedocs.io/en/latest/ (Damien)
 
+### June 19, 2019
 
 
