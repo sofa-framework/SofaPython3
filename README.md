@@ -17,23 +17,6 @@ NB: This plugin cannot be build through in-build process when the old SofaPython
 ### Out-of-tree build
 This plugin should compile with out-of-tree builds
 
-
-## Recents developement activity:
-- documentation extraction from .cpp (Thierry)
-- refactoring the modules & SofaRuntime (Jean Nicolas)
-- Data access & code cleaning (Bruno)
-```python3
-c1 = root.addChild("child1")
-c2 = root.addChdil("child2")
-o1 = root.addObject("MechanicalObject", dofs)
-p = root.child1.child2.dofs.position         ## Slow acces to data 
-p = root["child1.child2.dofs.position"]      ## Ffast access
-```
-- improve onEvent() method in Controller (Bruno)
-- autodoc & docstring generation on https://sofapython3.readthedocs.io/en/latest/ (Damien)
-
-
-
 ## Content
 
 ### The Sofa python module:
@@ -73,4 +56,21 @@ Try it: ```python python3 minimalscene.py```
 - Access to Sofa simulation within the MathLab python interpreter [WIP-POC].  
 - Make a full python GUI application (with UI framework like PySide2, pygame) and render an integrated sofa scene in an opengl context [POC]
  
+
+## RoadMap & development history:
+### June 19, 2019
+- documentation extraction from .cpp (Thierry)
+- refactoring the modules & SofaRuntime (Jean Nicolas)
+- Data access & code cleaning (Bruno)
+```python3
+c1 = root.addChild("child1")
+c2 = root.addChdil("child2")
+o1 = root.addObject("MechanicalObject", dofs)
+p = root.child1.child2.dofs.position         ## Slow acces to data 
+p = root["child1.child2.dofs.position"]      ## Ffast access
+```
+- improve onEvent() method in Controller (Bruno)
+- autodoc & docstring generation on https://sofapython3.readthedocs.io/en/latest/ (Damien)
+
+
 
