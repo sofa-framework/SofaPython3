@@ -2,19 +2,19 @@
 
 This project is composed of a Sofa plugin to embed a python interpreter into a Sofa based simulation as well as several python modules that exposes the different c++ components used in Sofa. The binding is designed to be idiomatic python3 API with tight integration for numpy.
 
-## Installation 
+## Installation 
 
-# Requirement Install
+### Requirement Install
 - pybind11 (minimal 2.2.4)
 - cmake (minimal 3.12)
 - developement package for python3 (python3-dev)
 
-# In-tree build
+### In-tree build
 Add this directory path in `CMAKE_EXTERNAL_DIRECTORIES`.
 
 NB: This plugin cannot be build through in-build process when the old SofaPython plugin is activated. To have both SofaPython3 and SofaPython you need to use out-of-tree build. 
 
-# Out-of-tree build
+### Out-of-tree build
 This plugin should compile with out-of-tree builds
 
 ## Content
