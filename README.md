@@ -1,6 +1,6 @@
 # plugin.SofaPython3
 
-This project is composed of a Sofa plugin to embed a python interpreter into a Sofa based simulation as well as several python modules that exposes the different c++ components used in Sofa. The binding is designed to be idiomatic python3 API with tight integration for numpy.
+This project is composed of a Sofa plugin to embed a python interpreter into a Sofa based simulation as well as several python modules that exposes the different c++ components used in Sofa. The binding is designed to be idiomatic python3 API with tight integration for numpy. This project is in a WIP state, please use it only if you are willing to help in the developement. 
 
 ## Installation 
 
@@ -17,7 +17,8 @@ NB: This plugin cannot be build through in-build process when the old SofaPython
 ### Out-of-tree build
 This plugin should compile with out-of-tree builds
 
-## Recents activity:
+
+## Recents developement activity:
 - documentation extraction from .cpp (Thierry)
 - refactoring the modules & SofaRuntime (Jean Nicolas)
 - Data access & code cleaning (Bruno)
@@ -30,6 +31,7 @@ p = root["child1.child2.dofs.position"]      ## Ffast access
 ```
 - improve onEvent() method in Controller (Bruno)
 - autodoc & docstring generation on https://sofapython3.readthedocs.io/en/latest/ (Damien)
+
 
 
 ## Content
