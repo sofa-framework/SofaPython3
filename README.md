@@ -17,6 +17,20 @@ NB: This plugin cannot be build through in-build process when the old SofaPython
 ### Out-of-tree build
 This plugin should compile with out-of-tree builds
 
+## Recents activity:
+- documentation extraction from .cpp (Thierry)
+- refactoring the modules & SofaRuntime (Jean Nicolas)
+- Data access & code cleaning (Bruno)
+```python3
+c1 = root.addChild("child1")
+c2 = root.addChdil("child2")
+o1 = root.addObject("MechanicalObject", dofs)
+p = root.child1.child2.dofs.position         ## Slow acces to data 
+p = root["child1.child2.dofs.position"]      ## Ffast access
+```
+- improve onEvent() method in Controller (Bruno)
+- autodoc & docstring generation on https://sofapython3.readthedocs.io/en/latest/ (Damien)
+
 
 ## Content
 
