@@ -72,6 +72,4 @@ p = root["child1.child2.dofs.position"]      ## Ffast access
 - improve onEvent() method in Controller (Bruno)
 - autodoc & docstring generation on https://sofapython3.readthedocs.io/en/latest/ (Damien)
 
-### June 19, 2019
-
 
