@@ -17,7 +17,8 @@ NB: This plugin cannot be build through in-build process when the old SofaPython
 ### Out-of-tree build
 This plugin should compile with out-of-tree builds
 
-## Content
+
+## Content
 
 ### The Sofa python module:
 Expose the base Sofa object to make a scene. 
