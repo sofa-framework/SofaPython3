@@ -11,35 +11,37 @@ endif()
 ####################################################################################################
 ### Module files
 ####################################################################################################
+set(HEADER_FILES
+)
+
 set(SOURCE_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Module_SofaRuntime.cpp
+    src/SofaPython3/SofaRuntime/Module_SofaRuntime.cpp
 )
 
+set(MODULE_NAME SofaRuntime)
+set(PACKAGE_DIRECTORY  ${SP3_PYTHON_PACKAGES_DIRECTORY}/SofaRuntime)
 
-# sofa_add_pybind11_module( TARGET MyModule SOURCES ${SOURCE_FILES} DEPENDS Deps1 Deps2  OUTPUT ${CMAKE_CURRENT_BIN_DIR} NAME python_module_name)
-sofa_add_pybind11_module(
-        TARGET PythonModule_SofaRuntime
-        SOURCES  ${SOURCE_FILES}
-        DEPENDS SofaPython3 SofaSimulationGraph SofaPython3_Sofa
-        OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/package/"
-        NAME SofaRuntime
+SP3_add_python_package(
+    SOURCE_DIRECTORY
+        ${CMAKE_CURRENT_SOURCE_DIR}/package
+    TARGET_DIRECTORY
+        ${PACKAGE_DIRECTORY}
 )
 
-####################################################################################################
-### Module packaging
-####################################################################################################
-## Python configuration file (build tree), the lib in the source dir (easier while developping .py files)
-file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/SofaRuntime" "${CMAKE_CURRENT_SOURCE_DIR}/package/")
+SP3_add_python_module(
+    TARGET
+        ${PROJECT_NAME}
+    MODULE_NAME
+        ${MODULE_NAME}
+    SOURCES
+        ${SOURCE_FILES}
+        ${HEADER_FILES}
+    DEPENDS
+        SofaCore SofaSimulationGraph SofaPython3 SofaPython3_Sofa
+    DESTINATION
+        ${PACKAGE_DIRECTORY}
+)
 
-## Python configuration file (install tree)
-file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaRuntime-config"
-             "modules/SofaRuntime/python/")
-
-
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaRuntime-config"
-         DESTINATION "etc/sofa/python.d"
-         RENAME "SofaRuntime")
-
-#install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/module/Sofa DESTINATION modules/Sofa/python)
-
-#add_subdirectory(tests)
+#if(SP3_BUILD_TEST)
+#    add_subdirectory(tests)
+#endif()

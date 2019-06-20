@@ -2,38 +2,51 @@ cmake_minimum_required(VERSION 3.1)
 project(PythonModule_SofaTypes)
 
 ####################################################################################################
-### Module dependencies
+### Module files
 ####################################################################################################
-#find_package(PythonLibs 2.7 QUIET)
-#if(NOT PythonLibs_FOUND)
-#    message("-- Cannot build the python module 'SofaPython3', missing the required PythonLibs 2.7 cmake package.")
-#    return()
-#endif()
-
-# This must be done before doing the find_package(pybind11)
-#set(PYBIND11_PYTHON_VERSION 3.6m)
-#set(PYTHON_EXECUTABLE python3)
-
-#include(src/cython/CMakeBuilds.cmake)
-include(src/pybind/CMakeBuilds.cmake)
-
-set(EXAMPLES_FILES
-    # ${CMAKE_CURRENT_SOURCE_DIR}/examples/example1.py
+set(HEADER_FILES
+    #    src/SofaPython3/SofaTypes/Binding_BoundingBox.h
+    #    src/SofaPython3/SofaTypes/Binding_Color.h
+    #    src/SofaPython3/SofaTypes/Binding_Frame.h
+    src/SofaPython3/SofaTypes/Binding_Mat.h
+    src/SofaPython3/SofaTypes/Binding_Quat.h
+    src/SofaPython3/SofaTypes/Binding_Vec.h
     )
 
+set(SOURCE_FILES
+    src/SofaPython3/SofaTypes/Module_SofaTypes.cpp
+    #    src/SofaPython3/SofaTypes/Binding_BoundingBox.cpp
+    #    src/SofaPython3/SofaTypes/Binding_Color.cpp
+    #    src/SofaPython3/SofaTypes/Binding_Frame.cpp
+    src/SofaPython3/SofaTypes/Binding_Mat.cpp
+    src/SofaPython3/SofaTypes/Binding_Quat.cpp
+    src/SofaPython3/SofaTypes/Binding_Vec.cpp
+    )
 
-## Python configuration file (build tree), the lib in the source dir (easier while developping .py files)
-file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/SofaTypes" "${CMAKE_CURRENT_SOURCE_DIR}/package/")
+set(MODULE_NAME SofaTypes)
+set(PACKAGE_DIRECTORY  ${SP3_PYTHON_PACKAGES_DIRECTORY}/SofaTypes)
 
-## Python configuration file (install tree)
-file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaTypes-config"
-             "modules/SofaTypes/python/")
+SP3_add_python_package(
+    SOURCE_DIRECTORY
+        ${CMAKE_CURRENT_SOURCE_DIR}/package
+    TARGET_DIRECTORY
+        ${PACKAGE_DIRECTORY}
+)
 
+SP3_add_python_module(
+    TARGET
+        ${PROJECT_NAME}
+    MODULE_NAME
+        ${MODULE_NAME}
+    SOURCES
+        ${SOURCE_FILES}
+        ${HEADER_FILES}
+    DEPENDS
+        SofaPython3 SofaDefaultType
+    DESTINATION
+        ${PACKAGE_DIRECTORY}
+)
 
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaTypes-config"
-         DESTINATION "etc/sofa/python.d"
-         RENAME "SofaTypes")
-
-#install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/module/Sofa DESTINATION modules/Sofa/python)
-
-add_subdirectory(tests)
+if(SP3_BUILD_TEST)
+    add_subdirectory(tests)
+endif()

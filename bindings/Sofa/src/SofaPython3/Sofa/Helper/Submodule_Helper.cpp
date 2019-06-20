@@ -1,6 +1,7 @@
 
 #include <sofa/helper/logging/Messaging.h>
 #include <SofaPython3/PythonEnvironment.h>
+#include <sofa/core/objectmodel/Base.h>
 #include "Submodule_Helper.h"
 
 namespace sofapython3

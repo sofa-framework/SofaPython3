@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaPython3_Sofa VERSION 1.0)
 
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
 ####################################################################################################
 ### Module dependencies
 ####################################################################################################
@@ -54,38 +50,31 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Module_Sofa.cpp
 )
 
-set(PYTHON_FILES
-    package/__Sofa_Types__/__init__.py
-    package/__Sofa_Types__/RGBAColor.py
-    package/__Sofa_Types__/Vec3.py
-    )
 
+set(MODULE_NAME Sofa)
+set(PACKAGE_DIRECTORY  ${SP3_PYTHON_PACKAGES_DIRECTORY}/Sofa)
 
-sofa_add_pybind11_module(
-             TARGET SofaPython3_Sofa
-             SOURCES  ${SOURCE_FILES} ${HEADER_FILES} ${PYTHON_FILES}
-             DEPENDS SofaCore SofaSimulationGraph SofaPython3 pybind11::module
-             OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/package/"
-             NAME Sofa
-    )
+SP3_add_python_package(
+        SOURCE_DIRECTORY
+            ${CMAKE_CURRENT_SOURCE_DIR}/package
+        TARGET_DIRECTORY
+            ${PACKAGE_DIRECTORY}
+)
 
-target_include_directories(SofaPython3_Sofa PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/src")
-target_include_directories(SofaPython3_Sofa PUBLIC "$<INSTALL_INTERFACE:include>")
+SP3_add_python_module(
+    TARGET
+        ${PROJECT_NAME}
+    MODULE_NAME
+        ${MODULE_NAME}
+    SOURCES
+        ${SOURCE_FILES}
+        ${HEADER_FILES}
+    DEPENDS
+        SofaCore SofaSimulationGraph SofaPython3
+    DESTINATION
+        ${PACKAGE_DIRECTORY}
+)
 
-## Python configuration file (build tree), the lib in the source dir (easier while developping .py files)
-file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/Sofa" "${CMAKE_CURRENT_SOURCE_DIR}/package/")
-
-## Python configuration file (install tree)
-file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/installed-Sofa-config"
-             "modules/Sofa/python/")
-
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-Sofa-config"
-         DESTINATION "etc/sofa/python.d"
-         RENAME "Sofa")
-
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.cmake.in"
-               "${CMAKE_BINARY_DIR}/cmake/${PROJECT_NAME}Config.cmake")
-
-if(SOFA_BUILD_TESTS)
+if(SP3_BUILD_TEST)
     add_subdirectory(tests)
 endif()
