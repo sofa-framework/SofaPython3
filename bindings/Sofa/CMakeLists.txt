@@ -27,6 +27,9 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/DataHelper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Submodule_Core.h
 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Types/Submodule_Types.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Types/Binding_BoundingBox.h
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Helper/Submodule_Helper.h
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Simulation/Submodule_Simulation.h
@@ -46,6 +49,9 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/DataCache.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/DataHelper.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Submodule_Core.cpp
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Types/Submodule_Types.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Types/Binding_BoundingBox.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Helper/Submodule_Helper.cpp
 

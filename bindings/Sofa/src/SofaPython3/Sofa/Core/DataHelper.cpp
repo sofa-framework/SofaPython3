@@ -10,6 +10,15 @@
 namespace sofapython3
 {
 
+BindingDataFactory* getBindingDataFactoryInstance(){
+    static BindingDataFactory* s_localfactory = nullptr ;
+    if (s_localfactory == nullptr)
+    {
+        s_localfactory = new BindingDataFactory();
+    }
+    return s_localfactory ;
+}
+
 PythonTrampoline::~PythonTrampoline(){}
 void PythonTrampoline::setInstance(py::object s)
 {
@@ -278,7 +287,7 @@ py::object convertToPython(BaseData* d)
             }
             list.append(list1);
         }
-        return list;
+        return std::move(list);
     }
 
     if(nfo.Integer())
@@ -287,6 +296,13 @@ py::object convertToPython(BaseData* d)
         return py::cast(d->getValueString());
     if(nfo.Scalar())
         return py::cast(nfo.getScalarValue(d->getValueVoidPtr(), 0));
+
+    std::cout << nfo.name() << " is not a container nor a scalar." << std::endl;
+
+    if (getBindingDataFactoryInstance()->createObject("BoundingBox", d))
+        return py::cast(getBindingDataFactoryInstance()->createObject("BoundingBox", d));
+
+    std::cout << nfo.name() << " No such type in the BindingDataFactory. returning string" << std::endl;
 
     return py::cast(d->getValueString());
 }
@@ -334,10 +350,12 @@ py::array getPythonArrayFor(BaseData* d)
 /// If possible the data is exposed as a numpy.array to minmize copy and data conversion
 py::object toPython(BaseData* d, bool writeable)
 {
-    const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
 
+    const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
+    std::cout << "Name: " << d->getName() << std::endl;
+    std::cout << "type: " << nfo.name() << std::endl;
     /// In case the data is a container with a simple layout
-    /// we can expose the field as a numpy.array
+    /// we can expose the field as a numpy.array (no copy)
     if(nfo.Container() && nfo.SimpleLayout())
     {
         if(!writeable)
@@ -348,7 +366,8 @@ py::object toPython(BaseData* d, bool writeable)
         return getPythonArrayFor(d);
     }
 
-    /// If this is not the case we returns converted datas
+    std::cout << nfo.name() << " is not a container with a simple layout" << std::endl;
+    /// If this is not the case we return the converted datas (copy)
     return convertToPython(d);
 }
 

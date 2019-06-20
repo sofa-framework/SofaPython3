@@ -1,11 +1,7 @@
 #include "Core/Submodule_Core.h"
 #include "Helper/Submodule_Helper.h"
 #include "Simulation/Submodule_Simulation.h"
-
-namespace toto
-{
-
-}
+#include "Types/Submodule_Types.h"
 
 namespace sofapython3
 {
@@ -54,6 +50,7 @@ PYBIND11_MODULE(Sofa, m)
     py::module core = addSubmoduleCore(m);
     py::module helper = addSubmoduleHelper(m);
     py::module simulation = addSubmoduleSimulation(m);
+    py::module types = addSubmoduleTypes(m);
 
     /// Import into the Sofa main package the class from theyr sub-module if they can be instantiated
     m.add_object("Controller", core.attr("Controller"));
