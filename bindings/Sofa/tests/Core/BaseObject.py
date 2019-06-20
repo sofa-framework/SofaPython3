@@ -15,7 +15,7 @@ class Test(unittest.TestCase):
         def test_createObjectWithInvalidParamName(self):
                 ## This one should raise an error because of 'v' should rise a type error.
                 root = Sofa.Node("rootNode")
-                self.assertRaises(TypeError, root.createObject, "MechanicalObject", name="tt", v=[[0,0,0],[1,1,1],[2,2,2]])
+                self.assertRaises(TypeError, root.addObject, "MechanicalObject", name="tt", v=[[0,0,0],[1,1,1],[2,2,2]])
 
         def test_createObjectWithInvalidParamValue(self):
                 ## This one should raise an error because of 'position=xx' should rise a type error.

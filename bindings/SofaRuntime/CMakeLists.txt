@@ -11,12 +11,14 @@ endif()
 ####################################################################################################
 ### Module files
 ####################################################################################################
-set(HEADER_FILES
-)
-
 set(SOURCE_FILES
-    src/SofaPython3/SofaRuntime/Module_SofaRuntime.cpp
-)
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/Module_SofaRuntime.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/Timer/Submodule_Timer.cpp
+    )
+set(HEADER_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/Timer/Submodule_Timer.h
+    )
+
 
 set(MODULE_NAME SofaRuntime)
 set(PACKAGE_DIRECTORY  ${SP3_PYTHON_PACKAGES_DIRECTORY}/SofaRuntime)

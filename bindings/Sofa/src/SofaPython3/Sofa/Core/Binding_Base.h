@@ -32,7 +32,7 @@ class BindingBase
 public:
     static void SetAttr(Base& self, const std::string& s, py::object value);
 
-    static void SetAttr(py::object self, const std::string& s, pybind11::object value, bool withDict=false);
+    static void SetAttr(py::object self, const std::string& s, pybind11::object value);
     static py::object GetAttr(Base* self, const std::string& s, bool doThrowException=true);
     static void SetAttrFromArray(py::object self, const std::string& s, const pybind11::array &value);
 
@@ -74,7 +74,7 @@ void moduleAddDataDict(py::module& m);
 void moduleAddDataDictIterator(py::module& m);
 void moduleAddBase(py::module& m);
 
-
+bool isProtectedKeyword(const std::string& name);
 
 } /// namespace sofapython3
 
