@@ -53,7 +53,9 @@ find_package(SofaFramework REQUIRED)
 find_package(SofaSimulation REQUIRED)
 find_package(SofaGeneral REQUIRED)
 
-set(PYBIND11_PYTHON_VERSION 3.6)
+find_package(Python 3.6 COMPONENTS Interpreter Development REQUIRED)
+set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
+set(PYBIND11_PYTHON_VERSION ${Python_VERSION})
 find_package(pybind11 QUIET)
 if(NOT pybind11_FOUND)#
   message("-- Cannot build the python module 'Sofa', missing the pybind software to generate the bindings.")
