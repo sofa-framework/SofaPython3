@@ -6,6 +6,8 @@
 #include <pybind11/numpy.h>
 
 #include <sofa/core/sptr.h>
+#include <sofa/helper/Factory.h>
+#include <sofa/core/objectmodel/Data.h>
 
 ////////////////////////// FORWARD DECLARATION ///////////////////////////
 namespace sofa {
@@ -32,6 +34,44 @@ using sofa::core::objectmodel::BaseData;
 using sofa::core::objectmodel::BaseNode;
 using sofa::core::objectmodel::BaseObject;
 using sofa::defaulttype::AbstractTypeInfo;
+
+
+template<typename DataType>
+class TypeCreator : public sofa::helper::BaseCreator<sofa::core::objectmodel::BaseData*, sofa::core::objectmodel::BaseData*, sofa::core::objectmodel::BaseData*>
+{
+public:
+    virtual DataType createInstance(
+            sofa::core::objectmodel::BaseData* data) override
+    {
+        return dynamic_cast<DataType>(data);
+    }
+    virtual const std::type_info& type() override { return typeid(sofa::Data<DataType>);}
+};
+
+class BindingDataFactory : public sofa::helper::Factory< std::string, sofa::core::objectmodel::BaseData*, sofa::core::objectmodel::BaseData*, sofa::core::objectmodel::BaseData*>
+{
+public:
+    ObjectPtr createObject(std::string key, sofa::core::objectmodel::BaseData* arg) {
+        ObjectPtr object;
+        Creator* creator;
+        typename std::multimap<std::string, Creator*>::iterator it = registry.lower_bound(key);
+        typename std::multimap<std::string, Creator*>::iterator end = registry.upper_bound(key);
+        while (it != end)
+        {
+            creator = (*it).second;
+            object = creator->createInstance(arg);
+            if (object != nullptr)
+            {
+                return object;
+            }
+            ++it;
+        }
+        return nullptr;
+    }
+
+};
+
+BindingDataFactory* getBindingDataFactoryInstance();
 
 class PythonTrampoline
 {
@@ -105,7 +145,8 @@ private:
     T* ptr;
 };
 
-}
+}  // namespace sofapython3
+
 
 #endif /// SOFAPYTHON3_SOFA_CORE_DATAHELPER_H
 

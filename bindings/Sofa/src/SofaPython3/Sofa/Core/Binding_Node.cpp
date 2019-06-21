@@ -28,6 +28,9 @@ using sofapython3::PythonDownCast;
 
 using sofa::core::objectmodel::BaseObjectDescription;
 
+#include <queue>
+#include <sofa/core/objectmodel/Link.h>
+
 namespace sofapython3
 {
 
@@ -128,6 +131,8 @@ void moduleAddBaseIterator(py::module &m)
 
 py::object Node_addChild(Node* self, const std::string& name, const py::kwargs& kwargs)
 {
+    if (sofapython3::isProtectedKeyword(name))
+        throw py::value_error("addChild: Cannot call addChild with name " + name + ": Protected keyword");
     BaseObjectDescription desc (name.c_str());
     fillBaseObjectdescription(desc,kwargs);
     auto node=simpleapi::createChild(self, desc);
@@ -138,6 +143,12 @@ py::object Node_addChild(Node* self, const std::string& name, const py::kwargs& 
 /// Implement the addObject function.
 py::object Node_addObject(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
+    if (kwargs.contains("name"))
+    {
+        std::string name = py::str(kwargs["name"]);
+        if (sofapython3::isProtectedKeyword(name))
+            throw py::value_error("addObject: Cannot call addObject with name " + name + ": Protected keyword");
+    }
     /// Prepare the description to hold the different python attributes as data field's
     /// arguments then create the object.
     BaseObjectDescription desc {type.c_str(), type.c_str()};
@@ -167,6 +178,42 @@ py::object Node_addObject(Node* self, const std::string& type, const py::kwargs&
     }
 
     return py::cast(object);
+}
+
+
+py::object getItem(Node& self, std::list<std::string>& path)
+{
+    if (path.empty())
+        return py::cast(self);
+
+    if (path.size() > 2)
+    {
+        Node* child = self.getChild(path.front());
+        path.pop_front();
+        return getItem(*child, path);
+    }
+    if (path.empty())
+        return py::cast(self);
+    Node* child = self.getChild(path.front());
+    BaseObject* obj = self.getObject(path.front());
+    BaseData* data = self.findData(path.front());
+    if (child)
+    {
+        path.pop_front();
+        if (path.empty())
+            return py::cast(child);
+        return getItem(*child, path);
+    }
+    if (obj)
+    {
+        path.pop_front();
+        if (path.empty())
+            return py::cast(obj);
+        return sofapython3::getItem(*obj, path.back());
+    }
+    if (data)
+        return py::cast(data);
+    return py::cast(self); // should never get there
 }
 
 void moduleAddNode(py::module &m) {
@@ -307,6 +354,44 @@ p.def("__getattr__", [](Node& self, const std::string& name) -> py::object
 
     /// Search in the data & link lists
     return BindingBase::GetAttr(&self, name, true);
+});
+
+
+
+/// gets an item using its path (path is dot-separated, relative to the object
+/// it's called upon & ONLY DESCENDING (no ../):
+///
+/// This method lifts most ambiguities when accessing a node, object or data
+/// from a path relative to self.
+///
+/// examples:
+/// ------------
+///
+/// root["node1.node2.object1.value"]
+///
+/// In the example above, node1 and node2 can be inferred as being nodes without performing any checks.
+/// object1 can be a node or an object, but cannot be a datafield nor a link
+/// value can be a node or an object (if object1 is a node), or must be a data (if object1 is an object)
+p.def("__getitem__", [](Node& self, const std::string& s) -> py::object
+{
+    std::list<std::string> stringlist;
+    std::istringstream iss(s);
+    std::string token;
+    while (std::getline(iss, token, '.')) {
+        if (!token.empty())
+            stringlist.push_back(token);
+    }
+
+    // perform here the syntax checks over the string to parse
+
+    // special case allowed: root[".attr1"]
+    if (stringlist.front().empty()) stringlist.pop_front();
+    for (const auto& string : stringlist)
+        if (string.empty())
+            throw py::value_error("Invalid path provided");
+    // finally search for the object at the given path:
+    return getItem(self, stringlist);
+
 });
 
 

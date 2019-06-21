@@ -13,7 +13,10 @@ template class pybind11::class_<sofa::core::objectmodel::BaseObject,
 
 namespace sofapython3
 {
+
     using sofa::core::objectmodel::BaseObject;
+    py::object getItem(const BaseObject& self, const std::string& path);
     void moduleAddBaseObject(py::module &m);
 } /// namespace sofapython
+
 

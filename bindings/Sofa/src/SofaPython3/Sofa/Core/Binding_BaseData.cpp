@@ -30,6 +30,7 @@ void moduleAddBaseData(py::module& m)
     data.def("getHelp", &BaseData::getHelp);
     data.def("unset", &BaseData::unset);
     data.def("getOwner", &BaseData::getOwner);
+    data.def("getParent", &BaseData::getParent);
     data.def("typeName", [](BaseData& data){ return data.getValueTypeInfo()->name(); });
 
     // TODO: Implementation should look like: https://github.com/sofa-framework/sofa/issues/767
@@ -116,7 +117,7 @@ void moduleAddBaseData(py::module& m)
             return;
         }
 
-        BindingBase::SetAttr(py::cast(selfdata->getOwner()),s,value,true);
+        BindingBase::SetAttr(py::cast(selfdata->getOwner()),s,value);
     });
 
     data.def("__getattr__", [](py::object self, const std::string& s) -> py::object

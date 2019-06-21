@@ -8,7 +8,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 ####################################################################################################
 ### Module dependencies
 ####################################################################################################
-find_package(SofaPython3 REQUIRED)
+if (NOT TARGET SofaPython3)
+    find_package(SofaPython3 REQUIRED)
+endif()
 
 set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_Base.h
@@ -26,6 +28,9 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/DataHelper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/PythonDownCast.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Submodule_Core.h
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Types/Submodule_Types.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Types/Binding_BoundingBox.h
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Helper/Submodule_Helper.h
 
@@ -48,6 +53,9 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/DataHelper.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/PythonDownCast.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Submodule_Core.cpp
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Types/Submodule_Types.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Types/Binding_BoundingBox.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Helper/Submodule_Helper.cpp
 

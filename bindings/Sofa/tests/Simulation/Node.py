@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*
 import Sofa
 import unittest
+import Sofa.Types
 
 class Test(unittest.TestCase):
         def test_SimulationConstructor(self):
@@ -108,6 +109,33 @@ class Test(unittest.TestCase):
                 self.assertTrue("name" in root.__data__)
                 self.assertFalse(hasattr(root.__data__, "invalidEntry"))
                 self.assertTrue(isinstance(root.__data__, Sofa.Core.DataDict))
+
+        def test_getItem(self):
+            root = Sofa.Node("root")
+            node1 = root.addChild('node1')
+            object1 = root.addObject("MechanicalObject", name="object1")
+            node2 = node1.addChild('node2')
+            object2 = node2.addObject("MechanicalObject", name="object2")
+
+            # All those are allowed syntaxes:
+            self.assertEqual(root[""].name, root.name)
+            self.assertEqual(root["."].name, root.name)
+            self.assertEqual(root[".name"], root.name)
+            self.assertEqual(root["name"], root.name)
+
+            self.assertEqual(object1["name"], object1.name)
+            self.assertEqual(object1[".name"], object1.name)
+            self.assertEqual(object1["."].name, object1.name)
+            self.assertEqual(object1[""].name, object1.name)
+
+            self.assertEqual(root["node1"].name, node1.name)
+            self.assertEqual(root["object1"], object1)
+            self.assertEqual(root["node1.node2"].name, node2.name)
+            self.assertEqual(root["name"], root.name)
+            self.assertEqual(root["node1.node2.object2.name"], object2.name)
+
+            self.assertEqual(root["node1.node2.object2.name"], root.node1.node2.object2.name)
+
 
 def getTestsName():
     suite = unittest.TestLoader().loadTestsFromTestCase(Test)

@@ -16,6 +16,8 @@ using  sofa::core::objectmodel::BaseNode;
 #include "Binding_BaseData.h"
 #include "Binding_DataContainer.h"
 
+#include <sofa/defaulttype/BoundingBox.h>
+
 //namespace pybind11 { namespace detail {
 //    template <> struct type_caster<sofa::helper::types::RGBAColor> {
 //    public:

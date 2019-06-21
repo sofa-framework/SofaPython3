@@ -25,11 +25,12 @@ class MyController(Sofa.Controller):
                 print(" Python::init() at "+str(self))
                 self.inited += 1
 
-        def onEvent(self, event):
-                print(" Handling event " + str(event))
+        def onEvent(self, kwargs):
+                print(" Handling event " + str(kwargs))
 
-        def onAnimateBeginEvent(self, other):
-                print(" Python::onAnimationBeginEvent() ("+str(other) + ")")
+        def onAnimateBeginEvent(self, kwargs):
+                print(" Python::onAnimationBeginEvent() ("+str(kwargs) + ")")
+                print(kwargs["dt"])
                 self.iterations+=1
 
 

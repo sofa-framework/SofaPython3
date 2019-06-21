@@ -6,6 +6,7 @@ if(PLUGIN_SOFAPYTHON)
 endif()
 find_package(SofaFramework REQUIRED)
 find_package(SofaSimulation REQUIRED)
+find_package(SofaGeneral REQUIRED)
 
 find_package(Python 3.6 COMPONENTS Interpreter Development REQUIRED)
 set(PYTHON_LIBRARIES ${Python3_LIBRARY_RELEASE})
@@ -58,7 +59,7 @@ endif(SOFA_BUILD_TESTS)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAPYTHON3")
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore SofaSimulationGraph)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore SofaSimulationGraph SofaComponentGeneral)
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)
