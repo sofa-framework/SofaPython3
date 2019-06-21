@@ -352,8 +352,6 @@ py::object toPython(BaseData* d, bool writeable)
 {
 
     const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
-    std::cout << "Name: " << d->getName() << std::endl;
-    std::cout << "type: " << nfo.name() << std::endl;
     /// In case the data is a container with a simple layout
     /// we can expose the field as a numpy.array (no copy)
     if(nfo.Container() && nfo.SimpleLayout())
