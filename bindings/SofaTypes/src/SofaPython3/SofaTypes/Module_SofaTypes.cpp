@@ -3,9 +3,9 @@
 //#include <src/pybind/Binding_BoundingBox.h>
 //#include <src/pybind/Binding_Color.h>
 //#include <src/pybind/Binding_Frame.h>
-#include <src/pybind/Binding_Mat.h>
-#include <src/pybind/Binding_Quat.h>
-#include <src/pybind/Binding_Vec.h>
+#include <SofaPython3/SofaTypes/Binding_Mat.h>
+#include <SofaPython3/SofaTypes/Binding_Quat.h>
+#include <SofaPython3/SofaTypes/Binding_Vec.h>
 
 /// The first parameter must be named the same as the module file to load.
 PYBIND11_MODULE(SofaTypes, m) {
