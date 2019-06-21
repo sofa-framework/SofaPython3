@@ -7,6 +7,7 @@
 #include "Binding_Base.h"
 #include "Binding_BaseObject.h"
 #include "Binding_BaseData.h"
+#include "Binding_BaseCamera.h"
 #include "Binding_DataContainer.h"
 #include "Binding_ForceField.h"
 #include "Binding_Controller.h"
@@ -40,6 +41,7 @@ pybind11::module addSubmoduleCore(py::module& p)
     moduleAddDataDict(core);
     moduleAddDataDictIterator(core);
     moduleAddBase(core);
+    moduleAddBaseCamera(core);
     moduleAddBaseData(core);
     moduleAddWriteAccessor(core);
     moduleAddDataContainer(core);

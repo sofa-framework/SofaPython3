@@ -23,6 +23,9 @@ using sofa::core::ExecParams;
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
+#include <SofaPython3/Sofa/Core/PythonDownCast.h>
+using sofapython3::PythonDownCast;
+
 using sofa::core::objectmodel::BaseObjectDescription;
 
 #include <queue>
@@ -219,6 +222,12 @@ void moduleAddNode(py::module &m) {
 
     moduleAddBaseIterator(m);
 
+    PythonDownCast::registerType<sofa::simulation::graph::DAGNode>(
+                [](sofa::core::objectmodel::Base* object)
+    {
+        return py::cast(object->toBaseNode());
+    });
+
     py::class_<Node, sofa::core::objectmodel::BaseNode,
             sofa::core::objectmodel::Context, Node::SPtr>
             p(m, "Node",
@@ -227,8 +236,8 @@ void moduleAddNode(py::module &m) {
               ---------------
 
               .. autoclass:: Sofa.Node
-                :members:
-                :undoc-members:
+              :members:
+              :undoc-members:
 
               )");
 
@@ -249,7 +258,7 @@ void moduleAddNode(py::module &m) {
     p.def("addObject", [](Node& self, BaseObject* object) -> py::object
     {
         if(self.addObject(object))
-            return py::cast(object);
+            return PythonDownCast::toPython(object);
         return py::none();
     });
     p.def("createObject",
@@ -336,12 +345,12 @@ p.def("__getattr__", [](Node& self, const std::string& name) -> py::object
     /// Search in the object lists
     BaseObject *object = self.getObject(name);
     if (object)
-        return py::cast(object);
+        return PythonDownCast::toPython(object);
 
     /// Search in the child lists
     Node *child = self.getChild(name);
     if (child)
-        return py::cast(child);
+        return PythonDownCast::toPython(child);
 
     /// Search in the data & link lists
     return BindingBase::GetAttr(&self, name, true);

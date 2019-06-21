@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*
 import Sofa
 import unittest
+import Sofa.Types
 
 class Test(unittest.TestCase):
         def test_SimulationConstructor(self):
@@ -134,6 +135,7 @@ class Test(unittest.TestCase):
             self.assertEqual(root["node1.node2.object2.name"], object2.name)
 
             self.assertEqual(root["node1.node2.object2.name"], root.node1.node2.object2.name)
+
 
 def getTestsName():
     suite = unittest.TestLoader().loadTestsFromTestCase(Test)

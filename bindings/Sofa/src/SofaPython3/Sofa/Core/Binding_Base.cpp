@@ -15,6 +15,8 @@ using sofa::core::objectmodel::BaseLink;
 #include <sofa/helper/accessor.h>
 using sofa::helper::WriteOnlyAccessor;
 
+#include "PythonDownCast.h"
+
 #include "Binding_Base.h"
 #include "Binding_BaseData.h"
 #include "Binding_DataContainer.h"
@@ -379,6 +381,13 @@ void moduleAddDataDict(py::module& m)
 
 void moduleAddDataDictIterator(py::module &m)
 {
+    PythonDownCast::registerType<sofa::core::objectmodel::Base>(
+                [](sofa::core::objectmodel::Base* object)
+    {
+        return py::cast(object);
+    });
+
+
     py::class_<DataDictIterator> ddi(m, "DataDictIterator");
     ddi.def("__iter__", [](DataDictIterator& d)
     {

@@ -3,6 +3,7 @@
 #include <SofaPython3/PythonEnvironment.h>
 #include <sofa/core/objectmodel/Base.h>
 #include "Submodule_Helper.h"
+#include "Binding_Vector.h"
 
 namespace sofapython3
 {
@@ -118,6 +119,8 @@ pybind11::module addSubmoduleHelper(py::module& p)
     helper.def("msg_error", [](py::args args) { MESSAGE_DISPATCH(msg_error); });
     helper.def("msg_deprecated", [](py::args args) { MESSAGE_DISPATCH(msg_deprecated); });
     helper.def("msg_fatal", [](py::args args) { MESSAGE_DISPATCH(msg_fatal); });
+
+    moduleAddVector(helper);
 
     return helper;
 }
