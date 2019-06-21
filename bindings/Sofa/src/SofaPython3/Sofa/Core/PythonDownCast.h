@@ -41,17 +41,10 @@ namespace sofapython3
         template<class T>
         static void registerType(downCastingFunction fct)
         {
-            std::cout << "REGISTERING " << ((void*)T::GetClass()) ;
-            std::cout << "->" << (T::GetClass()->className) << std::endl;
             s_downcastingFct[T::GetClass()->className] = fct;
         }
 
         static std::map<std::string, downCastingFunction>::iterator searchLowestCastAvailable(const sofa::core::objectmodel::BaseClass* metaclass);
-
-//        static void registerType(const std::string& name, downCastingFunction fct)
-//        {
-//            s_downcastingFct[name] = fct;
-//        }
 
     private:
         static std::map<std::string, downCastingFunction> s_downcastingFct;

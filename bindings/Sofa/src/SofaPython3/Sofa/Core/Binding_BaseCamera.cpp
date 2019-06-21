@@ -21,6 +21,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - damien.marchal@univ-lille.fr
 ********************************************************************/
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 #include <pybind11/detail/init.h>
 
 #include "Binding_Base.h"
@@ -44,7 +45,17 @@ void moduleAddBaseCamera(py::module &m) {
           }), ":rtype: Sofa.Core.BaseCamera");
 
     c.def("getProjectionMatrix", [](BaseCamera* self){
-        std::cout << "GetProjection Matrix...." << std::endl;
+        static std::vector<double> m {16};
+        m.resize(16);
+        self->getProjectionMatrix(m.data());
+        return m;
+    });
+
+    c.def("getModelViewMatrix", [](BaseCamera* self){
+        static std::vector<double> m {16};
+        m.resize(16);
+        self->getModelViewMatrix(m.data());
+        return m;
     });
 
     PythonDownCast::registerType<BaseCamera>([](sofa::core::objectmodel::Base* object)
