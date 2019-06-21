@@ -1,6 +1,4 @@
-
-#ifndef PYTHONMODULE_SOFA_BINDING_BASEOBJECT_H
-#define PYTHONMODULE_SOFA_BINDING_BASEOBJECT_H
+#pragma once
 
 #include <pybind11/pybind11.h>
 
@@ -15,9 +13,7 @@ template class pybind11::class_<sofa::core::objectmodel::BaseObject,
 
 namespace sofapython3
 {
-using sofa::core::objectmodel::BaseObject;
-
-void moduleAddBaseObject(py::module &m);
+    using sofa::core::objectmodel::BaseObject;
+    void moduleAddBaseObject(py::module &m);
 } /// namespace sofapython
 
-#endif /// PYTHONMODULE_SOFA_BINDING_BASEOBJECT_H
