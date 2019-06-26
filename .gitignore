@@ -4,5 +4,4 @@
 .*#
 __pycache__/
 *.pyc
-bindings/Sofa/package/
-bindings/SofaRuntime/package/
+*.so
