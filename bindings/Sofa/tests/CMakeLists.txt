@@ -4,14 +4,15 @@ project(PythonModule_Sofa_test)
 ####################################################################################################
 ### Module dependencies
 ####################################################################################################
-find_package(SofaPython3 QUIET)
-if(NOT SofaPython3_FOUND)
+if (NOT TARGET SofaPython3)
+  find_package(SofaPython3 QUIET)
+  if(NOT SofaPython3_FOUND)
     message("-- PythonModule_Sofa_test is disabled because 'SofaPython3' is missing or not activated.")
     return()
+  endif()
 endif()
 
 message("-- PythonModule_Sofa_test is enabled.")
-
 
 ####################################################################################################
 ### Building
@@ -37,6 +38,8 @@ set(PYTHON_FILES
     benchmark.py
     dataaccess.py
     )
+
+find_package(SofaGTestMain REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaPython3 SofaPython3_Sofa)

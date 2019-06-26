@@ -87,6 +87,7 @@ SP3_add_python_module(
         ${PACKAGE_DIRECTORY}
 )
 
+
 if(SP3_BUILD_TEST)
     add_subdirectory(tests)
 endif()
