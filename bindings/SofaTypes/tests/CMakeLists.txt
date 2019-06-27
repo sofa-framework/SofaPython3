@@ -21,8 +21,6 @@ set(SOURCE_FILES
 )
 
 set(PYTHON_FILES
-    pyfiles/quaternion_test.py
-    pyfiles/matrix_test.py
     pyfiles/vector_test.py
     )
 
