@@ -50,8 +50,9 @@ def RestShapeObject(impl, name="unnamed", position=[]):
 class Test(unittest.TestCase):
     def test_animation(self):
         node = Sofa.Node("TestAnimation")
-        node.addObject("OglLineAxis")
+        node.addObject("RequiredPlugin", name="SofaOpenglVisual")
         node.addObject("RequiredPlugin", name="SofaSparseSolver")
+        node.addObject("OglLineAxis")
         node.addObject("DefaultAnimationLoop", name="loop")
         node.addObject("EulerImplicit")
         node.addObject("CGLinearSolver", tolerance=1e-12, threshold=1e-12)
