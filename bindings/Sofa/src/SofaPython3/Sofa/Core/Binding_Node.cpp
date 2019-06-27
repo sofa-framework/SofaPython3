@@ -225,7 +225,7 @@ void moduleAddNode(py::module &m) {
     PythonDownCast::registerType<sofa::simulation::graph::DAGNode>(
                 [](sofa::core::objectmodel::Base* object)
     {
-        return py::cast(object->toBaseNode());
+        return py::cast(static_cast<Node*>(object->toBaseNode()));
     });
 
     py::class_<Node, sofa::core::objectmodel::BaseNode,
