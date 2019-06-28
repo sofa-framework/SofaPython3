@@ -48,8 +48,9 @@ extensions = [
 
 import sys
 import os
-#sys.path.append(os.getcwd()+"/../../../bindings/Sofa/package")
-#sys.path.append(os.getcwd()+"/../../../bindings/SofaRuntime/package")
+#sys.path.append("/home/dmarchal/projects/DEFROST/dev/sofa2/builds/release/lib/site-packages/")
+sys.path.append(os.getcwd()+"/../../../stubs2")
+print(sys.path)
 
 ## Include Python objects as they appear in source files
 ## Default: alphabetically ('alphabetical')
