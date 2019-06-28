@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.11)
 project(SofaPython3 VERSION 1.0)
 
 # Detect if SofaPython3 is a subproject of another project (eg. when compiled within Sofa)
