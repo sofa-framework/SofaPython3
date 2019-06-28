@@ -21,8 +21,8 @@
                Sofa.Simulation.load
                Sofa.Simulation.unload
        """
-import Sofa.Simulation
 from typing import *
+from array import array
 from typing import Iterable as iterable
 from typing import Iterator as iterator
 from numpy import float64

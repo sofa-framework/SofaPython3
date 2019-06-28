@@ -49,7 +49,7 @@ extensions = [
 import sys
 import os
 #sys.path.append("/home/dmarchal/projects/DEFROST/dev/sofa2/builds/release/lib/site-packages/")
-sys.path.append(os.getcwd()+"/../../../stubs2")
+sys.path.append(os.getcwd()+"/../../sphinx-stubs")
 print(sys.path)
 
 ## Include Python objects as they appear in source files

@@ -8,8 +8,8 @@
                ...
 
        """
-import Sofa.Types
 from typing import *
+from array import array
 from typing import Iterable as iterable
 from typing import Iterator as iterator
 from numpy import float64
@@ -17,24 +17,25 @@ _Shape = Tuple[int, ...]
 __all__  = [
 "BoundingBox"
 ]
+class BoundingBox():...
 class BoundingBox():
-    def getCenter(self) -> 'list': 
+    def getCenter(self) -> list: 
         """
 returns the center of the bbox
 """
-    def getMax(self) -> 'list': 
+    def getMax(self) -> list: 
         """
 Returns a list (by copy) of the max bbox position
 """
-    def getMin(self) -> 'list': 
+    def getMin(self) -> list: 
         """
 Returns a list (by copy) of the min bbox position
 """
-    def setMax(self, arg0: list) -> 'None': 
+    def setMax(self, arg0: list) -> None: 
         """
 sets the max bbox position from a python list
 """
-    def setMin(self, arg0: list) -> 'None': 
+    def setMin(self, arg0: list) -> None: 
         """
 sets the min bbox position from a python list
 """
