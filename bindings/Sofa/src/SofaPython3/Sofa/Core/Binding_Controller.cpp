@@ -50,26 +50,22 @@ namespace sofapython3
     class Controller_Trampoline : public Controller, public PythonTrampoline
     {
     public:
-        Controller_Trampoline()
-        {
-        }
+        Controller_Trampoline() = default;
 
-        ~Controller_Trampoline() override
-        {
-        }
+        ~Controller_Trampoline() override = default;
 
-        virtual std::string getClassName() const override
+        std::string getClassName() const override
         {
             return pyobject->ob_type->tp_name;
         }
 
-        virtual void init() override ;
-        virtual void reinit() override ;
-        virtual void handleEvent(Event* event) override ;
+        void init() override ;
+        void reinit() override ;
+        void handleEvent(Event* event) override ;
 
     private:
         void callScriptMethod(const py::object& self, Event* event,
-                              std::string methodName);
+                              const std::string & methodName);
         void initEventDict(std::vector<std::function<py::object(Event*)> >&);
         static std::vector<std::function<py::object(Event*)> > s_getEventDict;
         static bool s_isDictCreated;
@@ -99,14 +95,14 @@ namespace sofapython3
         /// to get the event's uid
         Event* e = new AnimateBeginEvent(.0);
         eventDict[e->getEventTypeIndex()] = [] (Event* event) -> py::object {
-            AnimateBeginEvent* evt = dynamic_cast<AnimateBeginEvent*>(event);
+            auto evt = dynamic_cast<AnimateBeginEvent*>(event);
             return py::dict("type"_a=evt->getClassName(),
                             "isHandled"_a=evt->isHandled(),
                             "dt"_a=evt->getDt());
         };
         e = new AnimateEndEvent(.0);
         eventDict[e->getEventTypeIndex()] = [] (Event* event) -> py::object {
-            AnimateEndEvent* evt = dynamic_cast<AnimateEndEvent*>(event);
+            auto evt = dynamic_cast<AnimateEndEvent*>(event);
             return py::dict("type"_a=evt->getClassName(),
                             "isHandled"_a=evt->isHandled(),
                             "dt"_a=evt->getDt());
@@ -114,14 +110,14 @@ namespace sofapython3
 
         e = new KeypressedEvent('\0');
         eventDict[e->getEventTypeIndex()] = [] (Event* event) -> py::object {
-            KeypressedEvent* evt = dynamic_cast<KeypressedEvent*>(event);
+            auto evt = dynamic_cast<KeypressedEvent*>(event);
             return py::dict("type"_a=evt->getClassName(),
                             "isHandled"_a=evt->isHandled(),
                             "key"_a=evt->getKey());
         };
         e = new KeyreleasedEvent('\0');
         eventDict[e->getEventTypeIndex()] = [] (Event* event) -> py::object {
-            KeyreleasedEvent* evt = dynamic_cast<KeyreleasedEvent*>(event);
+            auto evt = dynamic_cast<KeyreleasedEvent*>(event);
             return py::dict("type"_a=evt->getClassName(),
                             "isHandled"_a=evt->isHandled(),
                             "key"_a=evt->getKey());
@@ -129,7 +125,7 @@ namespace sofapython3
 
         e = new MouseEvent(MouseEvent::State::Move);
         eventDict[e->getEventTypeIndex()] = [] (Event* event) -> py::object {
-            MouseEvent* evt = dynamic_cast<MouseEvent*>(event);
+            auto evt = dynamic_cast<MouseEvent*>(event);
 
             return py::dict("type"_a=evt->getClassName(),
                             "isHandled"_a=evt->isHandled(),
@@ -141,7 +137,7 @@ namespace sofapython3
 
         e = new ScriptEvent(nullptr, "");
         eventDict[e->getEventTypeIndex()] = [] (Event* event) -> py::object {
-            ScriptEvent* evt = dynamic_cast<ScriptEvent*>(event);
+            auto evt = dynamic_cast<ScriptEvent*>(event);
             return py::dict("type"_a=evt->getClassName(),
                             "isHandled"_a=evt->isHandled(),
                             "sender"_a=py::cast(evt->getSender()),
@@ -154,7 +150,7 @@ namespace sofapython3
     /// If a method named "methodName" exists in the python controller,
     /// methodName is called, with the Event's dict as argument
     void Controller_Trampoline::callScriptMethod(
-                const py::object& self, Event* event, std::string methodName)
+                const py::object& self, Event* event, const std::string & methodName)
     {
         if( py::hasattr(self, methodName.c_str()) )
         {
@@ -210,13 +206,13 @@ namespace sofapython3
 
         f.def(py::init([](py::args& /*args*/, py::kwargs& kwargs)
         {
-                  Controller_Trampoline* c = new Controller_Trampoline();
+                  auto c = new Controller_Trampoline();
                   c->f_listening.setValue(true);
 
                   for(auto kv : kwargs)
                   {
                       std::string key = py::cast<std::string>(kv.first);
-                      py::object value = py::object(kv.second, true);
+                      py::object value = py::reinterpret_borrow<py::object>(kv.second);
 
                       if( key == "name")
                           c->setName(py::cast<std::string>(kv.second));
