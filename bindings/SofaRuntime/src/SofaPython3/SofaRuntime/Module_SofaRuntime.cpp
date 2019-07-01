@@ -33,6 +33,12 @@ using sofapython3::SceneLoaderPY3;
 #include <SofaPython3/Sofa/Core/Binding_Node.h>
 #include <SofaPython3/Sofa/Core/Binding_Simulation.h>
 
+#include "Timer/Submodule_Timer.h"
+#include "Input/Submodule_Input.h"
+
+namespace sofapython3
+{
+
 class SofaInitializer
 {
 public:
@@ -96,5 +102,8 @@ PYBIND11_MODULE(SofaRuntime, m) {
         return simpleapi::importPlugin(name);
     });
 
+    addSubmoduleInput(m);
+    addSubmoduleTimer(m);
+}
 
 }
