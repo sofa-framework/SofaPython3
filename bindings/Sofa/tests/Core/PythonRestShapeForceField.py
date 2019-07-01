@@ -2,11 +2,11 @@ import unittest
 import Sofa
 import numpy as np
 
-class MyForceField(Sofa.ForceField):
+class MyForceField(Sofa.Core.ForceField):
     def __init__(self, *args, **kwargs):
         kwargs["ks"] = kwargs.get("ks", 1.0)
         kwargs["kd"] = kwargs.get("kd", 0.1)
-        Sofa.ForceField.__init__(self, *args, **kwargs)
+        Sofa.Core.ForceField.__init__(self, *args, **kwargs)
                         
     def init(self):
         self.initpos = self.mstate.position.array().copy()
@@ -23,7 +23,7 @@ class CreateObject(object):
                 self.kwargs = kwargs
 
 def RestShapeObject(impl, name="unnamed", position=[]):
-        node = Sofa.Node(name)
+        node = Sofa.Core.Node(name)
         c = node.addObject("MechanicalObject", name="mechanical", position=position)
         c.showObject = True
         c.drawMode = 1
@@ -53,7 +53,7 @@ def createScene(node):
 ####################################################################################################
 class Test(unittest.TestCase):
     def test_example(self):
-            createScene(Sofa.Node("root"))
+            createScene(Sofa.Core.Node("root"))
 
 def getTestsName():
     suite = unittest.TestLoader().loadTestsFromTestCase(Test)
