@@ -2,12 +2,34 @@
            Scene components
            -----------------------
 
+           Core components:
+
            .. autosummary::
-               Sofa.Core.Controller
-               Sofa.Core.ForceField
+               :toctree: _autosummary/_autosummary
+
                Sofa.Core.Data
                Sofa.Core.Node
                Sofa.Core.BaseObject
+               Sofa.Core.Camera
+
+           Overridable components:
+
+           .. autosummary::
+               :toctree: _autosummary/_autosummary
+
+               Sofa.Core.Controller
+               Sofa.Core.ForceField
+
+
+           Utilitary classe:
+
+           .. autosummary::
+               :toctree: _autosummary/_autosummary
+
+               Sofa.Core.DataDict
+               Sofa.Core.DataDictIterator
+               Sofa.Core.DataContainer
+               Sofa.Core.WriteAccessor
        """
 from typing import *
 from array import array
@@ -66,10 +88,10 @@ class Base():
     def getLinks(self) -> object: ...
     def getName(self) -> str: ...
     @overload
-    def setName(self, arg0: str, arg1: int) -> None: 
+    def setName(self, arg0: str) -> None: 
         pass
     @overload
-    def setName(self, arg0: str) -> None: ...
+    def setName(self, arg0: str, arg1: int) -> None: ...
     pass
 class BaseCamera():
     def __init__(self, arg0: object) -> None: 
@@ -95,10 +117,10 @@ class BaseContext(Base):
     def getLinks(self) -> object: ...
     def getName(self) -> str: ...
     @overload
-    def setName(self, arg0: str, arg1: int) -> None: 
+    def setName(self, arg0: str) -> None: 
         pass
     @overload
-    def setName(self, arg0: str) -> None: ...
+    def setName(self, arg0: str, arg1: int) -> None: ...
     pass
 class BaseNode(Base):
     def __getattr__(self, arg0: str) -> object: ...
@@ -116,10 +138,10 @@ class BaseNode(Base):
     def getLinks(self) -> object: ...
     def getName(self) -> str: ...
     @overload
-    def setName(self, arg0: str, arg1: int) -> None: 
+    def setName(self, arg0: str) -> None: 
         pass
     @overload
-    def setName(self, arg0: str) -> None: ...
+    def setName(self, arg0: str, arg1: int) -> None: ...
     pass
 class BaseObject(Base):
     def __getattr__(self, arg0: str) -> object: ...
@@ -142,10 +164,10 @@ class BaseObject(Base):
     def init(self) -> None: ...
     def reinit(self) -> None: ...
     @overload
-    def setName(self, arg0: str, arg1: int) -> None: 
+    def setName(self, arg0: str) -> None: 
         pass
     @overload
-    def setName(self, arg0: str) -> None: ...
+    def setName(self, arg0: str, arg1: int) -> None: ...
     pass
 class Context(BaseContext, Base):
     def __getattr__(self, arg0: str) -> object: ...
@@ -163,10 +185,10 @@ class Context(BaseContext, Base):
     def getLinks(self) -> object: ...
     def getName(self) -> str: ...
     @overload
-    def setName(self, arg0: str, arg1: int) -> None: 
+    def setName(self, arg0: str) -> None: 
         pass
     @overload
-    def setName(self, arg0: str) -> None: ...
+    def setName(self, arg0: str, arg1: int) -> None: ...
     pass
 class Controller(BaseObject, Base):
     def __getattr__(self, arg0: str) -> object: ...
@@ -190,10 +212,10 @@ class Controller(BaseObject, Base):
     def init(self) -> None: ...
     def reinit(self) -> None: ...
     @overload
-    def setName(self, arg0: str, arg1: int) -> None: 
+    def setName(self, arg0: str) -> None: 
         pass
     @overload
-    def setName(self, arg0: str) -> None: ...
+    def setName(self, arg0: str, arg1: int) -> None: ...
     pass
 class Data():
     def __getattr__(self, arg0: str) -> object: ...
@@ -230,10 +252,10 @@ class DataContainer(Data):
     def __repr__(self) -> str: ...
     def __setattr__(self, arg0: str, arg1: object) -> None: ...
     @overload
-    def __setitem__(self, arg0: tuple, arg1: object) -> object: 
+    def __setitem__(self, arg0: int, arg1: object) -> object: 
         pass
     @overload
-    def __setitem__(self, arg0: int, arg1: object) -> object: ...
+    def __setitem__(self, arg0: tuple, arg1: object) -> object: ...
     @overload
     def __setitem__(self, arg0: slice, arg1: object) -> object: ...
     def __str__(self) -> str: ...
@@ -252,10 +274,10 @@ class DataContainer(Data):
     def typeName(self) -> str: ...
     def unset(self, arg0: object) -> None: ...
     @overload
-    def writeable(self) -> object: 
+    def writeable(self, arg0: object) -> object: 
         pass
     @overload
-    def writeable(self, arg0: object) -> object: ...
+    def writeable(self) -> object: ...
     @overload
     def writeableArray(self, arg0: object) -> object: 
         pass
@@ -273,10 +295,10 @@ class DataDict():
                            print("Data name :"+k+" value:" +str(v)))
                            """
     @overload
-    def __getitem__(self, arg0: int) -> object: 
+    def __getitem__(self, arg0: str) -> object: 
         pass
     @overload
-    def __getitem__(self, arg0: str) -> object: ...
+    def __getitem__(self, arg0: int) -> object: ...
     def __iter__(self) -> object: ...
     def __len__(self) -> int: ...
     def __setitem__(self, arg0: str, arg1: object) -> float: ...
@@ -310,10 +332,10 @@ class ForceField(BaseObject, Base):
     def init(self) -> None: ...
     def reinit(self) -> None: ...
     @overload
-    def setName(self, arg0: str, arg1: int) -> None: 
+    def setName(self, arg0: str) -> None: 
         pass
     @overload
-    def setName(self, arg0: str) -> None: ...
+    def setName(self, arg0: str, arg1: int) -> None: ...
     pass
 class Node(BaseNode, Context, BaseContext, Base):
     """
@@ -328,18 +350,18 @@ class Node(BaseNode, Context, BaseContext, Base):
     def __getattr__(self, arg0: str) -> object: ...
     def __getitem__(self, arg0: str) -> object: ...
     @overload
-    def __init__(self) -> None: 
+    def __init__(self, name: str) -> None: 
         pass
     @overload
-    def __init__(self, name: str) -> None: ...
+    def __init__(self) -> None: ...
     def __old_getChild(self, arg0: int) -> object: ...
     def __old_getChildren(self) -> list: ...
     def __setattr__(self, arg0: str, arg1: object) -> None: ...
     @overload
-    def addChild(self, arg0: str, **kwargs) -> object: 
+    def addChild(self, arg0: Node) -> Node: 
         pass
     @overload
-    def addChild(self, arg0: Node) -> Node: ...
+    def addChild(self, arg0: str, **kwargs) -> object: ...
     @overload
     def addData(self, name: str, value: object, help: object, group: object, type: object) -> None: 
         pass
@@ -365,15 +387,15 @@ class Node(BaseNode, Context, BaseContext, Base):
     def getRoot(self) -> BaseNode: ...
     def init(self) -> None: ...
     @overload
-    def removeChild(self, arg0: Node) -> None: 
+    def removeChild(self, arg0: str) -> object: 
         pass
     @overload
-    def removeChild(self, arg0: str) -> object: ...
+    def removeChild(self, arg0: Node) -> None: ...
     @overload
-    def setName(self, arg0: str, arg1: int) -> None: 
+    def setName(self, arg0: str) -> None: 
         pass
     @overload
-    def setName(self, arg0: str) -> None: ...
+    def setName(self, arg0: str, arg1: int) -> None: ...
     @property
     def children(self) -> NodeIterator:
         """

@@ -1,3 +1,18 @@
+"""
+              SofaRuntime
+              -----------------------
+
+              Example of use:
+                .. code-block:: python
+
+                   import SofaRuntime
+                    SofaRuntime.importPlugin("MechanicalObject"")
+
+                .. automethod::
+                  :toctree: _autosummary
+
+                  SofaRuntime.importPlugin
+             """
 from typing import *
 from array import array
 from typing import Iterable as iterable

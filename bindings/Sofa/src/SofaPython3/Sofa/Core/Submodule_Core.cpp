@@ -30,12 +30,34 @@ pybind11::module addSubmoduleCore(py::module& p)
            Scene components
            -----------------------
 
+           Core components:
+
            .. autosummary::
-               Sofa.Core.Controller
-               Sofa.Core.ForceField
+               :toctree: _autosummary/_autosummary
+
                Sofa.Core.Data
                Sofa.Core.Node
                Sofa.Core.BaseObject
+               Sofa.Core.Camera
+
+           Overridable components:
+
+           .. autosummary::
+               :toctree: _autosummary/_autosummary
+
+               Sofa.Core.Controller
+               Sofa.Core.ForceField
+
+
+           Utilitary classe:
+
+           .. autosummary::
+               :toctree: _autosummary/_autosummary
+
+               Sofa.Core.DataDict
+               Sofa.Core.DataDictIterator
+               Sofa.Core.DataContainer
+               Sofa.Core.WriteAccessor
        )doc";
 
     moduleAddDataDict(core);

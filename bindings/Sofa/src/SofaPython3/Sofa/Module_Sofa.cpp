@@ -10,7 +10,7 @@ namespace sofapython3
 PYBIND11_MODULE(Sofa, m)
 {
     m.doc() = R"doc(
-              Sofa binding
+              Sofa
               -----------------------
 
               Example of use:
