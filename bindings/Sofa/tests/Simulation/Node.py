@@ -5,31 +5,32 @@ import Sofa.Types
 
 class Test(unittest.TestCase):
         def test_SimulationConstructor(self):
-            root = Sofa.Node("rootNode")
+            root = Sofa.Core.Node("rootNode")
             self.assertEqual(root.name.value, "rootNode")
 
         def test_Constructor(self):
-                root = Sofa.Node("rootNode")                               
+                root = Sofa.Core.Node("rootNode")
                 self.assertEqual(root.name.value, "rootNode")
 
         def test_GetAttr(self):
-                root = Sofa.Node("rootNode")                               
-                c = root.createChild("child1")
+                root = Sofa.Core.Node("rootNode")
+                c = root.addChild("child1")
                 self.assertTrue(c is not None)
                 self.assertTrue(root.child1 is not None)
                 
-                o = c.createObject("MechanicalObject", name="mechanical")
+                o = c.addObject("MechanicalObject", name="mechanical")
                 self.assertTrue(o is not None)
                 self.assertTrue(root.child1.mechanical is not None)
 
         def test_init(self):
-                root = Sofa.Node("rootNode")
+                root = Sofa.Core.Node("rootNode")
                 c = root.createChild("child1")
                 c.createObject("MechanicalObject", position=[0.0,1.0,2.0]*100)
                 root.init()
+                self.assertTrue( c.position.size() = 100*3)
 
         def test_createObjectInvalid(self):
-                root = Sofa.Node("rootNode")
+                root = Sofa.Core.Node("rootNode")
                 c = root.addChild("child1")
                 def d():
                     c.addObject([1.0,0.0,0.0])
@@ -42,19 +43,19 @@ class Test(unittest.TestCase):
                 root.init()
 
         def test_createChild(self):                
-                root = Sofa.Node("rootNode")                               
+                root = Sofa.Core.Node("rootNode")
                 root.createChild("child1")
                 self.assertTrue(hasattr(root,"child1"))
                 
         def test_addChild(self):                
-                root = Sofa.Node("rootNode")                               
-                root.addChild(Sofa.Node("child1"))
+                root = Sofa.Core.Node("rootNode")
+                root.addChild(Sofa.Core.Node("child1"))
                 self.assertTrue(hasattr(root,"child1"))
 
         def test_removeChild(self):                
-                root = Sofa.Node("rootNode")                               
-                c = root.addChild(Sofa.Node("child1"))
-                c2 = root.addChild(Sofa.Node("child2"))
+                root = Sofa.Core.Node("rootNode")
+                c = root.addChild(Sofa.Core.Node("child1"))
+                c2 = root.addChild(Sofa.Core.Node("child2"))
                 self.assertEqual(len(root.children), 2)
                 self.assertTrue(hasattr(root,"child1"))
                 self.assertTrue(hasattr(root,"child2"))
@@ -67,14 +68,14 @@ class Test(unittest.TestCase):
                 self.assertEqual(len(root.children), 0)
 
         def test_createObjectWithParam(self):
-                root = Sofa.Node("rootNode")
+                root = Sofa.Core.Node("rootNode")
                 root.createObject("MechanicalObject", name="mechanical", position=[[0,0,0],[1,1,1],[2,2,2]])
                         
         def test_children_property(self):                
-                root = Sofa.Node("rootNode")                               
-                c1 = root.addChild(Sofa.Node("child1"))
+                root = Sofa.Core.Node("rootNode")
+                c1 = root.addChild(Sofa.Core.Node("child1"))
                 self.assertEqual(len(root.children), 1)
-                c2 = root.addChild(Sofa.Node("child2"))
+                c2 = root.addChild(Sofa.Core.Node("child2"))
                 self.assertEqual(len(root.children), 2) 
 
                 self.assertEqual(root.children.at(0).name, c1.name)
@@ -85,17 +86,17 @@ class Test(unittest.TestCase):
 
 
         def test_parents_property(self):                
-                root = Sofa.Node("rootNode")                               
-                c1 = root.addChild(Sofa.Node("child1"))
-                c2 = root.addChild(Sofa.Node("child2"))
-                d = c1.addChild(Sofa.Node("subchild"))
-                d = c2.addChild(Sofa.Node("subchild"))
+                root = Sofa.Core.Node("rootNode")
+                c1 = root.addChild(Sofa.Core.Node("child1"))
+                c2 = root.addChild(Sofa.Core.Node("child2"))
+                d = c1.addChild(Sofa.Core.Node("subchild"))
+                d = c2.addChild(Sofa.Core.Node("subchild"))
                 self.assertEqual(len(d.parents), 1)
                 c1.addChild(d)
                 self.assertEqual(len(d.parents), 2)
 
         def test_objects_property(self):
-                root = Sofa.Node("rootNode")
+                root = Sofa.Core.Node("rootNode")
                 root.createObject("MechanicalObject", name="name1")
                 root.createObject("MechanicalObject", name="name2")
                 self.assertEqual(len(root.objects), 2)
@@ -103,7 +104,7 @@ class Test(unittest.TestCase):
                 self.assertEqual(len(root.objects), 3)
 
         def test_data_property(self):
-                root = Sofa.Node("rootNode")
+                root = Sofa.Core.Node("rootNode")
                 self.assertTrue(hasattr(root, "__data__"))
                 self.assertGreater(len(root.__data__), 0)
                 self.assertTrue("name" in root.__data__)
@@ -111,7 +112,7 @@ class Test(unittest.TestCase):
                 self.assertTrue(isinstance(root.__data__, Sofa.Core.DataDict))
 
         def test_getItem(self):
-            root = Sofa.Node("root")
+            root = Sofa.Core.Node("root")
             node1 = root.addChild('node1')
             object1 = root.addObject("MechanicalObject", name="object1")
             node2 = node1.addChild('node2')

@@ -14,9 +14,12 @@ endif()
 set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/Module_SofaRuntime.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/Timer/Submodule_Timer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/Input/Submodule_Input.cpp
     )
 set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/Timer/Submodule_Timer.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/Input/Submodule_Input.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/Input/Submodule_Input_doc.h
     )
 
 
@@ -44,6 +47,6 @@ SP3_add_python_module(
         ${PACKAGE_DIRECTORY}
 )
 
-#if(SP3_BUILD_TEST)
-#    add_subdirectory(tests)
-#endif()
+if(SP3_BUILD_TEST)
+    add_subdirectory(tests)
+endif()

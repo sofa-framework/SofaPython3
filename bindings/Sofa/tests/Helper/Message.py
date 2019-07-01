@@ -11,8 +11,8 @@ class Test(unittest.TestCase):
             f("Simple message")
             f("Emitter", "Simple message")
             f("Simple message with attached source info", "sourcefile.py", 10)
-            f(Sofa.Node("node"), "Simple message to an object")
-            f(Sofa.Node("node"), "Simple message to an object with attached source info", "sourcefile.py", 10)
+            f(Sofa.Core.Node("node"), "Simple message to an object")
+            f(Sofa..Core.Node("node"), "Simple message to an object with attached source info", "sourcefile.py", 10)
 
             
 def runTests():
