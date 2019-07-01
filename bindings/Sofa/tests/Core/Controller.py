@@ -4,7 +4,7 @@ import unittest
 import gc
 import Sofa
 
-class MyController(Sofa.Controller):
+class MyController(Sofa.Core.Controller):
         """This is my custom controller
            when init is called from Sofa this should call the python init function
         """        
@@ -13,7 +13,7 @@ class MyController(Sofa.Controller):
                              when a non-callable holds the name of an event"
         def __init__(self, *args, **kwargs):
             ## These are needed (and the normal way to override from a python class)
-            Sofa.Controller.__init__(self, *args, **kwargs)
+            Sofa.Core.Controller.__init__(self, *args, **kwargs)
             print(" Python::__init__::"+str(self.name))
             self.inited = 0
             self.iterations = 0
@@ -36,22 +36,22 @@ class MyController(Sofa.Controller):
 
 class Test(unittest.TestCase):
          def test_constructor(self):
-                 c = Sofa.Controller()
+                 c = Sofa.Core.Controller()
                  c.init()
                  c.reinit()
 
          def test_constructorOverriden(self):
-                 root = Sofa.Node("rootNode")
+                 root = Sofa.Core.Node("rootNode")
                  root.addObject(MyController(name="controller"))
                  root.controller.init()
                  root.controller.reinit()
 
          def test_constructorOverriddenWithArgs(self):
-             root = Sofa.Node("rootNode")
+             root = Sofa.Core.Node("rootNode")
              root.addObject(MyController("controller", "pval1", "pval2", "pval3"))
 
          def test_constructorOverriddenWithKWArgs(self):
-             root = Sofa.Node("rootNode")
+             root = Sofa.Core.Node("rootNode")
              root.addObject(MyController("controller", kval1="value1", kval2="value2", kval3="value3"))
 
          def test_methodOverriding(self):
@@ -69,7 +69,7 @@ class Test(unittest.TestCase):
 
          def test_events(self):
             """Test the event system."""
-            node = Sofa.Node("root")
+            node = Sofa.Core.Node("root")
             node.addObject("DefaultAnimationLoop", name="loop")
             controller = node.addObject( MyController() )
 
@@ -89,7 +89,7 @@ class Test(unittest.TestCase):
                     the python part when go to/from sofa without having the sofa side
                     holding a reference to the python object.
                  """
-                 node = Sofa.Node("root")
+                 node = Sofa.Core.Node("root")
                  node.addObject( MyController(name="controller") )
                  node.init()
 

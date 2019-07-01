@@ -6,7 +6,7 @@ import unittest
 
 class Test(unittest.TestCase):
     def test_data_property(self):
-        root = Sofa.Node("rootNode")
+        root = Sofa.Core.Node("rootNode")
         c = root.createObject("MechanicalObject", name="t", position=[
                               [0, 0, 0], [1, 1, 1], [2, 2, 2]])
         self.assertTrue(hasattr(c, "__data__"))
@@ -17,7 +17,7 @@ class Test(unittest.TestCase):
         self.assertTrue(isinstance(c.__data__, Sofa.Core.DataDict))
 
     def test_addNewData_with_type(self):
-        node = Sofa.Node("a_node")
+        node = Sofa.Core.Node("a_node")
         obj = node.addObject("MechanicalObject", name="an_object", position=[
                              [0, 0, 0], [1, 1, 1], [2, 2, 2]])
         # Check PSDEObjectFactory to see available types
@@ -33,13 +33,13 @@ class Test(unittest.TestCase):
         self.assertEqual(obj.myData.value, 42)
 
     def test_addKeywordProtected(self):
-        node = Sofa.Node("a_node")
+        node = Sofa.Core.Node("a_node")
         self.assertRaises(ValueError, node.addObject, "MechanicalObject", name="children", position=[[0,0,0],[1,1,1],[2,2,2]])
         self.assertRaises(ValueError, node.addChild, "parents")
         self.assertRaises(ValueError, node.addData, name="links", type="int", value=42)
 
     def test_addNewData_from_parent(self):
-        node = Sofa.Node("a_node")
+        node = Sofa.Core.Node("a_node")
         obj1 = node.addObject("MechanicalObject", name="an_object", position=[
                               [0, 0, 0], [1, 1, 1], [2, 2, 2]])
         obj2 = node.addObject("MechanicalObject", name="another_object", position=[
