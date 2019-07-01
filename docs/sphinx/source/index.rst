@@ -1,4 +1,3 @@
-.. _index:
 Welcome to SofaPython3's documentation!
 ================================
 
