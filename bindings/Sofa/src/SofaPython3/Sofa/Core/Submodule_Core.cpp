@@ -37,7 +37,7 @@ pybind11::module addSubmoduleCore(py::module& p)
 
                Sofa.Core.Data
                Sofa.Core.Node
-               Sofa.Core.BaseObject
+               Sofa.Core.Object
                Sofa.Core.Camera
 
            Overridable components:

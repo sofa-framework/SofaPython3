@@ -18,6 +18,8 @@ using sofa::helper::WriteOnlyAccessor;
 #include "PythonDownCast.h"
 
 #include "Binding_Base.h"
+#include "Binding_Base_doc.h"
+
 #include "Binding_BaseData.h"
 #include "Binding_DataContainer.h"
 
@@ -30,6 +32,7 @@ using sofa::core::objectmodel::BaseObject;
 using sofa::core::objectmodel::BaseNode;
 #include <sofa/core/objectmodel/BaseContext.h>
 using sofa::core::objectmodel::BaseContext;
+
 
 
 namespace sofapython3
@@ -513,12 +516,11 @@ void checkAmbiguousCreation(py::object& py_self, const std::string& name, const 
 
 void moduleAddBase(py::module &m)
 {
-    py::class_<Base, Base::SPtr> base(m, "Base", py::dynamic_attr(),
-                                      R"(Sofa.Core.Base is the root of the Sofa Hierarhcy
+    py::class_<Base, Base::SPtr> base(m, "Base", py::dynamic_attr(), doc::base::Base);
 
-                                      )");
-
-    base.def("getName", &Base::getName, pybind11::return_value_policy::copy);
+    base.def("getName", &Base::getName,
+             pybind11::return_value_policy::copy,
+             doc::base::getName);
     base.def("setName", pybind11::overload_cast<const std::string&>(&Base::setName));
     base.def("setName", pybind11::overload_cast<const std::string&, int>(&Base::setName));
     base.def("getClass", &Base::getClass, pybind11::return_value_policy::reference);

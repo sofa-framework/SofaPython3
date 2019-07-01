@@ -27,7 +27,7 @@ void moduleAddBaseObject(py::module& m)
         return py::cast(object->toBaseObject());
     });
 
-    py::class_<BaseObject, Base, BaseObject::SPtr>p(m, "BaseObject");
+    py::class_<BaseObject, Base, BaseObject::SPtr>p(m, "Object");
     p.def("init", &BaseObject::init);
     p.def("reinit", &BaseObject::init);
 

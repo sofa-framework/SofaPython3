@@ -1,55 +1,42 @@
-The Sofa Modules
+The modules
 ================================
 
-Several python modules are available each exposing different aspect of the Sofa API. 
-These modules can be loaded either from the SofaPython3 plugins or from python3 interpretor (CPython, 
-ipython, jupyter).
+Several modules are available. Each exposing different aspect of the Sofa API and components. 
+
+These modules can be loaded either in an existing sofa application with the SofaPython3 plugins loaded or 
+in python3 interpretor (CPython, ipython, jupyter).
       
   .. code-block:: python
   
         # encoding: utf-8
         #!/usr/bin/python3
-        import sys
+        """ A minimalistic application using the Sofa module to create a scene 
+            and the SofaRuntime module to execute it
+        """
         import os
-
          
         if "SOFA_ROOT" not in os.environ:
                 print("WARNING: missing SOFA_ROOT in you environment variable. ") 
                 sys.exit(-1)
 
-        sys.path.append(os.path.abspath("./bindings/Sofa/package"))
-        sys.path.append(os.path.abspath("./bindings/SofaRuntime/package"))
-        sys.path.append(os.path.abspath("./bindings/SofaTypes/package"))
-
         import Sofa
         import SofaRuntime
-
-        ## Register all the common component in the factory. 
-        SofaRuntime.importPlugin("SofaAllCommonComponents")
-
-        class MyController(Sofa.Controller):
-               def __init__(self, *args, **kwargs):
-                       Sofa.Controller.__init__(self,*args, **kwargs)
-                       print("INITED")
-                
-               def onEvent(self, event):
-                       print("Event: "+event)
                               
-        root = Sofa.Node("myroot") 
-        root.addChild("child1")
-        root.addObject(MyController())
-
+        root = Sofa.Node("root") 
+        root.addChild("MechanicalObject", name="dofs")
+        
         Sofa.Simulation.init(root)
         Sofa.Simulation.print(root)
+
         for i in range(0, 10):
-                print("step: "+str(i))
                 Sofa.Simulation.animate(root, 0.1)
         
-Python modules: 
-
+Available modules: 
+------------------
 .. autosummary::
     :toctree: _autosummary
 
     Sofa
     SofaRuntime   
  
+
