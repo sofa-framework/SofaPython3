@@ -516,7 +516,7 @@ void checkAmbiguousCreation(py::object& py_self, const std::string& name, const 
 
 void moduleAddBase(py::module &m)
 {
-    py::class_<Base, Base::SPtr> base(m, "Base", py::dynamic_attr(), doc::base::Base);
+    py::class_<Base, Base::SPtr> base(m, "Base", py::dynamic_attr(), doc::base::BaseClass);
 
     base.def("getName", &Base::getName,
              pybind11::return_value_policy::copy,

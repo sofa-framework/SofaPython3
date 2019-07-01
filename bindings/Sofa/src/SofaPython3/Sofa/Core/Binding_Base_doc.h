@@ -25,7 +25,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 namespace sofapython3::doc::base
 {
 
-static auto Base =
+static auto BaseClass =
         R"(Sofa.Core.Base is the root of the Sofa class Hierarhcy
 
         All objects are in-heriting from this one.
