@@ -22,12 +22,12 @@ using sofa::defaulttype::Vec3dTypes;
 class ForceField_Trampoline  : public ForceField<Vec3dTypes>, public PythonTrampoline
 {
 public:
-    ForceField_Trampoline() {}
-    virtual ~ForceField_Trampoline(){}
+    ForceField_Trampoline() = default;
+    ~ForceField_Trampoline() override = default;
 
-    virtual void init() override
+    void init() override
     {
-        Inherit1::init();
+        ForceField<Vec3dTypes>::init();
 
         if (!mstate.get())
             mstate.set(dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState()));
@@ -38,16 +38,16 @@ public:
         PYBIND11_OVERLOAD(void, ForceField, init,);
     }
 
-    virtual void addForce(const MechanicalParams* mparams,  DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override
+    void addForce(const MechanicalParams* mparams,  DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override
     {
-        BaseData* xx = const_cast<BaseData*>(static_cast<const BaseData*>(&x));
-        BaseData* vv = const_cast<BaseData*>(static_cast<const BaseData*>(&v));
+        auto xx = const_cast<BaseData*>(static_cast<const BaseData*>(&x));
+        auto vv = const_cast<BaseData*>(static_cast<const BaseData*>(&v));
         PYBIND11_OVERLOAD_PURE(void, ForceField, addForce, py::none(), toPython(&f,true), toPython(xx,true), toPython(vv,true));
     }
 
-    virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) override
+    void addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) override
     {
-        BaseData* dxx = const_cast<BaseData*>(static_cast<const BaseData*>(&dx));
+        auto dxx = const_cast<BaseData*>(static_cast<const BaseData*>(&dx));
         PYBIND11_OVERLOAD_PURE(void, ForceField, addDForce,
                                toPython(&df,true), toPython(dxx,true),
                                py::cast(mparams->kFactor()), py::cast(mparams->bFactor()));
@@ -57,12 +57,12 @@ public:
     {
         PYBIND11_OVERLOAD_PURE(void, ForceField, addMBKdx, py::none(), py::none() );
     }*/
-    virtual void addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* dfId) override
+    void addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* dfId) override
     {
         PYBIND11_OVERLOAD_PURE(void, ForceField, addKToMatrix, py::none(), py::none() );
     }
 
-    virtual void updateForceMask() override
+    void updateForceMask() override
     {
         #ifdef SOFA_USE_MASK
             PYBIND11_OVERLOAD_PURE(void, ForceField, updateForceMask,);
@@ -70,11 +70,11 @@ public:
            PYBIND11_OVERLOAD(void, ForceField, updateForceMask,);
         #endif
     }
-    virtual SReal getPotentialEnergy( const MechanicalParams* mparams,
-                                      const DataVecCoord& x) const override {}
+
+    SReal getPotentialEnergy( const MechanicalParams* mparams, const DataVecCoord& x) const override { return 0.0; }
 
 
-    virtual std::string getClassName() const override
+    std::string getClassName() const override
     {
         return pyobject->ob_type->tp_name;
     }
@@ -90,7 +90,7 @@ void moduleAddForceField(py::module &m) {
 
     f.def(py::init([](py::args& args, py::kwargs& kwargs)
     {
-              ForceField_Trampoline* c = new ForceField_Trampoline();
+              auto c = new ForceField_Trampoline();
               c->f_listening.setValue(true);
 
               if(args.size() != 0)

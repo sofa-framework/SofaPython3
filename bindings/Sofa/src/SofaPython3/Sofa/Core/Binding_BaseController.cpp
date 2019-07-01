@@ -88,7 +88,7 @@ namespace sofapython3
                   for(auto kv : kwargs)
                   {
                       std::string key = py::cast<std::string>(kv.first);
-                      py::object value = py::object(kv.second, true);
+                      py::object value = py::reinterpret_borrow<py::object>(kv.second);
                       if( key == "name")
                       {
                           if( args.size() != 0 )
