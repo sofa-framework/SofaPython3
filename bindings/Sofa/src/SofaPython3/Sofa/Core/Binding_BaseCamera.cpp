@@ -34,15 +34,14 @@ namespace sofapython3
 {
 void moduleAddBaseCamera(py::module &m) {
     py::class_<sofa::component::visualmodel::BaseCamera,
-            //sofa::core::objectmodel::BaseObject,
-            sofa::core::sptr<sofa::component::visualmodel::BaseCamera>> c(m, "BaseCamera");
+            sofa::core::sptr<sofa::component::visualmodel::BaseCamera>> c(m, "Camera");
 
     c.def(py::init([](BaseObject* b){
               auto camera = dynamic_cast<BaseCamera*>(b);
               if(camera)
                   return camera;
               throw std::invalid_argument(b->getClassName());
-          }), ":rtype: Sofa.Core.BaseCamera");
+          }), ":rtype: Sofa.Core.Camera");
 
     c.def("getProjectionMatrix", [](BaseCamera* self){
         static std::vector<double> m {16};
