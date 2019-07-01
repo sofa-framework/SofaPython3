@@ -62,23 +62,23 @@ Check whether the list is nonempty
 Return true the container contains ``x``
 """
     @overload
-    def __delitem__(self, arg0: int) -> None: 
+    def __delitem__(self, arg0: slice) -> None: 
         pass
     @overload
-    def __delitem__(self, arg0: slice) -> None: ...
+    def __delitem__(self, arg0: int) -> None: ...
     def __eq__(self, arg0: StdVectorBaseData) -> bool: ...
     @overload
-    def __getitem__(self, arg0: int) -> Sofa.Core.Data: 
+    def __getitem__(self, s: slice) -> StdVectorBaseData: 
         pass
     @overload
-    def __getitem__(self, s: slice) -> StdVectorBaseData: ...
+    def __getitem__(self, arg0: int) -> Sofa.Core.Data: ...
     @overload
-    def __init__(self) -> None: 
+    def __init__(self, arg0: StdVectorBaseData) -> None: 
         pass
     @overload
     def __init__(self, arg0: object) -> None: ...
     @overload
-    def __init__(self, arg0: StdVectorBaseData) -> None: ...
+    def __init__(self) -> None: ...
     def __iter__(self) -> object: ...
     def __len__(self) -> int: ...
     def __ne__(self, arg0: StdVectorBaseData) -> bool: ...
@@ -87,10 +87,10 @@ Return true the container contains ``x``
 Return the canonical string representation of this list.
 """
     @overload
-    def __setitem__(self, arg0: int, arg1: Sofa.Core.Data) -> None: 
+    def __setitem__(self, arg0: slice, arg1: StdVectorBaseData) -> None: 
         pass
     @overload
-    def __setitem__(self, arg0: slice, arg1: StdVectorBaseData) -> None: ...
+    def __setitem__(self, arg0: int, arg1: Sofa.Core.Data) -> None: ...
     def append(self, x: Sofa.Core.Data) -> None: 
         """
 Add an item to the end of the list
@@ -108,10 +108,10 @@ Extend the list by appending all the items in the given list
 Insert an item at a given position.
 """
     @overload
-    def pop(self) -> Sofa.Core.Data: 
+    def pop(self, i: int) -> Sofa.Core.Data: 
         pass
     @overload
-    def pop(self, i: int) -> Sofa.Core.Data: ...
+    def pop(self) -> Sofa.Core.Data: ...
     def remove(self, x: Sofa.Core.Data) -> None: 
         """
 Remove the first item from the list whose value is x. It is an error if there is no such item.
@@ -127,23 +127,23 @@ Check whether the list is nonempty
 Return true the container contains ``x``
 """
     @overload
-    def __delitem__(self, arg0: int) -> None: 
+    def __delitem__(self, arg0: slice) -> None: 
         pass
     @overload
-    def __delitem__(self, arg0: slice) -> None: ...
+    def __delitem__(self, arg0: int) -> None: ...
     def __eq__(self, arg0: StdVectordouble) -> bool: ...
     @overload
-    def __getitem__(self, arg0: int) -> float: 
+    def __getitem__(self, s: slice) -> StdVectordouble: 
         pass
     @overload
-    def __getitem__(self, s: slice) -> StdVectordouble: ...
+    def __getitem__(self, arg0: int) -> float: ...
     @overload
-    def __init__(self, arg0: StdVectordouble) -> None: 
+    def __init__(self, arg0: object) -> None: 
         pass
     @overload
     def __init__(self) -> None: ...
     @overload
-    def __init__(self, arg0: object) -> None: ...
+    def __init__(self, arg0: StdVectordouble) -> None: ...
     def __iter__(self) -> object: ...
     def __len__(self) -> int: ...
     def __ne__(self, arg0: StdVectordouble) -> bool: ...
@@ -152,10 +152,10 @@ Return true the container contains ``x``
 Return the canonical string representation of this list.
 """
     @overload
-    def __setitem__(self, arg0: slice, arg1: StdVectordouble) -> None: 
+    def __setitem__(self, arg0: int, arg1: float) -> None: 
         pass
     @overload
-    def __setitem__(self, arg0: int, arg1: float) -> None: ...
+    def __setitem__(self, arg0: slice, arg1: StdVectordouble) -> None: ...
     def append(self, x: float) -> None: 
         """
 Add an item to the end of the list
@@ -173,10 +173,10 @@ Extend the list by appending all the items in the given list
 Insert an item at a given position.
 """
     @overload
-    def pop(self) -> float: 
+    def pop(self, i: int) -> float: 
         pass
     @overload
-    def pop(self, i: int) -> float: ...
+    def pop(self) -> float: ...
     def remove(self, x: float) -> None: 
         """
 Remove the first item from the list whose value is x. It is an error if there is no such item.
@@ -198,17 +198,17 @@ Return true the container contains ``x``
     def __delitem__(self, arg0: int) -> None: ...
     def __eq__(self, arg0: StdVectorfloat) -> bool: ...
     @overload
-    def __getitem__(self, s: slice) -> StdVectorfloat: 
+    def __getitem__(self, arg0: int) -> float: 
         pass
     @overload
-    def __getitem__(self, arg0: int) -> float: ...
+    def __getitem__(self, s: slice) -> StdVectorfloat: ...
     @overload
     def __init__(self, arg0: StdVectorfloat) -> None: 
         pass
     @overload
-    def __init__(self) -> None: ...
-    @overload
     def __init__(self, arg0: object) -> None: ...
+    @overload
+    def __init__(self) -> None: ...
     def __iter__(self) -> object: ...
     def __len__(self) -> int: ...
     def __ne__(self, arg0: StdVectorfloat) -> bool: ...
@@ -238,10 +238,10 @@ Extend the list by appending all the items in the given list
 Insert an item at a given position.
 """
     @overload
-    def pop(self) -> float: 
+    def pop(self, i: int) -> float: 
         pass
     @overload
-    def pop(self, i: int) -> float: ...
+    def pop(self) -> float: ...
     def remove(self, x: float) -> None: 
         """
 Remove the first item from the list whose value is x. It is an error if there is no such item.
@@ -257,10 +257,10 @@ Check whether the list is nonempty
 Return true the container contains ``x``
 """
     @overload
-    def __delitem__(self, arg0: slice) -> None: 
+    def __delitem__(self, arg0: int) -> None: 
         pass
     @overload
-    def __delitem__(self, arg0: int) -> None: ...
+    def __delitem__(self, arg0: slice) -> None: ...
     def __eq__(self, arg0: StdVectorint) -> bool: ...
     @overload
     def __getitem__(self, arg0: int) -> int: 
@@ -271,9 +271,9 @@ Return true the container contains ``x``
     def __init__(self, arg0: object) -> None: 
         pass
     @overload
-    def __init__(self) -> None: ...
-    @overload
     def __init__(self, arg0: StdVectorint) -> None: ...
+    @overload
+    def __init__(self) -> None: ...
     def __iter__(self) -> object: ...
     def __len__(self) -> int: ...
     def __ne__(self, arg0: StdVectorint) -> bool: ...
@@ -282,10 +282,10 @@ Return true the container contains ``x``
 Return the canonical string representation of this list.
 """
     @overload
-    def __setitem__(self, arg0: int, arg1: int) -> None: 
+    def __setitem__(self, arg0: slice, arg1: StdVectorint) -> None: 
         pass
     @overload
-    def __setitem__(self, arg0: slice, arg1: StdVectorint) -> None: ...
+    def __setitem__(self, arg0: int, arg1: int) -> None: ...
     def append(self, x: int) -> None: 
         """
 Add an item to the end of the list
@@ -322,23 +322,23 @@ Check whether the list is nonempty
 Return true the container contains ``x``
 """
     @overload
-    def __delitem__(self, arg0: int) -> None: 
+    def __delitem__(self, arg0: slice) -> None: 
         pass
     @overload
-    def __delitem__(self, arg0: slice) -> None: ...
+    def __delitem__(self, arg0: int) -> None: ...
     def __eq__(self, arg0: StdVectorlong) -> bool: ...
     @overload
-    def __getitem__(self, arg0: int) -> int: 
+    def __getitem__(self, s: slice) -> StdVectorlong: 
         pass
     @overload
-    def __getitem__(self, s: slice) -> StdVectorlong: ...
+    def __getitem__(self, arg0: int) -> int: ...
     @overload
     def __init__(self, arg0: object) -> None: 
         pass
     @overload
-    def __init__(self, arg0: StdVectorlong) -> None: ...
-    @overload
     def __init__(self) -> None: ...
+    @overload
+    def __init__(self, arg0: StdVectorlong) -> None: ...
     def __iter__(self) -> object: ...
     def __len__(self) -> int: ...
     def __ne__(self, arg0: StdVectorlong) -> bool: ...
@@ -368,10 +368,10 @@ Extend the list by appending all the items in the given list
 Insert an item at a given position.
 """
     @overload
-    def pop(self, i: int) -> int: 
+    def pop(self) -> int: 
         pass
     @overload
-    def pop(self) -> int: ...
+    def pop(self, i: int) -> int: ...
     def remove(self, x: int) -> None: 
         """
 Remove the first item from the list whose value is x. It is an error if there is no such item.
@@ -398,12 +398,12 @@ Return true the container contains ``x``
     @overload
     def __getitem__(self, s: slice) -> StdVectoruint: ...
     @overload
-    def __init__(self, arg0: object) -> None: 
+    def __init__(self, arg0: StdVectoruint) -> None: 
         pass
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self, arg0: object) -> None: ...
     @overload
-    def __init__(self, arg0: StdVectoruint) -> None: ...
+    def __init__(self) -> None: ...
     def __iter__(self) -> object: ...
     def __len__(self) -> int: ...
     def __ne__(self, arg0: StdVectoruint) -> bool: ...
@@ -458,17 +458,17 @@ Return true the container contains ``x``
     def __delitem__(self, arg0: int) -> None: ...
     def __eq__(self, arg0: StdVectorulong) -> bool: ...
     @overload
-    def __getitem__(self, s: slice) -> StdVectorulong: 
+    def __getitem__(self, arg0: int) -> int: 
         pass
     @overload
-    def __getitem__(self, arg0: int) -> int: ...
+    def __getitem__(self, s: slice) -> StdVectorulong: ...
     @overload
-    def __init__(self, arg0: object) -> None: 
+    def __init__(self) -> None: 
         pass
+    @overload
+    def __init__(self, arg0: object) -> None: ...
     @overload
     def __init__(self, arg0: StdVectorulong) -> None: ...
-    @overload
-    def __init__(self) -> None: ...
     def __iter__(self) -> object: ...
     def __len__(self) -> int: ...
     def __ne__(self, arg0: StdVectorulong) -> bool: ...
@@ -498,10 +498,10 @@ Extend the list by appending all the items in the given list
 Insert an item at a given position.
 """
     @overload
-    def pop(self, i: int) -> int: 
+    def pop(self) -> int: 
         pass
     @overload
-    def pop(self) -> int: ...
+    def pop(self, i: int) -> int: ...
     def remove(self, x: int) -> None: 
         """
 Remove the first item from the list whose value is x. It is an error if there is no such item.
@@ -517,16 +517,16 @@ Check whether the list is nonempty
 Return true the container contains ``x``
 """
     @overload
-    def __delitem__(self, arg0: int) -> None: 
+    def __delitem__(self, arg0: slice) -> None: 
         pass
     @overload
-    def __delitem__(self, arg0: slice) -> None: ...
+    def __delitem__(self, arg0: int) -> None: ...
     def __eq__(self, arg0: StdVectorBaseData) -> bool: ...
     @overload
-    def __getitem__(self, arg0: int) -> Sofa.Core.Data: 
+    def __getitem__(self, s: slice) -> StdVectorBaseData: 
         pass
     @overload
-    def __getitem__(self, s: slice) -> StdVectorBaseData: ...
+    def __getitem__(self, arg0: int) -> Sofa.Core.Data: ...
     def __iter__(self) -> object: ...
     def __len__(self) -> int: ...
     def __ne__(self, arg0: StdVectorBaseData) -> bool: ...
@@ -535,10 +535,10 @@ Return true the container contains ``x``
 Return the canonical string representation of this list.
 """
     @overload
-    def __setitem__(self, arg0: int, arg1: Sofa.Core.Data) -> None: 
+    def __setitem__(self, arg0: slice, arg1: StdVectorBaseData) -> None: 
         pass
     @overload
-    def __setitem__(self, arg0: slice, arg1: StdVectorBaseData) -> None: ...
+    def __setitem__(self, arg0: int, arg1: Sofa.Core.Data) -> None: ...
     def append(self, x: Sofa.Core.Data) -> None: 
         """
 Add an item to the end of the list
@@ -556,10 +556,10 @@ Extend the list by appending all the items in the given list
 Insert an item at a given position.
 """
     @overload
-    def pop(self) -> Sofa.Core.Data: 
+    def pop(self, i: int) -> Sofa.Core.Data: 
         pass
     @overload
-    def pop(self, i: int) -> Sofa.Core.Data: ...
+    def pop(self) -> Sofa.Core.Data: ...
     def remove(self, x: Sofa.Core.Data) -> None: 
         """
 Remove the first item from the list whose value is x. It is an error if there is no such item.
@@ -575,16 +575,16 @@ Check whether the list is nonempty
 Return true the container contains ``x``
 """
     @overload
-    def __delitem__(self, arg0: int) -> None: 
+    def __delitem__(self, arg0: slice) -> None: 
         pass
     @overload
-    def __delitem__(self, arg0: slice) -> None: ...
+    def __delitem__(self, arg0: int) -> None: ...
     def __eq__(self, arg0: StdVectordouble) -> bool: ...
     @overload
-    def __getitem__(self, arg0: int) -> float: 
+    def __getitem__(self, s: slice) -> StdVectordouble: 
         pass
     @overload
-    def __getitem__(self, s: slice) -> StdVectordouble: ...
+    def __getitem__(self, arg0: int) -> float: ...
     def __iter__(self) -> object: ...
     def __len__(self) -> int: ...
     def __ne__(self, arg0: StdVectordouble) -> bool: ...
@@ -593,10 +593,10 @@ Return true the container contains ``x``
 Return the canonical string representation of this list.
 """
     @overload
-    def __setitem__(self, arg0: slice, arg1: StdVectordouble) -> None: 
+    def __setitem__(self, arg0: int, arg1: float) -> None: 
         pass
     @overload
-    def __setitem__(self, arg0: int, arg1: float) -> None: ...
+    def __setitem__(self, arg0: slice, arg1: StdVectordouble) -> None: ...
     def append(self, x: float) -> None: 
         """
 Add an item to the end of the list
@@ -614,10 +614,10 @@ Extend the list by appending all the items in the given list
 Insert an item at a given position.
 """
     @overload
-    def pop(self) -> float: 
+    def pop(self, i: int) -> float: 
         pass
     @overload
-    def pop(self, i: int) -> float: ...
+    def pop(self) -> float: ...
     def remove(self, x: float) -> None: 
         """
 Remove the first item from the list whose value is x. It is an error if there is no such item.
@@ -639,10 +639,10 @@ Return true the container contains ``x``
     def __delitem__(self, arg0: int) -> None: ...
     def __eq__(self, arg0: StdVectorfloat) -> bool: ...
     @overload
-    def __getitem__(self, s: slice) -> StdVectorfloat: 
+    def __getitem__(self, arg0: int) -> float: 
         pass
     @overload
-    def __getitem__(self, arg0: int) -> float: ...
+    def __getitem__(self, s: slice) -> StdVectorfloat: ...
     def __iter__(self) -> object: ...
     def __len__(self) -> int: ...
     def __ne__(self, arg0: StdVectorfloat) -> bool: ...
@@ -672,10 +672,10 @@ Extend the list by appending all the items in the given list
 Insert an item at a given position.
 """
     @overload
-    def pop(self) -> float: 
+    def pop(self, i: int) -> float: 
         pass
     @overload
-    def pop(self, i: int) -> float: ...
+    def pop(self) -> float: ...
     def remove(self, x: float) -> None: 
         """
 Remove the first item from the list whose value is x. It is an error if there is no such item.
@@ -691,10 +691,10 @@ Check whether the list is nonempty
 Return true the container contains ``x``
 """
     @overload
-    def __delitem__(self, arg0: slice) -> None: 
+    def __delitem__(self, arg0: int) -> None: 
         pass
     @overload
-    def __delitem__(self, arg0: int) -> None: ...
+    def __delitem__(self, arg0: slice) -> None: ...
     def __eq__(self, arg0: StdVectorint) -> bool: ...
     @overload
     def __getitem__(self, arg0: int) -> int: 
@@ -709,10 +709,10 @@ Return true the container contains ``x``
 Return the canonical string representation of this list.
 """
     @overload
-    def __setitem__(self, arg0: int, arg1: int) -> None: 
+    def __setitem__(self, arg0: slice, arg1: StdVectorint) -> None: 
         pass
     @overload
-    def __setitem__(self, arg0: slice, arg1: StdVectorint) -> None: ...
+    def __setitem__(self, arg0: int, arg1: int) -> None: ...
     def append(self, x: int) -> None: 
         """
 Add an item to the end of the list
@@ -749,16 +749,16 @@ Check whether the list is nonempty
 Return true the container contains ``x``
 """
     @overload
-    def __delitem__(self, arg0: int) -> None: 
+    def __delitem__(self, arg0: slice) -> None: 
         pass
     @overload
-    def __delitem__(self, arg0: slice) -> None: ...
+    def __delitem__(self, arg0: int) -> None: ...
     def __eq__(self, arg0: StdVectorlong) -> bool: ...
     @overload
-    def __getitem__(self, arg0: int) -> int: 
+    def __getitem__(self, s: slice) -> StdVectorlong: 
         pass
     @overload
-    def __getitem__(self, s: slice) -> StdVectorlong: ...
+    def __getitem__(self, arg0: int) -> int: ...
     def __iter__(self) -> object: ...
     def __len__(self) -> int: ...
     def __ne__(self, arg0: StdVectorlong) -> bool: ...
@@ -788,10 +788,10 @@ Extend the list by appending all the items in the given list
 Insert an item at a given position.
 """
     @overload
-    def pop(self, i: int) -> int: 
+    def pop(self) -> int: 
         pass
     @overload
-    def pop(self) -> int: ...
+    def pop(self, i: int) -> int: ...
     def remove(self, x: int) -> None: 
         """
 Remove the first item from the list whose value is x. It is an error if there is no such item.
@@ -871,10 +871,10 @@ Return true the container contains ``x``
     def __delitem__(self, arg0: int) -> None: ...
     def __eq__(self, arg0: StdVectorulong) -> bool: ...
     @overload
-    def __getitem__(self, s: slice) -> StdVectorulong: 
+    def __getitem__(self, arg0: int) -> int: 
         pass
     @overload
-    def __getitem__(self, arg0: int) -> int: ...
+    def __getitem__(self, s: slice) -> StdVectorulong: ...
     def __iter__(self) -> object: ...
     def __len__(self) -> int: ...
     def __ne__(self, arg0: StdVectorulong) -> bool: ...
@@ -904,10 +904,10 @@ Extend the list by appending all the items in the given list
 Insert an item at a given position.
 """
     @overload
-    def pop(self, i: int) -> int: 
+    def pop(self) -> int: 
         pass
     @overload
-    def pop(self) -> int: ...
+    def pop(self, i: int) -> int: ...
     def remove(self, x: int) -> None: 
         """
 Remove the first item from the list whose value is x. It is an error if there is no such item.

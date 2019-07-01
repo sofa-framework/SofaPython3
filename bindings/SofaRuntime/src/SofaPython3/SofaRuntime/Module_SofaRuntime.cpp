@@ -56,6 +56,23 @@ static SofaInitializer s;
 
 /// The first parameter must be named the same as the module file to load.
 PYBIND11_MODULE(SofaRuntime, m) {
+
+    m.doc() = R"doc(
+              SofaRuntime
+              -----------------------
+
+              Example of use:
+                .. code-block:: python
+
+                   import SofaRuntime
+                    SofaRuntime.importPlugin("MechanicalObject"")
+
+                .. automethod::
+                  :toctree: _autosummary
+
+                  SofaRuntime.importPlugin
+             )doc";
+
     // Add the plugin directory to PluginRepository
     const std::string& pluginDir = Utils::getExecutableDirectory();
     PluginRepository.addFirstPath(pluginDir);

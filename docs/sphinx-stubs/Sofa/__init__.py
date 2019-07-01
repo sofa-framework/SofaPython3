@@ -1,5 +1,5 @@
 """
-              Sofa binding
+              Sofa
               -----------------------
 
               Example of use:
