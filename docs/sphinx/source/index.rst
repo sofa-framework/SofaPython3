@@ -9,7 +9,6 @@ to implement component behavior in python.
 Appart from the SofaPython3 plugin this project also provide several python modules that exposes the different c++ components from Sofa. 
 These binding are designed to be idiomatic python3 API with tight integration for numpy. 
 
-
 Features
 -----------
 The Sofa python module:
@@ -52,8 +51,13 @@ Try it: ```python python3 minimalscene.py```
  
 
 
-Content:
+Global diagram of SofaPython3:
 ------------
+.. figure:: images/SP3_global_arch.png
+	:alt: How SP3 fits in the SOFA usage pipeline
+	:align: center
+
+
 .. toctree::
    :glob:
    :maxdepth: 1
