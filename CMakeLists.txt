@@ -100,6 +100,11 @@ endif(SP3_BUILD_TEST)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAPYTHON3")
 
+if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
+    # Sized deallocaion is not enabled by default under clang after c++14
+    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-fsized-deallocation")
+endif ()
+
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore SofaSimulationGraph SofaComponentGeneral)
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
