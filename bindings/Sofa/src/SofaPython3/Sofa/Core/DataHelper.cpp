@@ -299,8 +299,8 @@ py::object convertToPython(BaseData* d)
 
     std::cout << nfo.name() << " is not a container nor a scalar." << std::endl;
 
-    if (getBindingDataFactoryInstance()->createObject("BoundingBox", d))
-        return py::cast(getBindingDataFactoryInstance()->createObject("BoundingBox", d));
+    if (getBindingDataFactoryInstance()->createObject(nfo.name(), d))
+        return py::cast(getBindingDataFactoryInstance()->createObject(nfo.name(), d));
 
     std::cout << nfo.name() << " No such type in the BindingDataFactory. returning string" << std::endl;
 

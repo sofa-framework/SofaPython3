@@ -104,6 +104,8 @@ py::slice toSlice(const py::object& o);
 std::string getPathTo(Base* b);
 const char* getFormat(const AbstractTypeInfo& nfo);
 
+std::map<void*, py::array>& getObjectCache();
+void trimCache();
 py::buffer_info toBufferInfo(BaseData& m);
 py::object convertToPython(BaseData* d);
 
