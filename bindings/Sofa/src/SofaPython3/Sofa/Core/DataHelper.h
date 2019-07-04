@@ -111,6 +111,12 @@ py::object toPython(BaseData* d, bool writeable=false);
 void copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo, const py::list& l);
 void fromPython(BaseData* d, const py::object& o);
 
+std::string toSofaParsableString(const py::handle& p);
+
+/// RVO optimized function. Don't care about copy on the return code.
+void fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc,
+                               const py::dict& dict);
+
 template<typename T>
 void copyScalar(BaseData* a, const AbstractTypeInfo& nfo, py::array_t<T, py::array::c_style> src)
 {

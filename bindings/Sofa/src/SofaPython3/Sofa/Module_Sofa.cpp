@@ -2,6 +2,7 @@
 #include "Helper/Submodule_Helper.h"
 #include "Simulation/Submodule_Simulation.h"
 #include "Types/Submodule_Types.h"
+#include "Components/Submodule_Components.h"
 
 namespace sofapython3
 {
@@ -35,9 +36,13 @@ PYBIND11_MODULE(Sofa, m)
                   Sofa.Helper
              )doc";
     py::module core = addSubmoduleCore(m);
+    py::module components = addSubmoduleComponents(m);
+
     py::module helper = addSubmoduleHelper(m);
     py::module simulation = addSubmoduleSimulation(m);
     py::module types = addSubmoduleTypes(m);
+
+
 }
 
 } ///namespace sofapython3
