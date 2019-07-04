@@ -1,6 +1,4 @@
-#ifndef PYTHONMODULE_SOFA_BINDING_VEC_H
-#define PYTHONMODULE_SOFA_BINDING_VEC_H
-
+#pragma once
 #include <pybind11/pybind11.h>
 namespace py = pybind11;
 using namespace pybind11::literals;
@@ -14,5 +12,3 @@ std::string __str__(const Vec<N, T> &self, bool repr = false);
 } // namespace pyVec
 
 void moduleAddVec(py::module &m);
-
-#endif // PYTHONMODULE_SOFA_BINDING_VEC_H

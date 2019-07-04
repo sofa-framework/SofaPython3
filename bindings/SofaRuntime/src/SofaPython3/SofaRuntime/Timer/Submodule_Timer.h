@@ -1,5 +1,4 @@
-#ifndef SOFAPYTHON3_SOFA_TIMER_SUBMODULE_H
-#define SOFAPYTHON3_SOFA_TIMER_SUBMODULE_H
+#pragma once
 
 #include <pybind11/pybind11.h>
 
@@ -11,4 +10,3 @@ pybind11::module addSubmoduleTimer(py::module& m) ;
 
 } ///namespace sofapython3
 
-#endif /// SOFAPYTHON3_SOFA_TIMER_SUBMODULE_H
