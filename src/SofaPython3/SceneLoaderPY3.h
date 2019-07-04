@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAPYTHON3_SCENELOADERPY3_H
-#define SOFAPYTHON3_SCENELOADERPY3_H
+#pragma once
 
 #include <string>
 #include <map>
@@ -63,5 +62,3 @@ public:
 };
 
 } // namespace sofapython3
-
-#endif // SOFAPYTHON3_SCENELOADERPY3_H
