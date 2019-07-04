@@ -219,7 +219,7 @@ void moduleAddNode(py::module &m) {
     /// Method: addObjects
     /// Only addObject is needed now, the createObject is deprecated and will prints
     /// a warning for old scenes.
-    p.def("addObject", &Node_addObject, "Hello add object...");
+    p.def("addObject", &Node_addObject, "Hello add object ...");
     p.def("addObject", [](Node& self, BaseObject* object) -> py::object
     {
         if(self.addObject(object))

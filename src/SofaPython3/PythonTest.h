@@ -1,5 +1,4 @@
-#ifndef SOFAPYTHON3_PYTHONTEST_H
-#define SOFAPYTHON3_PYTHONTEST_H
+#pragma once
 
 #include <string>
 #include "config.h"
@@ -75,5 +74,3 @@ public:
 };
 
 }
-
-#endif /// PYTHONTEST_H_

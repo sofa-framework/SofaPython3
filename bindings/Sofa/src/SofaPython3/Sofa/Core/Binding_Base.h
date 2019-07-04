@@ -1,5 +1,4 @@
-#ifndef PYTHONMODULE_SOFA_BINDING_BASE_H
-#define PYTHONMODULE_SOFA_BINDING_BASE_H
+#pragma once
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
@@ -77,5 +76,3 @@ void moduleAddBase(py::module& m);
 bool isProtectedKeyword(const std::string& name);
 
 } /// namespace sofapython3
-
-#endif /// PYTHONMODULE_SOFA_BINDING_BASE_H

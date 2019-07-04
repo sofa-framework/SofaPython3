@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAPYTHON3_PYTHONENVIRONMENT_H
-#define SOFAPYTHON3_PYTHONENVIRONMENT_H
+#pragma once
 
 #include <vector>
 #include <string>
@@ -128,4 +127,3 @@ private:
 
 } // namespace sofapython3
 
-#endif // PYTHONENVIRONMENT_H

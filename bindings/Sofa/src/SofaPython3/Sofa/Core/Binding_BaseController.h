@@ -1,5 +1,4 @@
-#ifndef PYTHONMODULE_SOFA_BINDING_BaseController_H
-#define PYTHONMODULE_SOFA_BINDING_BaseController_H
+#pragma once
 
 #include "Binding_BaseObject.h"
 
@@ -18,4 +17,3 @@ void moduleAddBaseController(py::module &m);
 
 } /// namespace sofapython3
 
-#endif /// PYTHONMODULE_SOFA_BINDING_BaseController_H

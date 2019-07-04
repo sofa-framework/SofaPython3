@@ -1,5 +1,4 @@
-#ifndef SOFAPYTHON3_SOFA_HELPER_BINDING_VECTOR_H
-#define SOFAPYTHON3_SOFA_HELPER_BINDING_VECTOR_H
+#pragma once
 
 #include <pybind11/pybind11.h>
 
@@ -12,6 +11,3 @@ namespace sofapython3
     void moduleAddVector(py::module &m);
 
 } ///sofapython3
-
-
-#endif //SOFAPYTHON3_SOFA_HELPER_BINDING_VECTOR_H
