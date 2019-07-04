@@ -219,8 +219,6 @@ py::object getItem(Node& self, std::list<std::string>& path)
 }
 
 void moduleAddNode(py::module &m) {
-    /// comprendre comment sont rajouté les méthodes dans le binding:
-    /// pybind11 => p.def()
     //py::options options;
     //options.disable_function_signatures();
 
@@ -249,9 +247,7 @@ void moduleAddNode(py::module &m) {
     /// Method: addObjects
     /// Only addObject is needed now, the createObject is deprecated and will prints
     /// a warning for old scenes.
-    p.def("addObject", &Node_addObject);
-
-    ////=> à regarder les lambda dans c++11
+    p.def("addObject", &Node_addObject, "Hello add object ...");
     p.def("addObject", [](Node& self, BaseObject* object) -> py::object
     {
         if(self.addObject(object))
@@ -305,13 +301,13 @@ void moduleAddNode(py::module &m) {
 
         n.removeChild(node);
         return py::cast(node);
-    }, "Remove a child Node");
+    });
 
     p.def("getRoot", &Node::getRoot);
     p.def("getPathName", &Node::getPathName);
     p.def("getLink", [](Node* node) {
         return ("@"+node->getPathName()).c_str();
-    }, "Returns a pointer to the link");
+    });
 
     p.def_property_readonly("children", [](Node* node)
     {
