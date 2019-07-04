@@ -56,8 +56,6 @@ find_package(SofaGeneral REQUIRED)
 
 unset(PYTHON_EXECUTABLE)
 find_package(Python 3.7 COMPONENTS Interpreter Development REQUIRED)
-set(PYTHON_LIBRARIES /usr/lib/python3.7/config-3.7m-x86_64-linux-gnu/libpython3.7m.so) #${Python_LIBRARY_RELEASE})
-set(PYTHON_LIBRARY /usr/lib/python3.7/config-3.7m-x86_64-linux-gnu/libpython3.7m.so)
 set(PYTHON_INCLUDE_DIRS ${Python_INCLUDE_DIR})
 set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
 set(PYBIND11_PYTHON_VERSION ${Python_VERSION})
