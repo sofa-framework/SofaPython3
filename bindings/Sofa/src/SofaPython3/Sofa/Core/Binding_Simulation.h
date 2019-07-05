@@ -1,5 +1,4 @@
-#ifndef PYTHONMODULE_SOFA_BINDING_SIMULATION_H
-#define PYTHONMODULE_SOFA_BINDING_SIMULATION_H
+#pragma once
 
 #include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
 
@@ -16,4 +15,3 @@ void moduleAddSimulation(py::module &m);
 
 } ///sofapython3
 
-#endif /// PYTHONMODULE_SOFA_BINDING_SIMULATION_H

@@ -1,5 +1,4 @@
-#ifndef SOFAPYTHON3_SOFA_CORE_DATAHELPER_H
-#define SOFAPYTHON3_SOFA_CORE_DATAHELPER_H
+#pragma once
 
 #include <iostream>
 #include <pybind11/pybind11.h>
@@ -176,8 +175,5 @@ public:
 };
 
 }  // namespace sofapython3
-
-
-#endif /// SOFAPYTHON3_SOFA_CORE_DATAHELPER_H
 
 

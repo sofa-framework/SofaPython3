@@ -516,17 +516,24 @@ void checkAmbiguousCreation(py::object& py_self, const std::string& name, const 
 
 void moduleAddBase(py::module &m)
 {
-    py::class_<Base, Base::SPtr> base(m, "Base", py::dynamic_attr(), doc::base::BaseClass);
+    py::class_<Base, Base::SPtr> base(m, "Base", py::dynamic_attr(), doc::Base::Class);
 
     base.def("getName", &Base::getName,
              pybind11::return_value_policy::copy,
-             doc::base::getName);
+             doc::Base::getName);
     base.def("setName", pybind11::overload_cast<const std::string&>(&Base::setName));
     base.def("setName", pybind11::overload_cast<const std::string&, int>(&Base::setName));
     base.def("getClass", &Base::getClass, pybind11::return_value_policy::reference);
 
-    //base.def("getSourceFileName", &Base::getSourceFileName);
-    //base.def("getSourceFileLoc", &Base::getSourceFileLoc);
+    base.def("getDefinitionSourceFilePos", &Base::getDefinitionSourceFilePos,
+             sofapython3::doc::Base::getDefinitionSourceFilePos);
+    base.def("getDefinitionSourceFileName", &Base::getDefinitionSourceFileName,
+             sofapython3::doc::Base::getDefinitionSourceFileName);
+    base.def("getInstanciationSourceFilePos", &Base::getInstanciationSourceFilePos,
+             sofapython3::doc::Base::getInstanciationSourceFilePos);
+    base.def("getInstanciationFileName", &Base::getInstanciationSourceFileName,
+             sofapython3::doc::Base::getInstanciationSourceFilePos);
+
     base.def("findData", &Base::findData, pybind11::return_value_policy::reference);
     base.def("getDataFields", &Base::getDataFields, pybind11::return_value_policy::reference);
     base.def("findLink", &Base::findLink, pybind11::return_value_policy::reference);

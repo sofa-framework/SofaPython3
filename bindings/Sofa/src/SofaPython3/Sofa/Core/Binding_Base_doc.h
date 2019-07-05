@@ -22,10 +22,10 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************/
 #pragma once
 
-namespace sofapython3::doc::base
+namespace sofapython3::doc::Base
 {
 
-static auto BaseClass =
+static auto Class =
         R"(Sofa.Core.Base is the root of the Sofa class Hierarhcy
 
         All objects are in-heriting from this one.
@@ -37,5 +37,10 @@ static auto getName =
         :rtype str:
         )";
 static auto addObject = "Hello";
+
+static auto getDefinitionSourceFilePos="Returns the line number where the object is defined.";
+static auto getDefinitionSourceFileName="Returns the name of the file that contains the object definition.";
+static auto getInstanciationSourceFilePos="Returns the line number where the object is instanciatiated.";
+static auto getInstanciationSourceFileName="Returns the name of the file where this object instance is from.";
 
 }

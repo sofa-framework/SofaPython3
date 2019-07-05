@@ -1,5 +1,4 @@
-#ifndef PYTHONMODULE_SOFA_BINDING_FORCEFIELD_H
-#define PYTHONMODULE_SOFA_BINDING_FORCEFIELD_H
+#pragma once
 
 #include "Binding_BaseObject.h"
 
@@ -21,5 +20,3 @@ using sofa::core::MultiVecDerivId;
 void moduleAddForceField(py::module &m);
 
 } /// namespace sofapython3
-
-#endif /// PYTHONMODULE_SOFA_BINDING_PYTHONCONTROLLER_H

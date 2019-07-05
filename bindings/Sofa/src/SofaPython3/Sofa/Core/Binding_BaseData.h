@@ -1,6 +1,4 @@
-
-#ifndef PYTHONMODULE_SOFA_BINDING_BASEDATA_H
-#define PYTHONMODULE_SOFA_BINDING_BASEDATA_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseData.h>
 #include <SofaPython3/DataHelper.h>
@@ -18,5 +16,3 @@ namespace sofapython3
 {
     void moduleAddBaseData(py::module& m);
 } /// sofapython3
-
-#endif /// PYTHONMODULE_SOFA_BINDING_BASEDATA_H

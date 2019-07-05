@@ -1,6 +1,4 @@
-
-#ifndef PYTHONMODULE_SOFA_BINDING_DATACONTAINER_H
-#define PYTHONMODULE_SOFA_BINDING_DATACONTAINER_H
+#pragma once
 
 #include <pybind11/pybind11.h>
 #include <sofa/core/objectmodel/BaseData.h>
@@ -29,5 +27,3 @@ public:
 };
 
 }
-
-#endif /// PYTHONMODULE_SOFA_BINDING_DATACONTAINER_H

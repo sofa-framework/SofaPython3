@@ -19,11 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAPYTHON3_CONFIG_H
-#define SOFAPYTHON3_CONFIG_H
+#pragma once
 
 #include <SofaGeneral/config.h>
 
 #define SOFAPYTHON3_API
-
-#endif /// SOFAPYTHON3_CONFIG_H

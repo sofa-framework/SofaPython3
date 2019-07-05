@@ -1,5 +1,4 @@
-#ifndef SOFAPYTHON3_SOFA_CORE_DATACACHE_H
-#define SOFAPYTHON3_SOFA_CORE_DATACACHE_H
+#pragma once
 
 #include <pybind11/numpy.h>
 
@@ -31,8 +30,4 @@ py::array PYBIND11_EXPORT getPythonArrayFor(BaseData* d);
 void trimCache();
 
 } /// sofapython3
-
-
-#endif /// SOFAPYTHON3_SOFA_CORE_DATACACHE_H
-
 
