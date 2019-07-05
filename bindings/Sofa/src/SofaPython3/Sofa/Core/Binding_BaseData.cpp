@@ -16,7 +16,7 @@ using  sofa::core::objectmodel::BaseNode;
 #include "Binding_Base.h"
 #include "Binding_BaseData.h"
 #include "Binding_DataContainer.h"
-#include "DataHelper.h"
+#include <SofaPython3/DataHelper.h>
 
 namespace sofapython3
 {

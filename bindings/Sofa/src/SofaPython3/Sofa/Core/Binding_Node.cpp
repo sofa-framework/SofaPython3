@@ -17,13 +17,13 @@ using sofa::helper::logging::Message;
 using sofa::core::ExecParams;
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaPython3/Sofa/Core/DataHelper.h>
+#include <SofaPython3/DataHelper.h>
 #include "Binding_Node.h"
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
-#include <SofaPython3/Sofa/Core/PythonDownCast.h>
+#include <SofaPython3/PythonDownCast.h>
 using sofapython3::PythonDownCast;
 
 using sofa::core::objectmodel::BaseObjectDescription;

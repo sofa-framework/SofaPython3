@@ -3,7 +3,7 @@
 
 #include "Binding_Base.h"
 #include "Binding_Controller.h"
-#include "DataHelper.h"
+#include <SofaPython3/DataHelper.h>
 
 #include <sofa/core/objectmodel/Event.h>
 using sofa::core::objectmodel::Event;

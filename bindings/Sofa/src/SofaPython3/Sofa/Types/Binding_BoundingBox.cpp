@@ -1,6 +1,6 @@
 #include <sofa/core/objectmodel/Data.h>
 #include "Binding_BoundingBox.h"
-#include "SofaPython3/Sofa/Core/DataHelper.h"
+#include "SofaPython3/DataHelper.h"
 
 namespace sofapython3 {
 

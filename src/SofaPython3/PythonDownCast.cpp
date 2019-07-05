@@ -22,7 +22,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************/
 
 #include <functional>
-#include <SofaPython3/Sofa/Core/PythonDownCast.h>
+#include "PythonDownCast.h"
 #include <SofaSimulationGraph/DAGNode.h>
 
 namespace sofapython3
