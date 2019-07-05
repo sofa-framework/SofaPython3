@@ -114,7 +114,7 @@ if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
     set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-fsized-deallocation")
 endif ()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE SofaCore SofaSimulationCore SofaSimulationGraph SofaComponentGeneral)
+target_link_libraries(${PROJECT_NAME} PRIVATE SofaCore SofaGeneral SofaSimulationCore SofaSimulationGraph SofaComponentGeneral)
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)
