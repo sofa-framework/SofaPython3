@@ -73,13 +73,13 @@ public:
 
 BindingDataFactory* getBindingDataFactoryInstance();
 
-class PythonTrampoline
+class PYBIND11_EXPORT PythonTrampoline
 {
 protected:
     std::shared_ptr<PyObject> pyobject;
 public:
     virtual ~PythonTrampoline();
-    virtual void setInstance(py::object s);
+    virtual void PYBIND11_EXPORT setInstance(py::object s);
 };
 
 template <typename T> class py_shared_ptr : public sofa::core::sptr<T>
@@ -94,27 +94,27 @@ public:
     }
 };
 
-void setItem2D(py::array a, py::slice slice, py::object o);
-void setItem2D(py::array a, const py::slice& slice,
+void PYBIND11_EXPORT setItem2D(py::array a, py::slice slice, py::object o);
+void PYBIND11_EXPORT setItem2D(py::array a, const py::slice& slice,
                const py::slice& slice1, py::object o);
-void setItem1D(py::array a, py::slice slice, py::object o);
-void setItem(py::array a, py::slice slice, py::object value);
+void PYBIND11_EXPORT setItem1D(py::array a, py::slice slice, py::object o);
+void PYBIND11_EXPORT setItem(py::array a, py::slice slice, py::object value);
 
-py::slice toSlice(const py::object& o);
+py::slice PYBIND11_EXPORT toSlice(const py::object& o);
 std::string getPathTo(Base* b);
 const char* getFormat(const AbstractTypeInfo& nfo);
 
 std::map<void*, py::array>& getObjectCache();
 void trimCache();
-py::buffer_info toBufferInfo(BaseData& m);
-py::object convertToPython(BaseData* d);
+py::buffer_info PYBIND11_EXPORT toBufferInfo(BaseData& m);
+py::object PYBIND11_EXPORT convertToPython(BaseData* d);
 
-py::object toPython(BaseData* d, bool writeable=false);
-void copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo, const py::list& l);
-void fromPython(BaseData* d, const py::object& o);
+py::object PYBIND11_EXPORT toPython(BaseData* d, bool writeable=false);
+void PYBIND11_EXPORT copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo, const py::list& l);
+void PYBIND11_EXPORT fromPython(BaseData* d, const py::object& o);
 
 template<typename T>
-void copyScalar(BaseData* a, const AbstractTypeInfo& nfo, py::array_t<T, py::array::c_style> src)
+void PYBIND11_EXPORT copyScalar(BaseData* a, const AbstractTypeInfo& nfo, py::array_t<T, py::array::c_style> src)
 {
     void* ptr = a->beginEditVoidPtr();
 
@@ -145,6 +145,34 @@ public:
     T& operator[](std::size_t idx) const { return ptr[idx]; }
 private:
     T* ptr;
+};
+
+
+class scoped_write_access
+{
+public:
+    BaseData* data{nullptr};
+    void* ptr{nullptr};
+    scoped_write_access(BaseData* data_) : data(data_){ ptr = data->beginEditVoidPtr(); }
+    ~scoped_write_access(){ data->endEditVoidPtr(); }
+};
+
+class scoped_read_access
+{
+public:
+    BaseData* data{nullptr};
+    void* ptr{nullptr};
+    scoped_read_access(BaseData* data_) : data(data_){ ptr = data->beginEditVoidPtr(); }
+    ~scoped_read_access(){ data->endEditVoidPtr(); }
+};
+
+class scoped_writeonly_access
+{
+public:
+    BaseData* data {nullptr};
+    void* ptr{nullptr};
+    scoped_writeonly_access(BaseData* data_) : data(data_){ ptr = data->beginEditVoidPtr(); }
+    ~scoped_writeonly_access(){ data->endEditVoidPtr(); }
 };
 
 }  // namespace sofapython3

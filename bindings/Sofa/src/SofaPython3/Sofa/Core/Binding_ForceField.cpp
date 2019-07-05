@@ -2,7 +2,7 @@
 #include <pybind11/detail/init.h>
 #include "Binding_BaseObject.h"
 #include "Binding_ForceField.h"
-#include "DataHelper.h"
+#include <SofaPython3/DataHelper.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/ForceField.h>

@@ -26,8 +26,8 @@ using sofa::core::objectmodel::BaseData;
 bool hasArrayFor(BaseData* d);
 
 ///@brief
-py::array resetArrayFor(BaseData* d);
-py::array getPythonArrayFor(BaseData* d);
+py::array PYBIND11_EXPORT resetArrayFor(BaseData* d);
+py::array PYBIND11_EXPORT getPythonArrayFor(BaseData* d);
 void trimCache();
 
 } /// sofapython3

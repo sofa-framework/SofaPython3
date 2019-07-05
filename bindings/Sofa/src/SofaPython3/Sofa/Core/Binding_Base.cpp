@@ -15,7 +15,7 @@ using sofa::core::objectmodel::BaseLink;
 #include <sofa/helper/accessor.h>
 using sofa::helper::WriteOnlyAccessor;
 
-#include "PythonDownCast.h"
+#include <SofaPython3/PythonDownCast.h>
 
 #include "Binding_Base.h"
 #include "Binding_Base_doc.h"

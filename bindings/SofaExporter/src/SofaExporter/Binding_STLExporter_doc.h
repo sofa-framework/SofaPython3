@@ -22,35 +22,30 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************/
 #pragma once
 
-#include <sofa/core/objectmodel/Base.h>
-#include <pybind11/pybind11.h>
-
-/////////////////////////////// DECLARATION //////////////////////////////
-namespace sofapython3
+namespace sofapython3::doc::SofaExporter::STLExporter::write
 {
-    /// Makes an alias for the pybind11 namespace to increase readability.
-    namespace py { using namespace pybind11; }
 
-    typedef std::function<py::object(sofa::core::objectmodel::Base*)> downCastingFunction;
+static auto docstring =
+        R"(
+        Exports a STL file
+        Will export a binary or ascii file depending on the binary flag of STLExporter
+        Will auto-number the exported files
+        ---------------
 
-    class PythonDownCast
-    {
-    public:
-        static py::object toPython(sofa::core::objectmodel::Base* object);
+        Example of use:
+          .. code-block:: python
 
-        template<class T>
-        static void registerType(downCastingFunction fct)
-        {
-            s_downcastingFct[T::GetClass()->className] = fct;
-        }
+             import Sofa
+             import SofaExporter
 
-        static std::map<std::string, downCastingFunction>::iterator searchLowestCastAvailable(const sofa::core::objectmodel::BaseClass* metaclass);
+             # Create a new node
+             n = Sofa.Core.Node("root"")
 
-    private:
-        static std::map<std::string, downCastingFunction> s_downcastingFct;
-    };
-} /// sofapython3
+             # Add STLExporter
+             n.addObject("STLExporter", name="exporter", ...)
 
+             # writes down the stl file
+             n.exporter.write()
 
-
-
+        )";
+}
