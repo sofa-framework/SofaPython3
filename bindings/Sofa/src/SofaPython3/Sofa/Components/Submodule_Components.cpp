@@ -31,7 +31,7 @@ using sofa::core::ObjectFactory;
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message;
 
-#include <SofaPython3/Sofa/Core/DataHelper.h>
+#include <SofaPython3/DataHelper.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
 #include <SofaPython3/Sofa/Core/Binding_Node.h>
 #include "Submodule_Components.h"
