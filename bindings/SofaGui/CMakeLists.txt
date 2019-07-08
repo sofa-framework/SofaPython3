@@ -19,15 +19,8 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaGui/Binding_GUIManager.h
 )
 
-set(MODULE_NAME SofaGui)
+set(MODULE_NAME Gui)
 set(PACKAGE_DIRECTORY  ${SP3_PYTHON_PACKAGES_DIRECTORY})
-
-SP3_add_python_package(
-    SOURCE_DIRECTORY
-        ${CMAKE_CURRENT_SOURCE_DIR}/package
-    TARGET_DIRECTORY
-        ${PACKAGE_DIRECTORY}
-)
 
 SP3_add_python_module(
     TARGET
@@ -40,5 +33,5 @@ SP3_add_python_module(
     DEPENDS
         SofaCore SofaGuiCommon SofaGuiMain
     DESTINATION
-        ${PACKAGE_DIRECTORY}
+        ${PACKAGE_DIRECTORY}/Sofa
 )
