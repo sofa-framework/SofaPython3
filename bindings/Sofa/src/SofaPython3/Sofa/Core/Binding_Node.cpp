@@ -232,28 +232,28 @@ void moduleAddNode(py::module &m) {
 
     py::class_<Node, sofa::core::objectmodel::BaseNode,
             sofa::core::objectmodel::Context, Node::SPtr>
-            p(m, "Node", sofapython3::doc::sofa::core::Node::docstring);
+            p(m, "Node", sofapython3::doc::sofa::core::Node::Class);
 
     /// Constructors:
     p.def(py::init([](){ return sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>("unnamed"); }),
-          ":rtype: Sofa.Simulation.Node");
+          sofapython3::doc::sofa::core::Node::init);
     p.def(py::init([](const std::string& name){
         return sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>(name);
-    }), ":rtype: Sofa.Simulation.Node", py::arg("name"));
+    }), sofapython3::doc::sofa::core::Node::init1Arg, py::arg("name"));
 
     /// Method: init (beware this is not the python __init__, this is sofa's init())
-    p.def("init", [](Node& self) { self.init(ExecParams::defaultInstance()); } );
+    p.def("init", [](Node& self) { self.init(ExecParams::defaultInstance()); }, sofapython3::doc::sofa::core::Node::initSofa );
 
     /// Method: addObjects
     /// Only addObject is needed now, the createObject is deprecated and will prints
     /// a warning for old scenes.
-    p.def("addObject", &Node_addObject, "Hello add object ...");
+    p.def("addObject", &Node_addObject, sofapython3::doc::sofa::core::Node::addObjectKwargs);
     p.def("addObject", [](Node& self, BaseObject* object) -> py::object
     {
         if(self.addObject(object))
             return PythonDownCast::toPython(object);
         return py::none();
-    });
+    }, sofapython3::doc::sofa::core::Node::addObject);
 
     p.def("createObject",
           [](Node* self, const std::string& type, const py::kwargs& kwargs) {
@@ -261,22 +261,22 @@ void moduleAddNode(py::module &m) {
                                 "To remove this warning message, use 'addObject'.";
         return Node_addObject(self, type,kwargs);
 
-    });
+    }, sofapython3::doc::sofa::core::Node::createObject);
 
     /// Method: addChild.
     /// Only addChild is needed now, the createChild is deprecated and will prints a warning for old scenes.
-    p.def("addChild", &Node_addChild, ":rtype: Sofa.Simulation.Node");
+    p.def("addChild", &Node_addChild, sofapython3::doc::sofa::core::Node::addChildKwargs);
     p.def("addChild", [](Node* self, Node* child)
     {
         self->addChild(child);
         return child;
-    }, ":rtype: Sofa.Simulation.Node");
+    }, sofapython3::doc::sofa::core::Node::addChild);
     p.def("createChild", [](Node* self, const std::string& name, const py::kwargs& kwargs)
     {
         msg_deprecated(self) << "The Node.createChild method is deprecated since sofa 19.06."
                                 "To remove this warning message, use 'addChild'.";
         return Node_addChild(self, name, kwargs);
-    });
+    }, sofapython3::doc::sofa::core::Node::createChild);
 
 
     /// Method: getChild.
@@ -286,13 +286,13 @@ void moduleAddNode(py::module &m) {
         if (child)
             return py::cast(child);
         return py::none();
-    });
+    }, sofapython3::doc::sofa::core::Node::getChild);
 
     /// Methods: removeChild
     /// Examples:
     ///     node1.removeChild(node2)
     ///     node1.removeChild("nodename")
-    p.def("removeChild", [](Node& self, Node& n){ self.removeChild(&n); });
+    p.def("removeChild", [](Node& self, Node& n){ self.removeChild(&n); }, sofapython3::doc::sofa::core::Node::removeChild);
     p.def("removeChild", [](Node& n, const std::string name)
     {
         Node* node = n.getChild(name);
@@ -301,19 +301,19 @@ void moduleAddNode(py::module &m) {
 
         n.removeChild(node);
         return py::cast(node);
-    });
+    }, sofapython3::doc::sofa::core::Node::removeChildWithName);
 
-    p.def("getRoot", &Node::getRoot);
-    p.def("getPathName", &Node::getPathName);
+    p.def("getRoot", &Node::getRoot, sofapython3::doc::sofa::core::Node::getRoot);
+    p.def("getPathName", &Node::getPathName, sofapython3::doc::sofa::core::Node::getPathName);
     p.def("getLink", [](Node* node) {
         return ("@"+node->getPathName()).c_str();
-    });
+    }, sofapython3::doc::sofa::core::Node::getLink);
 
     p.def_property_readonly("children", [](Node* node)
     {
         return new BaseIterator(node, [](Node* n) -> size_t { return n->child.size(); },
         [](Node* n, unsigned int index) -> Node::SPtr { return n->child[index]; });
-});
+}, sofapython3::doc::sofa::core::Node::children);
 
 p.def_property_readonly("parents", [](Node* node)
 {
@@ -323,7 +323,7 @@ p.def_property_readonly("parents", [](Node* node)
     auto p = n->getParents();
     return static_cast<Node*>(p[index]);
 });
-});
+}, sofapython3::doc::sofa::core::Node::parents);
 
 p.def_property_readonly("objects", [](Node* node)
 {
@@ -332,7 +332,7 @@ p.def_property_readonly("objects", [](Node* node)
     [](Node* n, unsigned int index) -> Base::SPtr {
     return (n->object[index]);
 });
-});
+}, sofapython3::doc::sofa::core::Node::objects);
 
 p.def("__getattr__", [](Node& self, const std::string& name) -> py::object
 {
