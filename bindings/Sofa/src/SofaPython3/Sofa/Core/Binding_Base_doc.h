@@ -22,9 +22,8 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************/
 #pragma once
 
-namespace sofapython3::doc::base
+namespace sofapython3::doc::Base
 {
-
 static auto BaseClass =
         R"(
         Sofa.Core.Base is the root of the Sofa class Hierarhcy
@@ -66,7 +65,6 @@ static auto findData =
         :type name: string
         :return: the data field
         )";
-
 static auto getDataFields =
         R"(
         Accessor to the vector containing all the fields of this object
@@ -127,6 +125,11 @@ static auto getData =
         :type s: string
         :return: the first data found of this name
         )";
+  
+static auto getDefinitionSourceFilePos="Returns the line number where the object is defined.";
+static auto getDefinitionSourceFileName="Returns the name of the file that contains the object definition.";
+static auto getInstanciationSourceFilePos="Returns the line number where the object is instanciatiated.";
+static auto getInstanciationSourceFileName="Returns the name of the file where this object instance is from.";
 }
 
 namespace sofapython3::doc::dataDict {

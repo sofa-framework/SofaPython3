@@ -75,13 +75,21 @@ set(HEADER_FILES
     src/SofaPython3/initModule.h
     src/SofaPython3/PythonEnvironment.h
     src/SofaPython3/SceneLoaderPY3.h
+
+    src/SofaPython3/DataCache.h
+    src/SofaPython3/DataHelper.h
+    src/SofaPython3/PythonDownCast.h
 )
 
 set(SOURCE_FILES
     src/SofaPython3/initModule.cpp
     src/SofaPython3/PythonEnvironment.cpp
     src/SofaPython3/SceneLoaderPY3.cpp
-)
+
+    src/SofaPython3/DataCache.cpp
+    src/SofaPython3/DataHelper.cpp
+    src/SofaPython3/PythonDownCast.cpp
+    )
 
 set(EXTRA_FILES
     SofaPython3Config.cmake.in
@@ -98,14 +106,15 @@ if(SP3_BUILD_TEST)
 endif(SP3_BUILD_TEST)
     
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAPYTHON3")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAPYTHON3")
+target_compile_definitions(${PROJECT_NAME} PUBLIC "-DSOFA_HAVE_SOFAPYTHON3")
 
 if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
     # Sized deallocaion is not enabled by default under clang after c++14
     set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-fsized-deallocation")
 endif ()
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore SofaSimulationGraph SofaComponentGeneral)
+target_link_libraries(${PROJECT_NAME} PRIVATE SofaCore SofaGeneral SofaSimulationCore SofaSimulationGraph SofaComponentGeneral)
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)

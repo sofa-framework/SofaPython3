@@ -1,8 +1,7 @@
 #include "Binding_BaseObject.h"
 #include "Binding_Controller.h"
-
-#include "PythonDownCast.h"
 #include "Binding_BaseObject_doc.h"
+#include <SofaPython3/PythonDownCast.h>
 
 namespace sofapython3
 {

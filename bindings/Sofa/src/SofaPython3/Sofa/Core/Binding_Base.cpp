@@ -15,7 +15,7 @@ using sofa::core::objectmodel::BaseLink;
 #include <sofa/helper/accessor.h>
 using sofa::helper::WriteOnlyAccessor;
 
-#include "PythonDownCast.h"
+#include <SofaPython3/PythonDownCast.h>
 
 #include "Binding_Base.h"
 #include "Binding_Base_doc.h"
@@ -512,7 +512,7 @@ void checkAmbiguousCreation(py::object& py_self, const std::string& name, const 
 
 void moduleAddBase(py::module &m)
 {
-    py::class_<Base, Base::SPtr> base(m, "Base", py::dynamic_attr(), doc::base::BaseClass);
+    py::class_<Base, Base::SPtr> base(m, "Base", py::dynamic_attr(), doc::Base::Class);
 
     base.def("getName", &Base::getName,
              pybind11::return_value_policy::copy,
@@ -520,9 +520,14 @@ void moduleAddBase(py::module &m)
     base.def("setName", pybind11::overload_cast<const std::string&>(&Base::setName), sofapython3::doc::base::setName);
     base.def("setName", pybind11::overload_cast<const std::string&, int>(&Base::setName), sofapython3::doc::base::setNameCounter);
     base.def("getClass", &Base::getClass, pybind11::return_value_policy::reference, sofapython3::doc::base::getClass);
-
-    //base.def("getSourceFileName", &Base::getSourceFileName);
-    //base.def("getSourceFileLoc", &Base::getSourceFileLoc);
+    base.def("getDefinitionSourceFilePos", &Base::getDefinitionSourceFilePos,
+             sofapython3::doc::Base::getDefinitionSourceFilePos);
+    base.def("getDefinitionSourceFileName", &Base::getDefinitionSourceFileName,
+             sofapython3::doc::Base::getDefinitionSourceFileName);
+    base.def("getInstanciationSourceFilePos", &Base::getInstanciationSourceFilePos,
+             sofapython3::doc::Base::getInstanciationSourceFilePos);
+    base.def("getInstanciationFileName", &Base::getInstanciationSourceFileName,
+             sofapython3::doc::Base::getInstanciationSourceFilePos);
     base.def("findData", &Base::findData, pybind11::return_value_policy::reference, sofapython3::doc::base::findData);
     base.def("getDataFields", &Base::getDataFields, pybind11::return_value_policy::reference, sofapython3::doc::base::getDataFields);
     base.def("findLink", &Base::findLink, pybind11::return_value_policy::reference, sofapython3::doc::base::findLink);

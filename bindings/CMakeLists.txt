@@ -19,3 +19,8 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-bindings-config"
 add_subdirectory(Sofa)
 add_subdirectory(SofaRuntime)
 add_subdirectory(SofaTypes)
+
+find_package(SofaExporter QUIET)
+if (SofaExporter_FOUND)
+  add_subdirectory(SofaExporter)
+endif (SofaExporter_FOUND)

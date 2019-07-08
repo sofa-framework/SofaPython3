@@ -11,7 +11,7 @@ using  sofa::core::objectmodel::BaseObject;
 #include <sofa/core/objectmodel/BaseNode.h>
 using  sofa::core::objectmodel::BaseNode;
 
-#include "DataHelper.h"
+#include <SofaPython3/DataHelper.h>
 #include "Binding_Base.h"
 #include "Binding_BaseData.h"
 #include "Binding_DataContainer.h"
@@ -274,6 +274,10 @@ void moduleAddDataContainer(py::module& m)
 
         return py::reinterpret_steal<py::object>(PyNumber_Multiply(p.ptr(), value.ptr()));
     });
+
+    getBindingDataFactoryInstance()->registerCreator(
+                "DataContainer", new TypeCreator<DataContainer*>());
+
 }
 
 void moduleAddWriteAccessor(py::module& m)

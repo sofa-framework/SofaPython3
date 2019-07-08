@@ -36,6 +36,8 @@ using sofapython3::SceneLoaderPY3;
 #include "Timer/Submodule_Timer.h"
 #include "Input/Submodule_Input.h"
 
+#include <SofaPython3/DataHelper.h>
+
 namespace sofapython3
 {
 
@@ -68,22 +70,22 @@ PYBIND11_MODULE(SofaRuntime, m) {
               -----------------------
 
               Example of use:
-                .. code-block:: python
+              .. code-block:: python
 
-                   import SofaRuntime
-                    SofaRuntime.importPlugin("MechanicalObject"")
+              import SofaRuntime
+              SofaRuntime.importPlugin("MechanicalObject"")
 
-                .. automethod::
-                  :toctree: _autosummary
+              .. automethod::
+              :toctree: _autosummary
 
-                  SofaRuntime.importPlugin
-             )doc";
+              SofaRuntime.importPlugin
+              )doc";
 
     // Add the plugin directory to PluginRepository
     const std::string& pluginDir = Utils::getExecutableDirectory();
     PluginRepository.addFirstPath(pluginDir);
 
-    //if( !sofa::simulation::getSimulation() )
+    // if( !sofa::simulation::getSimulation() )
     //    sofa::simulation::setSimulation(new DAGSimulation());
 
     /// We need to import the project dependencies
@@ -106,4 +108,4 @@ PYBIND11_MODULE(SofaRuntime, m) {
     addSubmoduleTimer(m);
 }
 
-}
+}  // namespace sofapython3
