@@ -22,16 +22,6 @@ Submodules:
     Sofa.Simulation
     Sofa.Types
     Sofa.Helper
-
-Functions:
-  .. autosummary::
-
-    Sofa.msg_info
-    Sofa.msg_warning
-    Sofa.msg_error
-    Sofa.msg_fatal
-    Sofa.msg_deprecated
-
 """
 
-from .@MODULE_NAME@  import *
+from . import @MODULE_NAMES@

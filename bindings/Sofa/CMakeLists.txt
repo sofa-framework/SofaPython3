@@ -8,11 +8,12 @@ if (NOT TARGET SofaPython3)
     find_package(SofaPython3 REQUIRED)
 endif()
 
-set(HEADER_FILES
+set(CORE_HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_Base.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_Base_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_BaseData.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_BaseObject.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_BaseObject_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_BaseCamera.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_DataContainer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_BaseController.h
@@ -21,23 +22,24 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_Visitor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_Node.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_Node_doc.h
-
-
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/DataCache.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/DataHelper.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/PythonDownCast.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Submodule_Core.h
+    )
 
+set(TYPES_HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Types/Submodule_Types.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Types/Binding_BoundingBox.h
+    )
 
+set(HELPER_HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Helper/Submodule_Helper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Helper/Binding_Vector.h
+    )
 
+set(SIMULATION_HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Simulation/Submodule_Simulation.h
-)
+    )
 
-set(SOURCE_FILES
+set(CORE_SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_Base.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_BaseData.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_BaseObject.cpp
@@ -48,46 +50,88 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_ForceField.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_Visitor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_Node.cpp
-
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/DataCache.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/DataHelper.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/PythonDownCast.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Submodule_Core.cpp
+    )
 
+set(TYPES_SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Types/Submodule_Types.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Types/Binding_BoundingBox.cpp
+    )
 
+set(HELPER_SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Helper/Submodule_Helper.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Helper/Binding_Vector.cpp
+    )
 
+set(SIMULATION_SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Simulation/Submodule_Simulation.cpp
-
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Module_Sofa.cpp
-)
+    )
 
 
-set(MODULE_NAME Sofa)
+set(MODULE_NAMES "Core, Simulation, Helper, Types")
 set(PACKAGE_DIRECTORY  ${SP3_PYTHON_PACKAGES_DIRECTORY})
 
 SP3_add_python_package(
         SOURCE_DIRECTORY
             ${CMAKE_CURRENT_SOURCE_DIR}/package
         TARGET_DIRECTORY
-            ${PACKAGE_DIRECTORY}
+            ${PACKAGE_DIRECTORY}/Sofa
 )
 
 SP3_add_python_module(
     TARGET
-        ${PROJECT_NAME}
+        ${PROJECT_NAME}_Core
     MODULE_NAME
-        ${MODULE_NAME}
+        Core
     SOURCES
-        ${SOURCE_FILES}
-        ${HEADER_FILES}
+        ${CORE_SOURCE_FILES}
+        ${CORE_HEADER_FILES}
     DEPENDS
-        SofaCore SofaSimulationGraph SofaPython3 SofaBaseVisual 
+        SofaCore SofaSimulationCore SofaSimulationGraph SofaPython3 SofaBaseVisual
     DESTINATION
-        ${PACKAGE_DIRECTORY}
+        ${PACKAGE_DIRECTORY}/Sofa
+)
+
+SP3_add_python_module(
+    TARGET
+        ${PROJECT_NAME}_Helper
+    MODULE_NAME
+        Helper
+    SOURCES
+        ${HELPER_SOURCE_FILES}
+        ${HELPER_HEADER_FILES}
+    DEPENDS
+        SofaCore SofaSimulationCore SofaSimulationGraph SofaPython3 SofaBaseVisual
+    DESTINATION
+        ${PACKAGE_DIRECTORY}/Sofa
+)
+
+SP3_add_python_module(
+    TARGET
+        ${PROJECT_NAME}_Simulation
+    MODULE_NAME
+        Simulation
+    SOURCES
+        ${SIMULATION_SOURCE_FILES}
+        ${SIMULATION_HEADER_FILES}
+    DEPENDS
+        SofaCore SofaSimulationCore SofaSimulationGraph SofaPython3 SofaBaseVisual
+    DESTINATION
+        ${PACKAGE_DIRECTORY}/Sofa
+)
+
+SP3_add_python_module(
+    TARGET
+        ${PROJECT_NAME}_Types
+    MODULE_NAME
+        Types
+    SOURCES
+        ${TYPES_SOURCE_FILES}
+        ${TYPES_HEADER_FILES}
+    DEPENDS
+        SofaCore SofaSimulationCore SofaSimulationGraph SofaPython3 SofaBaseVisual
+    DESTINATION
+        ${PACKAGE_DIRECTORY}/Sofa
 )
 
 

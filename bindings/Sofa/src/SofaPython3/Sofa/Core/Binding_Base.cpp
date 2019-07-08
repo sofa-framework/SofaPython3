@@ -15,7 +15,7 @@ using sofa::core::objectmodel::BaseLink;
 #include <sofa/helper/accessor.h>
 using sofa::helper::WriteOnlyAccessor;
 
-#include "PythonDownCast.h"
+#include <SofaPython3/PythonDownCast.h>
 
 #include "Binding_Base.h"
 #include "Binding_Base_doc.h"
@@ -316,11 +316,7 @@ void moduleAddDataDict(py::module& m)
     /// DataDict binding
     ////////////////////////////////////////////////////////////////////////////////////////////////
     py::class_<DataDict> d(m, "DataDict",
-                           R"(DataDict exposes the data of a sofa object in a way similar to a normal python dictionnary.
-                           Eg:
-                           for k,v in anObject.__data__.items():
-                           print("Data name :"+k+" value:" +str(v)))
-                           )");
+                           sofapython3::doc::dataDict::Class);
     d.def("__len__", [](DataDict& self)
     {
         return self.owner->getDataFields().size();
@@ -370,15 +366,15 @@ void moduleAddDataDict(py::module& m)
     d.def("keys", [](DataDict& d)
     {
         return DataDictIterator(d.owner, true, false);
-    });
+    }, sofapython3::doc::dataDict::keys);
     d.def("values", [](DataDict& d)
     {
         return DataDictIterator(d.owner, false, true);
-    });
+    }, sofapython3::doc::dataDict::values);
     d.def("items", [](DataDict& d)
     {
         return DataDictIterator(d.owner, true, true);
-    });
+    }, sofapython3::doc::dataDict::items);
 }
 
 
@@ -516,28 +512,26 @@ void checkAmbiguousCreation(py::object& py_self, const std::string& name, const 
 
 void moduleAddBase(py::module &m)
 {
-    py::class_<Base, Base::SPtr> base(m, "Base", py::dynamic_attr(), doc::Base::Class);
+    py::class_<Base, Base::SPtr> base(m, "Base", py::dynamic_attr(), doc::base::BaseClass);
 
     base.def("getName", &Base::getName,
              pybind11::return_value_policy::copy,
-             doc::Base::getName);
-    base.def("setName", pybind11::overload_cast<const std::string&>(&Base::setName));
-    base.def("setName", pybind11::overload_cast<const std::string&, int>(&Base::setName));
-    base.def("getClass", &Base::getClass, pybind11::return_value_policy::reference);
-
+             doc::base::getName, sofapython3::doc::base::getName);
+    base.def("setName", pybind11::overload_cast<const std::string&>(&Base::setName), sofapython3::doc::base::setName);
+    base.def("setName", pybind11::overload_cast<const std::string&, int>(&Base::setName), sofapython3::doc::base::setNameCounter);
+    base.def("getClass", &Base::getClass, pybind11::return_value_policy::reference, sofapython3::doc::base::getClass);
     base.def("getDefinitionSourceFilePos", &Base::getDefinitionSourceFilePos,
-             sofapython3::doc::Base::getDefinitionSourceFilePos);
+             sofapython3::doc::base::getDefinitionSourceFilePos);
     base.def("getDefinitionSourceFileName", &Base::getDefinitionSourceFileName,
-             sofapython3::doc::Base::getDefinitionSourceFileName);
+             sofapython3::doc::base::getDefinitionSourceFileName);
     base.def("getInstanciationSourceFilePos", &Base::getInstanciationSourceFilePos,
-             sofapython3::doc::Base::getInstanciationSourceFilePos);
+             sofapython3::doc::base::getInstanciationSourceFilePos);
     base.def("getInstanciationFileName", &Base::getInstanciationSourceFileName,
-             sofapython3::doc::Base::getInstanciationSourceFilePos);
-
-    base.def("findData", &Base::findData, pybind11::return_value_policy::reference);
-    base.def("getDataFields", &Base::getDataFields, pybind11::return_value_policy::reference);
-    base.def("findLink", &Base::findLink, pybind11::return_value_policy::reference);
-    base.def("getLinks", &Base::getLinks, pybind11::return_value_policy::reference);
+             sofapython3::doc::base::getInstanciationSourceFilePos);
+    base.def("findData", &Base::findData, pybind11::return_value_policy::reference, sofapython3::doc::base::findData);
+    base.def("getDataFields", &Base::getDataFields, pybind11::return_value_policy::reference, sofapython3::doc::base::getDataFields);
+    base.def("findLink", &Base::findLink, pybind11::return_value_policy::reference, sofapython3::doc::base::findLink);
+    base.def("getLinks", &Base::getLinks, pybind11::return_value_policy::reference, sofapython3::doc::base::getLinks);
     base.def("addData", [](py::object py_self, const std::string& name,
              py::object value = py::object(), const std::string& help = "",
              const std::string& group = "", std::string type = "")
@@ -592,7 +586,7 @@ void moduleAddBase(py::module &m)
         data->setDisplayed(true);
         data->setPersistent(true);
 
-    }, "name"_a, "value"_a = "", "help"_a = "", "group"_a = "", "type"_a = "");
+    }, sofapython3::doc::base::addData);
 
     base.def("addData", [](Base* self, py::object d) {
         BaseData* data = py::cast<BaseData*>(d);
@@ -608,7 +602,7 @@ void moduleAddBase(py::module &m)
             newData->setParent(data);
             newData->setName(data->getName());
         }
-    });
+    }, sofapython3::doc::base::addDataInitialized);
 
     base.def("__dir__", [](Base* self)
     {
@@ -628,7 +622,7 @@ void moduleAddBase(py::module &m)
             return py::cast(d);
         }
         return py::none();
-    });
+    }, sofapython3::doc::base::getData);
 
 
     base.def("__getattr__", [](py::object self, const std::string& s) -> py::object

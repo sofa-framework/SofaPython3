@@ -28,7 +28,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include "Binding_BaseObject.h"
 #include "Binding_BaseCamera.h"
 
-#include <SofaPython3/Sofa/Core/PythonDownCast.h>
+#include <SofaPython3/PythonDownCast.h>
 
 namespace sofapython3
 {

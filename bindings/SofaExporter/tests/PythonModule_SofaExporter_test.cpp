@@ -19,8 +19,52 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+/******************************************************************************
+ * Contributors:                                                              *
+ *    - damien.marchal@univ-lille1.fr                                         *
+ *****************************************************************************/
 
-#include <sofa/config.h>
+#include <vector>
 
-#define SOFAPYTHON3_API
+#include <SofaPython3/PythonTest.h>
+using sofapython3::PythonTest ;
+using sofapython3::PythonTestList ;
+using sofapython3::PrintTo ;
+using std::string;
+
+#include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
+using sofa::helper::logging::MessageDispatcher;
+using sofa::helper::logging::MainPerComponentLoggingMessageHandler;
+
+namespace
+{
+
+bool init()
+{
+    MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+    return true;
+}
+
+static int _inited_=init();
+
+class SofaExporter : public PythonTest {};
+
+/// static build of the test list
+static struct PythonModule_SofaExporter_tests : public PythonTestList
+{
+    PythonModule_SofaExporter_tests()
+    {
+        addTestDir(std::string(PYTHON_TESTFILES_DIR)+"/tests", "SofaExporter_");
+    }
+} python_tests;
+
+/// run test list using the custom name function getTestName.
+/// this allows to do gtest_filter=*FileName*
+INSTANTIATE_TEST_CASE_P(SofaPython3,
+                        SofaExporter,
+                        ::testing::ValuesIn(python_tests.list),
+                        SofaExporter::getTestName);
+
+TEST_P(SofaExporter, all_tests) { run(GetParam()); }
+
+}

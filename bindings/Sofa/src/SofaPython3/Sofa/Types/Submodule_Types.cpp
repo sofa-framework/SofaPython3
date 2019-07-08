@@ -4,10 +4,8 @@
 namespace sofapython3
 {
 /// The first parameter must be named the same as the module file to load.
-py::module addSubmoduleTypes(py::module& p)
+PYBIND11_MODULE(Types, types)
 {
-    py::module types = p.def_submodule("Types");
-
     types.doc() = R"doc(
            Default types available in Sofa
            -----------------------
@@ -20,8 +18,6 @@ py::module addSubmoduleTypes(py::module& p)
        )doc";
 
     moduleAddBoundingBox(types);
-
-    return types;
 }
 
 }  // namespace sofapython3
