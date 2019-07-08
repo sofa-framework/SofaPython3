@@ -64,7 +64,9 @@ PYBIND11_MODULE(Core, core)
     moduleAddBaseCamera(core);
     moduleAddBaseData(core);
     moduleAddWriteAccessor(core);
+    std::cout << "0" << std::endl;
     moduleAddDataContainer(core);
+    std::cout << "1" << std::endl;
     moduleAddBaseObject(core);
     moduleAddController(core);
     moduleAddForceField(core);

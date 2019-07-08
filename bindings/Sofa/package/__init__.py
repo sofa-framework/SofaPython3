@@ -25,3 +25,4 @@ Submodules:
 """
 
 from . import @MODULE_NAMES@
+from . import PyTypes

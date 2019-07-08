@@ -24,10 +24,10 @@ class Test(unittest.TestCase):
 
         def test_init(self):
                 root = Sofa.Core.Node("rootNode")
-                c = root.createChild("child1")
-                c.createObject("MechanicalObject", position=[0.0,1.0,2.0]*100)
+                c = root.addChild("child1")
+                c = c.addObject("MechanicalObject", name="MO", position=[0.0,1.0,2.0]*100)
                 root.init()
-                self.assertTrue(c.position.size() == 100*3)
+                self.assertEqual(c.position.size(), 100*3)
 
         def test_createObjectInvalid(self):
                 root = Sofa.Core.Node("rootNode")
