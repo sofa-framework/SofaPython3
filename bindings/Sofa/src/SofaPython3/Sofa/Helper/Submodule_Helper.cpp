@@ -80,10 +80,8 @@ static void parse_emitter_message_then(py::args args, const Action& action) {
 }
 
 /// The first parameter must be named the same as the module file to load.
-pybind11::module addSubmoduleHelper(py::module& p)
-{   
-    py::module helper = p.def_submodule("Helper");
-
+PYBIND11_MODULE(Helper, helper)
+{
     helper.doc() = R"doc(
            Utility functions
            -----------------------
@@ -121,8 +119,6 @@ pybind11::module addSubmoduleHelper(py::module& p)
     helper.def("msg_fatal", [](py::args args) { MESSAGE_DISPATCH(msg_fatal); });
 
     moduleAddVector(helper);
-
-    return helper;
 }
 
 } ///namespace sofapython3

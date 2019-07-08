@@ -49,7 +49,7 @@ class MyForceField(Sofa.Core.ForceField):
         df += tdf.reshape((-1,3))
         
     def addKToMatrix(self, a, b):
-        print(" NOT IMPLEMENTED a,b are non" )
+        print(" NOT IMPLEMENTED a, b are none" )
 
 class CreateObject(object):
         def __init__(self, *args, **kwargs):

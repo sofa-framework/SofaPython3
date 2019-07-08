@@ -42,9 +42,9 @@ public:
     virtual DataType createInstance(
             sofa::core::objectmodel::BaseData* data) override
     {
-        return dynamic_cast<DataType>(data);
+        return reinterpret_cast<DataType>(data);
     }
-    virtual const std::type_info& type() override { return typeid(sofa::Data<DataType>);}
+    virtual const std::type_info& type() override { return typeid(DataType);}
 };
 
 class BindingDataFactory : public sofa::helper::Factory< std::string, sofa::core::objectmodel::BaseData*, sofa::core::objectmodel::BaseData*, sofa::core::objectmodel::BaseData*>
@@ -58,6 +58,7 @@ public:
         while (it != end)
         {
             creator = (*it).second;
+            std::cout << creator->type().name() << std::endl;
             object = creator->createInstance(arg);
             if (object != nullptr)
             {
