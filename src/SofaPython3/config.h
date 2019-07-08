@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGeneral/config.h>
+#include <sofa/config.h>
 
 #define SOFAPYTHON3_API

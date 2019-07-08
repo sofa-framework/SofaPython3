@@ -27,7 +27,7 @@ class Test(unittest.TestCase):
                 c = root.createChild("child1")
                 c.createObject("MechanicalObject", position=[0.0,1.0,2.0]*100)
                 root.init()
-                self.assertTrue( c.position.size() = 100*3)
+                self.assertTrue(c.position.size() == 100*3)
 
         def test_createObjectInvalid(self):
                 root = Sofa.Core.Node("rootNode")

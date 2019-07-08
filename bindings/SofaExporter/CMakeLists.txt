@@ -7,8 +7,8 @@ project(SofaPython3_SofaExporter)
 if (NOT TARGET SofaPython3)
     find_package(SofaPython3 REQUIRED)
 endif()
-if (NOT TARGET SofaPython3_Sofa)
-    find_package(SofaPython3_Sofa REQUIRED)
+if (NOT TARGET SofaPython3_Sofa_Core)
+    find_package(SofaPython3_Sofa_Core REQUIRED)
 endif()
 
 set(HEADER_FILES
@@ -41,7 +41,7 @@ SP3_add_python_module(
         ${SOURCE_FILES}
         ${HEADER_FILES}
     DEPENDS
-        SofaCore SofaPython3 SofaPython3_Sofa SofaExporter
+        SofaCore SofaPython3 SofaPython3_Sofa_Core SofaExporter
     DESTINATION
         ${PACKAGE_DIRECTORY}
 )

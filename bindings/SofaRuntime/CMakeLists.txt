@@ -42,7 +42,7 @@ SP3_add_python_module(
         ${SOURCE_FILES}
         ${HEADER_FILES}
     DEPENDS
-        SofaCore SofaSimulationGraph SofaPython3 SofaPython3_Sofa
+        SofaCore SofaSimulationGraph SofaPython3 SofaPython3_Sofa_Core
     DESTINATION
         ${PACKAGE_DIRECTORY}
 )
