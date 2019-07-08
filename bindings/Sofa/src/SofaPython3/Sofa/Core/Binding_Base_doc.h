@@ -22,7 +22,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************/
 #pragma once
 
-namespace sofapython3::doc::Base
+namespace sofapython3::doc::base
 {
 static auto BaseClass =
         R"(
