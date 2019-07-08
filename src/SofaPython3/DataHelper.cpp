@@ -3,9 +3,8 @@
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 
-#include <SofaPython3/Sofa/Core/Binding_DataContainer.h>
-#include <SofaPython3/Sofa/Core/DataHelper.h>
-#include <SofaPython3/Sofa/Core/DataCache.h>
+#include <SofaPython3/DataHelper.h>
+#include <SofaPython3/DataCache.h>
 
 namespace sofapython3
 {
@@ -325,8 +324,8 @@ py::object convertToPython(BaseData* d)
 
     std::cout << nfo.name() << " is not a container nor a scalar." << std::endl;
 
-    if (getBindingDataFactoryInstance()->createObject("BoundingBox", d))
-        return py::cast(getBindingDataFactoryInstance()->createObject("BoundingBox", d));
+    if (getBindingDataFactoryInstance()->createObject(nfo.name(), d))
+        return py::cast(getBindingDataFactoryInstance()->createObject(nfo.name(), d));
 
     std::cout << nfo.name() << " No such type in the BindingDataFactory. returning string" << std::endl;
 
@@ -385,7 +384,7 @@ py::object toPython(BaseData* d, bool writeable)
         if(!writeable)
         {
             getPythonArrayFor(d);
-            return py::cast(reinterpret_cast<DataContainer*>(d));
+            return py::cast(getBindingDataFactoryInstance()->createObject("DataContainer", d));
         }
         return getPythonArrayFor(d);
     }

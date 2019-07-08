@@ -22,10 +22,8 @@ namespace sofapython3
 {
 
 /// The first parameter must be named the same as the module file to load.
-pybind11::module addSubmoduleCore(py::module& p)
-{   
-    py::module core = p.def_submodule("Core");
-
+PYBIND11_MODULE(Core, core)
+{
     core.doc() = R"doc(
            Scene components
            -----------------------
@@ -84,9 +82,6 @@ pybind11::module addSubmoduleCore(py::module& p)
             sofa::core::objectmodel::Context::SPtr>(core, "Context");
 
     moduleAddNode(core);
-    //moduleAddSimulation(core);
-
-    return core;
 }
 
 } ///namespace sofapython3

@@ -1,7 +1,7 @@
 #include "Binding_BaseObject.h"
 #include "Binding_Controller.h"
-
-#include "PythonDownCast.h"
+#include "Binding_BaseObject_doc.h"
+#include <SofaPython3/PythonDownCast.h>
 
 namespace sofapython3
 {
@@ -27,12 +27,12 @@ void moduleAddBaseObject(py::module& m)
         return py::cast(object->toBaseObject());
     });
 
-    py::class_<BaseObject, Base, BaseObject::SPtr>p(m, "Object");
-    p.def("init", &BaseObject::init);
-    p.def("reinit", &BaseObject::init);
+    py::class_<BaseObject, Base, BaseObject::SPtr>p(m, "Object", sofapython3::doc::baseObject::Class);
+    p.def("init", &BaseObject::init, sofapython3::doc::baseObject::init);
+    p.def("reinit", &BaseObject::init, sofapython3::doc::baseObject::reinit);
 
-    p.def("getPathName", &BaseObject::getPathName);
-    p.def("getLink", [](const BaseObject &self){ return std::string("@") + self.getPathName(); });
+    p.def("getPathName", &BaseObject::getPathName, sofapython3::doc::baseObject::getPathName);
+    p.def("getLink", [](const BaseObject &self){ return std::string("@") + self.getPathName(); }, sofapython3::doc::baseObject::getLink);
 
     /// gets an item using its path (path is dot-separated, relative to the object
     /// it's called upon & ONLY DESCENDING (no ../):

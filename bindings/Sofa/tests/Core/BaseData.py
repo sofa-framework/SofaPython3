@@ -45,7 +45,6 @@ class Test(unittest.TestCase):
                 v=numpy.array([[0,0,0],[1,1,1],[2,2,2],[3,3,3]])
                 c = root.addObject("MechanicalObject", name="t", position=v.tolist())
                 c.position.value *= 2.0
-
                 numpy.testing.assert_array_equal(c.position.array(), v*2.0)
                 c.position.value += 3.0
                 numpy.testing.assert_array_equal(c.position.array(), (v*2.0)+3.0)
@@ -124,6 +123,7 @@ class Test(unittest.TestCase):
                 root = Sofa.Core.Node("rootNode")
                 v=numpy.array([[0,0,0],[1,1,1],[2,2,2],[3,3,3]])
                 c = root.addObject("MechanicalObject", name="t", position=v.tolist())
+                print(dir(c.position.value))
                 c2 = c.position.value * 2.0
 
                 numpy.testing.assert_array_equal(c.position.array(), v)

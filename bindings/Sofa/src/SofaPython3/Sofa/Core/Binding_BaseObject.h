@@ -5,7 +5,6 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include "Binding_Base.h"
-#include "Binding_BaseObject.h"
 
 template class pybind11::class_<sofa::core::objectmodel::BaseObject,
                                 sofa::core::objectmodel::Base,

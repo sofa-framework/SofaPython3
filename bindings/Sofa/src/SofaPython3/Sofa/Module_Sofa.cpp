@@ -8,41 +8,21 @@ namespace sofapython3
 {
 
 /// The first parameter must be named the same as the module file to load.
-PYBIND11_MODULE(Sofa, m)
+PYBIND11_MODULE(Core, c)
 {
-    m.doc() = R"doc(
-              Sofa
-              -----------------------
-
-              Example of use:
-                .. code-block:: python
-
-                   import Sofa
-
-                   n = Sofa.Core.Node("MyNode"")
-                   n.addChild("Node2")
-                   n.addObject("MechanicalObject", name="dofs")
-
-                   Sofa.Simulation.init(root)
-                   Sofa.Simulation.print(root)
-
-              Submodules:
-                .. autosummary::
-                  :toctree: _autosummary
-
-                  Sofa.Core
-                  Sofa.Simulation
-                  Sofa.Types
-                  Sofa.Helper
-             )doc";
-    py::module core = addSubmoduleCore(m);
-    py::module components = addSubmoduleComponents(m);
-
-    py::module helper = addSubmoduleHelper(m);
-    py::module simulation = addSubmoduleSimulation(m);
-    py::module types = addSubmoduleTypes(m);
-
-
+    addSubmoduleCore(c);
+}
+PYBIND11_MODULE(Helper, h)
+{
+    addSubmoduleHelper(h);
+}
+PYBIND11_MODULE(Simulation, s)
+{
+    addSubmoduleSimulation(s);
+}
+PYBIND11_MODULE(Types, t)
+{
+    addSubmoduleTypes(t);
 }
 
 } ///namespace sofapython3
