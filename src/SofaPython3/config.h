@@ -22,5 +22,14 @@
 #pragma once
 
 #include <sofa/config.h>
+#include <pybind11/pybind11.h>
 
-#define SOFAPYTHON3_API
+
+/**
+ * This macro HAS to be placed in front of function prototypes containing
+ * pybind11 symbols. By default pybind exports its attributes as hidden symbols
+ * which causes linking against libs using them impossible (undefined refs).
+ * It will also do the job of adding the dllexport / dllimport declaration on
+ * Windows Systems.
+ **/
+#define SOFAPYTHON3_API PYBIND11_EXPORT // __attribute__(visibility("default")) && __declspec(dllexport)

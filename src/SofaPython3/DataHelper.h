@@ -8,6 +8,8 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/core/objectmodel/Data.h>
 
+#include "config.h"
+
 ////////////////////////// FORWARD DECLARATION ///////////////////////////
 namespace sofa {
     namespace defaulttype {
@@ -73,13 +75,13 @@ public:
 
 BindingDataFactory* getBindingDataFactoryInstance();
 
-class PYBIND11_EXPORT PythonTrampoline
+class SOFAPYTHON3_API PythonTrampoline
 {
 protected:
     std::shared_ptr<PyObject> pyobject;
 public:
     virtual ~PythonTrampoline();
-    virtual void PYBIND11_EXPORT setInstance(py::object s);
+    virtual void SOFAPYTHON3_API setInstance(py::object s);
 };
 
 template <typename T> class py_shared_ptr : public sofa::core::sptr<T>
@@ -94,33 +96,33 @@ public:
     }
 };
 
-void PYBIND11_EXPORT setItem2D(py::array a, py::slice slice, py::object o);
-void PYBIND11_EXPORT setItem2D(py::array a, const py::slice& slice,
+void SOFAPYTHON3_API setItem2D(py::array a, py::slice slice, py::object o);
+void SOFAPYTHON3_API setItem2D(py::array a, const py::slice& slice,
                const py::slice& slice1, py::object o);
-void PYBIND11_EXPORT setItem1D(py::array a, py::slice slice, py::object o);
-void PYBIND11_EXPORT setItem(py::array a, py::slice slice, py::object value);
+void SOFAPYTHON3_API setItem1D(py::array a, py::slice slice, py::object o);
+void SOFAPYTHON3_API setItem(py::array a, py::slice slice, py::object value);
 
-py::slice PYBIND11_EXPORT toSlice(const py::object& o);
+py::slice SOFAPYTHON3_API toSlice(const py::object& o);
 std::string getPathTo(Base* b);
 const char* getFormat(const AbstractTypeInfo& nfo);
 
-std::map<void*, py::array>& getObjectCache();
+std::map<void*, py::array>& SOFAPYTHON3_API getObjectCache();
 void trimCache();
-py::buffer_info PYBIND11_EXPORT toBufferInfo(BaseData& m);
-py::object PYBIND11_EXPORT convertToPython(BaseData* d);
+py::buffer_info SOFAPYTHON3_API toBufferInfo(BaseData& m);
+py::object SOFAPYTHON3_API convertToPython(BaseData* d);
 
-py::object PYBIND11_EXPORT toPython(BaseData* d, bool writeable=false);
-void PYBIND11_EXPORT copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo, const py::list& l);
-void PYBIND11_EXPORT fromPython(BaseData* d, const py::object& o);
+py::object SOFAPYTHON3_API toPython(BaseData* d, bool writeable=false);
+void SOFAPYTHON3_API copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo, const py::list& l);
+void SOFAPYTHON3_API fromPython(BaseData* d, const py::object& o);
 
-std::string toSofaParsableString(const py::handle& p);
+std::string SOFAPYTHON3_API toSofaParsableString(const py::handle& p);
 
 /// RVO optimized function. Don't care about copy on the return code.
-void fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc,
+void SOFAPYTHON3_API fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc,
                                const py::dict& dict);
 
 template<typename T>
-void PYBIND11_EXPORT copyScalar(BaseData* a, const AbstractTypeInfo& nfo, py::array_t<T, py::array::c_style> src)
+void SOFAPYTHON3_API copyScalar(BaseData* a, const AbstractTypeInfo& nfo, py::array_t<T, py::array::c_style> src)
 {
     void* ptr = a->beginEditVoidPtr();
 
@@ -135,7 +137,7 @@ void PYBIND11_EXPORT copyScalar(BaseData* a, const AbstractTypeInfo& nfo, py::ar
     a->endEditVoidPtr();
 }
 
-std::ostream& operator<<(std::ostream& out, const py::buffer_info& p);
+std::ostream& SOFAPYTHON3_API operator<<(std::ostream& out, const py::buffer_info& p);
 
 // TODO: move this somewhere else as we will probably need it in several other places.
 template <class T> class raw_ptr
