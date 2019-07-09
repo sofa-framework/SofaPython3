@@ -23,5 +23,3 @@ Submodules:
     Sofa.Types
     Sofa.Helper
 """
-
-from . import @MODULE_NAMES@

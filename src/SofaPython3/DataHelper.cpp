@@ -36,7 +36,7 @@ void fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& d
 }
 
 BindingDataFactory* getBindingDataFactoryInstance(){
-    static BindingDataFactory* s_localfactory = nullptr ;
+    static BindingDataFactory* s_localfactory = new BindingDataFactory();
     if (s_localfactory == nullptr)
     {
         s_localfactory = new BindingDataFactory();
@@ -324,8 +324,8 @@ py::object convertToPython(BaseData* d)
 
     std::cout << nfo.name() << " is not a container nor a scalar." << std::endl;
 
-    if (getBindingDataFactoryInstance()->createObject(nfo.name(), d))
-        return py::cast(getBindingDataFactoryInstance()->createObject(nfo.name(), d));
+    if (!getBindingDataFactoryInstance()->createObject(nfo.name(), d).is_none())
+        return getBindingDataFactoryInstance()->createObject(nfo.name(), d);
 
     std::cout << nfo.name() << " No such type in the BindingDataFactory. returning string" << std::endl;
 
@@ -384,7 +384,7 @@ py::object toPython(BaseData* d, bool writeable)
         if(!writeable)
         {
             getPythonArrayFor(d);
-            return py::cast(getBindingDataFactoryInstance()->createObject("DataContainer", d));
+            return getBindingDataFactoryInstance()->createObject("DataContainer", d);
         }
         return getPythonArrayFor(d);
     }

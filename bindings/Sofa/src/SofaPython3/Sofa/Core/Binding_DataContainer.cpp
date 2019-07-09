@@ -67,9 +67,11 @@ void moduleAddDataAsString(py::module& m)
 
 void moduleAddDataContainer(py::module& m)
 {
-
     py::class_<DataContainer, BaseData, raw_ptr<DataContainer>> p(m, "DataContainer",
                                                                   py::buffer_protocol());
+
+    getBindingDataFactoryInstance()->registerCreator(
+                "DataContainer", new TypeCreator<DataContainer*>());
 
     p.def("__getitem__", [](DataContainer* self, py::object& index) -> py::object
     {
@@ -274,10 +276,6 @@ void moduleAddDataContainer(py::module& m)
 
         return py::reinterpret_steal<py::object>(PyNumber_Multiply(p.ptr(), value.ptr()));
     });
-
-    getBindingDataFactoryInstance()->registerCreator(
-                "DataContainer", new TypeCreator<DataContainer*>());
-
 }
 
 void moduleAddWriteAccessor(py::module& m)

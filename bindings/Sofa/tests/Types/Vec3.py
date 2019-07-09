@@ -1,14 +1,14 @@
 # coding: utf8
 import unittest
 import Sofa
-from Sofa.Types import Vec3
+from Sofa.PyTypes import Vec3
 
 class Test(unittest.TestCase):
     def test_constructor(self):
-        v0 = Sofa.Types.Vec3()
-        v1 = Sofa.Types.Vec3([1.0,1.0,1.0])
+        v0 = Vec3()
+        v1 = Vec3([1.0,1.0,1.0])
         v2 = v0 + v1
-        self.assertTrue( isinstance(v2, Sofa.Types.Vec3 ) )
+        self.assertTrue( isinstance(v2, Vec3 ) )
         self.assertEqual( v2, v1 )
 
     def test_wrapAroundArray(self):

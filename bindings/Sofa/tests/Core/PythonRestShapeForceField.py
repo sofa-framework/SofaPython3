@@ -1,5 +1,6 @@
 import unittest
 import Sofa
+import Sofa.Core
 import numpy as np
 
 class MyForceField(Sofa.Core.ForceField):

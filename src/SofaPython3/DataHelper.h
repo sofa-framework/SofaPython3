@@ -38,37 +38,36 @@ using sofa::defaulttype::AbstractTypeInfo;
 
 
 template<typename DataType>
-class TypeCreator : public sofa::helper::BaseCreator<sofa::core::objectmodel::BaseData*, sofa::core::objectmodel::BaseData*, sofa::core::objectmodel::BaseData*>
+class TypeCreator : public sofa::helper::BaseCreator<sofa::core::objectmodel::BaseData*, sofa::core::objectmodel::BaseData*, py::object>
 {
 public:
-    virtual DataType createInstance(
+    virtual py::object createInstance(
             sofa::core::objectmodel::BaseData* data) override
     {
-        return reinterpret_cast<DataType>(data);
+        return py::cast(reinterpret_cast<DataType>(data));
     }
     virtual const std::type_info& type() override { return typeid(DataType);}
 };
 
-class BindingDataFactory : public sofa::helper::Factory< std::string, sofa::core::objectmodel::BaseData*, sofa::core::objectmodel::BaseData*, sofa::core::objectmodel::BaseData*>
+class BindingDataFactory : public sofa::helper::Factory< std::string, sofa::core::objectmodel::BaseData*, sofa::core::objectmodel::BaseData*, py::object>
 {
 public:
-    ObjectPtr createObject(std::string key, sofa::core::objectmodel::BaseData* arg) {
-        ObjectPtr object;
+    py::object createObject(std::string key, sofa::core::objectmodel::BaseData* arg) {
         Creator* creator;
         typename std::multimap<std::string, Creator*>::iterator it = registry.lower_bound(key);
         typename std::multimap<std::string, Creator*>::iterator end = registry.upper_bound(key);
         while (it != end)
         {
             creator = (*it).second;
-            std::cout << creator->type().name() << std::endl;
-            object = creator->createInstance(arg);
-            if (object != nullptr)
+            std::cout << it->first << std::endl;
+            py::object object = creator->createInstance(arg);
+            if (!object.is_none())
             {
-                return object;
+                return creator->createInstance(arg);
             }
             ++it;
         }
-        return nullptr;
+        return py::none();
     }
 
 };

@@ -586,7 +586,7 @@ void moduleAddBase(py::module &m)
         data->setDisplayed(true);
         data->setPersistent(true);
 
-    }, sofapython3::doc::base::addData);
+    }, "name"_a, "value"_a = "", "help"_a = "", "group"_a = "", "type"_a = "", sofapython3::doc::base::addData);
 
     base.def("addData", [](Base* self, py::object d) {
         BaseData* data = py::cast<BaseData*>(d);

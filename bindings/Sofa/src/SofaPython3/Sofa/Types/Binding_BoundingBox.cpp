@@ -45,8 +45,11 @@ void moduleAddBoundingBox(py::module& m)
         return list;
     }, "returns the center of the bbox");
 
+
+    std::cout << "ADDING BOUNDINGBOX" << std::endl;
     getBindingDataFactoryInstance()->registerCreator(
                 "BoundingBox", new TypeCreator<sofa::Data<sofa::defaulttype::BoundingBox>*>());
+    std::cout << "ADDING BOUNDINGBOX" << std::endl;
 
 
 }

@@ -3,6 +3,7 @@
 import unittest
 import gc
 import Sofa
+import Sofa.Simulation
 
 class MyController(Sofa.Core.Controller):
         """This is my custom controller
