@@ -54,7 +54,7 @@ public:
     std::string name;
 };
 
-PYBIND11_MODULE(Core, m)
+PYBIND11_MODULE(Components, m)
 {
     py::class_<FCreator> mm(m, "Creator");
     mm.def("__call__", [](FCreator& s, const py::args& args, const py::kwargs& kwargs){
