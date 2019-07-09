@@ -2,6 +2,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <SofaPython3/PythonEnvironment.h>
 #include <sofa/core/objectmodel/Base.h>
+#include "System/Submodule_System.h"
 #include "Submodule_Helper.h"
 #include "Binding_Vector.h"
 
@@ -119,6 +120,7 @@ PYBIND11_MODULE(Helper, helper)
     helper.def("msg_fatal", [](py::args args) { MESSAGE_DISPATCH(msg_fatal); });
 
     moduleAddVector(helper);
+    moduleAddSystem(helper);
 }
 
 } ///namespace sofapython3
