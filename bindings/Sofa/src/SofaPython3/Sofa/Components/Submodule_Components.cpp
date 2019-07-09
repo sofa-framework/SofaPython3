@@ -42,8 +42,6 @@ using namespace py::literals;
 namespace sofapython3
 {
 
-py::cpp_function f { [](const std::string& s){ std::cout << "COUCOU: " << s << std::endl;} };
-
 class FCreator
 {
 public:
