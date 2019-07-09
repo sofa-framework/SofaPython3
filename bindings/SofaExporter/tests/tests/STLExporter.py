@@ -1,6 +1,6 @@
 # coding: utf8
 
-import Sofa
+import Sofa.Core
 import Sofa.Helper
 import unittest
 import numpy
