@@ -9,6 +9,32 @@
 namespace sofapython3
 {
 
+std::string toSofaParsableString(const py::handle& p)
+{
+    if(py::isinstance<py::list>(p) || py::isinstance<py::tuple>(p))
+    {
+        std::stringstream tmp;
+        for(auto pa : p){
+            tmp << toSofaParsableString(pa) << " ";
+        }
+        return tmp.str();
+    }
+    //TODO(dmarchal) This conversion to string is so bad.
+    if(py::isinstance<py::str>(p))
+        return py::str(p);
+    return py::repr(p);
+}
+
+/// RVO optimized function. Don't care about copy on the return code.
+void fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc,
+                               const py::dict& dict)
+{
+    for(auto kv : dict)
+    {
+        desc.setAttribute(py::str(kv.first), toSofaParsableString(kv.second));
+    }
+}
+
 BindingDataFactory* getBindingDataFactoryInstance(){
     static BindingDataFactory* s_localfactory = nullptr ;
     if (s_localfactory == nullptr)

@@ -27,10 +27,11 @@
 /// This should come from python3.
 #include <Python.h>
 
-#include <SofaPython3/config.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
 
 #include <pybind11/pybind11.h>
+
+#include "config.h"
 
 namespace sofapython3
 {
@@ -46,7 +47,7 @@ public:
     static void Init();
     static void Release();
 
-    static py::module importFromFile(const std::string& module,
+    static py::module SOFAPYTHON3_API importFromFile(const std::string& module,
                                      const std::string& path,
                                      py::object& globals);
 

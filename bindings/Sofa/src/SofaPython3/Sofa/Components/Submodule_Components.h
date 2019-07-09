@@ -20,40 +20,13 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
  Contributors:
     - damien.marchal@univ-lille.fr
 ********************************************************************/
+#pragma once
+
 #include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-#include <pybind11/detail/init.h>
-
-#include "Binding_Base.h"
-#include "Binding_BaseObject.h"
-#include "Binding_BaseCamera.h"
-
-#include <SofaPython3/PythonDownCast.h>
 
 namespace sofapython3
 {
-void moduleAddBaseCamera(py::module &m) {
-    py::class_<sofa::component::visualmodel::BaseCamera,
-            sofa::core::sptr<sofa::component::visualmodel::BaseCamera>> c(m, "Camera");
+namespace py { using namespace pybind11; }
 
-    c.def("getProjectionMatrix", [](BaseCamera* self){
-        static std::vector<double> m {16};
-        m.resize(16);
-        self->getProjectionMatrix(m.data());
-        return m;
-    });
+} ///namespace sofapython3
 
-    c.def("getModelViewMatrix", [](BaseCamera* self){
-        static std::vector<double> m {16};
-        m.resize(16);
-        self->getModelViewMatrix(m.data());
-        return m;
-    });
-
-    PythonDownCast::registerType<BaseCamera>([](sofa::core::objectmodel::Base* object)
-    {
-        return py::cast(dynamic_cast<BaseCamera*>(object));
-    });
-}
-
-} /// namespace sofapython3

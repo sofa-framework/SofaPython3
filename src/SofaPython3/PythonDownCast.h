@@ -24,6 +24,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 #include <sofa/core/objectmodel/Base.h>
 #include <pybind11/pybind11.h>
+#include "config.h"
 
 /////////////////////////////// DECLARATION //////////////////////////////
 namespace sofapython3
@@ -35,9 +36,9 @@ namespace sofapython3
 
     class PythonDownCast
     {
-        static std::map<std::string, downCastingFunction> PYBIND11_EXPORT s_downcastingFct;
+        static std::map<std::string, downCastingFunction> SOFAPYTHON3_API s_downcastingFct;
     public:
-        static py::object PYBIND11_EXPORT toPython(sofa::core::objectmodel::Base* object);
+        static py::object SOFAPYTHON3_API toPython(sofa::core::objectmodel::Base* object);
 
         template<class T>
         static void registerType(downCastingFunction fct)

@@ -36,31 +36,6 @@ using sofa::core::objectmodel::BaseObjectDescription;
 namespace sofapython3
 {
 
-std::string toSofaParsableString(const py::handle& p)
-{
-    if(py::isinstance<py::list>(p) || py::isinstance<py::tuple>(p))
-    {
-        std::stringstream tmp;
-        for(auto pa : p){
-            tmp << toSofaParsableString(pa) << " ";
-        }
-        return tmp.str();
-    }
-    //TODO(dmarchal) This conversion to string is so bad.
-    if(py::isinstance<py::str>(p))
-        return py::str(p);
-    return py::repr(p);
-}
-
-/// RVO optimized function. Don't care about copy on the return code.
-void fillBaseObjectdescription(BaseObjectDescription& desc, const py::dict& dict)
-{
-    for(auto kv : dict)
-    {
-        desc.setAttribute(py::str(kv.first), toSofaParsableString(kv.second));
-    }
-}
-
 bool checkParamUsage(Base* object, BaseObjectDescription& desc)
 {
     bool hasFailure = false;
@@ -219,9 +194,6 @@ py::object getItem(Node& self, std::list<std::string>& path)
 }
 
 void moduleAddNode(py::module &m) {
-    //py::options options;
-    //options.disable_function_signatures();
-
     moduleAddBaseIterator(m);
 
     PythonDownCast::registerType<sofa::simulation::graph::DAGNode>(

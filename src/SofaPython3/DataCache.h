@@ -1,6 +1,7 @@
 #pragma once
 
 #include <pybind11/numpy.h>
+#include "config.h"
 
 ////////////////////////// FORWARD DECLARATION ///////////////////////////
 namespace sofa {
@@ -25,8 +26,8 @@ using sofa::core::objectmodel::BaseData;
 bool hasArrayFor(BaseData* d);
 
 ///@brief
-py::array PYBIND11_EXPORT resetArrayFor(BaseData* d);
-py::array PYBIND11_EXPORT getPythonArrayFor(BaseData* d);
+py::array SOFAPYTHON3_API resetArrayFor(BaseData* d);
+py::array SOFAPYTHON3_API getPythonArrayFor(BaseData* d);
 void trimCache();
 
 } /// sofapython3

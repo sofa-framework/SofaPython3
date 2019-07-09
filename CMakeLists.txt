@@ -53,10 +53,9 @@ find_package(SofaFramework REQUIRED)
 find_package(SofaSimulation REQUIRED)
 find_package(SofaGeneral REQUIRED)
 
+
 unset(PYTHON_EXECUTABLE)
-find_package(Python 3.6 COMPONENTS Interpreter Development REQUIRED)
-set(PYTHON_LIBRARIES ${Python_LIBRARY_RELEASE})
-set(PYTHON_LIBRARY ${Python_LIBRARY_RELEASE})
+find_package(Python 3.7 COMPONENTS Interpreter Development REQUIRED)
 set(PYTHON_INCLUDE_DIRS ${Python_INCLUDE_DIR})
 set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
 set(PYBIND11_PYTHON_VERSION ${Python_VERSION})
@@ -111,7 +110,7 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC "-DSOFA_HAVE_SOFAPYTHON3")
 
 if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
     # Sized deallocaion is not enabled by default under clang after c++14
-    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-fsized-deallocation")
+    set(CMAKE_CXX_FLAGS "-fsized-deallocation")
 endif ()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE SofaCore SofaSimulationCore SofaSimulationGraph SofaComponentGeneral)
@@ -124,8 +123,8 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
-target_link_libraries(${PROJECT_NAME} PRIVATE "${PYTHON_LIBRARY}" )
-target_include_directories(${PROJECT_NAME} PRIVATE "${PYTHON_INCLUDE_DIR}")
+target_link_libraries(${PROJECT_NAME} PUBLIC "${PYTHON_LIBRARY}" )
+target_include_directories(${PROJECT_NAME} PUBLIC "${PYTHON_INCLUDE_DIR}")
 
 ## When installing, copy the content of the example directory into module/SofaPython3
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/examples DESTINATION modules/SofaPython3 COMPONENT resources)

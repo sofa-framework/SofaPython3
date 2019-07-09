@@ -38,6 +38,9 @@ set(HELPER_HEADER_FILES
 set(SIMULATION_HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Simulation/Submodule_Simulation.h
     )
+set(COMPONENTS_HEADER_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Components/Submodule_Components.h
+    )
 
 set(CORE_SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_Base.cpp
@@ -67,8 +70,11 @@ set(SIMULATION_SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Simulation/Submodule_Simulation.cpp
     )
 
+set(COMPONENTS_SOURCE_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Components/Submodule_Components.cpp
+    )
 
-set(MODULE_NAMES "Core, Simulation, Helper, Types")
+set(MODULE_NAMES "Core, Simulation, Helper, Types, Components")
 set(PACKAGE_DIRECTORY  ${SP3_PYTHON_PACKAGES_DIRECTORY})
 
 SP3_add_python_package(
@@ -128,6 +134,20 @@ SP3_add_python_module(
     SOURCES
         ${TYPES_SOURCE_FILES}
         ${TYPES_HEADER_FILES}
+    DEPENDS
+        SofaCore SofaSimulationCore SofaSimulationGraph SofaPython3 SofaBaseVisual
+    DESTINATION
+        ${PACKAGE_DIRECTORY}/Sofa
+)
+
+SP3_add_python_module(
+    TARGET
+        ${PROJECT_NAME}_Components
+    MODULE_NAME
+        Components
+    SOURCES
+        ${COMPONENTS_SOURCE_FILES}
+        ${COMPONENTS_HEADER_FILES}
     DEPENDS
         SofaCore SofaSimulationCore SofaSimulationGraph SofaPython3 SofaBaseVisual
     DESTINATION
