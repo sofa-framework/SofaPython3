@@ -54,7 +54,7 @@ public:
     std::string name;
 };
 
-py::module addSubmoduleComponents(py::module &m)
+PYBIND11_MODULE(Core, m)
 {
     py::class_<FCreator> mm(m, "Creator");
     mm.def("__call__", [](FCreator& s, const py::args& args, const py::kwargs& kwargs){
@@ -132,8 +132,6 @@ py::module addSubmoduleComponents(py::module &m)
 //                       return names; //std::move(names);
 //                   });
 
-
-    return simulation;
 }
 
 } /// namespace sofapython3
