@@ -13,7 +13,12 @@ void moduleAddDataContainer(py::module& m);
 void moduleAddDataAsString(py::module& m);
 void moduleAddWriteAccessor(py::module& m);
 
-class DataContainer : public BaseData {} ;
+class DataContainer : public BaseData {
+public:
+    py::tuple getShape();
+    size_t getNDim();
+    size_t getSize();
+} ;
 class DataAsString : public BaseData {} ;
 
 class WriteAccessor
