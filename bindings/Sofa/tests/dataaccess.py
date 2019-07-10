@@ -4,10 +4,8 @@ import sys
 import os
 import numpy
 import timeit
-sys.path.append("./Sofa/package")
-sys.path.append("./SofaRuntime/package")
 
-import Sofa
+import Sofa.Core
 import SofaRuntime
 
 SofaRuntime.importPlugin("SofaAllCommonComponents")
@@ -23,7 +21,7 @@ zeros = numpy.zeros((1000,3), dtype=numpy.float64)
 ones = numpy.ones((1000,3), dtype=numpy.float64)
 aList = zeros.tolist()
 
-root = Sofa.Node("root")
+root = Sofa.Core.Node("root")
 obj = root.createObject("MechanicalObject", name="test", position=aList)
 print("A counter: ", obj.position.getCounter())
 obj.position += ones
