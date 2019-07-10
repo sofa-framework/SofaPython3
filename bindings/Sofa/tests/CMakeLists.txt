@@ -23,7 +23,6 @@ set(SOURCE_FILES
 
 set(PYTHON_FILES
     Components/Components.py
-    Core/AutoDiffForceField.py
     Core/BaseData.py
     Core/Base.py
     Core/BaseObject.py

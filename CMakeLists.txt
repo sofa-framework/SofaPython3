@@ -93,7 +93,7 @@ set(SOURCE_FILES
 set(EXTRA_FILES
     SofaPython3Config.cmake.in
     README.md
-    )
+   )
 
 if(SP3_BUILD_TEST)
     list(APPEND HEADER_FILES
@@ -138,6 +138,13 @@ install(TARGETS ${PROJECT_NAME} DESTINATION modules/SofaPython3)
 # This function is an all in one replacement for install(TARGET), install(EXPORT), and also add
 # the example directory in the INSTALL set.
 sofa_create_package(${PROJECT_NAME} ${PROJECT_VERSION} SofaPython3 "SofaPython3")
+
+set(EXAMPLES_FILES
+        examples/example-forcefield.py
+        examples/example-scriptcontroller.py
+    )
+
+add_custom_target(Examples SOURCES ${EXAMPLES_FILES})
 
 ### Python binding
 add_subdirectory(bindings)
