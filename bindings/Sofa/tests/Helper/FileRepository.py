@@ -42,7 +42,7 @@ class Test(unittest.TestCase):
         self.assertTrue(self.repository.findFile("a_simple_test_file_2.txt"))
 
         self.assertEqual(self.repository.getFile("a_simple_test_file_1.txt"), os.path.join(self.temp_dir1.name, "a_simple_test_file_1.txt"))
-        self.assertEqual(self.repository.getFile("a_simple_test_file_21.txt"), os.path.join(self.temp_dir2.name, "a_simple_test_file_2.txt"))
+        self.assertEqual(self.repository.getFile("a_simple_test_file_2.txt"), os.path.join(self.temp_dir2.name, "a_simple_test_file_2.txt"))
 
         self.repository.clear()
 
