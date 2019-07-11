@@ -32,20 +32,6 @@ void moduleAddBaseData(py::module& m)
     data.def("getOwner", &BaseData::getOwner);
     data.def("getParent", &BaseData::getParent);
     data.def("typeName", [](BaseData& data){ return data.getValueTypeInfo()->name(); });
-
-    // TODO: Implementation should look like: https://github.com/sofa-framework/sofa/issues/767
-//    p.def("__setitem__", [](BaseData& self, py::object& key, py::object& value)
-//    {
-//        std::cout << "mapping protocol, __setitem__ to implement)" << std::endl ;
-//        return py::none();
-//    });
-
-//    p.def("__len__", [](BaseData& b) -> size_t
-//    {
-//        auto nfo = b.getValueTypeInfo();
-//        return nfo->size(b.getValueVoidPtr()) / nfo->size();
-//    });
-
     data.def("getPathName", [](BaseData& self)
     {
         Base* b= self.getOwner();

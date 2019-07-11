@@ -94,7 +94,6 @@ PYBIND11_MODULE(SofaRuntime, m) {
     /// Check if there is already a SceneLoaderFactory. In case not load it.
     if( !SceneLoaderFactory::getInstance()->getEntryFileExtension("py3") )
     {
-        std::cout << "Registering loader for python3 files" << std::endl ;
         SceneLoaderFactory::getInstance()->addEntry(new SceneLoaderPY3());
         sofa::helper::BackTrace::autodump();
     }

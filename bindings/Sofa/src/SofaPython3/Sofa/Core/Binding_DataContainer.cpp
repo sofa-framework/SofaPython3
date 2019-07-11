@@ -18,38 +18,6 @@ using  sofa::core::objectmodel::BaseNode;
 
 #include <sofa/defaulttype/BoundingBox.h>
 
-//namespace pybind11 { namespace detail {
-//    template <> struct type_caster<sofa::helper::types::RGBAColor> {
-//    public:
-//        /**
-//         * This macro establishes the name 'inty' in
-//         * function signatures and declares a local variable
-//         * 'value' of type inty
-//         */
-//        PYBIND11_TYPE_CASTER(sofa::helper::types::RGBAColor, _("RGBAColor"));
-
-//        /**
-//         * Conversion part 1 (Python->C++): convert a PyObject into a inty
-//         * instance or return false upon failure. The second argument
-//         * indicates whether implicit conversions should be applied.
-//         */
-//        bool load(handle src, bool) {
-//            std::cout << "LOAD LOAD" << std::endl ;
-//        }
-
-//        /**
-//         * Conversion part 2 (C++ -> Python): convert an inty instance into
-//         * a Python object. The second and third arguments are used to
-//         * indicate the return value policy and parent object (for
-//         * ``return_value_policy::reference_internal``) and are generally
-//         * ignored by implicit casters.
-//         */
-//        static handle cast(sofa::core::objectmodel::RGBAColor src, return_value_policy /* policy */, handle /* parent */) {
-//            std::cout << "CAST CAST" << std::endl ;
-//        }
-//    };
-//}} // namespace pybind11::detail
-
 namespace sofapython3
 {
 
@@ -63,7 +31,39 @@ void moduleAddDataAsString(py::module& m)
     });
 }
 
+/// Following numpy convention returns the number of element in each dimmensions.
+py::tuple DataContainer::getShape()
+{
+    /// Detect if we are in a one or two day array.
+    auto nfo = getValueTypeInfo();
+    if( nfo->size() == nfo->size(getValueVoidPtr() ))
+    {
+        py::tuple p {1};
+        p[0] = nfo->size();
+    }
+    py::tuple p {2};
+    p[0] = py::int_{nfo->size(getValueVoidPtr())/nfo->size()};
+    p[1] = py::int_{nfo->size()};
+    return p;
+}
 
+/// Following numpy convention the number of dimmension in the container.
+size_t DataContainer::getNDim()
+{
+    auto nfo = getValueTypeInfo();
+    if( nfo->size() == nfo->size(getValueVoidPtr() ))
+        return 1;
+    return 2;
+}
+
+/// Following numpy convention the number of elements in the first dimmension
+size_t DataContainer::getSize()
+{
+    auto nfo = getValueTypeInfo();
+    if( nfo->size() == nfo->size(getValueVoidPtr() ))
+        return nfo->size();
+    return nfo->size(getValueVoidPtr())/nfo->size();
+}
 
 void moduleAddDataContainer(py::module& m)
 {
@@ -124,7 +124,9 @@ void moduleAddDataContainer(py::module& m)
 
     p.def("__str__", [](BaseData* self)
     {
-        return py::str(convertToPython(self));
+        std::stringstream tmp;
+        tmp << "Sofa.Core.DataContainer <'" << self->getName() << "', " << self << ">";
+        return py::str(tmp.str());
     });
 
     p.def("__repr__", [](BaseData* self)
@@ -136,6 +138,19 @@ void moduleAddDataContainer(py::module& m)
         return convertToPython(self);
     });
 
+    /// This is the standard terminology in numpy so we keep it for consistency purpose.
+    p.def_property_readonly("ndim", &DataContainer::getNDim);    /// 1 or 2D array
+    p.def_property_readonly("shape", &DataContainer::getShape);  /// array containing the size in each dimmension
+    p.def_property_readonly("size", &DataContainer::getSize);    /// get the total number of elements
+    p.def("__len__", [](DataContainer* self)                     /// In numpy the len is the number of element in the first
+                                                                 /// dimmension.
+    {
+        auto nfo = self->getValueTypeInfo();
+        if( nfo->size() == nfo->size(self->getValueVoidPtr() ))
+            return nfo->size();
+        return nfo->size(self->getValueVoidPtr())/nfo->size();
+    });
+
     p.def("array", [](DataContainer* self){
         auto capsule = py::capsule(new Base::SPtr(self->getOwner()));
         py::buffer_info ninfo = toBufferInfo(*self);
@@ -143,12 +158,6 @@ void moduleAddDataContainer(py::module& m)
                     ninfo.strides, ninfo.ptr, capsule);
         a.attr("flags").attr("writeable") = false;
         return a;
-    });
-
-    p.def("__len__", [](DataContainer* self){
-        auto nfo = self->getValueTypeInfo();
-        //return nfo->size(self->getValueVoidPtr()) / nfo->size();
-        return nfo->size();
     });
 
     p.def("writeable", [](DataContainer* self, py::object f) -> py::object

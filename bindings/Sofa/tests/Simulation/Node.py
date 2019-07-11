@@ -27,7 +27,8 @@ class Test(unittest.TestCase):
                 c = root.addChild("child1")
                 c = c.addObject("MechanicalObject", name="MO", position=[0.0,1.0,2.0]*100)
                 root.init()
-                self.assertEqual(c.position.size(), 100*3)
+                print("TYPE: "+str(len(c.position.value)))
+                self.assertEqual(len(c.position.value), 100)
 
         def test_createObjectInvalid(self):
                 root = Sofa.Core.Node("rootNode")
@@ -84,6 +85,7 @@ class Test(unittest.TestCase):
                 self.assertEqual(len(root.children), 1)
                 self.assertEqual(root.children.at(0).name, c2.name)
 
+                self.assertTrue(isinstance(root.children[0], Sofa.Core.Node))
 
         def test_parents_property(self):                
                 root = Sofa.Core.Node("rootNode")

@@ -369,7 +369,20 @@ py::array getPythonArrayFor(BaseData* d)
     return memcache[d];
 }
 
+/// Make a python version of our BaseData.
+/// Downcast everything.
+py::object dataToPython(BaseData* d)
+{
+    const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
+    /// In case the data is a container with a simple layout
+    /// we can expose the field as a numpy.array (no copy)
+    if(nfo.Container() && nfo.SimpleLayout())
+    {
+        return getBindingDataFactoryInstance()->createObject("DataContainer", d);
+    }
 
+    return py::cast(d);
+}
 
 /// Make a python version of our BaseData.
 /// If possible the data is exposed as a numpy.array to minmize copy and data conversion

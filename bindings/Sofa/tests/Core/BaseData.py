@@ -5,16 +5,14 @@ import numpy
 import Sofa
 import Sofa.Core
 from Sofa.PyTypes import RGBAColor
-#print("DIR: ", dir(Sofa))
 
-
-class Test(unittest.TestCase):
-    def test_typeName(self):
+class Test(unittest.TestCase):    
+    def test_typeNameDouble(self):
         root = Sofa.Core.Node("rootNode")
         c = root.addObject("MechanicalObject", name="t", position=[
                            [0, 0, 0], [1, 1, 1], [2, 2, 2]])
         self.assertEqual(c.position.typeName(), "vector<Vec3d>")
-        self.assertEqual(c.showColor.typeName(), "RGBAColor")
+        self.assertEqual(c.showColor.typeName(), "Vec4f")
 
     def test_typeName(self):
         root = Sofa.Core.Node("rootNode")
@@ -29,6 +27,16 @@ class Test(unittest.TestCase):
                            [0, 0, 0], [1, 1, 1], [2, 2, 2]])
         self.assertTrue(c.position is not None)
 
+    def test_DataContainerDimmensions(self):
+        root = Sofa.Core.Node("rootNode")
+        c = root.addObject("MechanicalObject", name="t", position=[
+                               [0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]])
+        self.assertEqual(len(c.position), 4)
+        self.assertEqual(c.position.ndim, 2)
+        self.assertEqual(len(c.position.shape), c.position.ndim)
+        self.assertEqual(c.position.shape[0], 4)
+        self.assertEqual(c.position.shape[1], 3)
+
     # @unittest.skip  # no reason needed
     def test_InvalidDataAccess(self):
         root = Sofa.Core.Node("rootNode")
@@ -37,12 +45,14 @@ class Test(unittest.TestCase):
     # @unittest.skip  # no reason needed
     def test_DataAsArray2D(self):
         root = Sofa.Core.Node("rootNode")
-        v = [[0, 0, 0], [1, 1, 1], [2, 2, 2]]
+        v = [[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]]
         c = root.addObject("MechanicalObject", name="t", position=v)
-        self.assertEqual(len(c.position.value), 3)
+        self.assertEqual(len(c.position), 4)
+        self.assertEqual(len(c.position.value), 4)
         self.assertSequenceEqual(list(c.position.value[0]), v[0])
         self.assertSequenceEqual(list(c.position.value[1]), v[1])
         self.assertSequenceEqual(list(c.position.value[2]), v[2])
+        self.assertSequenceEqual(list(c.position.value[3]), v[3])
 
     # @unittest.skip  # no reason needed
     def test_DataArray2DOperationInPlace(self):
@@ -146,6 +156,7 @@ class Test(unittest.TestCase):
         v = [[0, 0, 0], [1, 1, 1], [2, 2, 2]]
         c = root.addObject("MechanicalObject", name="t", position=v)
         self.assertEqual(len(c.showColor.value), 4)
+        self.assertTrue(isinstance(c.showColor, Sofa.Core.DataContainer))
 
     # @unittest.skip  # no reason needed
     def test_DataWrapper1D(self):

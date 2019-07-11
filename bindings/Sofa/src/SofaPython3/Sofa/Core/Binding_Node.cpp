@@ -69,26 +69,27 @@ void moduleAddBaseIterator(py::module &m)
     {
         if(index>=d.size(d.owner.get()))
             throw py::index_error("Too large index '"+std::to_string(index)+"'");
-        return py::cast(d.get(d.owner.get(), index));
+        return PythonDownCast::toPython(d.get(d.owner.get(), index).get());
     });
 
     d.def("__getitem__", [](BaseIterator& d, const std::string& name) -> py::object
     {
         BaseObject* obj =d.owner->getObject(name);
         if(obj==nullptr)
-            throw py::index_error("Not existing object '"+name+"'");
-        return py::cast(obj);
+            throw py::index_error("No existing object '"+name+"'");
+        return PythonDownCast::toPython(obj);
     });
 
     d.def("__iter__", [](BaseIterator& d)
     {
         return d;
     });
+
     d.def("__next__", [](BaseIterator& d) -> py::object
     {
         if(d.index>=d.size(d.owner.get()))
             throw py::stop_iteration();
-        return py::cast(d.get(d.owner.get(), d.index++));
+        return PythonDownCast::toPython(d.get(d.owner.get(), d.index++).get());
     });
     d.def("__len__", [](BaseIterator& d) -> py::object
     {
@@ -284,7 +285,7 @@ void moduleAddNode(py::module &m) {
     p.def_property_readonly("children", [](Node* node)
     {
         return new BaseIterator(node, [](Node* n) -> size_t { return n->child.size(); },
-        [](Node* n, unsigned int index) -> Node::SPtr { return n->child[index]; });
+        [](Node* n, unsigned int index) -> Base::SPtr { return n->child[index]; });
 }, sofapython3::doc::sofa::core::Node::children);
 
 p.def_property_readonly("parents", [](Node* node)
