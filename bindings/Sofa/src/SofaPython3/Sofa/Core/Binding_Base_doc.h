@@ -125,6 +125,15 @@ static auto getData =
         :type s: string
         :return: the first data found of this name
         )";
+
+static auto getClassName =
+        R"(
+        Get the name of the class of the Base.
+        )";
+static auto getTemplateName =
+        R"(
+        Get the name of the template of the Base.
+        )";
   
 static auto getDefinitionSourceFilePos="Returns the line number where the object is defined.";
 static auto getDefinitionSourceFileName="Returns the name of the file that contains the object definition.";
