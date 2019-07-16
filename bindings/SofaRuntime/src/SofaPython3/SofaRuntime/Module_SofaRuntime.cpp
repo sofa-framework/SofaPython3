@@ -29,6 +29,8 @@ using sofapython3::SceneLoaderPY3;
 #include <SofaSimulationCommon/init.h>
 #include <SofaSimulationGraph/init.h>
 
+#include <sofa/helper/system/FileRepository.h>
+
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_Node.h>
 #include <SofaPython3/Sofa/Core/Binding_Simulation.h>
@@ -102,6 +104,9 @@ PYBIND11_MODULE(SofaRuntime, m) {
     {
         return simpleapi::importPlugin(name);
     });
+
+    m.add_object("DataRepository", py::cast(&sofa::helper::system::DataRepository));
+    m.add_object("PluginRepository", py::cast(&sofa::helper::system::PluginRepository));
 
     addSubmoduleInput(m);
     addSubmoduleTimer(m);

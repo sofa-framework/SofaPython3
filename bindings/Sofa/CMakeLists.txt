@@ -35,6 +35,11 @@ set(HELPER_HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Helper/Binding_Vector.h
     )
 
+set(HELPER_SYSTEM_HEADER_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Helper/System/Submodule_System.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Helper/System/Binding_FileRepository.h
+    )
+
 set(SIMULATION_HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Simulation/Submodule_Simulation.h
     )
@@ -64,6 +69,11 @@ set(TYPES_SOURCE_FILES
 set(HELPER_SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Helper/Submodule_Helper.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Helper/Binding_Vector.cpp
+    )
+
+set(HELPER_SYSTEM_SOURCE_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Helper/System/Submodule_System.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Helper/System/Binding_FileRepository.cpp
     )
 
 set(SIMULATION_SOURCE_FILES
@@ -106,6 +116,8 @@ SP3_add_python_module(
     SOURCES
         ${HELPER_SOURCE_FILES}
         ${HELPER_HEADER_FILES}
+        ${HELPER_SYSTEM_SOURCE_FILES}
+        ${HELPER_SYSTEM_HEADER_FILES}
     DEPENDS
         SofaCore SofaSimulationCore SofaSimulationGraph SofaPython3 SofaBaseVisual
     DESTINATION
