@@ -46,8 +46,8 @@ py::object getItem(const BaseObject& self, const std::string& path)
     throw py::value_error("Invalid syntax"); // should never get there
 }
 
-std::string getLinkPath(const BaseObject *self, py::arg args){
-    return std::string("@")+self->getPathName().c_str();
+std::string getLinkPath(const BaseObject *self){
+    return std::string("@")+self->getPathName();
 };
 
 void moduleAddBaseObject(py::module& m)
@@ -179,8 +179,8 @@ void moduleAddBaseObject(py::module& m)
         self->computeBBox(sofa::core::ExecParams::defaultInstance(), false);
     }, sofapython3::doc::baseObject::computeBBox);
     p.def("getLinkPath", &getLinkPath, sofapython3::doc::baseObject::getLinkPath);
-    p.def("getAsACreateObjectParameter", [](BaseObject *self, py::arg args){
-        return getLinkPath(self, args);
+    p.def("getAsACreateObjectParameter", [](BaseObject *self){
+        return getLinkPath(self);
     }, sofapython3::doc::baseObject::getAsACreateObjectParameter);
     p.def("setSrc", [](BaseObject &self, char *valueString, BaseObject *loader){
         self.setSrc(valueString,loader);
