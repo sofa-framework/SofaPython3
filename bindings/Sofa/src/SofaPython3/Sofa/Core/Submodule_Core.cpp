@@ -61,11 +61,11 @@ PYBIND11_MODULE(Core, core)
     moduleAddDataDict(core);
     moduleAddDataDictIterator(core);
     moduleAddBase(core);
-    moduleAddBaseCamera(core);
     moduleAddBaseData(core);
     moduleAddWriteAccessor(core);
     moduleAddDataContainer(core);
     moduleAddBaseObject(core);
+    moduleAddBaseCamera(core);
     moduleAddController(core);
     moduleAddForceField(core);
 

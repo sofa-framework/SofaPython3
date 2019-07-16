@@ -33,8 +33,9 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 namespace sofapython3
 {
 void moduleAddBaseCamera(py::module &m) {
-    py::class_<sofa::component::visualmodel::BaseCamera,
-            sofa::core::sptr<sofa::component::visualmodel::BaseCamera>> c(m, "Camera");
+    py::class_<BaseCamera,
+               sofa::core::objectmodel::BaseObject,
+               sofa::core::sptr<BaseCamera>> c(m, "Camera");
 
     c.def("getProjectionMatrix", [](BaseCamera* self){
         static std::vector<double> m {16};
