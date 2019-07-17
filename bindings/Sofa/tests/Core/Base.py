@@ -63,6 +63,15 @@ class Test(unittest.TestCase):
         obj1.name = "I_Changed_Again"
         self.assertEqual(obj2.an_objectName2.value, "I_Changed_Again")
 
+    def test_getClassName(self):
+        root = Sofa.Core.Node("root")
+        self.assertEqual(root.getClassName(), "DAGNode")
+
+    def test_getTemplateName(self):
+        root = Sofa.Core.Node("root")
+        c = root.addObject("MechanicalObject", name="t")
+        self.assertEqual(c.getTemplateName(),"Vec3d")
+
     def test_addExistingDataAsParentOfNewData(self):
         # TODO(@marques-bruno)
         # do a test like this:
@@ -83,22 +92,3 @@ class Test(unittest.TestCase):
         # self.assertEqual(obj2.aData.value, "pouet")
         pass
 
-
-def getTestsName():
-    suite = unittest.TestLoader().loadTestsFromTestCase(Test)
-    return [test.id().split(".")[2] for test in suite]
-
-
-def runTests():
-    import sys
-    suite = None
-    if(len(sys.argv) == 1):
-        suite = unittest.TestLoader().loadTestsFromTestCase(Test)
-    else:
-        suite = unittest.TestSuite()
-        suite.addTest(Test(sys.argv[1]))
-    return unittest.TextTestRunner(verbosity=1).run(suite).wasSuccessful()
-
-
-def createScene(rootNode):
-    runTests()
