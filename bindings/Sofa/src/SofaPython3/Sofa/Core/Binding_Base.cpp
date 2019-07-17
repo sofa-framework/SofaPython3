@@ -654,6 +654,8 @@ void moduleAddBase(py::module &m)
 
         BindingBase::SetAttr(self,s,value);
     });
+    base.def("getClassName",&Base::getClassName, sofapython3::doc::base::getClassName);
+    base.def("getTemplateName",&Base::getTemplateName, sofapython3::doc::base::getTemplateName);
 }
 
 } /// namespace sofapython3

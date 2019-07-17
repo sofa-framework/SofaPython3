@@ -63,6 +63,15 @@ class Test(unittest.TestCase):
         obj1.name = "I_Changed_Again"
         self.assertEqual(obj2.an_objectName2.value, "I_Changed_Again")
 
+    def test_getClassName(self):
+        root = Sofa.Core.Node("root")
+        self.assertEqual(root.getClassName(), "DAGNode")
+
+    def test_getTemplateName(self):
+        root = Sofa.Core.Node("root")
+        c = root.addObject("MechanicalObject", name="t")
+        self.assertEqual(c.getTemplateName(),"Vec3d")
+
     def test_addExistingDataAsParentOfNewData(self):
         # TODO(@marques-bruno)
         # do a test like this:
