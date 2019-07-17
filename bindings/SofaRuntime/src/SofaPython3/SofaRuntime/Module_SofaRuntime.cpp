@@ -92,6 +92,7 @@ PYBIND11_MODULE(SofaRuntime, m) {
 
     /// We need to import the project dependencies
     py::module::import("Sofa.Core");
+    py::module::import("Sofa.Helper");
 
     /// Check if there is already a SceneLoaderFactory. In case not load it.
     if( !SceneLoaderFactory::getInstance()->getEntryFileExtension("py3") )
@@ -105,8 +106,8 @@ PYBIND11_MODULE(SofaRuntime, m) {
         return simpleapi::importPlugin(name);
     });
 
-    //m.add_object("DataRepository", py::cast(&sofa::helper::system::DataRepository));
-    //m.add_object("PluginRepository", py::cast(&sofa::helper::system::PluginRepository));
+    m.add_object("DataRepository", py::cast(&sofa::helper::system::DataRepository));
+    m.add_object("PluginRepository", py::cast(&sofa::helper::system::PluginRepository));
 
     addSubmoduleInput(m);
     addSubmoduleTimer(m);
