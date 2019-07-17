@@ -36,7 +36,3 @@ class Test(unittest.TestCase):
         c3 = Vec3(m.translation.array())
         self.assertEqual(c3.tolist(), [1.0,0.0,0.0])
 
-
-def runTests():
-    suite = unittest.TestLoader().loadTestsFromTestCase(Test)
-    return unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful()

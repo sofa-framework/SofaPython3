@@ -15,10 +15,3 @@ class Test(unittest.TestCase):
             f(Sofa.Core.Node("node"), "Simple message to an object")
             f(Sofa.Core.Node("node"), "Simple message to an object with attached source info", "sourcefile.py", 10)
 
-            
-def runTests():
-    suite = unittest.TestLoader().loadTestsFromTestCase(Test)
-    return unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful()
-
-def createScene(rootNode):
-        runTests()
