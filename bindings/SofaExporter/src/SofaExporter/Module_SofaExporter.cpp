@@ -26,7 +26,7 @@ PYBIND11_MODULE(SofaExporter, m) {
 
               )doc";
 
-    py::module::import("Sofa");
+    py::module::import("Sofa.Core");
 
     moduleAddSTLExporter(m);
 }

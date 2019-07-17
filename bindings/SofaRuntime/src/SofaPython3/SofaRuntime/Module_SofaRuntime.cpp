@@ -91,7 +91,8 @@ PYBIND11_MODULE(SofaRuntime, m) {
     //    sofa::simulation::setSimulation(new DAGSimulation());
 
     /// We need to import the project dependencies
-    py::module::import("Sofa");
+    py::module::import("Sofa.Core");
+    py::module::import("Sofa.Helper");
 
     /// Check if there is already a SceneLoaderFactory. In case not load it.
     if( !SceneLoaderFactory::getInstance()->getEntryFileExtension("py3") )
