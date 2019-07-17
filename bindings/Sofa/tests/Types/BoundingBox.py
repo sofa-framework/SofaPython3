@@ -19,8 +19,3 @@ class Test(unittest.TestCase):
 
     def test_setMax(self):
         Sofa.Helper.msg_error("Not implemented yet")
-
-
-def runTests():
-    suite = unittest.TestLoader().loadTestsFromTestCase(Test)
-    return unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful()
