@@ -5,14 +5,97 @@ import numpy
 import Sofa
 import Sofa.Core
 from Sofa.PyTypes import RGBAColor
+#print("DIR: ", dir(Sofa))
 
-class Test(unittest.TestCase):    
-    def test_typeNameDouble(self):
+class NpArrayTestController(Sofa.Core.Controller):
+    def __init__(self, *args, **kwargs):
+        Sofa.Core.Controller.__init__(self, *args, **kwargs)
+
+        self.addData(name="vector_Vec3_1entry", type="[Vec3]", value=[[1,2,3]])
+        self.addData(name="vector_Vec3_3entries", type="[Vec3]", value=[[1,2,3],[4,5,6],[7,8,9]])
+
+        self.addData(name="vector_int_1entry", type="[int]", value=[1])
+        self.addData(name="vector_int_3entries", type="[int]", value=[1,2,3])
+
+        self.addData(name="vector_scalar_1entries", type="[double]", value=[1.0])
+        self.addData(name="vector_scalar_3entries", type="[double]", value=[1.0,2.0,3.0])
+
+        self.addData(name="vector_text_1entries", type="[str]", value=["v1"])
+        self.addData(name="vector_text_3entries", type="[str]", value=["v1","v2","v3"])
+
+    def testLen(self, test):
+        test.assertEqual(len(self.vector_Vec3_1entry), 1)
+        test.assertEqual(len(self.vector_Vec3_3entries), 3)
+
+        test.assertEqual(len(self.vector_int_1entry), 1)
+        test.assertEqual(len(self.vector_int_3entries), 3)
+
+        test.assertEqual(len(self.vector_scalar_1entries), 1)
+        test.assertEqual(len(self.vector_scalar_3entries), 3)
+
+        test.assertEqual(len(self.vector_text_1entries), 1)
+        test.assertEqual(len(self.vector_text_3entries), 3)
+
+    def testSize(self, test):
+        test.assertEqual(self.vector_Vec3_1entry.size, 3)
+        test.assertEqual(self.vector_Vec3_3entries.size, 9)
+
+        test.assertEqual(self.vector_int_1entry.size, 1)
+        test.assertEqual(self.vector_int_3entries.size, 3)
+
+        test.assertEqual(self.vector_scalar_1entries.size, 1)
+        test.assertEqual(self.vector_scalar_3entries.size, 3)
+
+        test.assertEqual(self.vector_text_1entries.size, 1)
+        test.assertEqual(self.vector_text_3entries.size, 3)
+
+    def testShape(self, test):
+        test.assertEqual(self.vector_Vec3_1entry.shape, (1,3))
+        test.assertEqual(self.vector_Vec3_3entries.shape, (2,3))
+
+        test.assertEqual(self.vector_int_1entry.shape, (1,))
+        test.assertEqual(self.vector_int_3entries.shape, (3,))
+
+        test.assertEqual(self.vector_scalar_1entries.shape, (1,))
+        test.assertEqual(self.vector_scalar_3entries.shape, (3,))
+
+        test.assertEqual(self.vector_text_1entries.shape, (1,))
+        test.assertEqual(self.vector_text_3entries.shape, (3,))
+
+    def testNDim(self, test):
+        test.assertEqual(self.vector_Vec3_1entry.ndim, 2)
+        test.assertEqual(self.vector_Vec3_3entries.ndim, 2)
+
+        test.assertEqual(self.vector_int_1entry.ndim, 1)
+        test.assertEqual(self.vector_int_3entries.ndim, 1)
+
+        test.assertEqual(self.vector_scalar_1entries.ndim, 1)
+        test.assertEqual(self.vector_scalar_3entries.ndim, 1)
+
+        test.assertEqual(self.vector_text_1entries.ndim, 1)
+        test.assertEqual(self.vector_text_3entries.ndim, 1)
+
+    def testValue(self, test):
+        test.assertEqual(self.vector_Vec3_1entry.array(), np.array([[1,2,3]]) )
+        test.assertEqual(self.vector_Vec3_3entries.array(), np.array([[1,2,3],[4,5,6],[7,8,9]]) )
+
+        test.assertEqual(self.vector_int_1entry.array(), np.array([1]) )
+        test.assertEqual(self.vector_int_3entries.array(), np.array([1,2,3]) )
+
+        test.assertEqual(self.vector_scalar_1entries.array(), np.array([1.0]))
+        test.assertEqual(self.vector_scalar_3entries.array(), np.array([1.0,2.0,3.0]))
+
+        test.assertEqual(self.vector_text_1entries.array(), np.array(["v1"]))
+        test.assertEqual(self.vector_text_3entries.array(), np.array(["v1","v2","v3"])
+
+
+class Test(unittest.TestCase):
+    def test_typeName(self):
         root = Sofa.Core.Node("rootNode")
         c = root.addObject("MechanicalObject", name="t", position=[
                            [0, 0, 0], [1, 1, 1], [2, 2, 2]])
         self.assertEqual(c.position.typeName(), "vector<Vec3d>")
-        self.assertEqual(c.showColor.typeName(), "Vec4f")
+        self.assertEqual(c.showColor.typeName(), "RGBAColor")
 
     def test_typeName(self):
         root = Sofa.Core.Node("rootNode")
@@ -27,16 +110,6 @@ class Test(unittest.TestCase):
                            [0, 0, 0], [1, 1, 1], [2, 2, 2]])
         self.assertTrue(c.position is not None)
 
-    def test_DataContainerDimmensions(self):
-        root = Sofa.Core.Node("rootNode")
-        c = root.addObject("MechanicalObject", name="t", position=[
-                               [0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]])
-        self.assertEqual(len(c.position), 4)
-        self.assertEqual(c.position.ndim, 2)
-        self.assertEqual(len(c.position.shape), c.position.ndim)
-        self.assertEqual(c.position.shape[0], 4)
-        self.assertEqual(c.position.shape[1], 3)
-
     # @unittest.skip  # no reason needed
     def test_InvalidDataAccess(self):
         root = Sofa.Core.Node("rootNode")
@@ -45,14 +118,12 @@ class Test(unittest.TestCase):
     # @unittest.skip  # no reason needed
     def test_DataAsArray2D(self):
         root = Sofa.Core.Node("rootNode")
-        v = [[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]]
+        v = [[0, 0, 0], [1, 1, 1], [2, 2, 2]]
         c = root.addObject("MechanicalObject", name="t", position=v)
-        self.assertEqual(len(c.position), 4)
-        self.assertEqual(len(c.position.value), 4)
+        self.assertEqual(len(c.position.value), 3)
         self.assertSequenceEqual(list(c.position.value[0]), v[0])
         self.assertSequenceEqual(list(c.position.value[1]), v[1])
         self.assertSequenceEqual(list(c.position.value[2]), v[2])
-        self.assertSequenceEqual(list(c.position.value[3]), v[3])
 
     # @unittest.skip  # no reason needed
     def test_DataArray2DOperationInPlace(self):
@@ -154,9 +225,9 @@ class Test(unittest.TestCase):
     def test_DataAsArray1D(self):
         root = Sofa.Core.Node("rootNode")
         v = [[0, 0, 0], [1, 1, 1], [2, 2, 2]]
-        c = root.addObject("MechanicalObject", name="t", position=v)
+        c = root.addObject("MechanicalObject", name="t", position=v, showColor=[0.42,0.1,0.9,1.0])
         self.assertEqual(len(c.showColor.value), 4)
-        self.assertTrue(isinstance(c.showColor, Sofa.Core.DataContainer))
+        self.assertEqual(c.showColor.value[0], 0.42)
 
     # @unittest.skip  # no reason needed
     def test_DataWrapper1D(self):
@@ -176,10 +247,14 @@ class Test(unittest.TestCase):
             c[0] = 1.0
         self.assertRaises(ValueError, (lambda c: t(c)), color)
 
-    def test_DataAsContainerNumpyArray(self):
+    def test_DataAsContainerNumpyArray_(self):
         root = Sofa.Core.Node("rootNode")
         v = numpy.array([[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]])
+        v2 = numpy.array([0,1,2])
         c = root.addObject("MechanicalObject", name="t", position=v.tolist())
+        c2 = root.addObject("BoxROI", name="c2", indices=[0,1,2])
+        self.assertEqual(c2.indices.array(), v2)
+        self.assertEqual(c2.indices.value, [0,1,2])
 
         with c.position.writeableArray() as wa:
             self.assertEqual(wa.shape, (4, 3))
@@ -219,3 +294,33 @@ class Test(unittest.TestCase):
             self.assertEqual(wa[2, 2], 8.0)
             numpy.testing.assert_array_equal(wa, v*4.0)
 
+    def test_DataAsContainerNumpyArray(self):
+        n = Sofa.Core.Node("rootNode")
+        c = n.addObject(NpArrayTestController(name="c"))
+
+        c.testLen(self)
+        c.testSize(self)
+        c.testShape(self)
+        c.testNDim(self)
+        c.testValue(self)
+
+
+
+def getTestsName():
+    suite = unittest.TestLoader().loadTestsFromTestCase(Test)
+    return [test.id().split(".")[2] for test in suite]
+
+
+def runTests():
+    import sys
+    suite = None
+    if(len(sys.argv) == 1):
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test)
+    else:
+        suite = unittest.TestSuite()
+        suite.addTest(Test(sys.argv[1]))
+    return unittest.TextTestRunner(verbosity=1).run(suite).wasSuccessful()
+
+
+def createScene(rootNode):
+    runTests()
