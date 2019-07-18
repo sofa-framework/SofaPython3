@@ -26,7 +26,7 @@ void moduleAddBaseData(py::module& m)
     py::class_<BaseData, raw_ptr<BaseData>> data(m, "Data");
     data.def("setName", &BaseData::setName);
     data.def("getName", &BaseData::getName);
-    data.def("getCounter", &BaseData::getCounter );
+    data.def("getCounter", [](BaseData& self) { return self.getCounter(); } );
     data.def("getHelp", &BaseData::getHelp);
     data.def("unset", &BaseData::unset);
     data.def("getOwner", &BaseData::getOwner);
