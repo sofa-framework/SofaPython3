@@ -38,9 +38,18 @@ void moduleAddBaseCamera(py::module &m) {
                sofa::core::sptr<BaseCamera>> c(m, "Camera");
 
     c.def("getProjectionMatrix", [](BaseCamera* self){
+
         static std::vector<double> m {16};
         m.resize(16);
         self->getProjectionMatrix(m.data());
+        return m;
+    });
+
+    c.def("getOpenGLModelViewMatrix", [](BaseCamera* self){
+        auto s = self->p_position.getValue();
+        static std::vector<double> m {16};
+        m.resize(16);
+        self->getOpenGLModelViewMatrix(m.data());
         return m;
     });
 
