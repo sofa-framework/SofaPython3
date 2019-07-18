@@ -76,9 +76,9 @@ PythonTest::~PythonTest()
 
 
 // extract the test suite from a module
-py::object getTestSuite(py::module& unittest, py::module& module)
+py::object getTestSuite(py::module& unittest, py::module& module, const std::vector<std::string>& arguments)
 {
-   py::object testSuite;
+    py::object testSuite;
     py::module inspect = py::module::import("inspect");
 
     py::list classes = inspect.attr("getmembers")(module);
@@ -90,20 +90,33 @@ py::object getTestSuite(py::module& unittest, py::module& module)
         {
             py::tuple bases = obj.attr("__bases__");
             for (const auto base : bases)
+            {
                 if (py::cast<std::string>(base.attr("__name__")) == "TestCase")
-                    return unittest.attr("TestLoader")().attr("loadTestsFromTestCase")(obj);
+                {
+                    if (arguments.empty())
+                        return unittest.attr("TestLoader")().attr("loadTestsFromTestCase")(obj);
+
+                    testSuite = unittest.attr("TestSuite")();
+                    py::list list;
+                    for (auto& arg : arguments) {
+                        list.append(py::str(arg));
+                    }
+                    testSuite.attr("addTest")(obj(*list));
+                }
+            }
         }
     }
     return testSuite;
 }
 
-bool runTests(py::module& unittest, py::module& module)
+bool runTests(py::module& unittest, py::object suite)
 {
     std::cout << "running tests" << std::endl;
-    py::tuple args = py::make_tuple(getTestSuite(unittest, module));
+
     py::dict kwargs = py::dict("verbosity"_a=1);
     py::object testRunner = unittest.attr("TextTestRunner")(**kwargs);
-    py::object testSuiteResults = testRunner.attr("run")(*args);
+
+    py::object testSuiteResults = testRunner.attr("run")(suite);
     return py::cast<bool>(testSuiteResults.attr("wasSuccessful")());
 }
 
@@ -114,7 +127,6 @@ void PythonTest::run( const PythonTestData& data )
     PythonEnvironment::Init();
     {
         EXPECT_MSG_NOEMIT(Error);
-        PythonEnvironment::setArguments(data.filepath, data.arguments);
         simpleapi::importPlugin("SofaAllCommonComponents");
         sofa::simulation::setSimulation(simpleapi::createSimulation().get());
 
@@ -132,14 +144,15 @@ void PythonTest::run( const PythonTestData& data )
             module = PythonEnvironment::importFromFile(basename, SetDirectory::GetFileName(filename),
                                                        globals);
 
-            py::list testSuite = getTestSuite(unittest, module);
-            if(!testSuite.size())
+            py::object testSuite = getTestSuite(unittest, module, data.arguments);
+            py::list testSuiteList = py::cast<py::list>(testSuite);
+            if(!testSuiteList.size())
             {
-                msg_error() << "Missing runTests function in file '"<< filename << "'";
+                msg_error() << "There doesn't seem to be any test in " << filename;
                 return ;
             }
 
-            if(!runTests(unittest, module))
+            if(!runTests(unittest, testSuite))
             {
                 FAIL();
             }
@@ -180,7 +193,7 @@ void PythonTestList::addTest( const std::string& filename,
     module = PythonEnvironment::importFromFile(basename, SetDirectory::GetFileName(filenameC),
                                                globals);
     std::list<std::string> testNames;
-    py::list testSuite = getTestSuite(unittest, module);
+    py::list testSuite = getTestSuite(unittest, module, arguments);
     if(!testSuite.size())
     {
         list.emplace_back( PythonTestData( filepath(path,filename), testgroup, arguments) );
