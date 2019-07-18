@@ -3,6 +3,8 @@
 
 #include <pybind11/numpy.h>
 
+#include <sofa/core/topology/Topology.h>
+
 #include <sofa/core/objectmodel/BaseData.h>
 using sofa::core::objectmodel::BaseData;
 
@@ -45,16 +47,16 @@ public:
     virtual const std::type_info& type() override { return typeid(sofa::core::objectmodel::BaseData);}
 };
 
-typedef sofa::helper::Factory< std::string, BaseData> PSDEDataFactory;
+typedef sofa::helper::Factory< std::string, BaseData> DataFactory;
 
-PSDEDataFactory* getFactoryInstance(){
-    static PSDEDataFactory* s_localfactory = nullptr ;
+DataFactory* getFactoryInstance(){
+    static DataFactory* s_localfactory = nullptr ;
     if (s_localfactory == nullptr)
     {
         // helper vector style containers
-        std::string containers[] = {"vector", "ResizableExtVector"};
+        std::string containers[] = {"vector"};
 
-        s_localfactory = new PSDEDataFactory();
+        s_localfactory = new DataFactory();
         // Scalars
         s_localfactory->registerCreator("string", new DataCreator<std::string>());
         s_localfactory->registerCreator("float", new DataCreator<float>());
@@ -79,6 +81,104 @@ PSDEDataFactory* getFactoryInstance(){
                     "Vec4f", new DataCreator<sofa::defaulttype::Vec4f>());
         s_localfactory->registerCreator(
                     "Vec6f", new DataCreator<sofa::defaulttype::Vec6f>());
+
+        // Matrices
+        s_localfactory->registerCreator(
+                    "Mat2x2d", new DataCreator<sofa::defaulttype::Mat2x2d>());
+        s_localfactory->registerCreator(
+                    "Mat3x3d", new DataCreator<sofa::defaulttype::Mat3x3d>());
+        s_localfactory->registerCreator(
+                    "Mat4x4d", new DataCreator<sofa::defaulttype::Mat4x4d>());
+        s_localfactory->registerCreator(
+                    "Mat2x2f", new DataCreator<sofa::defaulttype::Mat2x2f>());
+        s_localfactory->registerCreator(
+                    "Mat3x3f", new DataCreator<sofa::defaulttype::Mat3x3f>());
+        s_localfactory->registerCreator(
+                    "Mat4x4f", new DataCreator<sofa::defaulttype::Mat4x4f>());
+
+        // Topology
+        s_localfactory->registerCreator("Edge", new DataCreator<sofa::core::topology::Topology::Edge>());
+        s_localfactory->registerCreator("Triangle", new DataCreator<sofa::core::topology::Topology::Triangle>());
+        s_localfactory->registerCreator("Quad", new DataCreator<sofa::core::topology::Topology::Quad>());
+        s_localfactory->registerCreator("Tetra", new DataCreator<sofa::core::topology::Topology::Tetra>());
+        s_localfactory->registerCreator("Hexa", new DataCreator<sofa::core::topology::Topology::Hexa>());
+        s_localfactory->registerCreator("Penta", new DataCreator<sofa::core::topology::Topology::Penta>());
+
+        // State vectors
+        s_localfactory->registerCreator(
+                    "Rigid3d::VecCoord", new DataCreator<sofa::defaulttype::Rigid3dTypes::VecCoord>());
+        s_localfactory->registerCreator(
+                    "Rigid3f::VecCoord", new DataCreator<sofa::defaulttype::Rigid3fTypes::VecCoord>());
+        s_localfactory->registerCreator(
+                    "Rigid3::VecCoord", new DataCreator<sofa::defaulttype::Rigid3Types::VecCoord>());
+
+        // General vectors
+        for (const auto& container : containers)
+        {
+            // Scalars
+            s_localfactory->registerCreator(container + "<string>",
+                                            new DataCreator<sofa::helper::vector<std::string>>());
+            s_localfactory->registerCreator(container + "<float>",
+                                            new DataCreator<sofa::helper::vector<float>>());
+            s_localfactory->registerCreator(container + "<double>",
+                                            new DataCreator<sofa::helper::vector<double>>());
+            s_localfactory->registerCreator(container + "<bool>",
+                                            new DataCreator<sofa::helper::vector<bool>>());
+            s_localfactory->registerCreator(container + "<int>",
+                                            new DataCreator<sofa::helper::vector<int>>());
+
+            // vectors
+            s_localfactory->registerCreator(
+                        container + "<Vec2d>", new DataCreator<sofa::helper::vector<sofa::defaulttype::Vec2d>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec3d>", new DataCreator<sofa::helper::vector<sofa::defaulttype::Vec3d>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec4d>", new DataCreator<sofa::helper::vector<sofa::defaulttype::Vec4d>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec6d>", new DataCreator<sofa::helper::vector<sofa::defaulttype::Vec6d>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec2f>", new DataCreator<sofa::helper::vector<sofa::defaulttype::Vec2f>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec3f>", new DataCreator<sofa::helper::vector<sofa::defaulttype::Vec3f>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec4f>", new DataCreator<sofa::helper::vector<sofa::defaulttype::Vec4f>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec6f>", new DataCreator<sofa::helper::vector<sofa::defaulttype::Vec6f>>());
+
+            // Matrices
+            s_localfactory->registerCreator(
+                        container + "<Mat2x2d>",
+                        new DataCreator<sofa::helper::vector<sofa::defaulttype::Mat2x2d>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat3x3d>",
+                        new DataCreator<sofa::helper::vector<sofa::defaulttype::Mat3x3d>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat4x4d>",
+                        new DataCreator<sofa::helper::vector<sofa::defaulttype::Mat4x4d>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat2x2f>",
+                        new DataCreator<sofa::helper::vector<sofa::defaulttype::Mat2x2f>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat3x3f>",
+                        new DataCreator<sofa::helper::vector<sofa::defaulttype::Mat3x3f>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat4x4f>",
+                        new DataCreator<sofa::helper::vector<sofa::defaulttype::Mat4x4f>>());
+
+            // Topology
+            s_localfactory->registerCreator(container + "<Edge>",
+                                            new DataCreator<sofa::helper::vector<sofa::core::topology::Topology::Edge>>());
+            s_localfactory->registerCreator(container + "<Triangle>",
+                                            new DataCreator<sofa::helper::vector<sofa::core::topology::Topology::Triangle>>());
+            s_localfactory->registerCreator(container + "<Quad>",
+                                            new DataCreator<sofa::helper::vector<sofa::core::topology::Topology::Quad>>());
+            s_localfactory->registerCreator(container + "<Tetra>",
+                                            new DataCreator<sofa::helper::vector<sofa::core::topology::Topology::Tetra>>());
+            s_localfactory->registerCreator(container + "<Hexa>",
+                                            new DataCreator<sofa::helper::vector<sofa::core::topology::Topology::Hexa>>());
+            s_localfactory->registerCreator(container + "<Penta>",
+                                            new DataCreator<sofa::helper::vector<sofa::core::topology::Topology::Penta>>());
+        }
     }
     return s_localfactory ;
 }
@@ -345,7 +445,7 @@ void moduleAddDataDict(py::module& m)
                 return a;
             }
             if(nfo.Text()) {
-//                return py::cast(reinterpret_cast<DataAsString*>(d));
+                //                return py::cast(reinterpret_cast<DataAsString*>(d));
                 return py::cast(d->getValueString());
             }
             return py::cast(d);
