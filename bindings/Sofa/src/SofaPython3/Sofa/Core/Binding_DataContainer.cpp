@@ -34,12 +34,17 @@ void moduleAddDataAsString(py::module& m)
 /// Following numpy convention returns the number of element in each dimmensions.
 py::tuple DataContainer::getShape()
 {
-    /// Detect if we are in a one or two day array.
+    /// Detect if we are in a one or two dimmension array.
     auto nfo = getValueTypeInfo();
-    if( nfo->size() == nfo->size(getValueVoidPtr() ))
+    auto itemNfo = nfo->BaseType();
+
+    /// If the data is a container and its "item" is not a container we are manipulating
+    /// a 1D array.
+    if( !itemNfo->Container() )
     {
         py::tuple p {1};
-        p[0] = nfo->size();
+        p[0] =  py::int_{nfo->size(getValueVoidPtr())/itemNfo->size()};
+        return p;
     }
     py::tuple p {2};
     p[0] = py::int_{nfo->size(getValueVoidPtr())/nfo->size()};
@@ -51,18 +56,21 @@ py::tuple DataContainer::getShape()
 size_t DataContainer::getNDim()
 {
     auto nfo = getValueTypeInfo();
-    if( nfo->size() == nfo->size(getValueVoidPtr() ))
-        return 1;
-    return 2;
+    auto itemNfo = nfo->BaseType();
+
+    if( itemNfo->Container() )
+        return 2;
+    return 1;
 }
 
-/// Following numpy convention the number of elements in the first dimmension
+/// Following numpy convention the number of elements in all the dimmension
+/// https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.size.html#numpy.ndarray.size
 size_t DataContainer::getSize()
 {
     auto nfo = getValueTypeInfo();
-    if( nfo->size() == nfo->size(getValueVoidPtr() ))
-        return nfo->size();
-    return nfo->size(getValueVoidPtr())/nfo->size();
+    auto itemNfo = nfo->BaseType();
+
+    return nfo->size(getValueVoidPtr());
 }
 
 void moduleAddDataContainer(py::module& m)
@@ -146,9 +154,13 @@ void moduleAddDataContainer(py::module& m)
                                                                  /// dimmension.
     {
         auto nfo = self->getValueTypeInfo();
-        if( nfo->size() == nfo->size(self->getValueVoidPtr() ))
-            return nfo->size();
-        return nfo->size(self->getValueVoidPtr())/nfo->size();
+        auto itemNfo = nfo->BaseType();
+
+        /// This is a 1D container
+        if( itemNfo->Container() )
+            return nfo->size(self->getValueVoidPtr()) / itemNfo->size();
+
+        return nfo->size(self->getValueVoidPtr());
     });
 
     p.def("array", [](DataContainer* self){

@@ -247,11 +247,19 @@ void trimCache()
 py::buffer_info toBufferInfo(BaseData& m)
 {
     const AbstractTypeInfo& nfo { *m.getValueTypeInfo() };
+    auto itemNfo = nfo.BaseType();
 
     const char* format = nullptr;
     if(nfo.Integer())
     {
-        format = py::format_descriptor<long>::value;
+        if(nfo.byteSize() == 8)
+            format = py::format_descriptor<unsigned long long>::value;
+        else if(nfo.byteSize() == 4)
+            format = py::format_descriptor<unsigned long>::value;
+        else if(nfo.byteSize() == 2)
+            format = py::format_descriptor<unsigned short>::value;
+        else if(nfo.byteSize() == 1)
+            format = py::format_descriptor<unsigned char>::value;
     } else if(nfo.Scalar() )
     {
         if(nfo.byteSize() == 8)
@@ -259,18 +267,19 @@ py::buffer_info toBufferInfo(BaseData& m)
         else if(nfo.byteSize() == 4)
             format = py::format_descriptor<float>::value;
     }
-    int rows = nfo.size(m.getValueVoidPtr()) / nfo.size();
+
+    int rows = nfo.size(m.getValueVoidPtr()) / itemNfo->size();
     int cols = nfo.size();
     size_t datasize = nfo.byteSize();
 
     void* ptr = const_cast<void*>(nfo.getValuePtr(m.getValueVoidPtr()));
-    if(rows == 1 && nfo.FixedSize()){
+    if( !itemNfo->Container() ){
         return py::buffer_info(
                     ptr, /* Pointer to buffer */
                     datasize,                              /* Size of one scalar */
                     format,                                /* Python struct-style format descriptor */
                     1,                                     /* Number of dimensions */
-        { cols },                              /* Buffer dimensions */
+        { rows },                              /* Buffer dimensions */
         { datasize }                           /* Strides (in bytes) for each index */
 
                     );
