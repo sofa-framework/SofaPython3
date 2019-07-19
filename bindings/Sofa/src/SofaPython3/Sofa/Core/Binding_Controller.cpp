@@ -178,7 +178,6 @@ namespace sofapython3
 
     void Controller_Trampoline::handleEvent(Event* event)
     {
-
         if (!s_isDictCreated)
         {
             s_getEventDict.resize(sofa::core::objectmodel::Event::getEventTypeCount() + 1, nullptr);
