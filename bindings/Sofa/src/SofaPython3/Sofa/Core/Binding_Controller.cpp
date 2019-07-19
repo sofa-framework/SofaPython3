@@ -34,6 +34,7 @@ using sofa::core::objectmodel::KeyreleasedEvent;
 using sofa::core::objectmodel::MouseEvent;
 #include "sofa/core/objectmodel/ScriptEvent.h"
 using sofa::core::objectmodel::ScriptEvent;
+#include "PythonScriptEvent.h"
 
 PYBIND11_DECLARE_HOLDER_TYPE(Controller,
                              sofapython3::py_shared_ptr<Controller>, true)
@@ -143,6 +144,17 @@ namespace sofapython3
                             "sender"_a=py::cast(evt->getSender()),
                             "event_name"_a=evt->getEventName());
         };
+        e = new PythonScriptEvent(nullptr, "", nullptr);
+        eventDict[e->getEventTypeIndex()] = [] (Event* event) -> py::object {
+            auto evt = dynamic_cast<PythonScriptEvent*>(event);
+            return py::dict("type"_a=evt->getClassName(),
+                            "isHandled"_a=evt->isHandled(),
+                            "sender"_a=py::cast(evt->getSender()),
+                            "event_name"_a=evt->getEventName(),
+                            "userData"_a=evt->getUserData());
+        };
+
+
 
         // TODO: bind other events' attributes here
     }
@@ -166,6 +178,7 @@ namespace sofapython3
 
     void Controller_Trampoline::handleEvent(Event* event)
     {
+
         if (!s_isDictCreated)
         {
             s_getEventDict.resize(sofa::core::objectmodel::Event::getEventTypeCount() + 1, nullptr);

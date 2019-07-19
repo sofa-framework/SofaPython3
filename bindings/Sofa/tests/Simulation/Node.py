@@ -2,6 +2,26 @@
 import Sofa
 import unittest
 import Sofa.Types
+import Sofa.Simulation
+
+class MyController(Sofa.Core.Controller):
+        """This is my custom controller
+           when init is called from Sofa this should call the python init function
+           This controller is used to test the method sendMessage
+        """
+        def __init__(self, *args, **kwargs):
+            ## These are needed (and the normal way to override from a python class)
+            Sofa.Core.Controller.__init__(self, *args, **kwargs)
+            print(" Python::__init__::"+str(self.name))
+            self.event_name = ""
+            self.userData = ""
+            self.sender = ""
+
+        def onPythonScriptEvent(self, kwargs):
+            print(" Handling event PythonScriptEvent " + str(kwargs))
+            self.event_name = kwargs.get("event_name")
+            self.userData = kwargs.get("userData")
+            self.sender = kwargs.get("sender")
 
 class Test(unittest.TestCase):
         def test_SimulationConstructor(self):
@@ -138,3 +158,109 @@ class Test(unittest.TestCase):
             self.assertEqual(root["node1.node2.object2.name"], object2.name)
 
             self.assertEqual(root["node1.node2.object2.name"], root.node1.node2.object2.name)
+        def test_getRootPath(self):
+            root = Sofa.Core.Node("root")
+            node = root.addChild("node")
+            self.assertEqual(node.getRootPath(),"../")
+
+        def test_getLink(self):
+            root = Sofa.Core.Node("root")
+            node = root.addChild("node")
+            node2 = node.addChild("node2")
+            self.assertEqual(node.getLink(),"@/node")
+            self.assertEqual(node2.getLink(), "@/node/node2")
+
+        def test_removeObject(self):
+            root = Sofa.Core.Node("root")
+            obj1 = root.addObject("MechanicalObject", name="obj1")
+            obj2 = root.addObject("MechanicalObject", name="obj2")
+            self.assertEqual(len(root.objects), 2)
+            self.assertTrue(hasattr(root,"obj1"))
+            self.assertTrue(hasattr(root,"obj2"))
+            root.removeObject(obj1)
+            self.assertEqual(len(root.objects), 1)
+
+            self.assertFalse(hasattr(root,"obj1"))
+            root.removeObject(obj2)
+            self.assertFalse(hasattr(root,"obj2"))
+            self.assertEqual(len(root.objects), 0)
+
+        def test_moveChild(self):
+            root1 = Sofa.Core.Node("root1")
+            root2 = Sofa.Core.Node("root2")
+            child = Sofa.Core.Node("aChild")
+            root1.addChild(child)
+            self.assertEqual(len(root1.children), 1)
+            self.assertTrue(hasattr(root1,"aChild"))
+            root2.moveChild(child,root1)
+            self.assertEqual(len(root2.children), 1)
+            self.assertTrue(hasattr(root2,"aChild"))
+            self.assertEqual(len(root1.children), 0)
+            self.assertFalse(hasattr(root1,"aChild"))
+
+        def test_isInitialized(self):
+            root = Sofa.Core.Node("root")
+            root.init()
+            self.assertTrue(root.isInitialized())
+
+        def test_getAsACreateObjectParameter(self):
+            root = Sofa.Core.Node("root")
+            node = root.addChild("node")
+            node2 = node.addChild("node2")
+            self.assertEqual(node.getAsACreateObjectParameter(),"@/node")
+            self.assertEqual(node2.getAsACreateObjectParameter(), "@/node/node2")
+
+        def test_detachFromGraph(self):
+            root = Sofa.Core.Node("root")
+            node = root.addChild("node")
+            self.assertEqual(len(root.children),1)
+            node.detachFromGraph()
+            self.assertEqual(len(root.children),0)
+
+        def test_getMass(self):
+            root = Sofa.Core.Node("root")
+            root.addObject("MechanicalObject")
+            m = root.addObject("UniformMass", name="mass", vertexMass=0.1)
+            self.assertEqual(m,root.getMass())
+
+        def test_getForceField(self):
+            root = Sofa.Core.Node("root")
+            root.addObject("MechanicalObject")
+            ff = root.addObject('ConstantForceField', template="Vec3d", name="cff2")
+            self.assertEqual(ff, root.getForceField(0))
+
+        def test_getMechanicalState(self):
+            root = Sofa.Core.Node("root")
+            c = root.addObject("MechanicalObject")
+            self.assertEqual(c, root.getMechanicalState())
+
+        def test_getMechanicalMapping(self):
+            root = Sofa.Core.Node("root")
+            root.addObject("MechanicalObject", name="t1")
+            root.addObject("MechanicalObject", name="t2")
+            mm  = root.addObject("BarycentricMapping", input="@/t1", output="@/t2")
+            self.assertEqual(mm, root.getMechanicalMapping())
+
+        def test_sendMessage(self):
+            root = Sofa.Core.Node("rootNode")
+            node = root.addChild("node")
+            c = node.addObject(MyController(name="controller"))
+            root.sendMessage(root.getName(),"This is a test")
+            self.assertEqual(c.event_name, "This is a test")
+            self.assertEqual(c.userData, root.getName())
+            self.assertEqual(c.sender, root)
+
+
+def getTestsName():
+    suite = unittest.TestLoader().loadTestsFromTestCase(Test)
+    return [ test.id().split(".")[2] for test in suite]
+
+def runTests():
+        import sys
+        suite = None
+        if( len(sys.argv) == 1 ):
+            suite = unittest.TestLoader().loadTestsFromTestCase(Test)
+        else:
+            suite = unittest.TestSuite()
+            suite.addTest(Test(sys.argv[1]))
+        return unittest.TextTestRunner(verbosity=1).run(suite).wasSuccessful()
