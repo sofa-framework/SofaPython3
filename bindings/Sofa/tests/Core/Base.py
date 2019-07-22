@@ -38,30 +38,65 @@ class Test(unittest.TestCase):
         self.assertRaises(ValueError, node.addChild, "parents")
         self.assertRaises(ValueError, node.addData, name="links", type="int", value=42)
 
-    def test_addNewData_from_parent(self):
-        node = Sofa.Core.Node("a_node")
-        obj1 = node.addObject("MechanicalObject", name="an_object", position=[
-                              [0, 0, 0], [1, 1, 1], [2, 2, 2]])
-        obj2 = node.addObject("MechanicalObject", name="another_object", position=[
-                              [0, 0, 0], [1, 1, 1], [2, 2, 2]])
+    def test_addNewData_from_parent_linkPath(self):
+        root = Sofa.Core.Node('root')
+        c1 = root.addObject("MechanicalObject", name="c1")
+        c1.addData("data1", value="coucou", type="string")
+        c1.addData("data2", value=42, type="int")
+        c1.addData("data3", value=False, type="bool")
+        self.assertEqual(c1.data1.value, "coucou")
+        self.assertEqual(c1.data2.value, 42)
+        self.assertEqual(c1.data3.value, False)
 
-        obj2.addData(name="an_objectName", value="@an_object.name")
+        c2 = root.addObject("MechanicalObject", name="c2")
+        c2.addData("data1", value="@/c1.data1") # absolute path
+        c2.addData("data2", value="@c1.data2") # relative path (local)
+        c2.addData("data3", value="@./c1.data3") # relative path (local)
+        self.assertEqual(c2.data1.value, c1.data1.value)
+        self.assertEqual(c2.data2.value, c1.data2.value)
+        self.assertEqual(c2.data3.value, c1.data3.value)
 
-        self.assertTrue(hasattr(obj2, "an_objectName"))
-        self.assertEqual(obj2.an_objectName.getParent(), obj1.name)
-        self.assertEqual(obj2.an_objectName.value, "an_object")
+        n1 = root.addChild("n1")
+        n2 = root.addChild("n2")
 
-        obj1.name = "I_Changed"
-        self.assertEqual(obj2.an_objectName.value, "I_Changed")
+        c3 = n1.addObject('MechanicalObject', name='c3')
+        c3.addData("data1", value="@../c1.data1") # relative path (down)
+        c3.addData("data2", value="@../c2.data2") # relative path (down)
+        c3.addData("data3", value="@/c2.data3") # absolute path
+        self.assertEqual(c3.data1.value, c1.data1.value)
+        self.assertEqual(c3.data2.value, c2.data2.value)
+        self.assertEqual(c3.data3.value, c2.data3.value)
 
-        obj2.addData(name="an_objectName2", value=obj1.name)
+        c4 = n2.addObject('MechanicalObject', name='c4')
+        c4.addData('data1', value="@/n1/c3.data1") # absolute path (chained)
+        c4.addData('data2', value="@../n1/c3.data2") # relative path (down, chained)
+        self.assertEqual(c4.data1.value, c3.data1.value)
+        self.assertEqual(c4.data2.value, c3.data2.value)
 
-        self.assertTrue(hasattr(obj2, "an_objectName2"))
-        self.assertEqual(obj2.an_objectName2.getParent(), obj1.name)
-        self.assertEqual(obj2.an_objectName2.value, "I_Changed")
+        # Error mgmt testing
+        self.assertRaises(ValueError, c4.addData, name="data3", value="@aBroken/path.value")
+        self.assertRaises(ValueError, c4.addData, name="data3", value="@aBroken/path")
+        self.assertRaises(ValueError, c4.addData, name="data3", value="@/aBroken/path")
+        self.assertRaises(TypeError, c4.addData, name="data3", value="")
+        self.assertRaises(TypeError, c4.addData, name="data3", value="/")
+        self.assertRaises(TypeError, c4.addData, name="data3", value=".")
+        self.assertRaises(ValueError, c4.addData, name="data3", value="@")
+        self.assertRaises(ValueError, c4.addData, name="data3", value="@/")
+        self.assertRaises(ValueError, c4.addData, name="data3", value="@./")
+        self.assertRaises(ValueError, c4.addData, name="data3", value="@../")
 
-        obj1.name = "I_Changed_Again"
-        self.assertEqual(obj2.an_objectName2.value, "I_Changed_Again")
+        # parenting tests
+        c1.data1 = "test"
+        c1.data2 = 1337
+        c1.data3 = False
+        self.assertEqual("test", c1.data1.value)
+        self.assertEqual(1337, c1.data2.value)
+        self.assertEqual(False, c1.data3.value)
+
+        self.assertEqual(c2.data1.value, c1.data1.value)
+        self.assertEqual(c2.data2.value, c1.data2.value)
+        self.assertEqual(c2.data3.value, c1.data3.value)
+
 
     def test_getClassName(self):
         root = Sofa.Core.Node("root")
