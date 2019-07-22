@@ -527,19 +527,19 @@ BaseData* deriveTypeFromParent(BaseContext* ctx, const std::string& link)
     // if data is a link
     if (link.empty() || link[0] != '@')
         return nullptr;
+    Base* component = ctx->toBaseNode();
 
-    std::string componentPath = link.substr(1, link.find('.') - 1);
-    std::string parentDataName = link.substr(link.find('.') + 1);
-    Base* component;
-    component = ctx->get<BaseObject>(componentPath);
+    size_t pos = link.find_last_of('.');
+    std::string componentPath = link.substr(0, pos);
+    std::string parentDataName = link.substr(pos + 1);
+
+    component = component->toBaseContext()->get<Base>(componentPath.substr(1));
+
     if (!component)
-        component = static_cast<sofa::simulation::Node*>(ctx)->getNodeInGraph(componentPath);
-
-    if(!component)
-    {
-        throw py::value_error("SofaPython: No object or node with path " + componentPath + " in scene graph.");
-    }
+        throw py::value_error("No datafield found with path " + link);
     BaseData* parentData = component->findData(parentDataName);
+    if (!parentData)
+        throw py::value_error("No datafield found with path " + link);
     return deriveTypeFromParent(parentData);
 }
 
