@@ -286,13 +286,13 @@ py::buffer_info toBufferInfo(BaseData& m)
     if(nfo.Integer())
     {
         if(nfo.byteSize() == 8)
-            format = py::format_descriptor<unsigned long long>::value;
+            format = py::format_descriptor<int64_t>::value;
         else if(nfo.byteSize() == 4)
-            format = py::format_descriptor<unsigned long>::value;
+            format = py::format_descriptor<int32_t>::value;
         else if(nfo.byteSize() == 2)
-            format = py::format_descriptor<unsigned short>::value;
+            format = py::format_descriptor<int16_t>::value;
         else if(nfo.byteSize() == 1)
-            format = py::format_descriptor<unsigned char>::value;
+            format = py::format_descriptor<int8_t>::value;
     } else if(nfo.Scalar() )
     {
         if(nfo.byteSize() == 8)
