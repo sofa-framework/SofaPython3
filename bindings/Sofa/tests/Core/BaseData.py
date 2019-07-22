@@ -11,17 +11,17 @@ class NpArrayTestController(Sofa.Core.Controller):
     def __init__(self, *args, **kwargs):
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
 
-        self.addData(name="vector_Vec3_1entry", type="[Vec3d]", value=[[1,2,3]])
-        self.addData(name="vector_Vec3_3entries", type="[Vec3d]", value=[[1,2,3],[4,5,6],[7,8,9]])
+        self.addData(name="vector_Vec3_1entry", type="vector<Vec3d>", value=[[1,2,3]])
+        self.addData(name="vector_Vec3_3entries", type="vector<Vec3d>", value=[[1,2,3],[4,5,6],[7,8,9]])
 
-        self.addData(name="vector_int_1entry", type="[int]", value=[1])
-        self.addData(name="vector_int_3entries", type="[int]", value=[1,2,3])
+        self.addData(name="vector_int_1entry", type="vector<int>", value=[1])
+        self.addData(name="vector_int_3entries", type="vector<int>", value=[1,2,3])
 
-        self.addData(name="vector_scalar_1entries", type="[double]", value=[1.0])
-        self.addData(name="vector_scalar_3entries", type="[double]", value=[1.0,2.0,3.0])
+        self.addData(name="vector_scalar_1entries", type="vector<double>", value=[1.0])
+        self.addData(name="vector_scalar_3entries", type="vector<double>", value=[1.0,2.0,3.0])
 
-        self.addData(name="vector_text_1entries", type="[str]", value=["v1"])
-        self.addData(name="vector_text_3entries", type="[str]", value=["v1","v2","v3"])
+        self.addData(name="vector_text_1entries", type="vector<string>", value=["v1"])
+        self.addData(name="vector_text_3entries", type="vector<string>", value=["v1","v2","v3"])
 
     def testLen(self, test):
         test.assertEqual(len(self.vector_Vec3_1entry), 1)
