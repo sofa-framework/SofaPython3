@@ -58,7 +58,7 @@ void PythonTrampoline::setInstance(py::object s)
     {
             // runSofa Sofa/tests/pyfiles/ScriptController.py => CRASH
             // Py_DECREF(ob);
-    });
+});
 }
 
 std::ostream& operator<<(std::ostream& out, const py::buffer_info& p)
@@ -416,7 +416,28 @@ py::object toPython(BaseData* d, bool writeable)
     return convertToPython(d);
 }
 
-void copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo, const py::list& l)
+
+template<class SrcType>
+void copyFromListOf(const AbstractTypeInfo& nfo, void* ptr, size_t index, py::object o);
+
+template<> void copyFromListOf<double>(const AbstractTypeInfo& nfo, void* ptr, size_t index, py::object o)
+{
+    nfo.setScalarValue(ptr, index, py::cast<double>(o));
+}
+
+template<> void copyFromListOf<int>(const AbstractTypeInfo& nfo, void* ptr, size_t index, py::object o)
+{
+    nfo.setIntegerValue(ptr, index, py::cast<int>(o));
+}
+
+template<> void copyFromListOf<std::string>(const AbstractTypeInfo& nfo, void* ptr, size_t index, py::object o)
+{
+    nfo.setTextValue(ptr, index, py::cast<std::string>(o));
+}
+
+
+template<class DestType>
+void copyFromListOf(BaseData& d, const AbstractTypeInfo& nfo, const py::list& l)
 {
     /// Check if the data is a single dimmension or not.
     py::buffer_info dstinfo = toBufferInfo(d);
@@ -432,7 +453,7 @@ void copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo, const py::list
             nfo.setSize(ptr, l.size());
         for(size_t i=0;i<l.size();++i)
         {
-            nfo.setScalarValue(ptr, i, py::cast<double>(l[i]));
+            copyFromListOf<DestType>(nfo, ptr, i, l[i]);
         }
         d.endEditVoidPtr();
         return;
@@ -446,34 +467,57 @@ void copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo, const py::list
         py::list ll = l[i];
         for(auto j=0;j<dstinfo.shape[1];++j)
         {
-            nfo.setScalarValue(ptr, i*dstinfo.shape[1]+j, py::cast<double>(ll[j]));
+            copyFromListOf<double>(nfo, ptr, i*dstinfo.shape[1]+j, l[i]);
         }
     }
     d.endEditVoidPtr();
     return;
 }
 
+template<>
+void copyFromListOf<std::string>(BaseData& d, const AbstractTypeInfo& nfo, const py::list& l)
+{
+    void* ptr = d.beginEditVoidPtr();
+    if( (size_t)nfo.size() != l.size())
+        nfo.setSize(ptr, l.size());
+
+    for(size_t i=0;i<l.size();++i)
+    {
+        copyFromListOf<std::string>(nfo, ptr, i, l[i]);
+    }
+    d.endEditVoidPtr();
+    return;
+}
+
+
 void fromPython(BaseData* d, const py::object& o)
 {
     const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
+
     if(!nfo.Container())
     {
         scoped_writeonly_access guard(d);
         if(nfo.Integer())
             nfo.setIntegerValue(guard.ptr, 0, py::cast<int>(o));
-        if(nfo.Text())
+        else if(nfo.Text())
             nfo.setTextValue(guard.ptr, 0, py::cast<py::str>(o));
-        if(nfo.Scalar())
+        else if(nfo.Scalar())
             nfo.setScalarValue(guard.ptr, 0, py::cast<double>(o));
         return ;
     }
 
+    if(nfo.Integer())
+        return copyFromListOf<int>(*d, nfo, o);
+
+    if(nfo.Text())
+        return copyFromListOf<std::string>(*d, nfo, o);
+
     if(nfo.Scalar())
-        return copyFromListScalar(*d, nfo, o);
+        return copyFromListOf<double>(*d, nfo, o);
 
-    msg_error("SofaPython3") << "binding problem, trying to set value for "
-                             << d->getName() << ", " << py::cast<std::string>(py::str(o));
+    std::stringstream s;
+    s<< "binding problem, trying to set value for "
+     << d->getName() << ", " << py::cast<std::string>(py::str(o));
+    throw std::runtime_error(s.str());
 }
-
-
 }
