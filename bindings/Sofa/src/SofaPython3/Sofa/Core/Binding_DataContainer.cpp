@@ -15,6 +15,7 @@ using  sofa::core::objectmodel::BaseNode;
 #include "Binding_Base.h"
 #include "Binding_BaseData.h"
 #include "Binding_DataContainer.h"
+#include "Binding_DataContainer_doc.h"
 
 #include <sofa/defaulttype/BoundingBox.h>
 
@@ -161,7 +162,7 @@ void moduleAddDataContainer(py::module& m)
             return nfo->size(self->getValueVoidPtr()) / itemNfo->size();
 
         return nfo->size(self->getValueVoidPtr());
-    });
+    }, sofapython3::doc::datacontainer::__len__);
 
     p.def("array", [](DataContainer* self){
         auto capsule = py::capsule(new Base::SPtr(self->getOwner()));
