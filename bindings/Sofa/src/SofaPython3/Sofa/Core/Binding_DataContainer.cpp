@@ -32,48 +32,6 @@ void moduleAddDataAsString(py::module& m)
     });
 }
 
-/// Following numpy convention returns the number of element in each dimmensions.
-py::tuple DataContainer::getShape()
-{
-    /// Detect if we are in a one or two dimmension array.
-    auto nfo = getValueTypeInfo();
-    auto itemNfo = nfo->BaseType();
-
-    /// If the data is a container and its "item" is not a container we are manipulating
-    /// a 1D array.
-    if( !itemNfo->Container() )
-    {
-        py::tuple p {1};
-        p[0] =  py::int_{nfo->size(getValueVoidPtr())/itemNfo->size()};
-        return p;
-    }
-    py::tuple p {2};
-    p[0] = py::int_{nfo->size(getValueVoidPtr())/nfo->size()};
-    p[1] = py::int_{nfo->size()};
-    return p;
-}
-
-/// Following numpy convention the number of dimmension in the container.
-size_t DataContainer::getNDim()
-{
-    auto nfo = getValueTypeInfo();
-    auto itemNfo = nfo->BaseType();
-
-    if( itemNfo->Container() )
-        return 2;
-    return 1;
-}
-
-/// Following numpy convention the number of elements in all the dimmension
-/// https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.size.html#numpy.ndarray.size
-size_t DataContainer::getSize()
-{
-    auto nfo = getValueTypeInfo();
-    auto itemNfo = nfo->BaseType();
-
-    return nfo->size(getValueVoidPtr());
-}
-
 void moduleAddDataContainer(py::module& m)
 {
     py::class_<DataContainer, BaseData, raw_ptr<DataContainer>> p(m, "DataContainer",
@@ -148,9 +106,23 @@ void moduleAddDataContainer(py::module& m)
     });
 
     /// This is the standard terminology in numpy so we keep it for consistency purpose.
-    p.def_property_readonly("ndim", &DataContainer::getNDim);    /// 1 or 2D array
-    p.def_property_readonly("shape", &DataContainer::getShape);  /// array containing the size in each dimmension
-    p.def_property_readonly("size", &DataContainer::getSize);    /// get the total number of elements
+    p.def_property_readonly("ndim", &getNDim);    /// 1 or 2D array
+    p.def_property_readonly("shape", [](BaseData* self)
+    {
+        std::tuple<int, int> shape = getShape(self);
+        if(std::get<1>(shape)==-1)
+        {
+            py::tuple r {1};
+            r[0] = std::get<0>(shape);
+            return r;
+        }
+        py::tuple r {2};
+        r[0] = std::get<0>(shape);
+        r[1] = std::get<1>(shape);
+        return r;
+    });  /// array containing the size in each dimmension
+
+    p.def_property_readonly("size", &getSize);    /// get the total number of elements
     p.def("__len__", [](DataContainer* self)                     /// In numpy the len is the number of element in the first
                                                                  /// dimmension.
     {

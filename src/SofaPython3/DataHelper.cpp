@@ -47,8 +47,6 @@ BindingDataFactory* getBindingDataFactoryInstance(){
 PythonTrampoline::~PythonTrampoline(){}
 void PythonTrampoline::setInstance(py::object s)
 {
-    py::print(py::str( s.get_type() ));
-
     s.inc_ref();
 
     // TODO(bruno-marques) ici ça crash dans SOFA.
@@ -58,7 +56,7 @@ void PythonTrampoline::setInstance(py::object s)
     {
             // runSofa Sofa/tests/pyfiles/ScriptController.py => CRASH
             // Py_DECREF(ob);
-    });
+});
 }
 
 std::ostream& operator<<(std::ostream& out, const py::buffer_info& p)
@@ -244,6 +242,41 @@ void trimCache()
     }
 }
 
+
+/// Following numpy convention returns the number of element in each dimmensions.
+std::tuple<int, int> getShape(BaseData* self)
+{
+    /// Detect if we are in a one or two dimmension array.
+    auto nfo = self->getValueTypeInfo();
+    auto itemNfo = nfo->BaseType();
+
+    /// If the data is a container and its "item" is not a container we are manipulating
+    /// a 1D array.
+    if( !itemNfo->Container() )
+        return  {nfo->size(self->getValueVoidPtr())/itemNfo->size(), -1};
+    return {nfo->size(self->getValueVoidPtr())/itemNfo->size(), itemNfo->size()};
+}
+
+/// Following numpy convention the number of dimmension in the container.
+size_t getNDim(BaseData* self)
+{
+    auto nfo = self->getValueTypeInfo();
+    auto itemNfo = nfo->BaseType();
+
+    if( itemNfo->Container() )
+        return 2;
+    return 1;
+}
+
+/// Following numpy convention the number of elements in all the dimmension
+/// https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.size.html#numpy.ndarray.size
+size_t getSize(BaseData* self)
+{
+    auto nfo = self->getValueTypeInfo();
+    return nfo->size(self->getValueVoidPtr());
+}
+
+
 py::buffer_info toBufferInfo(BaseData& m)
 {
     const AbstractTypeInfo& nfo { *m.getValueTypeInfo() };
@@ -253,13 +286,13 @@ py::buffer_info toBufferInfo(BaseData& m)
     if(nfo.Integer())
     {
         if(nfo.byteSize() == 8)
-            format = py::format_descriptor<unsigned long long>::value;
+            format = py::format_descriptor<int64_t>::value;
         else if(nfo.byteSize() == 4)
-            format = py::format_descriptor<unsigned long>::value;
+            format = py::format_descriptor<int32_t>::value;
         else if(nfo.byteSize() == 2)
-            format = py::format_descriptor<unsigned short>::value;
+            format = py::format_descriptor<int16_t>::value;
         else if(nfo.byteSize() == 1)
-            format = py::format_descriptor<unsigned char>::value;
+            format = py::format_descriptor<int8_t>::value;
     } else if(nfo.Scalar() )
     {
         if(nfo.byteSize() == 8)
@@ -268,9 +301,10 @@ py::buffer_info toBufferInfo(BaseData& m)
             format = py::format_descriptor<float>::value;
     }
 
-    int rows = nfo.size(m.getValueVoidPtr()) / itemNfo->size();
-    int cols = nfo.size();
     size_t datasize = nfo.byteSize();
+
+    std::tuple<int,int> shape = getShape(&m);
+    size_t    ndim = getNDim(&m);
 
     void* ptr = const_cast<void*>(nfo.getValuePtr(m.getValueVoidPtr()));
     if( !itemNfo->Container() ){
@@ -279,9 +313,8 @@ py::buffer_info toBufferInfo(BaseData& m)
                     datasize,                              /* Size of one scalar */
                     format,                                /* Python struct-style format descriptor */
                     1,                                     /* Number of dimensions */
-        { rows },                              /* Buffer dimensions */
+        { std::get<0>(shape) },                              /* Buffer dimensions */
         { datasize }                           /* Strides (in bytes) for each index */
-
                     );
     }
     py::buffer_info ninfo(
@@ -289,12 +322,12 @@ py::buffer_info toBufferInfo(BaseData& m)
                 datasize,                              /* Size of one scalar */
                 format,                                /* Python struct-style format descriptor */
                 2,                                     /* Number of dimensions */
-    { rows, cols },                        /* Buffer dimensions */
-    { datasize * cols ,    datasize }                         /* Strides (in bytes) for each index */
-
+    { std::get<0>(shape), std::get<1>(shape)},                        /* Buffer dimensions */
+    { datasize * std::get<1>(shape) ,    datasize }                         /* Strides (in bytes) for each index */
                 );
     return ninfo;
 }
+
 
 py::object convertToPython(BaseData* d)
 {
@@ -331,12 +364,8 @@ py::object convertToPython(BaseData* d)
     if(nfo.Scalar())
         return py::cast(nfo.getScalarValue(d->getValueVoidPtr(), 0));
 
-    std::cout << nfo.name() << " is not a container nor a scalar." << std::endl;
-
     if (!getBindingDataFactoryInstance()->createObject(nfo.name(), d).is_none())
         return getBindingDataFactoryInstance()->createObject(nfo.name(), d);
-
-    std::cout << nfo.name() << " No such type in the BindingDataFactory. returning string" << std::endl;
 
     return py::cast(d->getValueString());
 }
@@ -397,7 +426,6 @@ py::object dataToPython(BaseData* d)
 /// If possible the data is exposed as a numpy.array to minmize copy and data conversion
 py::object toPython(BaseData* d, bool writeable)
 {
-
     const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
     /// In case the data is a container with a simple layout
     /// we can expose the field as a numpy.array (no copy)
@@ -411,12 +439,32 @@ py::object toPython(BaseData* d, bool writeable)
         return getPythonArrayFor(d);
     }
 
-    std::cout << nfo.name() << " is not a container with a simple layout" << std::endl;
     /// If this is not the case we return the converted datas (copy)
     return convertToPython(d);
 }
 
-void copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo, const py::list& l)
+
+template<class SrcType>
+void copyFromListOf(const AbstractTypeInfo& nfo, void* ptr, size_t index, py::object o);
+
+template<> void copyFromListOf<double>(const AbstractTypeInfo& nfo, void* ptr, size_t index, py::object o)
+{
+    nfo.setScalarValue(ptr, index, py::cast<double>(o));
+}
+
+template<> void copyFromListOf<int>(const AbstractTypeInfo& nfo, void* ptr, size_t index, py::object o)
+{
+    nfo.setIntegerValue(ptr, index, py::cast<int>(o));
+}
+
+template<> void copyFromListOf<std::string>(const AbstractTypeInfo& nfo, void* ptr, size_t index, py::object o)
+{
+    nfo.setTextValue(ptr, index, py::cast<std::string>(o));
+}
+
+
+template<class DestType>
+void copyFromListOf(BaseData& d, const AbstractTypeInfo& nfo, const py::list& l)
 {
     /// Check if the data is a single dimmension or not.
     py::buffer_info dstinfo = toBufferInfo(d);
@@ -427,53 +475,84 @@ void copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo, const py::list
     if(dstinfo.ndim==1)
     {
         void* ptr = d.beginEditVoidPtr();
-
         if( (size_t)dstinfo.shape[0] != l.size())
             nfo.setSize(ptr, l.size());
+
         for(size_t i=0;i<l.size();++i)
         {
-            nfo.setScalarValue(ptr, i, py::cast<double>(l[i]));
+            copyFromListOf<DestType>(nfo, ptr, i, l[i]);
         }
         d.endEditVoidPtr();
         return;
     }
     void* ptr = d.beginEditVoidPtr();
+    auto t=getShape(&d);
     if( (size_t)dstinfo.shape[0] != l.size())
-        nfo.setSize(ptr, l.size());
+    {
+        if( !nfo.setSize(ptr, l.size()*nfo.size()) )
+            throw std::runtime_error("Unable to resize vector to match list size. Is the data type resizable ?");
+
+        /// Update the buffer info entry to take into account the change of size.
+        dstinfo = toBufferInfo(d);
+    }
 
     for(auto i=0;i<dstinfo.shape[0];++i)
     {
         py::list ll = l[i];
         for(auto j=0;j<dstinfo.shape[1];++j)
         {
-            nfo.setScalarValue(ptr, i*dstinfo.shape[1]+j, py::cast<double>(ll[j]));
+            copyFromListOf<DestType>(nfo, ptr, i*dstinfo.shape[1]+j, ll[j]);
         }
+    }
+
+    d.endEditVoidPtr();
+    return;
+}
+
+template<>
+void copyFromListOf<std::string>(BaseData& d, const AbstractTypeInfo& nfo, const py::list& l)
+{
+    void* ptr = d.beginEditVoidPtr();
+    if( (size_t)nfo.size() != l.size())
+        nfo.setSize(ptr, l.size());
+
+    for(size_t i=0;i<l.size();++i)
+    {
+        copyFromListOf<std::string>(nfo, ptr, i, l[i]);
     }
     d.endEditVoidPtr();
     return;
 }
 
+
 void fromPython(BaseData* d, const py::object& o)
 {
     const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
+
     if(!nfo.Container())
     {
         scoped_writeonly_access guard(d);
         if(nfo.Integer())
             nfo.setIntegerValue(guard.ptr, 0, py::cast<int>(o));
-        if(nfo.Text())
+        else if(nfo.Text())
             nfo.setTextValue(guard.ptr, 0, py::cast<py::str>(o));
-        if(nfo.Scalar())
+        else if(nfo.Scalar())
             nfo.setScalarValue(guard.ptr, 0, py::cast<double>(o));
         return ;
     }
 
+    if(nfo.Integer())
+        return copyFromListOf<int>(*d, nfo, o);
+
+    if(nfo.Text())
+        return copyFromListOf<std::string>(*d, nfo, o);
+
     if(nfo.Scalar())
-        return copyFromListScalar(*d, nfo, o);
+        return copyFromListOf<double>(*d, nfo, o);
 
-    msg_error("SofaPython3") << "binding problem, trying to set value for "
-                             << d->getName() << ", " << py::cast<std::string>(py::str(o));
+    std::stringstream s;
+    s<< "binding problem, trying to set value for "
+     << d->getName() << ", " << py::cast<std::string>(py::str(o));
+    throw std::runtime_error(s.str());
 }
-
-
 }
