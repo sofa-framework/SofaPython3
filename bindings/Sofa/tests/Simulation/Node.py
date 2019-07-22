@@ -7,7 +7,7 @@ import Sofa.Simulation
 class MyController(Sofa.Core.Controller):
         """This is my custom controller
            when init is called from Sofa this should call the python init function
-           This controller is used to test the method sendMessage
+           This controller is used to test the method sendEvent
         """
         def __init__(self, *args, **kwargs):
             ## These are needed (and the normal way to override from a python class)
@@ -241,26 +241,11 @@ class Test(unittest.TestCase):
             mm  = root.addObject("BarycentricMapping", input="@/t1", output="@/t2")
             self.assertEqual(mm, root.getMechanicalMapping())
 
-        def test_sendMessage(self):
+        def test_sendEvent(self):
             root = Sofa.Core.Node("rootNode")
             node = root.addChild("node")
             c = node.addObject(MyController(name="controller"))
-            root.sendMessage(root.getName(),"This is a test")
+            root.sendEvent(root.getName(),"This is a test")
             self.assertEqual(c.event_name, "This is a test")
             self.assertEqual(c.userData, root.getName())
             self.assertEqual(c.sender, root)
-
-
-def getTestsName():
-    suite = unittest.TestLoader().loadTestsFromTestCase(Test)
-    return [ test.id().split(".")[2] for test in suite]
-
-def runTests():
-        import sys
-        suite = None
-        if( len(sys.argv) == 1 ):
-            suite = unittest.TestLoader().loadTestsFromTestCase(Test)
-        else:
-            suite = unittest.TestSuite()
-            suite.addTest(Test(sys.argv[1]))
-        return unittest.TextTestRunner(verbosity=1).run(suite).wasSuccessful()

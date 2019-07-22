@@ -32,7 +32,7 @@ using sofa::core::objectmodel::BaseObjectDescription;
 #include <sofa/core/objectmodel/Link.h>
 
 #include "Binding_Node_doc.h"
-#include <SofaPython3/Sofa/Core/PythonScriptEvent.h>
+#include "PythonScriptEvent.h"
 
 namespace sofapython3
 {
@@ -404,10 +404,10 @@ p.def("getMechanicalMapping", [](Node *self) ->py::object{
     }
     return py::none();
 }, sofapython3::doc::sofa::core::Node::getMechanicalMapping);
-p.def("sendMessage", [](Node* self, py::object* pyUserData, char* eventName){
+p.def("sendEvent", [](Node* self, py::object* pyUserData, char* eventName){
     sofapython3::PythonScriptEvent event(self, eventName, pyUserData);
     self->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
-});
+}, sofapython3::doc::sofa::core::Node::sendEvent);
 
 }
 } /// namespace sofapython3

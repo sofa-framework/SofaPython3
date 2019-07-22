@@ -305,7 +305,7 @@ static auto getMechanicalMapping =
         R"(
         Get the mechanical mapping of the node.
         )";
-static auto sendMessage =
+static auto sendEvent =
         R"(
         Send an event to other nodes,
         by creating a PythonScriptEvent and propagating it to the rest of the tree.
