@@ -32,6 +32,7 @@ using sofa::core::objectmodel::BaseObjectDescription;
 #include <sofa/core/objectmodel/Link.h>
 
 #include "Binding_Node_doc.h"
+#include "PythonScriptEvent.h"
 
 namespace sofapython3
 {
@@ -194,6 +195,10 @@ py::object getItem(Node& self, std::list<std::string>& path)
     return py::cast(self); // should never get there
 }
 
+std::string getLink(Node* node){
+    return ("@"+node->getPathName()).c_str();
+}
+
 void moduleAddNode(py::module &m) {
     moduleAddBaseIterator(m);
 
@@ -278,10 +283,7 @@ void moduleAddNode(py::module &m) {
 
     p.def("getRoot", &Node::getRoot, sofapython3::doc::sofa::core::Node::getRoot);
     p.def("getPathName", &Node::getPathName, sofapython3::doc::sofa::core::Node::getPathName);
-    p.def("getLink", [](Node* node) {
-        return ("@"+node->getPathName()).c_str();
-    }, sofapython3::doc::sofa::core::Node::getLink);
-
+    p.def("getLink", &getLink, sofapython3::doc::sofa::core::Node::getLink);
     p.def_property_readonly("children", [](Node* node)
     {
         return new BaseIterator(node, [](Node* n) -> size_t { return n->child.size(); },
@@ -360,6 +362,52 @@ p.def("__getitem__", [](Node& self, const std::string& s) -> py::object
     return getItem(self, stringlist);
 
 });
+p.def("removeObject", &Node::removeObject, sofapython3::doc::sofa::core::Node::removeObject);
+p.def("getRootPath", &Node::getRootPath, sofapython3::doc::sofa::core::Node::getRootPath);
+p.def("moveChild", [](Node *self, BaseNode* child, BaseNode* prevParent){
+    if (child && prevParent){
+        self->moveChild(child, prevParent);
+        return;
+    }
+    throw py::value_error("Invalid arguments provided");
+}, sofapython3::doc::sofa::core::Node::moveChild);
+p.def("isInitialized", &Node::isInitialized, sofapython3::doc::sofa::core::Node::isInitialized);
+p.def("getAsACreateObjectParameter", [](Node *self){
+    return getLink(self);
+}, sofapython3::doc::sofa::core::Node::getAsACreateObjectParameter);
+p.def("detachFromGraph", &Node::detachFromGraph, sofapython3::doc::sofa::core::Node::detachFromGraph);
+p.def("getMass", [](Node *self) ->py::object {
+    sofa::core::behavior::BaseMass* mass = self->mass.get();
+    if (mass){
+        return PythonDownCast::toPython(mass);
+    }
+    return py::none();
+}, sofapython3::doc::sofa::core::Node::getMass);
+p.def("getForceField", [](Node *self, unsigned int index) ->py::object{
+    sofa::core::behavior::BaseForceField* ff = self->forceField.get(index);
+    if (ff){
+        return PythonDownCast::toPython(ff);
+    }
+    return py::none();
+}, sofapython3::doc::sofa::core::Node::getForceField);
+p.def("getMechanicalState", [](Node *self) -> py::object{
+    sofa::core::behavior::BaseMechanicalState* state = self->mechanicalState.get();
+    if (state){
+        return PythonDownCast::toPython(state);
+    }
+    return py::none();
+}, sofapython3::doc::sofa::core::Node::getMechanicalState);
+p.def("getMechanicalMapping", [](Node *self) ->py::object{
+    sofa::core::BaseMapping* mapping = self->mechanicalMapping.get();
+    if (mapping){
+        return PythonDownCast::toPython(mapping);
+    }
+    return py::none();
+}, sofapython3::doc::sofa::core::Node::getMechanicalMapping);
+p.def("sendEvent", [](Node* self, py::object* pyUserData, char* eventName){
+    sofapython3::PythonScriptEvent event(self, eventName, pyUserData);
+    self->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
+}, sofapython3::doc::sofa::core::Node::sendEvent);
 
 }
 } /// namespace sofapython3

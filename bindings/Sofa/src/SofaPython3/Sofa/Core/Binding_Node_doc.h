@@ -248,6 +248,73 @@ static auto objects =
         >>> for object in n.objects:
         >>>     print(object.name)
         )";
+static auto removeObject =
+        R"(
+        Remove an object
+        :param object: the object to be removed
+        :type object: BaseObject
+        )";
+
+static auto getRootPath =
+        R"(
+        Return the path from this node to the root node
+        )";
+
+static auto moveChild =
+        R"(
+        Move a node from another node.
+        :param child: the node to be moved
+        :param prevParent: the previous parent of the node to be moved
+        :type child: Sofa.Simulation.Node
+        :type prevParent: Sofa.Simulation.Node
+        )";
+
+static auto isInitialized =
+        R"(
+        Checks if the node has been initialized
+        :return: true if it has been initialized
+        )";
+static auto getAsACreateObjectParameter =
+        R"(
+        Get the link of the current node
+        :rtype: string
+        )";
+
+static auto detachFromGraph =
+        R"(
+        Remove the current node from the graph: depending on the type of Node, it can have one or several parents.
+        )";
+
+static auto getMass =
+        R"(
+        Get the mass of the node
+        )";
+static auto getForceField =
+        R"(
+        Get the force field of a node, given an index.
+        :param index: index of the force field
+        :type index: unsigned int.
+        )";
+
+static auto getMechanicalState =
+        R"(
+        Get the mechanical state of the node.
+        )";
+
+static auto getMechanicalMapping =
+        R"(
+        Get the mechanical mapping of the node.
+        )";
+static auto sendEvent =
+        R"(
+        Send an event to other nodes,
+        by creating a PythonScriptEvent and propagating it to the rest of the tree.
+        Only the nodes and objects downstream will receive the message.
+        :param pyUserData: the user data that can be sent
+        :param eventName: the name of the event
+        :type pyUserData: py::object
+        :type eventName: string
+        )";
 
 }
 
