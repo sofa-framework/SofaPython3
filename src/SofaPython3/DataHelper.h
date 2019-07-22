@@ -136,6 +136,16 @@ void SOFAPYTHON3_API copyScalar(BaseData* a, const AbstractTypeInfo& nfo, py::ar
     a->endEditVoidPtr();
 }
 
+/// Following numpy convention returns the number of element in each dimmensions.
+std::tuple<int, int> getShape(BaseData* self);
+
+/// Following numpy convention the number of dimmension in the container.
+size_t SOFAPYTHON3_API getNDim(BaseData* self);
+
+/// Following numpy convention the number of elements in all the dimmension
+/// https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.size.html#numpy.ndarray.size
+size_t SOFAPYTHON3_API getSize(BaseData* self);
+
 std::ostream& SOFAPYTHON3_API operator<<(std::ostream& out, const py::buffer_info& p);
 
 // TODO: move this somewhere else as we will probably need it in several other places.
