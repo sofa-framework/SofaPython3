@@ -45,6 +45,16 @@ void moduleAddBaseData(py::module& m)
         return "@"+prefix+"."+self.getName();
     });
 
+    data.def("hasChanged", [](BaseData& data){
+        if (data.isDirty()) {
+            data.update();
+            return true;
+        }
+        return false;
+    });
+
+    data.def("isSet", [](BaseData& data){ return data.isSet(); });
+
     data.def("__str__", [](BaseData* self)
     {
         std::stringstream tmp;
