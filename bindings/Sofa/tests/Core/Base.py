@@ -38,64 +38,69 @@ class Test(unittest.TestCase):
         self.assertRaises(ValueError, node.addChild, "parents")
         self.assertRaises(ValueError, node.addData, name="links", type="int", value=42)
 
-    def test_addNewData_from_parent_linkPath(self):
+    def test_addNewDataFromParent_linkPaths(self):
         root = Sofa.Core.Node('root')
         c1 = root.addObject("MechanicalObject", name="c1")
-        c1.addData("data1", value="coucou", type="string")
-        c1.addData("data2", value=42, type="int")
-        c1.addData("data3", value=False, type="bool")
-        self.assertEqual(c1.data1.value, "coucou")
-        self.assertEqual(c1.data2.value, 42)
-        self.assertEqual(c1.data3.value, False)
+        c1.addData("d", value="coucou", type="string")
 
         c2 = root.addObject("MechanicalObject", name="c2")
-        c2.addData("data1", value="@/c1.data1") # absolute path
-        c2.addData("data2", value="@c1.data2") # relative path (local)
-        c2.addData("data3", value="@./c1.data3") # relative path (local)
-        self.assertEqual(c2.data1.value, c1.data1.value)
-        self.assertEqual(c2.data2.value, c1.data2.value)
-        self.assertEqual(c2.data3.value, c1.data3.value)
+        c2.addData("data1", value="@/c1.d") # absolute path
+        c2.addData("data2", value="@c1.d") # relative path (local)
+        c2.addData("data3", value="@./c1.d") # relative path (local)
+        self.assertEqual(c2.data1.value, c1.d.value)
+        self.assertEqual(c2.data2.value, c1.d.value)
+        self.assertEqual(c2.data3.value, c1.d.value)
 
         n1 = root.addChild("n1")
         n2 = root.addChild("n2")
 
         c3 = n1.addObject('MechanicalObject', name='c3')
-        c3.addData("data1", value="@../c1.data1") # relative path (down)
-        c3.addData("data2", value="@../c2.data2") # relative path (down)
-        c3.addData("data3", value="@/c2.data3") # absolute path
-        self.assertEqual(c3.data1.value, c1.data1.value)
-        self.assertEqual(c3.data2.value, c2.data2.value)
-        self.assertEqual(c3.data3.value, c2.data3.value)
+        c3.addData("data1", value="@../c1.d") # relative path (down)
+        self.assertEqual(c3.data1.value, c1.d.value)
 
         c4 = n2.addObject('MechanicalObject', name='c4')
         c4.addData('data1', value="@/n1/c3.data1") # absolute path (chained)
-        c4.addData('data2', value="@../n1/c3.data2") # relative path (down, chained)
+        c4.addData('data2', value="@../n1/c3.data1") # relative path (down, chained)
         self.assertEqual(c4.data1.value, c3.data1.value)
-        self.assertEqual(c4.data2.value, c3.data2.value)
+        self.assertEqual(c4.data2.value, c3.data1.value)
 
+        c3.addData('data2', value="test", type="string")
+        c1.addData('data4', value="@n1/c3.data2") # relative (up, chained)
+        self.assertEqual(c1.data4.value, c3.data2.value)
+
+
+    def test_addNewDataFromParent(self):
+        root = Sofa.Core.Node('root')
+        c1 = root.addObject("MechanicalObject", name="c1")
+        c1.addData("d", value="coucou", type="string")
+        c1.addData("d2", value="@c1.d")
+
+        # Data exists
+        self.assertTrue(hasattr(c1, "d"))
+        # Data correctly took its parent value
+        self.assertEqual("coucou", c1.d2.value)
+        # parent relationship is kept
+        self.assertEqual(c1.d2.getParent(), c1.d)
+
+        c1.d = "test"
+        # child properly updated from parent value
+        self.assertEqual("test", c1.d2.value)
+
+
+    def test_addNewDataFromParent_brokenLink(self):
+        root = Sofa.Core.Node('root')
+        c1 = root.addObject("MechanicalObject", name="c1")
+
+        ValueError_ToTest = ["@aBroken/path.value", "@aBroken/path", "@/aBroken/path", "@", "@.", "@/", "@./", "@../"]
+        TypeError_ToTest = ["", ".", "/", "./", "../"]
         # Error mgmt testing
-        self.assertRaises(ValueError, c4.addData, name="data3", value="@aBroken/path.value")
-        self.assertRaises(ValueError, c4.addData, name="data3", value="@aBroken/path")
-        self.assertRaises(ValueError, c4.addData, name="data3", value="@/aBroken/path")
-        self.assertRaises(TypeError, c4.addData, name="data3", value="")
-        self.assertRaises(TypeError, c4.addData, name="data3", value="/")
-        self.assertRaises(TypeError, c4.addData, name="data3", value=".")
-        self.assertRaises(ValueError, c4.addData, name="data3", value="@")
-        self.assertRaises(ValueError, c4.addData, name="data3", value="@/")
-        self.assertRaises(ValueError, c4.addData, name="data3", value="@./")
-        self.assertRaises(ValueError, c4.addData, name="data3", value="@../")
 
-        # parenting tests
-        c1.data1 = "test"
-        c1.data2 = 1337
-        c1.data3 = False
-        self.assertEqual("test", c1.data1.value)
-        self.assertEqual(1337, c1.data2.value)
-        self.assertEqual(False, c1.data3.value)
+        for val in ValueError_ToTest:
+            self.assertRaises(ValueError, c1.addData, name="d", value=val)
 
-        self.assertEqual(c2.data1.value, c1.data1.value)
-        self.assertEqual(c2.data2.value, c1.data2.value)
-        self.assertEqual(c2.data3.value, c1.data3.value)
+        for val in TypeError_ToTest:
+            self.assertRaises(TypeError, c1.addData, name="d", value=val)
+
 
 
     def test_getClassName(self):
