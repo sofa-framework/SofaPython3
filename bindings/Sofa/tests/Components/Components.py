@@ -1,6 +1,6 @@
 # coding: utf8
 
-import Sofa
+import Sofa.Components
 import unittest
 
 class Test(unittest.TestCase):
