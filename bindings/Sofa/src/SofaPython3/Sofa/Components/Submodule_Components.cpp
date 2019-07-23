@@ -99,9 +99,8 @@ PYBIND11_MODULE(Components, m)
 
         return py::cast(object);
     });
-    py::module simulation = m.def_submodule("Components");
 
-    simulation.def("__getattr__", [](const std::string& name) -> py::object
+    m.def("__getattr__", [](const std::string& name) -> py::object
     {
         return py::cast(new FCreator(name));
     });
