@@ -418,6 +418,14 @@ py::object dataToPython(BaseData* d)
     {
         return getBindingDataFactoryInstance()->createObject("DataContainer", d);
     }
+    if(nfo.Container() && nfo.Text())
+    {
+        return getBindingDataFactoryInstance()->createObject("DataVectorString", d);
+    }
+    if(nfo.Text())
+    {
+        return getBindingDataFactoryInstance()->createObject("DataString", d);
+    }
 
     return py::cast(d);
 }
