@@ -12,8 +12,8 @@ using  sofa::core::objectmodel::BaseObject;
 using  sofa::core::objectmodel::BaseNode;
 
 #include <SofaPython3/DataHelper.h>
-#include "Binding_Base.h"
-#include "Binding_BaseData.h"
+#include "../Binding_Base.h"
+#include "../Binding_BaseData.h"
 #include "Binding_DataContainer.h"
 #include "Binding_DataContainer_doc.h"
 
@@ -21,16 +21,6 @@ using  sofa::core::objectmodel::BaseNode;
 
 namespace sofapython3
 {
-
-void moduleAddDataAsString(py::module& m)
-{
-    py::class_<DataAsString, BaseData, raw_ptr<DataAsString>> s(m, "DataString");
-    s.def("__getitem__", [](BaseData& self, py::size_t index) -> py::object
-    {
-        auto nfo = self.getValueTypeInfo();
-        return py::str(&nfo->getTextValue(self.getValueVoidPtr(),0).at(index),1);
-    });
-}
 
 void moduleAddDataContainer(py::module& m)
 {

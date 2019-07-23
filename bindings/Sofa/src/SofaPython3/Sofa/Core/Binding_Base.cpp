@@ -23,7 +23,7 @@ using sofa::helper::WriteOnlyAccessor;
 #include "Binding_Base_doc.h"
 
 #include "Binding_BaseData.h"
-#include "Binding_DataContainer.h"
+#include "Data/Binding_DataContainer.h"
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
