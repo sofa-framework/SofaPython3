@@ -9,14 +9,13 @@ namespace sofapython3
 namespace py { using namespace pybind11; }
 using sofa::core::objectmodel::BaseData;
 
-void moduleAddDataString(py::module& m);
+void moduleAddDataVectorString(py::module& m);
 
-class DataString : public BaseData
+class DataVectorString : public BaseData
 {
 public:
     py::str __str__();
     py::str __repr__();
-    py::bool_ __eq__(BaseData* other);
     py::size_t __len__();
     py::object __getitem__(const py::size_t index);
 };

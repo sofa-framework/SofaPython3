@@ -289,6 +289,12 @@ class Test(unittest.TestCase):
             self.assertEqual(wa[2, 2], 8.0)
             numpy.testing.assert_array_equal(wa, v*4.0)
 
+    def test_DataString(self):
+        n = Sofa.Core.Node("rootNode")
+        self.assertTrue(isinstance(n.name, Sofa.Core.DataString))
+        self.assertEqual(n.name.value, "rootNode")
+        self.assertEqual(len(n.name), 8)
+
     def test_DataAsContainerNumpyArray(self):
         n = Sofa.Core.Node("rootNode")
         c = n.addObject(NpArrayTestController(name="c"))

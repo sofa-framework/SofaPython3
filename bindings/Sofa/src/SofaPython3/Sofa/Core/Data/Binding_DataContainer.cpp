@@ -82,7 +82,7 @@ void moduleAddDataContainer(py::module& m)
     p.def("__str__", [](BaseData* self)
     {
         std::stringstream tmp;
-        tmp << "Sofa.Core.DataContainer <'" << self->getName() << "', " << self << ">";
+        tmp << "Sofa.Core.DataContainer <name='" << self->getName() << "', address=" << self << ">";
         return py::str(tmp.str());
     });
 

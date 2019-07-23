@@ -15,6 +15,7 @@
 #include "Binding_BaseLink.h"
 
 #include "Data/Binding_DataString.h"
+#include "Data/Binding_DataVectorString.h"
 #include "Data/Binding_DataContainer.h"
 
 #include "Submodule_Core.h"
@@ -59,6 +60,7 @@ PYBIND11_MODULE(Core, core)
                Sofa.Core.DataDictIterator
                Sofa.Core.DataContainer
                Sofa.Core.DataString
+               Sofa.Core.DataVectorString
                Sofa.Core.WriteAccessor
        )doc";
 
@@ -69,6 +71,7 @@ PYBIND11_MODULE(Core, core)
     moduleAddWriteAccessor(core);
     moduleAddDataContainer(core);
     moduleAddDataString(core);
+    moduleAddDataVectorString(core);
     moduleAddBaseObject(core);
     moduleAddBaseCamera(core);
     moduleAddController(core);
