@@ -37,6 +37,7 @@ set(PYTHON_FILES
     Core/Controller.py
     Core/ForceField.py
     Core/PythonRestShapeForceField.py
+    Core/BaseLink.py
     Helper/Message.py
     Types/RGBAColor.py
     Types/Vec3.py

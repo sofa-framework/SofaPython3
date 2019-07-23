@@ -12,6 +12,7 @@
 #include "Binding_Controller.h"
 #include "Binding_Node.h"
 #include "Binding_Simulation.h"
+#include "Binding_BaseLink.h"
 
 #include "Data/Binding_DataString.h"
 #include "Data/Binding_DataContainer.h"
@@ -86,6 +87,7 @@ PYBIND11_MODULE(Core, core)
             sofa::core::objectmodel::Context::SPtr>(core, "Context");
 
     moduleAddNode(core);
+    moduleAddBaseLink(core);
 }
 
 } ///namespace sofapython3
