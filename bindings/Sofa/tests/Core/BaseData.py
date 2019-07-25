@@ -9,7 +9,6 @@ import numpy as np
 import io
 from contextlib import redirect_stdout
 
-#print("DIR: ", dir(Sofa))
 
 
 class NpArrayTestController(Sofa.Core.Controller):
