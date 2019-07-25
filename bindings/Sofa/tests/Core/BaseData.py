@@ -5,6 +5,7 @@ import numpy
 import Sofa
 import Sofa.Core
 from Sofa.PyTypes import RGBAColor
+
 #print("DIR: ", dir(Sofa))
 
 class NpArrayTestController(Sofa.Core.Controller):
@@ -305,3 +306,85 @@ class Test(unittest.TestCase):
         c.testNDim(self)
         c.testValue(self)
 
+    def test_name(self):
+        root = Sofa.Core.Node("root")
+        root.addData("aField", 1.0 , "help message","theDataGroup", "float")
+        data = root.getData("aField")
+        self.assertEqual(data.name,"aField")
+        data.name="aNewField"
+        self.assertEqual(data.name,"aNewField")
+
+    def test_getValueString(self):
+        root = Sofa.Core.Node("root")
+        c = root.addObject("MechanicalObject", name="t", position=[[0,1,0]])
+        self.assertEqual(c.position.getValueString(),"0 1 0")
+
+    def test_getValueTypeString(self):
+        root = Sofa.Core.Node("root")
+        c = root.addObject("MechanicalObject", name="t", position=[[0,1,0]])
+        self.assertEqual(c.position.getValueTypeString(),"vector<Vec3d>")
+
+    def test_isRequired(self):
+        root = Sofa.Core.Node("root")
+        self.assertFalse(root.name.isRequired())
+
+    def test_Persistent(self):
+        root = Sofa.Core.Node("root")
+        root.addData("aField", 1.0 , "help message","theDataGroup", "float")
+        data = root.getData("aField")
+        self.assertTrue(data.isPersistent())
+        data.setPersistent(False)
+        self.assertFalse(data.isPersistent())
+
+    def test_Parent(self):
+        root = Sofa.Core.Node("root")
+        root.addData("aField", 1.0 , "help message","theDataGroup", "float")
+        root.addData("aFieldParent", 1.0 , "help message","theDataGroup", "float")
+        data = root.getData("aField")
+        dataParent = root.getData("aFieldParent")
+        self.assertFalse(data.hasParent())
+        data.setParent(dataParent, "@/dataParent/data")
+        self.assertTrue(data.hasParent())
+        self.assertEqual(data.getParent().name,"aFieldParent")
+
+    def test_getLinkPath(self):
+        root = Sofa.Core.Node("root")
+        root.addData("aField", 1.0 , "help message","theDataGroup", "float")
+        root.addData("aFieldParent", 1.0 , "help message","theDataGroup", "float")
+        data = root.getData("aField")
+        dataParent = root.getData("aFieldParent")
+        data.setParent(dataParent, "@/dataParent/data")
+        self.assertEqual(data.getLinkPath(), "@/dataParent/data")
+        self.assertEqual(dataParent.getLinkPath(),"")
+        self.assertEqual(data.getAsACreateObjectParameter(), "@/dataParent/data")
+        self.assertEqual(dataParent.getAsACreateObjectParameter(),"")
+
+    def test_read(self):
+        root = Sofa.Core.Node("root")
+        root.addData("aField", 1.0 , "help message","theDataGroup", "float")
+        data = root.getData("aField")
+        self.assertEqual(data.value,1.0)
+        self.assertTrue(data.read("3.0"))
+        self.assertEqual(data.value,3.0)
+        self.assertFalse(data.read("test"))
+
+    def test_Dirty(self):
+        root = Sofa.Core.Node("root")
+        root.addData("aField", 1.0 , "help message","theDataGroup", "float")
+        root.addData("aFieldParent", 1.0 , "help message","theDataGroup", "float")
+        data = root.getData("aField")
+        dataParent = root.getData("aFieldParent")
+        data.setParent(dataParent, "@/dataParent/data")
+        dataParent.read("3.0")
+        self.assertFalse(dataParent.isDirty())
+        self.assertTrue(data.isDirty())
+        data.updateIfDirty()
+        self.assertFalse(data.isDirty())
+
+    def test_readOnly(self):
+        root = Sofa.Core.Node("root")
+        root.addData("aField", 1.0 , "help message","theDataGroup", "float")
+        data = root.getData("aField")
+        self.assertFalse(data.isReadOnly())
+        data.setReadOnly(True)
+        self.assertTrue(data.isReadOnly())
