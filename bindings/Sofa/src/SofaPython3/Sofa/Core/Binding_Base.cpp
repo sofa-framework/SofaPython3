@@ -22,6 +22,8 @@ using sofa::helper::WriteOnlyAccessor;
 #include "Binding_Base.h"
 #include "Binding_Base_doc.h"
 
+
+#include "Binding_DataDict.h"
 #include "Binding_BaseData.h"
 #include "Data/Binding_DataContainer.h"
 
@@ -35,7 +37,7 @@ using sofa::core::objectmodel::BaseNode;
 #include <sofa/core/objectmodel/BaseContext.h>
 using sofa::core::objectmodel::BaseContext;
 
-
+#include <SofaPython3/DataHelper.h>
 
 namespace sofapython3
 {
@@ -408,107 +410,6 @@ void BindingBase::SetAttrFromArray(py::object self, const std::string& s, const 
 
     /// Well this should never happen unless there is no __dict__
     throw py::attribute_error("");
-}
-
-void moduleAddDataDict(py::module& m)
-{
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    /// DataDict binding
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    py::class_<DataDict> d(m, "DataDict",
-                           sofapython3::doc::dataDict::Class);
-    d.def("__len__", [](DataDict& self)
-    {
-        return self.owner->getDataFields().size();
-    });
-
-
-    d.def("__getitem__",[](DataDict& self, const size_t& i)
-    {
-        const Base::VecData& vd = self.owner->getDataFields();
-        if(i > vd.size())
-            throw py::index_error(std::to_string(i));
-        return toPython(vd[i]);
-    });
-
-    d.def("__getitem__",
-          [](DataDict& self, const std::string& s) -> py::object
-    {
-        BaseData* d = self.owner->findData(s);
-        if(d!=nullptr)
-        {
-            const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
-
-            if(nfo.Container())
-            {
-                py::array a = py::array(toBufferInfo(*d));
-                return a;
-            }
-            if(nfo.Text()) {
-                //                return py::cast(reinterpret_cast<DataAsString*>(d));
-                return py::cast(d->getValueString());
-            }
-            return py::cast(d);
-        }
-        throw std::invalid_argument(s);
-    });
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    d.def("__setitem__",[](DataDict& d, const std::string& s, py::object v)
-    {
-        return 0.0;
-    });
-
-    d.def("__iter__", [](DataDict& d)
-    {
-        return DataDictIterator(d.owner, true, false);
-    });
-    d.def("keys", [](DataDict& d)
-    {
-        return DataDictIterator(d.owner, true, false);
-    }, sofapython3::doc::dataDict::keys);
-    d.def("values", [](DataDict& d)
-    {
-        return DataDictIterator(d.owner, false, true);
-    }, sofapython3::doc::dataDict::values);
-    d.def("items", [](DataDict& d)
-    {
-        return DataDictIterator(d.owner, true, true);
-    }, sofapython3::doc::dataDict::items);
-}
-
-
-void moduleAddDataDictIterator(py::module &m)
-{
-    PythonDownCast::registerType<sofa::core::objectmodel::Base>(
-                [](sofa::core::objectmodel::Base* object)
-    {
-        return py::cast(object);
-    });
-
-
-    py::class_<DataDictIterator> ddi(m, "DataDictIterator");
-    ddi.def("__iter__", [](DataDictIterator& d)
-    {
-        return d;
-    });
-    ddi.def("__next__", [](DataDictIterator& d) -> py::object
-    {
-        if(d.index>=d.owner->getDataFields().size())
-            throw py::stop_iteration();
-
-        BaseData* data = d.owner->getDataFields()[d.index++];
-        if(!d.key)
-            return toPython(data);
-
-        if(!d.value)
-            return py::cast(data->getName());
-
-        py::tuple t {2};
-        t[0] = data->getName();
-        t[1] = toPython(data);
-        return std::move(t);
-    });
 }
 
 BaseData* deriveTypeFromParent(BaseData* parentData)
