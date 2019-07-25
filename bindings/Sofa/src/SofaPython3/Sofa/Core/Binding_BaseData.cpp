@@ -1,6 +1,5 @@
 ﻿#include <pybind11/numpy.h>
 #include <pybind11/eval.h>
-#include <pybind11/iostream.h>
 
 #include <sofa/defaulttype/DataTypeInfo.h>
 using sofa::defaulttype::AbstractTypeInfo;

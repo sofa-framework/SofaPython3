@@ -5,8 +5,6 @@ import numpy
 import Sofa
 import Sofa.Core
 from Sofa.PyTypes import RGBAColor
-import io
-from contextlib import redirect_stdout
 
 #print("DIR: ", dir(Sofa))
 
