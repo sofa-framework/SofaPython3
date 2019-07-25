@@ -276,7 +276,6 @@ size_t getSize(BaseData* self)
     return nfo->size(self->getValueVoidPtr());
 }
 
-
 py::buffer_info toBufferInfo(BaseData& m)
 {
     const AbstractTypeInfo& nfo { *m.getValueTypeInfo() };
@@ -304,7 +303,7 @@ py::buffer_info toBufferInfo(BaseData& m)
     size_t datasize = nfo.byteSize();
 
     std::tuple<int,int> shape = getShape(&m);
-    size_t    ndim = getNDim(&m);
+    size_t  ndim = getNDim(&m);
 
     void* ptr = const_cast<void*>(nfo.getValuePtr(m.getValueVoidPtr()));
     if( !itemNfo->Container() ){
@@ -327,7 +326,6 @@ py::buffer_info toBufferInfo(BaseData& m)
                 );
     return ninfo;
 }
-
 
 py::object convertToPython(BaseData* d)
 {

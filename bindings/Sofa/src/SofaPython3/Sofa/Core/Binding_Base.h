@@ -40,37 +40,7 @@ public:
     static bool SetData(BaseData* data, pybind11::object value);
 };
 
-py::buffer_info toBufferInfo(BaseData& m);
-bool hasArrayFor(BaseData* d);
-py::array resetArrayFor(BaseData* d);
-py::array getPythonArrayFor(BaseData* d);
-py::object convertToPython(BaseData* d);
 
-class DataDict
-{
-public:
-    sptr<Base> owner;
-    DataDict(sptr<Base> b){ owner = b; }
-};
-
-class DataDictIterator
-{
-public:
-    Base::SPtr owner;
-    size_t     index=0;
-    bool       key;
-    bool       value;
-    DataDictIterator(Base::SPtr owner_, bool withKey, bool withValue)
-    {
-        owner=owner_;
-        index=0;
-        key=withKey;
-        value=withValue;
-    }
-};
-
-void moduleAddDataDict(py::module& m);
-void moduleAddDataDictIterator(py::module& m);
 void moduleAddBase(py::module& m);
 
 bool isProtectedKeyword(const std::string& name);
