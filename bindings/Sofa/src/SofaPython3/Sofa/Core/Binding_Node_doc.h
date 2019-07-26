@@ -214,7 +214,7 @@ static auto getPathName =
         :rtype: string
         )";
 
-static auto getLink =
+static auto getLinkPath =
         R"(
         Get the link of the current node
         :param node

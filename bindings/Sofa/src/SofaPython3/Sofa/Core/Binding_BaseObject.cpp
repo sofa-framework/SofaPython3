@@ -223,7 +223,7 @@ void moduleAddBaseObject(py::module& m)
     p.def("init", &BaseObject::init, sofapython3::doc::baseObject::init);
     p.def("reinit", &BaseObject::reinit, sofapython3::doc::baseObject::reinit);
     p.def("getPathName", &BaseObject::getPathName, sofapython3::doc::baseObject::getPathName);
-    p.def("getLink", [](const BaseObject &self){ return std::string("@") + self.getPathName(); }, sofapython3::doc::baseObject::getLink);
+    p.def("getLinkPath", [](const BaseObject &self){ return std::string("@") + self.getPathName(); }, sofapython3::doc::baseObject::getLink);
     p.def("getSlaves", getSlaves, sofapython3::doc::baseObject::getSlaves);
     p.def("getContext", getContext, sofapython3::doc::baseObject::getContext);
     p.def("getMaster", getMaster, sofapython3::doc::baseObject::getMaster);
@@ -238,7 +238,6 @@ void moduleAddBaseObject(py::module& m)
     p.def("getAsACreateObjectParameter", getAsACreateObjectParameter, sofapython3::doc::baseObject::getAsACreateObjectParameter);
     p.def("setSrc", setSrc, sofapython3::doc::baseObject::setSrc);
     p.def("__getitem__", __getitem__, sofapython3::doc::baseObject::__getitem__);
-    p.def_property_readonly("name", [](const BaseObject& b){ return b.getName(); });
 }
 
 }  /// namespace sofapython3

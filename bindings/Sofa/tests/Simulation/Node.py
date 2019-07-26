@@ -167,8 +167,8 @@ class Test(unittest.TestCase):
             root = Sofa.Core.Node("root")
             node = root.addChild("node")
             node2 = node.addChild("node2")
-            self.assertEqual(node.getLink(),"@/node")
-            self.assertEqual(node2.getLink(), "@/node/node2")
+            self.assertEqual(node.getLinkPath(),"@/node")
+            self.assertEqual(node2.getLinkPath(), "@/node/node2")
 
         def test_removeObject(self):
             root = Sofa.Core.Node("root")
@@ -245,7 +245,7 @@ class Test(unittest.TestCase):
             root = Sofa.Core.Node("rootNode")
             node = root.addChild("node")
             c = node.addObject(MyController(name="controller"))
-            root.sendEvent(root.getName(),"This is a test")
+            root.sendEvent(root.name,"This is a test")
             self.assertEqual(c.event_name, "This is a test")
-            self.assertEqual(c.userData, root.getName())
+            self.assertEqual(c.userData, root.name)
             self.assertEqual(c.sender, root)

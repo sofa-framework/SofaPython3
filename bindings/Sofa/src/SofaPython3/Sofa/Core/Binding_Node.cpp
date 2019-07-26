@@ -195,7 +195,7 @@ py::object getItem(Node& self, std::list<std::string>& path)
     return py::cast(self); // should never get there
 }
 
-std::string getLink(Node* node){
+std::string getLinkPath(Node* node){
     return ("@"+node->getPathName()).c_str();
 }
 
@@ -283,7 +283,7 @@ void moduleAddNode(py::module &m) {
 
     p.def("getRoot", &Node::getRoot, sofapython3::doc::sofa::core::Node::getRoot);
     p.def("getPathName", &Node::getPathName, sofapython3::doc::sofa::core::Node::getPathName);
-    p.def("getLink", &getLink, sofapython3::doc::sofa::core::Node::getLink);
+    p.def("getLinkPath", &getLinkPath, sofapython3::doc::sofa::core::Node::getLink);
     p.def_property_readonly("children", [](Node* node)
     {
         return new BaseIterator(node, [](Node* n) -> size_t { return n->child.size(); },
@@ -373,7 +373,7 @@ p.def("moveChild", [](Node *self, BaseNode* child, BaseNode* prevParent){
 }, sofapython3::doc::sofa::core::Node::moveChild);
 p.def("isInitialized", &Node::isInitialized, sofapython3::doc::sofa::core::Node::isInitialized);
 p.def("getAsACreateObjectParameter", [](Node *self){
-    return getLink(self);
+    return getLinkPath(self);
 }, sofapython3::doc::sofa::core::Node::getAsACreateObjectParameter);
 p.def("detachFromGraph", &Node::detachFromGraph, sofapython3::doc::sofa::core::Node::detachFromGraph);
 p.def("getMass", [](Node *self) ->py::object {
