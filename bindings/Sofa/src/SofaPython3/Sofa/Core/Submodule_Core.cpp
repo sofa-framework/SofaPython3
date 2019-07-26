@@ -14,6 +14,7 @@
 #include "Binding_Node.h"
 #include "Binding_Simulation.h"
 #include "Binding_BaseLink.h"
+#include "Binding_PythonScriptEvent.h"
 
 #include "Data/Binding_DataString.h"
 #include "Data/Binding_DataVectorString.h"
@@ -92,6 +93,8 @@ PYBIND11_MODULE(Core, core)
 
     moduleAddNode(core);
     moduleAddBaseLink(core);
+
+    moduleAddPythonScriptEvent(core);
 }
 
 } ///namespace sofapython3
