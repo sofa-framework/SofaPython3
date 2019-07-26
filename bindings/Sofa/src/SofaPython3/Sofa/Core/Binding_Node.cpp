@@ -32,7 +32,7 @@ using sofa::core::objectmodel::BaseObjectDescription;
 #include <sofa/core/objectmodel/Link.h>
 
 #include "Binding_Node_doc.h"
-#include "PythonScriptEvent.h"
+#include "Binding_PythonScriptEvent.h"
 
 namespace sofapython3
 {
