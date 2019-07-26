@@ -30,7 +30,7 @@ std::string getPathName(BaseData& self)
 
 std::string getLinkPath(BaseData& self)
 {
-   return "@"+getPathName(self);
+    return "@"+getPathName(self);
 }
 
 bool hasChanged(BaseData& data)
@@ -74,7 +74,7 @@ py::array array(BaseData* self)
 py::object writeableArrayWithType(BaseData* self, py::object f)
 {
     if(self!=nullptr)
-        return py::cast(new WriteAccessor(self, f));
+        return py::cast(new DataContainerContext(self, f));
 
     return py::none();
 }
@@ -82,7 +82,7 @@ py::object writeableArrayWithType(BaseData* self, py::object f)
 py::object writeableArray(BaseData* self)
 {
     if(self!=nullptr)
-        return py::cast(new WriteAccessor(self, py::none()));
+        return py::cast(new DataContainerContext(self, py::none()));
 
     return py::none();
 }
@@ -103,10 +103,6 @@ void __setattr__(py::object self, const std::string& s, py::object value)
         BindingBase::SetDataFromArray(selfdata, py::cast<py::array>(value));
         return;
     }
-    if(s == "name"){
-        py::cast<BaseData*>(self)->setName(py::cast<std::string>(value));
-        return;
-    }
     BindingBase::SetAttr(py::cast(selfdata->getOwner()),s,value);
 }
 
@@ -118,8 +114,6 @@ py::object __getattr__(py::object self, const std::string& s)
     if(s == "value")
         return toPython(py::cast<BaseData*>(self));
 
-    if(s == "name")
-        return py::cast(py::cast<BaseData*>(self)->getName());
     /// BaseData does not support dynamic attributes, if you think this is an important feature
     /// please request for its integration.
     throw py::attribute_error("There is no attribute '"+s+"'");
@@ -152,9 +146,10 @@ bool isDirty(BaseData* self)
 
 void moduleAddBaseData(py::module& m)
 {
+    /// Register the BaseData binding into the pybind11 system.
     py::class_<BaseData, raw_ptr<BaseData>> data(m, "Data", sofapython3::doc::baseData::BaseDataClass);
-    data.def("setName", &BaseData::setName, sofapython3::doc::baseData::setName);
-    data.def("getName", &BaseData::getName, sofapython3::doc::baseData::getName);
+    data.def("getName", [](BaseData& b){ return b.getName(); });
+    data.def("setName", [](BaseData& b, const std::string& s){ b.setName(s); } );
     data.def("getCounter", [](BaseData& self) { return self.getCounter(); }, sofapython3::doc::baseData::getCounter);
     data.def("getHelp", &BaseData::getHelp, sofapython3::doc::baseData::getHelp);
     data.def("unset", &BaseData::unset, sofapython3::doc::baseData::unset);

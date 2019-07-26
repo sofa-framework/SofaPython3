@@ -315,9 +315,9 @@ class Test(unittest.TestCase):
         root = Sofa.Core.Node("root")
         root.addData("aField", 1.0 , "help message","theDataGroup", "float")
         data = root.getData("aField")
-        self.assertEqual(data.name,"aField")
-        data.name="aNewField"
-        self.assertEqual(data.name,"aNewField")
+        self.assertEqual(data.getName(),"aField")
+        data.setName("aNewField")
+        self.assertEqual(data.getName(),"aNewField")
 
     def test_getValueString(self):
         root = Sofa.Core.Node("root")
@@ -350,7 +350,7 @@ class Test(unittest.TestCase):
         self.assertFalse(data.hasParent())
         data.setParent(dataParent, "@/dataParent/data")
         self.assertTrue(data.hasParent())
-        self.assertEqual(data.getParent().name,"aFieldParent")
+        self.assertEqual(data.getParent().getName(),"aFieldParent")
 
     def test_getLinkPath(self):
         root = Sofa.Core.Node("root")

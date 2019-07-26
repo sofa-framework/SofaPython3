@@ -69,7 +69,7 @@ PYBIND11_MODULE(Core, core)
     moduleAddDataDictIterator(core);
     moduleAddBase(core);
     moduleAddBaseData(core);
-    moduleAddWriteAccessor(core);
+    moduleAddDataContainerContext(core);
     moduleAddDataContainer(core);
     moduleAddDataString(core);
     moduleAddDataVectorString(core);

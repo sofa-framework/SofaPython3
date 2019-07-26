@@ -71,13 +71,13 @@ class Test(unittest.TestCase):
     def test_getOwnerBase(self):
         root = Sofa.Core.Node("theRoot")
         link = root.findLink("child")
-        self.assertEqual(link.getOwnerBase().getName(),"theRoot")
+        self.assertEqual(link.getOwnerBase().name.value,"theRoot")
 
     def test_getLinkedBase(self):
         root = Sofa.Core.Node("root")
         root.addChild("aChild")
         link = root.findLink("child")
-        self.assertEqual(link.getLinkedBase(0).getName(),"aChild")
+        self.assertEqual(link.getLinkedBase(0).name.value,"aChild")
 
     def test_getLinked_and_Owner(self):
         root = Sofa.Core.Node("root")
