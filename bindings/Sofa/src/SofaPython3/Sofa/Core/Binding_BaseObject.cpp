@@ -50,179 +50,195 @@ std::string getLinkPath(const BaseObject *self){
     return std::string("@")+self->getPathName();
 };
 
+py::list getSlaves(BaseObject &self)
+{
+   const BaseObject::VecSlaves& slaves = self.getSlaves();
+   py::list slaveList;
+   for (auto slave : slaves){
+       slaveList.append(py::cast(slave));
+   }
+   return slaveList;
+}
+
+py::object getContext(const BaseObject &self)
+{
+    const sofa::core::objectmodel::BaseContext* context =  self.getContext();
+    if (context){
+        return py::cast(context);
+    }
+    return py::none();
+}
+
+py::object getMaster(const BaseObject &self)
+{
+    const BaseObject* master = self.getMaster();
+    if (master){
+        return py::cast(master);
+    }
+    return py::none();
+}
+
+py::object getTarget(BaseObject *self)
+{
+    if (!self)
+        return py::none();
+    sofa::core::ObjectFactory::ClassEntry entry = sofa::core::ObjectFactory::getInstance()->getEntry(self->getClassName());
+    if (!entry.creatorMap.empty())
+    {
+        sofa::core::ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(self->getTemplateName());
+        if (it != entry.creatorMap.end() && *it->second->getTarget())
+        {
+            return py::cast(it->second->getTarget()) ;
+        }
+    }
+    return py::none() ;
+}
+
+py::object getCategories(BaseObject *self)
+{
+    const sofa::core::objectmodel::BaseClass* mclass=self->getClass();
+    std::vector<std::string> categories;
+    if (mclass->hasParent(sofa::core::objectmodel::ContextObject::GetClass()))
+        categories.push_back("ContextObject");
+    if (mclass->hasParent(sofa::core::visual::VisualModel::GetClass()))
+        categories.push_back("VisualModel");
+    if (mclass->hasParent(sofa::core::BehaviorModel::GetClass()))
+        categories.push_back("BehaviorModel");
+    if (mclass->hasParent(sofa::core::CollisionModel::GetClass()))
+        categories.push_back("CollisionModel");
+    if (mclass->hasParent(sofa::core::behavior::BaseMechanicalState::GetClass()))
+        categories.push_back("MechanicalState");
+    // A Mass is a technically a ForceField, but we don't want it to appear in the ForceField category
+    if (mclass->hasParent(sofa::core::behavior::BaseForceField::GetClass()) && !mclass->hasParent(sofa::core::behavior::BaseMass::GetClass()))
+        categories.push_back("ForceField");
+    if (mclass->hasParent(sofa::core::behavior::BaseInteractionForceField::GetClass()))
+        categories.push_back("InteractionForceField");
+    if (mclass->hasParent(sofa::core::behavior::BaseProjectiveConstraintSet::GetClass()))
+        categories.push_back("ProjectiveConstraintSet");
+    if (mclass->hasParent(sofa::core::behavior::BaseConstraintSet::GetClass()))
+        categories.push_back("ConstraintSet");
+    if (mclass->hasParent(sofa::core::BaseMapping::GetClass()))
+        categories.push_back("Mapping");
+    if (mclass->hasParent(sofa::core::DataEngine::GetClass()))
+        categories.push_back("Engine");
+    if (mclass->hasParent(sofa::core::topology::TopologicalMapping::GetClass()))
+        categories.push_back("TopologicalMapping");
+    if (mclass->hasParent(sofa::core::behavior::BaseMass::GetClass()))
+        categories.push_back("Mass");
+    if (mclass->hasParent(sofa::core::behavior::OdeSolver::GetClass()))
+        categories.push_back("OdeSolver");
+    if (mclass->hasParent(sofa::core::behavior::ConstraintSolver::GetClass()))
+        categories.push_back("ConstraintSolver");
+    if (mclass->hasParent(sofa::core::behavior::BaseConstraintCorrection::GetClass()))
+        categories.push_back("ConstraintSolver");
+    if (mclass->hasParent(sofa::core::behavior::LinearSolver::GetClass()))
+        categories.push_back("LinearSolver");
+    if (mclass->hasParent(sofa::core::behavior::BaseAnimationLoop::GetClass()))
+        categories.push_back("AnimationLoop");
+    // Just like Mass and ForceField, we don't want TopologyObject to appear in the Topology category
+    if (mclass->hasParent(sofa::core::topology::Topology::GetClass()) && !mclass->hasParent(sofa::core::topology::BaseTopologyObject::GetClass()))
+        categories.push_back("Topology");
+    if (mclass->hasParent(sofa::core::topology::BaseTopologyObject::GetClass()))
+        categories.push_back("TopologyObject");
+    if (mclass->hasParent(sofa::core::behavior::BaseController::GetClass()))
+        categories.push_back("Controller");
+    if (mclass->hasParent(sofa::core::loader::BaseLoader::GetClass()))
+        categories.push_back("Loader");
+    if (mclass->hasParent(sofa::core::collision::CollisionAlgorithm::GetClass()))
+        categories.push_back("CollisionAlgorithm");
+    if (mclass->hasParent(sofa::core::collision::Pipeline::GetClass()))
+        categories.push_back("CollisionAlgorithm");
+    if (mclass->hasParent(sofa::core::collision::Intersection::GetClass()))
+        categories.push_back("CollisionAlgorithm");
+    if (mclass->hasParent(sofa::core::objectmodel::ConfigurationSetting::GetClass()))
+        categories.push_back("ConfigurationSetting");
+    if (categories.empty())
+        categories.push_back("Miscellaneous");
+
+    py::list list;
+    for (unsigned int i=0; i<categories.size(); ++i)
+        list.append(py::cast(categories[i].c_str())) ;
+    return list;
+}
+
+std::string getAsACreateObjectParameter(BaseObject *self)
+{
+    return getLinkPath(self);
+}
+
+void setSrc(BaseObject &self, char *valueString, BaseObject *loader)
+{
+    self.setSrc(valueString,loader);
+}
+
+/// gets an item using its path (path is dot-separated, relative to the object
+/// it's called upon & ONLY DESCENDING (no ../):
+///
+/// This method lifts most ambiguities when accessing a node, object or data
+/// from a path relative to self.
+///
+/// examples:
+/// ------------
+///
+/// root["node1.node2.object1.value"]
+///
+/// In the example above, node1 and node2 can be inferred as being nodes without performing any checks.
+/// object1 can be a node or an object, but cannot be a datafield nor a link
+/// value can be a node or an object (if object1 is a node), or must be a data (if object1 is an object)
+py::object __getitem__(BaseObject &self, std::string s)
+{
+    if (s[0] == '.')
+        s.erase(s.begin());
+    std::list<std::string> stringlist;
+    std::istringstream iss(s);
+    std::string token;
+    while (std::getline(iss, token, '.'))
+    {
+        if (!token.empty())
+            stringlist.push_back(token);
+    }
+
+    // perform here the syntax checks over the string to parse
+
+    if (stringlist.empty())
+        return py::cast(self);
+    if (stringlist.size() > 1)
+        throw py::value_error("Invalid syntax");
+
+    return getItem(self, s);
+}
+
 void moduleAddBaseObject(py::module& m)
 {
+    /// Register the BaseObject binding into the pybind11 typing system
+    py::class_<BaseObject, Base, BaseObject::SPtr>p(m, "Object", sofapython3::doc::baseObject::Class);
+
+    /// Register the BaseObject binding into the downcasting subsystem
     PythonDownCast::registerType<sofa::core::objectmodel::BaseObject>(
                 [](sofa::core::objectmodel::Base* object)
     {
         return py::cast(object->toBaseObject());
     });
 
-    py::class_<BaseObject, Base, BaseObject::SPtr>p(m, "Object", sofapython3::doc::baseObject::Class);
     p.def("init", &BaseObject::init, sofapython3::doc::baseObject::init);
     p.def("reinit", &BaseObject::reinit, sofapython3::doc::baseObject::reinit);
-
     p.def("getPathName", &BaseObject::getPathName, sofapython3::doc::baseObject::getPathName);
     p.def("getLink", [](const BaseObject &self){ return std::string("@") + self.getPathName(); }, sofapython3::doc::baseObject::getLink);
-
-    p.def("getSlaves", [] (BaseObject &self){
-       const BaseObject::VecSlaves& slaves = self.getSlaves();
-       py::list slaveList;
-       for (auto slave : slaves){
-           slaveList.append(py::cast(slave));
-       }
-       return slaveList;
-    }, sofapython3::doc::baseObject::getSlaves);
-
-    p.def("getContext", [](const BaseObject &self) -> py::object {
-        const sofa::core::objectmodel::BaseContext* context =  self.getContext();
-        if (context){
-            return py::cast(context);
-        }
-        return py::none();
-    }, sofapython3::doc::baseObject::getContext);
-    p.def("getMaster", [](const BaseObject &self) -> py::object {
-        const BaseObject* master = self.getMaster();
-        if (master){
-            return py::cast(master);
-        }
-        return py::none();
-    }, sofapython3::doc::baseObject::getMaster);
+    p.def("getSlaves", getSlaves, sofapython3::doc::baseObject::getSlaves);
+    p.def("getContext", getContext, sofapython3::doc::baseObject::getContext);
+    p.def("getMaster", getMaster, sofapython3::doc::baseObject::getMaster);
     p.def("addSlave", &BaseObject::addSlave, sofapython3::doc::baseObject::addSlave);
     p.def("storeResetState", &BaseObject::storeResetState, sofapython3::doc::baseObject::storeResetState);
     p.def("reset", &BaseObject::reset, sofapython3::doc::baseObject::reset);
-    p.def("getName",[](BaseObject *self){
-         return py::cast((self->getName()).c_str());
-    }, sofapython3::doc::baseObject::getName);
-    p.def("getTarget", [](BaseObject *self) -> py::object{
-        if (!self)
-            return py::none();
-        sofa::core::ObjectFactory::ClassEntry entry = sofa::core::ObjectFactory::getInstance()->getEntry(self->getClassName());
-        if (!entry.creatorMap.empty())
-        {
-            sofa::core::ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(self->getTemplateName());
-            if (it != entry.creatorMap.end() && *it->second->getTarget())
-            {
-                return py::cast(it->second->getTarget()) ;
-            }
-        }
-        return py::none() ;
-    }, sofapython3::doc::baseObject::getTarget);
-    p.def("getCategories", [](BaseObject *self){
-        const sofa::core::objectmodel::BaseClass* mclass=self->getClass();
-        std::vector<std::string> categories;
-        if (mclass->hasParent(sofa::core::objectmodel::ContextObject::GetClass()))
-            categories.push_back("ContextObject");
-        if (mclass->hasParent(sofa::core::visual::VisualModel::GetClass()))
-            categories.push_back("VisualModel");
-        if (mclass->hasParent(sofa::core::BehaviorModel::GetClass()))
-            categories.push_back("BehaviorModel");
-        if (mclass->hasParent(sofa::core::CollisionModel::GetClass()))
-            categories.push_back("CollisionModel");
-        if (mclass->hasParent(sofa::core::behavior::BaseMechanicalState::GetClass()))
-            categories.push_back("MechanicalState");
-        // A Mass is a technically a ForceField, but we don't want it to appear in the ForceField category
-        if (mclass->hasParent(sofa::core::behavior::BaseForceField::GetClass()) && !mclass->hasParent(sofa::core::behavior::BaseMass::GetClass()))
-            categories.push_back("ForceField");
-        if (mclass->hasParent(sofa::core::behavior::BaseInteractionForceField::GetClass()))
-            categories.push_back("InteractionForceField");
-        if (mclass->hasParent(sofa::core::behavior::BaseProjectiveConstraintSet::GetClass()))
-            categories.push_back("ProjectiveConstraintSet");
-        if (mclass->hasParent(sofa::core::behavior::BaseConstraintSet::GetClass()))
-            categories.push_back("ConstraintSet");
-        if (mclass->hasParent(sofa::core::BaseMapping::GetClass()))
-            categories.push_back("Mapping");
-        if (mclass->hasParent(sofa::core::DataEngine::GetClass()))
-            categories.push_back("Engine");
-        if (mclass->hasParent(sofa::core::topology::TopologicalMapping::GetClass()))
-            categories.push_back("TopologicalMapping");
-        if (mclass->hasParent(sofa::core::behavior::BaseMass::GetClass()))
-            categories.push_back("Mass");
-        if (mclass->hasParent(sofa::core::behavior::OdeSolver::GetClass()))
-            categories.push_back("OdeSolver");
-        if (mclass->hasParent(sofa::core::behavior::ConstraintSolver::GetClass()))
-            categories.push_back("ConstraintSolver");
-        if (mclass->hasParent(sofa::core::behavior::BaseConstraintCorrection::GetClass()))
-            categories.push_back("ConstraintSolver");
-        if (mclass->hasParent(sofa::core::behavior::LinearSolver::GetClass()))
-            categories.push_back("LinearSolver");
-        if (mclass->hasParent(sofa::core::behavior::BaseAnimationLoop::GetClass()))
-            categories.push_back("AnimationLoop");
-        // Just like Mass and ForceField, we don't want TopologyObject to appear in the Topology category
-        if (mclass->hasParent(sofa::core::topology::Topology::GetClass()) && !mclass->hasParent(sofa::core::topology::BaseTopologyObject::GetClass()))
-            categories.push_back("Topology");
-        if (mclass->hasParent(sofa::core::topology::BaseTopologyObject::GetClass()))
-            categories.push_back("TopologyObject");
-        if (mclass->hasParent(sofa::core::behavior::BaseController::GetClass()))
-            categories.push_back("Controller");
-        if (mclass->hasParent(sofa::core::loader::BaseLoader::GetClass()))
-            categories.push_back("Loader");
-        if (mclass->hasParent(sofa::core::collision::CollisionAlgorithm::GetClass()))
-            categories.push_back("CollisionAlgorithm");
-        if (mclass->hasParent(sofa::core::collision::Pipeline::GetClass()))
-            categories.push_back("CollisionAlgorithm");
-        if (mclass->hasParent(sofa::core::collision::Intersection::GetClass()))
-            categories.push_back("CollisionAlgorithm");
-        if (mclass->hasParent(sofa::core::objectmodel::ConfigurationSetting::GetClass()))
-            categories.push_back("ConfigurationSetting");
-        if (categories.empty())
-            categories.push_back("Miscellaneous");
-
-        py::list list;
-        for (unsigned int i=0; i<categories.size(); ++i)
-            list.append(py::cast(categories[i].c_str())) ;
-        return list;
-    }, sofapython3::doc::baseObject::getCategories);
+    p.def("getTarget", getTarget, sofapython3::doc::baseObject::getTarget);
+    p.def("getCategories", getCategories, sofapython3::doc::baseObject::getCategories);
     p.def("bwdInit", &BaseObject::bwdInit, sofapython3::doc::baseObject::bwdInit);
     p.def("cleanup", &BaseObject::cleanup, sofapython3::doc::baseObject::cleanup);
-    p.def("computeBBox", [](BaseObject *self){
-        self->computeBBox(sofa::core::ExecParams::defaultInstance(), false);
-    }, sofapython3::doc::baseObject::computeBBox);
     p.def("getLinkPath", &getLinkPath, sofapython3::doc::baseObject::getLinkPath);
-    p.def("getAsACreateObjectParameter", [](BaseObject *self){
-        return getLinkPath(self);
-    }, sofapython3::doc::baseObject::getAsACreateObjectParameter);
-    p.def("setSrc", [](BaseObject &self, char *valueString, BaseObject *loader){
-        self.setSrc(valueString,loader);
-    }, sofapython3::doc::baseObject::setSrc);
-
-
-    /// gets an item using its path (path is dot-separated, relative to the object
-    /// it's called upon & ONLY DESCENDING (no ../):
-    ///
-    /// This method lifts most ambiguities when accessing a node, object or data
-    /// from a path relative to self.
-    ///
-    /// examples:
-    /// ------------
-    ///
-    /// root["node1.node2.object1.value"]
-    ///
-    /// In the example above, node1 and node2 can be inferred as being nodes without performing any checks.
-    /// object1 can be a node or an object, but cannot be a datafield nor a link
-    /// value can be a node or an object (if object1 is a node), or must be a data (if object1 is an object)
-    p.def("__getitem__", [](BaseObject &self, std::string s) -> py::object
-    {
-        if (s[0] == '.')
-            s.erase(s.begin());
-        std::list<std::string> stringlist;
-        std::istringstream iss(s);
-        std::string token;
-        while (std::getline(iss, token, '.'))
-        {
-            if (!token.empty())
-                stringlist.push_back(token);
-        }
-
-        // perform here the syntax checks over the string to parse
-
-        if (stringlist.empty())
-            return py::cast(self);
-        if (stringlist.size() > 1)
-            throw py::value_error("Invalid syntax");
-
-        return getItem(self, s);
-    });
-
+    p.def("getAsACreateObjectParameter", getAsACreateObjectParameter, sofapython3::doc::baseObject::getAsACreateObjectParameter);
+    p.def("setSrc", setSrc, sofapython3::doc::baseObject::setSrc);
+    p.def("__getitem__", __getitem__, sofapython3::doc::baseObject::__getitem__);
+    p.def_property_readonly("name", [](const BaseObject& b){ return b.getName(); });
 }
-}  // namespace sofapython3
+
+}  /// namespace sofapython3

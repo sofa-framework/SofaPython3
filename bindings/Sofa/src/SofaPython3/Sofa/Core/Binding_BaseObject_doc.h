@@ -140,4 +140,23 @@ static auto getAsACreateObjectParameter =
         Return the full path name of this baseObject with an extra prefix '@'
         :rtype: string
         )";
+
+static auto __getitem__ =
+        R"(
+        gets an item using its path (path is dot-separated, relative to the object
+        it's called upon & ONLY DESCENDING (no ../):
+
+        This method lifts most ambiguities when accessing a node, object or data
+        from a path relative to self.
+
+        examples:
+        ------------
+
+        root["node1.node2.object1.value"]
+
+        In the example above, node1 and node2 can be inferred as being nodes without performing any checks.
+        object1 can be a node or an object, but cannot be a datafield nor a link
+        value can be a node or an object (if object1 is a node), or must be a data (if object1 is an object)
+        )";
+
 }
