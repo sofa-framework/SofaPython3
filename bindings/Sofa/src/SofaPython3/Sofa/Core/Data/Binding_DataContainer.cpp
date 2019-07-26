@@ -138,7 +138,7 @@ void moduleAddDataContainer(py::module& m)
     p.def("writeable", [](DataContainer* self, py::object f) -> py::object
     {
         if(self!=nullptr)
-            return py::cast(new WriteAccessor(self, f));
+            return py::cast(new DataContainerContext(self, f));
 
         return py::none();
     });
@@ -146,7 +146,7 @@ void moduleAddDataContainer(py::module& m)
     p.def("writeable", [](DataContainer* self) -> py::object
     {
         if(self!=nullptr)
-            return py::cast(new WriteAccessor(self, py::none()));
+            return py::cast(new DataContainerContext(self, py::none()));
 
         return py::none();
     });
@@ -262,10 +262,10 @@ void moduleAddDataContainer(py::module& m)
     });
 }
 
-void moduleAddWriteAccessor(py::module& m)
+void moduleAddDataContainerContext(py::module& m)
 {
-    py::class_<WriteAccessor> wa(m, "DataContainerContextManager");
-    wa.def("__enter__", [](WriteAccessor& wa)
+    py::class_<DataContainerContext> wa(m, "DataContainerContextManager");
+    wa.def("__enter__", [](DataContainerContext& wa)
     {
         wa.data->beginEditVoidPtr();
         py::array mainbuffer = getPythonArrayFor(wa.data);
@@ -280,7 +280,7 @@ void moduleAddWriteAccessor(py::module& m)
     });
 
     wa.def("__exit__",
-           [](WriteAccessor& wa, py::object type, py::object value, py::object traceback)
+           [](DataContainerContext& wa, py::object type, py::object value, py::object traceback)
     {
         SOFA_UNUSED(type);
         SOFA_UNUSED(value);

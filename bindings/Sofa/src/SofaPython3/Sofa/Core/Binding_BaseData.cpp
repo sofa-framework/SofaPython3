@@ -74,7 +74,7 @@ py::array array(BaseData* self)
 py::object writeableArrayWithType(BaseData* self, py::object f)
 {
     if(self!=nullptr)
-        return py::cast(new WriteAccessor(self, f));
+        return py::cast(new DataContainerContext(self, f));
 
     return py::none();
 }
@@ -82,7 +82,7 @@ py::object writeableArrayWithType(BaseData* self, py::object f)
 py::object writeableArray(BaseData* self)
 {
     if(self!=nullptr)
-        return py::cast(new WriteAccessor(self, py::none()));
+        return py::cast(new DataContainerContext(self, py::none()));
 
     return py::none();
 }
