@@ -6,6 +6,7 @@
 
 #include "Binding_Base.h"
 #include "Binding_BaseObject.h"
+#include "Binding_DataDict.h"
 #include "Binding_BaseData.h"
 #include "Binding_BaseCamera.h"
 #include "Binding_ForceField.h"

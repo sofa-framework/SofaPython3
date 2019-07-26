@@ -38,39 +38,15 @@ public:
     /// Set the data field value from the array.
     static void SetDataFromArray(BaseData* data, const py::array& value);
     static bool SetData(BaseData* data, pybind11::object value);
+
+    static void addData(py::object py_self, const std::string& name, py::object value = py::object(), const std::string& help = "", const std::string& group = "Property", std::string type = "");
+    static void addDataFromData(Base* self, py::object d);
+    static py::list __dir__(Base* self);
+    static py::object __getattr__(py::object self, const std::string& s);
+    static void __setattr__(py::object self, const std::string& s, py::object value);
 };
 
-py::buffer_info toBufferInfo(BaseData& m);
-bool hasArrayFor(BaseData* d);
-py::array resetArrayFor(BaseData* d);
-py::array getPythonArrayFor(BaseData* d);
-py::object convertToPython(BaseData* d);
 
-class DataDict
-{
-public:
-    sptr<Base> owner;
-    DataDict(sptr<Base> b){ owner = b; }
-};
-
-class DataDictIterator
-{
-public:
-    Base::SPtr owner;
-    size_t     index=0;
-    bool       key;
-    bool       value;
-    DataDictIterator(Base::SPtr owner_, bool withKey, bool withValue)
-    {
-        owner=owner_;
-        index=0;
-        key=withKey;
-        value=withValue;
-    }
-};
-
-void moduleAddDataDict(py::module& m);
-void moduleAddDataDictIterator(py::module& m);
 void moduleAddBase(py::module& m);
 
 bool isProtectedKeyword(const std::string& name);

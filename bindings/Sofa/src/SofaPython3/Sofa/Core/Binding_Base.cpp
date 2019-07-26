@@ -11,17 +11,17 @@ using sofa::core::objectmodel::BaseData;
 #include <sofa/core/objectmodel/BaseLink.h>
 using sofa::core::objectmodel::BaseLink;
 
-#include <sofa/helper/Factory.h>
-#include <sofa/helper/Factory.inl>
-
 #include <sofa/helper/accessor.h>
 using sofa::helper::WriteOnlyAccessor;
 
 #include <SofaPython3/PythonDownCast.h>
+#include <SofaPython3/DataFactory.h>
 
 #include "Binding_Base.h"
 #include "Binding_Base_doc.h"
 
+
+#include "Binding_DataDict.h"
 #include "Binding_BaseData.h"
 #include "Data/Binding_DataContainer.h"
 
@@ -35,153 +35,10 @@ using sofa::core::objectmodel::BaseNode;
 #include <sofa/core/objectmodel/BaseContext.h>
 using sofa::core::objectmodel::BaseContext;
 
-
+#include <SofaPython3/DataHelper.h>
 
 namespace sofapython3
 {
-template<typename DataType>
-class DataCreator : public sofa::helper::BaseCreator<sofa::core::objectmodel::BaseData>
-{
-public:
-    virtual sofa::core::objectmodel::BaseData* createInstance(sofa::helper::NoArgument) override { return new sofa::core::objectmodel::Data<DataType>(); }
-    virtual const std::type_info& type() override { return typeid(sofa::core::objectmodel::BaseData);}
-};
-
-typedef sofa::helper::Factory< std::string, BaseData> DataFactory;
-
-DataFactory* getFactoryInstance(){
-    static DataFactory* s_localfactory = nullptr ;
-    if (s_localfactory == nullptr)
-    {
-        // helper vector style containers
-        std::string containers[] = {"vector"};
-
-        s_localfactory = new DataFactory();
-        // Scalars
-        s_localfactory->registerCreator("string", new DataCreator<std::string>());
-        s_localfactory->registerCreator("float", new DataCreator<float>());
-        s_localfactory->registerCreator("double", new DataCreator<double>());
-        s_localfactory->registerCreator("bool", new DataCreator<bool>());
-        s_localfactory->registerCreator("int", new DataCreator<int>());
-
-        // vectors
-        s_localfactory->registerCreator(
-                    "Vec2d", new DataCreator<sofa::defaulttype::Vec2d>());
-        s_localfactory->registerCreator(
-                    "Vec3d", new DataCreator<sofa::defaulttype::Vec3d>());
-        s_localfactory->registerCreator(
-                    "Vec4d", new DataCreator<sofa::defaulttype::Vec4d>());
-        s_localfactory->registerCreator(
-                    "Vec6d", new DataCreator<sofa::defaulttype::Vec6d>());
-        s_localfactory->registerCreator(
-                    "Vec2f", new DataCreator<sofa::defaulttype::Vec2f>());
-        s_localfactory->registerCreator(
-                    "Vec3f", new DataCreator<sofa::defaulttype::Vec3f>());
-        s_localfactory->registerCreator(
-                    "Vec4f", new DataCreator<sofa::defaulttype::Vec4f>());
-        s_localfactory->registerCreator(
-                    "Vec6f", new DataCreator<sofa::defaulttype::Vec6f>());
-
-        // Matrices
-        s_localfactory->registerCreator(
-                    "Mat2x2d", new DataCreator<sofa::defaulttype::Mat2x2d>());
-        s_localfactory->registerCreator(
-                    "Mat3x3d", new DataCreator<sofa::defaulttype::Mat3x3d>());
-        s_localfactory->registerCreator(
-                    "Mat4x4d", new DataCreator<sofa::defaulttype::Mat4x4d>());
-        s_localfactory->registerCreator(
-                    "Mat2x2f", new DataCreator<sofa::defaulttype::Mat2x2f>());
-        s_localfactory->registerCreator(
-                    "Mat3x3f", new DataCreator<sofa::defaulttype::Mat3x3f>());
-        s_localfactory->registerCreator(
-                    "Mat4x4f", new DataCreator<sofa::defaulttype::Mat4x4f>());
-
-        // Topology
-        s_localfactory->registerCreator("Edge", new DataCreator<sofa::core::topology::Topology::Edge>());
-        s_localfactory->registerCreator("Triangle", new DataCreator<sofa::core::topology::Topology::Triangle>());
-        s_localfactory->registerCreator("Quad", new DataCreator<sofa::core::topology::Topology::Quad>());
-        s_localfactory->registerCreator("Tetra", new DataCreator<sofa::core::topology::Topology::Tetra>());
-        s_localfactory->registerCreator("Hexa", new DataCreator<sofa::core::topology::Topology::Hexa>());
-        s_localfactory->registerCreator("Penta", new DataCreator<sofa::core::topology::Topology::Penta>());
-
-        // State vectors
-        s_localfactory->registerCreator(
-                    "Rigid3d::VecCoord", new DataCreator<sofa::defaulttype::Rigid3dTypes::VecCoord>());
-        s_localfactory->registerCreator(
-                    "Rigid3f::VecCoord", new DataCreator<sofa::defaulttype::Rigid3fTypes::VecCoord>());
-        s_localfactory->registerCreator(
-                    "Rigid3::VecCoord", new DataCreator<sofa::defaulttype::Rigid3Types::VecCoord>());
-
-        // General vectors
-        for (const auto& container : containers)
-        {
-            // Scalars
-            s_localfactory->registerCreator(container + "<string>",
-                                            new DataCreator<sofa::helper::vector<std::string>>());
-            s_localfactory->registerCreator(container + "<float>",
-                                            new DataCreator<sofa::helper::vector<float>>());
-            s_localfactory->registerCreator(container + "<double>",
-                                            new DataCreator<sofa::helper::vector<double>>());
-            s_localfactory->registerCreator(container + "<bool>",
-                                            new DataCreator<sofa::helper::vector<bool>>());
-            s_localfactory->registerCreator(container + "<int>",
-                                            new DataCreator<sofa::helper::vector<int>>());
-
-            // vectors
-            s_localfactory->registerCreator(
-                        container + "<Vec2d>", new DataCreator<sofa::helper::vector<sofa::defaulttype::Vec2d>>());
-            s_localfactory->registerCreator(
-                        container + "<Vec3d>", new DataCreator<sofa::helper::vector<sofa::defaulttype::Vec3d>>());
-            s_localfactory->registerCreator(
-                        container + "<Vec4d>", new DataCreator<sofa::helper::vector<sofa::defaulttype::Vec4d>>());
-            s_localfactory->registerCreator(
-                        container + "<Vec6d>", new DataCreator<sofa::helper::vector<sofa::defaulttype::Vec6d>>());
-            s_localfactory->registerCreator(
-                        container + "<Vec2f>", new DataCreator<sofa::helper::vector<sofa::defaulttype::Vec2f>>());
-            s_localfactory->registerCreator(
-                        container + "<Vec3f>", new DataCreator<sofa::helper::vector<sofa::defaulttype::Vec3f>>());
-            s_localfactory->registerCreator(
-                        container + "<Vec4f>", new DataCreator<sofa::helper::vector<sofa::defaulttype::Vec4f>>());
-            s_localfactory->registerCreator(
-                        container + "<Vec6f>", new DataCreator<sofa::helper::vector<sofa::defaulttype::Vec6f>>());
-
-            // Matrices
-            s_localfactory->registerCreator(
-                        container + "<Mat2x2d>",
-                        new DataCreator<sofa::helper::vector<sofa::defaulttype::Mat2x2d>>());
-            s_localfactory->registerCreator(
-                        container + "<Mat3x3d>",
-                        new DataCreator<sofa::helper::vector<sofa::defaulttype::Mat3x3d>>());
-            s_localfactory->registerCreator(
-                        container + "<Mat4x4d>",
-                        new DataCreator<sofa::helper::vector<sofa::defaulttype::Mat4x4d>>());
-            s_localfactory->registerCreator(
-                        container + "<Mat2x2f>",
-                        new DataCreator<sofa::helper::vector<sofa::defaulttype::Mat2x2f>>());
-            s_localfactory->registerCreator(
-                        container + "<Mat3x3f>",
-                        new DataCreator<sofa::helper::vector<sofa::defaulttype::Mat3x3f>>());
-            s_localfactory->registerCreator(
-                        container + "<Mat4x4f>",
-                        new DataCreator<sofa::helper::vector<sofa::defaulttype::Mat4x4f>>());
-
-            // Topology
-            s_localfactory->registerCreator(container + "<Edge>",
-                                            new DataCreator<sofa::helper::vector<sofa::core::topology::Topology::Edge>>());
-            s_localfactory->registerCreator(container + "<Triangle>",
-                                            new DataCreator<sofa::helper::vector<sofa::core::topology::Topology::Triangle>>());
-            s_localfactory->registerCreator(container + "<Quad>",
-                                            new DataCreator<sofa::helper::vector<sofa::core::topology::Topology::Quad>>());
-            s_localfactory->registerCreator(container + "<Tetra>",
-                                            new DataCreator<sofa::helper::vector<sofa::core::topology::Topology::Tetra>>());
-            s_localfactory->registerCreator(container + "<Hexa>",
-                                            new DataCreator<sofa::helper::vector<sofa::core::topology::Topology::Hexa>>());
-            s_localfactory->registerCreator(container + "<Penta>",
-                                            new DataCreator<sofa::helper::vector<sofa::core::topology::Topology::Penta>>());
-        }
-    }
-    return s_localfactory ;
-}
 
 ///@brief return a py::object for the provided name 's'.
 ///
@@ -410,107 +267,6 @@ void BindingBase::SetAttrFromArray(py::object self, const std::string& s, const 
     throw py::attribute_error("");
 }
 
-void moduleAddDataDict(py::module& m)
-{
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    /// DataDict binding
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    py::class_<DataDict> d(m, "DataDict",
-                           sofapython3::doc::dataDict::Class);
-    d.def("__len__", [](DataDict& self)
-    {
-        return self.owner->getDataFields().size();
-    });
-
-
-    d.def("__getitem__",[](DataDict& self, const size_t& i)
-    {
-        const Base::VecData& vd = self.owner->getDataFields();
-        if(i > vd.size())
-            throw py::index_error(std::to_string(i));
-        return toPython(vd[i]);
-    });
-
-    d.def("__getitem__",
-          [](DataDict& self, const std::string& s) -> py::object
-    {
-        BaseData* d = self.owner->findData(s);
-        if(d!=nullptr)
-        {
-            const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
-
-            if(nfo.Container())
-            {
-                py::array a = py::array(toBufferInfo(*d));
-                return a;
-            }
-            if(nfo.Text()) {
-                //                return py::cast(reinterpret_cast<DataAsString*>(d));
-                return py::cast(d->getValueString());
-            }
-            return py::cast(d);
-        }
-        throw std::invalid_argument(s);
-    });
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    d.def("__setitem__",[](DataDict& d, const std::string& s, py::object v)
-    {
-        return 0.0;
-    });
-
-    d.def("__iter__", [](DataDict& d)
-    {
-        return DataDictIterator(d.owner, true, false);
-    });
-    d.def("keys", [](DataDict& d)
-    {
-        return DataDictIterator(d.owner, true, false);
-    }, sofapython3::doc::dataDict::keys);
-    d.def("values", [](DataDict& d)
-    {
-        return DataDictIterator(d.owner, false, true);
-    }, sofapython3::doc::dataDict::values);
-    d.def("items", [](DataDict& d)
-    {
-        return DataDictIterator(d.owner, true, true);
-    }, sofapython3::doc::dataDict::items);
-}
-
-
-void moduleAddDataDictIterator(py::module &m)
-{
-    PythonDownCast::registerType<sofa::core::objectmodel::Base>(
-                [](sofa::core::objectmodel::Base* object)
-    {
-        return py::cast(object);
-    });
-
-
-    py::class_<DataDictIterator> ddi(m, "DataDictIterator");
-    ddi.def("__iter__", [](DataDictIterator& d)
-    {
-        return d;
-    });
-    ddi.def("__next__", [](DataDictIterator& d) -> py::object
-    {
-        if(d.index>=d.owner->getDataFields().size())
-            throw py::stop_iteration();
-
-        BaseData* data = d.owner->getDataFields()[d.index++];
-        if(!d.key)
-            return toPython(data);
-
-        if(!d.value)
-            return py::cast(data->getName());
-
-        py::tuple t {2};
-        t[0] = data->getName();
-        t[1] = toPython(data);
-        return std::move(t);
-    });
-}
-
 BaseData* deriveTypeFromParent(BaseData* parentData)
 {
     BaseData* newData = parentData->getNewInstance();
@@ -610,6 +366,117 @@ void checkAmbiguousCreation(py::object& py_self, const std::string& name, const 
         msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getName() << ": Component alread has a python attribute with such name in __dict__";
 }
 
+void BindingBase::addData(py::object py_self, const std::string& name, py::object value, const std::string& help, const std::string& group, std::string type)
+{
+    Base* self = py::cast<Base*>(py_self);
+    if (isProtectedKeyword(name))
+        throw py::value_error("addData: Cannot call addData with name " + name + ": Protected keyword");
+    checkAmbiguousCreation(py_self, name, "data");
+    BaseData* data;
+    // create the data from the link passed as a string to the object
+    if (type.empty() && py::isinstance<py::str>(value))
+    {
+        if (dynamic_cast<BaseNode*>(self))
+            data = deriveTypeFromParent(dynamic_cast<BaseNode*>(self)->getContext(),
+                                        py::cast<py::str>(value));
+        else
+            data = deriveTypeFromParent(dynamic_cast<BaseObject*>(self)->getContext(),
+                                        py::cast<py::str>(value));
+        if (!data)
+            throw py::type_error("Cannot deduce type from value");
+        self->addData(data, name);
+    }
+    // create the data from another data (use as parent)
+    else if (type.empty() && py::cast<BaseData*>(value))
+    {
+        data = deriveTypeFromParent(py::cast<BaseData*>(value));
+        if (!data)
+            throw py::type_error("Cannot deduce type from value");
+        self->addData(data, name);
+    }
+    // create the data from the type given in `type` and fill it up
+    else
+    {
+        data = getFactoryInstance()->createObject(type, sofa::helper::NoArgument());
+        if (!data)
+        {
+            sofa::helper::vector<std::string> validTypes;
+            getFactoryInstance()->uniqueKeys(std::back_inserter(validTypes));
+            std::string typesString = "[";
+            for (const auto& i : validTypes)
+                typesString += i + ", ";
+            typesString += "\b\b]";
+
+            throw py::type_error(std::string("Invalid Type string: available types are\n") + typesString);
+        }
+        self->addData(data, name);
+        fromPython(data, value);
+    }
+    data->setName(name);
+    data->setGroup(group.c_str());
+    data->setHelp(help.c_str());
+    data->setDisplayed(true);
+    data->setPersistent(true);
+}
+
+
+void BindingBase::addDataFromData(Base* self, py::object d)
+{
+    BaseData* data = py::cast<BaseData*>(d);
+    if (!data)
+        throw py::type_error("Argument is not a Data!");
+
+    if (data->getOwner() == nullptr)
+        self->addData(data, data->getName());
+    else
+    {
+        BaseData* newData = data->getNewInstance();
+        newData->setOwner(self);
+        newData->setParent(data);
+        newData->setName(data->getName());
+    }
+}
+
+py::list BindingBase::__dir__(Base* self)
+{
+    py::list list;
+    for(auto i : self->getDataFields())
+    {
+        list.append(i->getName());
+    }
+    return list;
+}
+
+py::object BindingBase::__getattr__(py::object self, const std::string& s)
+{
+    py::object res = BindingBase::GetAttr( py::cast<Base*>(self), s, false );
+    if( res.is_none() )
+    {
+        return self.attr("__dict__")[s.c_str()];
+    }
+
+    return res;
+}
+
+void BindingBase::__setattr__(py::object self, const std::string& s, py::object value)
+{
+    if(py::isinstance<DataContainer>(value))
+    {
+        BaseData* data = py::cast<BaseData*>(value);
+        py::array a = getPythonArrayFor(data);
+        BindingBase::SetAttrFromArray(self,s, a);
+        return;
+    }
+
+    if(py::isinstance<py::array>(value))
+    {
+        BindingBase::SetAttrFromArray(self,s, py::cast<py::array>(value));
+        return;
+    }
+
+    BindingBase::SetAttr(self,s,value);
+}
+
 void moduleAddBase(py::module &m)
 {
     py::class_<Base, Base::SPtr> base(m, "Base", py::dynamic_attr(), doc::base::BaseClass);
@@ -632,87 +499,11 @@ void moduleAddBase(py::module &m)
     base.def("getDataFields", &Base::getDataFields, pybind11::return_value_policy::reference, sofapython3::doc::base::getDataFields);
     base.def("findLink", &Base::findLink, pybind11::return_value_policy::reference, sofapython3::doc::base::findLink);
     base.def("getLinks", &Base::getLinks, pybind11::return_value_policy::reference, sofapython3::doc::base::getLinks);
-    base.def("addData", [](py::object py_self, const std::string& name,
-             py::object value = py::object(), const std::string& help = "",
-             const std::string& group = "", std::string type = "")
-    {
-        Base* self = py::cast<Base*>(py_self);
-        if (isProtectedKeyword(name))
-            throw py::value_error("addData: Cannot call addData with name " + name + ": Protected keyword");
-        checkAmbiguousCreation(py_self, name, "data");
-        BaseData* data;
-        // create the data from the link passed as a string to the object
-        if (type.empty() && py::isinstance<py::str>(value))
-        {
-            if (dynamic_cast<BaseNode*>(self))
-                data = deriveTypeFromParent(dynamic_cast<BaseNode*>(self)->getContext(),
-                                            py::cast<py::str>(value));
-            else
-                data = deriveTypeFromParent(dynamic_cast<BaseObject*>(self)->getContext(),
-                                            py::cast<py::str>(value));
-            if (!data)
-                throw py::type_error("Cannot deduce type from value");
-            self->addData(data, name);
-        }
-        // create the data from another data (use as parent)
-        else if (type.empty() && py::cast<BaseData*>(value))
-        {
-            data = deriveTypeFromParent(py::cast<BaseData*>(value));
-            if (!data)
-                throw py::type_error("Cannot deduce type from value");
-            self->addData(data, name);
-        }
-        // create the data from the type given in `type` and fill it up
-        else
-        {
-            data = getFactoryInstance()->createObject(type, sofa::helper::NoArgument());
-            if (!data)
-            {
-                sofa::helper::vector<std::string> validTypes;
-                getFactoryInstance()->uniqueKeys(std::back_inserter(validTypes));
-                std::string typesString = "[";
-                for (const auto& i : validTypes)
-                    typesString += i + ", ";
-                typesString += "\b\b]";
+    base.def("addData", &BindingBase::addData, "name"_a, "value"_a = "", "help"_a = "", "group"_a = "", "type"_a = "", sofapython3::doc::base::addData);
 
-                throw py::type_error(std::string("Invalid Type string: available types are\n") + typesString);
-            }
-            self->addData(data, name);
-            fromPython(data, value);
-        }
-        data->setName(name);
-        data->setGroup(group.c_str());
-        data->setHelp(help.c_str());
-        data->setDisplayed(true);
-        data->setPersistent(true);
+    base.def("addData", &BindingBase::addDataFromData, sofapython3::doc::base::addDataInitialized);
 
-    }, "name"_a, "value"_a = "", "help"_a = "", "group"_a = "", "type"_a = "", sofapython3::doc::base::addData);
-
-    base.def("addData", [](Base* self, py::object d) {
-        BaseData* data = py::cast<BaseData*>(d);
-        if (!data)
-            throw py::type_error("Argument is not a Data!");
-
-        if (data->getOwner() == nullptr)
-            self->addData(data, data->getName());
-        else
-        {
-            BaseData* newData = data->getNewInstance();
-            newData->setOwner(self);
-            newData->setParent(data);
-            newData->setName(data->getName());
-        }
-    }, sofapython3::doc::base::addDataInitialized);
-
-    base.def("__dir__", [](Base* self)
-    {
-        py::list list;
-        for(auto i : self->getDataFields())
-        {
-            list.append(i->getName());
-        }
-        return list;
-    });
+    base.def("__dir__", &BindingBase::__dir__);
 
     base.def("getData", [](Base& self, const std::string& s) -> py::object
     {
@@ -725,35 +516,9 @@ void moduleAddBase(py::module &m)
     }, sofapython3::doc::base::getData);
 
 
-    base.def("__getattr__", [](py::object self, const std::string& s) -> py::object
-    {
-        py::object res = BindingBase::GetAttr( py::cast<Base*>(self), s, false );
-        if( res.is_none() )
-        {
-            return self.attr("__dict__")[s.c_str()];
-        }
+    base.def("__getattr__", &BindingBase::__getattr__);
 
-        return res;
-    });
-
-    base.def("__setattr__", [](py::object self, const std::string& s, py::object value)
-    {
-        if(py::isinstance<DataContainer>(value))
-        {
-            BaseData* data = py::cast<BaseData*>(value);
-            py::array a = getPythonArrayFor(data);
-            BindingBase::SetAttrFromArray(self,s, a);
-            return;
-        }
-
-        if(py::isinstance<py::array>(value))
-        {
-            BindingBase::SetAttrFromArray(self,s, py::cast<py::array>(value));
-            return;
-        }
-
-        BindingBase::SetAttr(self,s,value);
-    });
+    base.def("__setattr__", &BindingBase::__setattr__);
     base.def("getClassName",&Base::getClassName, sofapython3::doc::base::getClassName);
     base.def("getTemplateName",&Base::getTemplateName, sofapython3::doc::base::getTemplateName);
 }

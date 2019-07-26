@@ -105,6 +105,13 @@ const char* getFormat(const AbstractTypeInfo& nfo);
 
 std::map<void*, py::array>& SOFAPYTHON3_API getObjectCache();
 void trimCache();
+
+bool hasArrayFor(BaseData* d);
+py::array SOFAPYTHON3_API resetArrayFor(BaseData* d);
+py::array SOFAPYTHON3_API getPythonArrayFor(BaseData* d);
+
+
+
 py::buffer_info SOFAPYTHON3_API toBufferInfo(BaseData& m);
 py::object SOFAPYTHON3_API convertToPython(BaseData* d);
 
