@@ -4,6 +4,15 @@
 namespace sofapython3
 {
 
+void setHelp(BaseLink* self, const std::string value)
+{
+    /// The copy of a string into a char * is necessary because char * are temporary when using pybind11.
+    /// For more information, see : https://github.com/pybind/pybind11/issues/1168
+    char * S = new char[value.length() + 1];
+    std::strcpy(S,value.c_str());
+    self->setHelp(S);
+}
+
 void moduleAddBaseLink(py::module& m)
 {
     py::class_<BaseLink> link(m, "Link");
@@ -19,13 +28,7 @@ void moduleAddBaseLink(py::module& m)
     link.def("getValueString", &BaseLink::getValueString, sofapython3::doc::baseLink::getValueString);
     link.def("getValueTypeString", &BaseLink::getValueTypeString,  sofapython3::doc::baseLink::getValueTypeString);
     link.def("getHelp", &BaseLink::getHelp,  sofapython3::doc::baseLink::getHelp);
-    link.def("setHelp", [](BaseLink* self, const std::string value){
-        /// The copy of a string into a char * is necessary because char * are temporary when using pybind11.
-        /// For more information, see : https://github.com/pybind/pybind11/issues/1168
-        char * S = new char[value.length() + 1];
-        std::strcpy(S,value.c_str());
-        self->setHelp(S);
-    },  sofapython3::doc::baseLink::setHelp);
+    link.def("setHelp", setHelp, sofapython3::doc::baseLink::setHelp);
 
     link.def("getOwnerData", &BaseLink::getOwnerData, sofapython3::doc::baseLink::getOwnerData);
     link.def("getOwnerBase", &BaseLink::getOwnerBase, sofapython3::doc::baseLink::getOwnerBase);
