@@ -47,7 +47,7 @@ static auto getPathName =
         Return the name of the path of the data.
         :rtype: string
         )";
-static auto getLink =
+static auto getLinkPath =
         R"(
         Return the path of the link to the data.
         :rtype: string
@@ -105,10 +105,6 @@ static auto read =
         Read the command line, set the value of the data to the given content of the command line.
         :param str: the content of the command line
         :type str: string
-        )";
-static auto getLinkPath =
-        R"(
-        Get the link path.
         )";
 static auto setPersistent =
         R"(
