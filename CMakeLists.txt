@@ -79,6 +79,7 @@ set(HEADER_FILES
     src/SofaPython3/DataHelper.h
     src/SofaPython3/PythonDownCast.h
     src/SofaPython3/DataFactory.h
+    src/SofaPython3/EventFactory.h
     )
 
 set(SOURCE_FILES
@@ -90,6 +91,7 @@ set(SOURCE_FILES
     src/SofaPython3/DataHelper.cpp
     src/SofaPython3/PythonDownCast.cpp
     src/SofaPython3/DataFactory.cpp
+    src/SofaPython3/EventFactory.cpp
 )
 
 set(EXTRA_FILES
