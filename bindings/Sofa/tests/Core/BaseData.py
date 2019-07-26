@@ -10,7 +10,6 @@ import io
 from contextlib import redirect_stdout
 
 
-
 class NpArrayTestController(Sofa.Core.Controller):
     def __init__(self, *args, **kwargs):
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
