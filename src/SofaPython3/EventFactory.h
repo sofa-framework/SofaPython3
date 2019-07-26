@@ -20,6 +20,6 @@ std::vector<std::function<py::object(Event*)> > SOFAPYTHON3_API getEventDict();
 /// \arg eventBindingFunc The (lambda) function taking an event as parameter and
 ///  returning a py::dict containing the valuable information from the event
 /// \arg e The new event to bind
-void registerEvent(std::function<py::object(Event*)> SOFAPYTHON3_API eventBindingFunc, Event* e);
+void SOFAPYTHON3_API registerEvent(std::function<py::object(Event*)> eventBindingFunc, Event* e);
 
 }  // namespace sofapython3

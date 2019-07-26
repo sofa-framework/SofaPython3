@@ -66,6 +66,7 @@ PYBIND11_MODULE(Core, core)
                Sofa.Core.WriteAccessor
        )doc";
 
+    moduleAddPythonScriptEvent();
     moduleAddDataDict(core);
     moduleAddDataDictIterator(core);
     moduleAddBase(core);
@@ -94,7 +95,6 @@ PYBIND11_MODULE(Core, core)
     moduleAddNode(core);
     moduleAddBaseLink(core);
 
-    moduleAddPythonScriptEvent(core);
 }
 
 } ///namespace sofapython3

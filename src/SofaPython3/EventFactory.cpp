@@ -86,7 +86,7 @@ std::vector<std::function<py::object(Event*)> > getEventDict()
             auto evt = dynamic_cast<ScriptEvent*>(event);
             return py::dict("type"_a=evt->getClassName(),
                             "isHandled"_a=evt->isHandled(),
-                            "sender"_a=py::cast(evt->getSender()),
+                            "sender"_a=(evt->getSender() ? py::cast(evt->getSender()) : py::none()),
                             "event_name"_a=evt->getEventName());
         };
 
@@ -98,7 +98,7 @@ std::vector<std::function<py::object(Event*)> > getEventDict()
 void registerEvent(std::function<py::object(Event*)> eventBindingFunc, Event* e)
 {
     getEventDict().resize(sofa::core::objectmodel::Event::getEventTypeCount() + 1, nullptr);
-    getEventDict()[e->getEventTypeIndex()] = eventBindingFunc(e);
+    getEventDict()[e->getEventTypeIndex()] = eventBindingFunc;
 }
 
 }  // namespace sofapython3

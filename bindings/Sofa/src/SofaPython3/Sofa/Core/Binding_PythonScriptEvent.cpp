@@ -11,14 +11,14 @@ PythonScriptEvent::PythonScriptEvent(sofa::simulation::Node::SPtr sender, const 
 
 PythonScriptEvent::~PythonScriptEvent(){}
 
-void moduleAddPythonScriptEvent(py::module& /*module*/)
+void moduleAddPythonScriptEvent()
 {
     PythonScriptEvent pse(nullptr, "", nullptr);
     registerEvent([] (Event* event) -> py::object {
         auto evt = dynamic_cast<PythonScriptEvent*>(event);
         return py::dict("type"_a=evt->getClassName(),
                         "isHandled"_a=evt->isHandled(),
-                        "sender"_a=py::cast(evt->getSender()),
+                        "sender"_a=(evt->getSender() ? py::cast(evt->getSender()) : py::none()),
                         "event_name"_a=evt->getEventName(),
                         "userData"_a=evt->getUserData());
     }, &pse);
