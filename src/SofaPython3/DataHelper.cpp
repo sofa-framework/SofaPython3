@@ -335,22 +335,29 @@ py::object convertToPython(BaseData* d)
 
     if(nfo.Container())
     {
-        size_t dim0 = nfo.size(d->getValueVoidPtr())/nfo.size();
-        size_t dim1 = nfo.size();
         py::list list;
-        for(size_t i=0;i<dim0;i++)
+        if (nfo.Text())
         {
-            py::list list1;
-            for(size_t j=0;j<dim1;j++)
+            for (size_t i = 0 ; i < nfo.size(d->getValueVoidPtr()) ; ++i)
+                list.append(nfo.getTextValue(d->getValueVoidPtr(),i));
+        }
+        else
+        {
+            size_t dim0 = nfo.size(d->getValueVoidPtr())/nfo.size();
+            size_t dim1 = nfo.size();
+            for(size_t i=0;i<dim0;i++)
             {
-                if(nfo.Integer())
-                    list1.append(nfo.getIntegerValue(d->getValueVoidPtr(),i*dim1+j));
-                if(nfo.Scalar())
-                    list1.append(nfo.getScalarValue(d->getValueVoidPtr(),i*dim1+j));
-                if(nfo.Text())
-                    list1.append(nfo.getTextValue(d->getValueVoidPtr(),0));
+
+                py::list list1;
+                for(size_t j=0;j<dim1;j++)
+                {
+                    if(nfo.Integer())
+                        list1.append(nfo.getIntegerValue(d->getValueVoidPtr(),i*dim1+j));
+                    if(nfo.Scalar())
+                        list1.append(nfo.getScalarValue(d->getValueVoidPtr(),i*dim1+j));
+                }
+                list.append(list1);
             }
-            list.append(list1);
         }
         return std::move(list);
     }
