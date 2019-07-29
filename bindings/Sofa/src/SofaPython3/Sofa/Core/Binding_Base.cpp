@@ -477,51 +477,40 @@ void BindingBase::__setattr__(py::object self, const std::string& s, py::object 
     BindingBase::SetAttr(self,s,value);
 }
 
-
+py::object BindingBase::getData(Base& self, const std::string& s)
+{
+    BaseData* d = self.findData(s);
+    if(d!=nullptr)
+    {
+        return py::cast(d);
+    }
+    return py::none();
+}
 
 void moduleAddBase(py::module &m)
 {
     py::class_<Base, Base::SPtr> base(m, "Base", py::dynamic_attr(), doc::base::BaseClass);
-
     /// set & get the name as string. The alternative is to access the data field using
     /// obj.name.value = "aName"
     base.def("getName", [](Base& b){ return b.getName(); });
     base.def("setName", [](Base& b, const std::string& s){ b.setName(s); } );
-
-
+    base.def("getClassName",&Base::getClassName, sofapython3::doc::base::getClassName);
+    base.def("getTemplateName",&Base::getTemplateName, sofapython3::doc::base::getTemplateName);
     base.def("getClass", &Base::getClass, pybind11::return_value_policy::reference, sofapython3::doc::base::getClass);
-    base.def("getDefinitionSourceFilePos", &Base::getDefinitionSourceFilePos,
-             sofapython3::doc::base::getDefinitionSourceFilePos);
-    base.def("getDefinitionSourceFileName", &Base::getDefinitionSourceFileName,
-             sofapython3::doc::base::getDefinitionSourceFileName);
-    base.def("getInstanciationSourceFilePos", &Base::getInstanciationSourceFilePos,
-             sofapython3::doc::base::getInstanciationSourceFilePos);
-    base.def("getInstanciationFileName", &Base::getInstanciationSourceFileName,
-             sofapython3::doc::base::getInstanciationSourceFilePos);
-    base.def("findData", &Base::findData, pybind11::return_value_policy::reference, sofapython3::doc::base::findData);
+    base.def("getDefinitionSourceFilePos", &Base::getDefinitionSourceFilePos, sofapython3::doc::base::getDefinitionSourceFilePos);
+    base.def("getDefinitionSourceFileName", &Base::getDefinitionSourceFileName, sofapython3::doc::base::getDefinitionSourceFileName);
+    base.def("getInstanciationSourceFilePos", &Base::getInstanciationSourceFilePos, sofapython3::doc::base::getInstanciationSourceFilePos);
+    base.def("getInstanciationFileName", &Base::getInstanciationSourceFileName, sofapython3::doc::base::getInstanciationSourceFilePos);
     base.def("getDataFields", &Base::getDataFields, pybind11::return_value_policy::reference, sofapython3::doc::base::getDataFields);
     base.def("findLink", &Base::findLink, pybind11::return_value_policy::reference, sofapython3::doc::base::findLink);
     base.def("getLinks", &Base::getLinks, pybind11::return_value_policy::reference, sofapython3::doc::base::getLinks);
     base.def("addData", &BindingBase::addData, "name"_a, "value"_a = "", "help"_a = "", "group"_a = "", "type"_a = "", sofapython3::doc::base::addData);
     base.def("addData", &BindingBase::addDataFromData, sofapython3::doc::base::addDataInitialized);
-
-    base.def("__dir__", &BindingBase::__dir__);
-
-    base.def("getData", [](Base& self, const std::string& s) -> py::object
-    {
-        BaseData* d = self.findData(s);
-        if(d!=nullptr)
-        {
-            return py::cast(d);
-        }
-        return py::none();
-    }, sofapython3::doc::base::getData);
-
-
     base.def("__getattr__", &BindingBase::__getattr__);
     base.def("__setattr__", &BindingBase::__setattr__);
-    base.def("getClassName",&Base::getClassName, sofapython3::doc::base::getClassName);
-    base.def("getTemplateName",&Base::getTemplateName, sofapython3::doc::base::getTemplateName);
+    base.def("getData", &BindingBase::getData, sofapython3::doc::base::getData);
+    base.def("findData", &Base::findData, pybind11::return_value_policy::reference, sofapython3::doc::base::findData);
+    base.def("__dir__", &BindingBase::__dir__);
 }
 
 } /// namespace sofapython3
