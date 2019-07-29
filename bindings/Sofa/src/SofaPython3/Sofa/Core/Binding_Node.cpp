@@ -283,7 +283,7 @@ void moduleAddNode(py::module &m) {
 
     p.def("getRoot", &Node::getRoot, sofapython3::doc::sofa::core::Node::getRoot);
     p.def("getPathName", &Node::getPathName, sofapython3::doc::sofa::core::Node::getPathName);
-    p.def("getLinkPath", &getLinkPath, sofapython3::doc::sofa::core::Node::getLink);
+    p.def("getLinkPath", &getLinkPath, sofapython3::doc::sofa::core::Node::getLinkPath);
     p.def_property_readonly("children", [](Node* node)
     {
         return new BaseIterator(node, [](Node* n) -> size_t { return n->child.size(); },
