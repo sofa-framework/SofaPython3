@@ -73,10 +73,10 @@ void SceneLoaderPY3::getExtensionList(ExtensionList* list)
     list->push_back("py");
 }
 
-sofa::simulation::Node::SPtr SceneLoaderPY3::doLoad(const std::string& filename, const std::vector<std::string>& /*sceneArgs*/)
+sofa::simulation::Node::SPtr SceneLoaderPY3::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
 {
     sofa::simulation::Node::SPtr root = sofa::simulation::Node::create("root");
-    loadSceneWithArguments(filename.c_str(), sofa::helper::ArgumentParser::extra_args(), root);
+    loadSceneWithArguments(filename.c_str(), sceneArgs, root);
     return root;
 }
 
@@ -89,13 +89,14 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
     PythonEnvironment::gil lock;
 
     try{
-        py::module::import("Sofa");
+        py::module::import("Sofa.Core");
         py::object globals = py::module::import("__main__").attr("__dict__");
         py::module module;
 
         SetDirectory localDir(filename);
         std::string basename = SetDirectory::GetFileNameWithoutExtension(SetDirectory::GetFileName(filename).c_str());
         module = PythonEnvironment::importFromFile(basename, SetDirectory::GetFileName(filename), globals);
+
         if(!py::hasattr(module, "createScene"))
         {
             msg_error() << "Missing createScene function";
@@ -103,7 +104,7 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
         }
 
         py::object createScene = module.attr("createScene");
-        createScene( root_out );
+        createScene( py::cast(root_out) );
     }catch(std::exception& e)
     {
         msg_error() << e.what();
