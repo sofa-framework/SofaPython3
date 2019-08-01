@@ -73,10 +73,10 @@ void SceneLoaderPY3::getExtensionList(ExtensionList* list)
     list->push_back("py");
 }
 
-sofa::simulation::Node::SPtr SceneLoaderPY3::doLoad(const char *filename)
+sofa::simulation::Node::SPtr SceneLoaderPY3::doLoad(const std::string& filename, const std::vector<std::string>& /*sceneArgs*/)
 {
     sofa::simulation::Node::SPtr root = sofa::simulation::Node::create("root");
-    loadSceneWithArguments(filename, sofa::helper::ArgumentParser::extra_args(), root);
+    loadSceneWithArguments(filename.c_str(), sofa::helper::ArgumentParser::extra_args(), root);
     return root;
 }
 
