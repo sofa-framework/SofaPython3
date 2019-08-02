@@ -5,7 +5,7 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <SofaPython3/DataHelper.h>
-#include <SofaPython3/PythonDownCast.h>
+#include <SofaPython3/PythonFactory.h>
 
 #include "Binding_DataDict_doc.h"
 

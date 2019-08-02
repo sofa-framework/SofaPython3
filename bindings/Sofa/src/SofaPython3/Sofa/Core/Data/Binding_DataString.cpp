@@ -11,6 +11,7 @@ using  sofa::core::objectmodel::BaseObject;
 using  sofa::core::objectmodel::BaseNode;
 
 #include <SofaPython3/DataHelper.h>
+#include <SofaPython3/PythonFactory.h>
 #include "../Binding_Base.h"
 #include "../Binding_BaseData.h"
 #include "Binding_DataString.h"
@@ -55,8 +56,9 @@ void moduleAddDataString(py::module& m)
 {
     py::class_<DataString, BaseData, raw_ptr<DataString>> s(m, "DataString");
 
-    getBindingDataFactoryInstance()->registerCreator(
-                "DataString", new TypeCreator<DataString*>());
+    PythonFactory::registerType<DataString>("DataString", [](BaseData* data) -> py::object {
+        return py::cast(reinterpret_cast<DataString*>(data));
+    });
 
     s.def("__eq__", &DataString::__eq__);
     s.def("__len__", &DataString::__len__);

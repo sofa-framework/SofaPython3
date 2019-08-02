@@ -119,9 +119,9 @@ py::object __getattr__(py::object self, const std::string& s)
     throw py::attribute_error("There is no attribute '"+s+"'");
 }
 
-void setParent(BaseData* self, BaseData* parent, std::string path)
+void setParent(BaseData* self, BaseData* parent)
 {
-    self->setParent(parent, path);
+    self->setParent(parent);
 }
 
 bool hasParent(BaseData *self)

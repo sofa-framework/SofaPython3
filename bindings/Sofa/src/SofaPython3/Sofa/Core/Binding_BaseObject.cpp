@@ -2,7 +2,7 @@
 #include "Binding_Controller.h"
 #include <sofa/core/ObjectFactory.h>
 #include "Binding_BaseObject_doc.h"
-#include <SofaPython3/PythonDownCast.h>
+#include <SofaPython3/PythonFactory.h>
 
 
 // Imports for getCategories
@@ -46,9 +46,15 @@ py::object getItem(const BaseObject& self, const std::string& path)
     throw py::value_error("Invalid syntax"); // should never get there
 }
 
-std::string getLinkPath(const BaseObject *self){
+std::string getLinkPath(const BaseObject *self)
+{
     return std::string("@")+self->getPathName();
-};
+}
+
+void computeBBox(BaseObject *self)
+{
+    self->computeBBox(sofa::core::ExecParams::defaultInstance(), false);
+}
 
 py::list getSlaves(BaseObject &self)
 {
@@ -214,7 +220,7 @@ void moduleAddBaseObject(py::module& m)
     py::class_<BaseObject, Base, BaseObject::SPtr>p(m, "Object", sofapython3::doc::baseObject::Class);
 
     /// Register the BaseObject binding into the downcasting subsystem
-    PythonDownCast::registerType<sofa::core::objectmodel::BaseObject>(
+    PythonFactory::registerType<sofa::core::objectmodel::BaseObject>(
                 [](sofa::core::objectmodel::Base* object)
     {
         return py::cast(object->toBaseObject());
@@ -234,6 +240,7 @@ void moduleAddBaseObject(py::module& m)
     p.def("getCategories", getCategories, sofapython3::doc::baseObject::getCategories);
     p.def("bwdInit", &BaseObject::bwdInit, sofapython3::doc::baseObject::bwdInit);
     p.def("cleanup", &BaseObject::cleanup, sofapython3::doc::baseObject::cleanup);
+    p.def("computeBBox", &computeBBox, sofapython3::doc::baseObject::computeBBox);
     p.def("getLinkPath", &getLinkPath, sofapython3::doc::baseObject::getLinkPath);
     p.def("getAsACreateObjectParameter", getAsACreateObjectParameter, sofapython3::doc::baseObject::getAsACreateObjectParameter);
     p.def("setSrc", setSrc, sofapython3::doc::baseObject::setSrc);

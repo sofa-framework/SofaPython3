@@ -28,7 +28,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include "Binding_BaseObject.h"
 #include "Binding_BaseCamera.h"
 
-#include <SofaPython3/PythonDownCast.h>
+#include <SofaPython3/PythonFactory.h>
 
 namespace sofapython3
 {
@@ -75,7 +75,7 @@ void moduleAddBaseCamera(py::module &m)
                sofa::core::sptr<BaseCamera>> c(m, "Camera");
 
     /// register the BaseCamera binding in the downcasting subsystem
-    PythonDownCast::registerType<BaseCamera>([](sofa::core::objectmodel::Base* object)
+    PythonFactory::registerType<BaseCamera>([](sofa::core::objectmodel::Base* object)
     {
         return py::cast(dynamic_cast<BaseCamera*>(object));
     });

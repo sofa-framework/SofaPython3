@@ -1,0 +1,334 @@
+/*********************************************************************
+Copyright 2019, Inria, CNRS, University of Lille
+
+This file is part of runSofa2
+
+runSofa2 is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+runSofa2 is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
+*********************************************************************/
+/********************************************************************
+ Contributors:
+    - damien.marchal@univ-lille.fr
+********************************************************************/
+
+#include <functional>
+#include "PythonFactory.h"
+#include <SofaSimulationGraph/DAGNode.h>
+
+#include "sofa/simulation/AnimateBeginEvent.h"
+using sofa::simulation::AnimateBeginEvent;
+#include "sofa/simulation/AnimateEndEvent.h"
+using sofa::simulation::AnimateEndEvent;
+//#include "sofa/simulation/CollisionBeginEvent.h"
+//#include "sofa/simulation/CollisionEndEvent.h"
+//#include "sofa/simulation/IntegrateBeginEvent.h"
+//#include "sofa/simulation/IntegrateEndEvent.h"
+//#include "sofa/simulation/PauseEvent.h"
+//#include "sofa/simulation/PositionEvent.h"
+//#include "sofa/simulation/UpdateMappingEndEvent.h"
+
+//#include "sofa/core/objectmodel/DetachNodeEvent.h"
+//#include "sofa/core/objectmodel/GUIEvent.h"
+//#include "sofa/core/objectmodel/HapticDeviceEvent.h"
+//#include "sofa/core/objectmodel/IdleEvent.h"
+//#include "sofa/core/objectmodel/JoystickEvent.h"
+#include "sofa/core/objectmodel/KeypressedEvent.h"
+using sofa::core::objectmodel::KeypressedEvent;
+#include "sofa/core/objectmodel/KeyreleasedEvent.h"
+using sofa::core::objectmodel::KeyreleasedEvent;
+#include "sofa/core/objectmodel/MouseEvent.h"
+using sofa::core::objectmodel::MouseEvent;
+#include "sofa/core/objectmodel/ScriptEvent.h"
+using sofa::core::objectmodel::ScriptEvent;
+using sofa::core::objectmodel::Event;
+
+#include <sofa/defaulttype/DataTypeInfo.h>
+
+namespace sofapython3
+{
+using namespace pybind11::literals;
+
+std::map<std::string, componentDowncastingFunction> PythonFactory::s_componentDowncastingFct;
+std::map<std::string, dataDowncastingFunction> PythonFactory::s_dataDowncastingFct;
+std::map<std::string, eventDowncastingFunction> PythonFactory::s_eventDowncastingFct;
+std::map<std::string, dataCreatorFunction> PythonFactory::s_dataCreationFct;
+
+bool PythonFactory::defaultTypesRegistered = registerDefaultTypes();
+bool PythonFactory::defaultEventsRegistered = registerDefaultEvents();
+
+std::map<std::string, componentDowncastingFunction>::iterator PythonFactory::searchLowestCastAvailable(const sofa::core::objectmodel::BaseClass* metaclass)
+{
+    /// If there is a match with current metaclass we returns it
+    auto kv = s_componentDowncastingFct.find(metaclass->className);
+    if( kv != s_componentDowncastingFct.end())
+    {
+        return kv;
+    }
+
+    /// If there is no match we try to find if there is a match for a parent of the requested type
+    /// As this is a slow process we cache the results to speed the subsequent request.
+    for(auto p : metaclass->parents)
+    {
+        auto kvs = searchLowestCastAvailable(p);
+        if( kvs != s_componentDowncastingFct.end() )
+        {
+            return kvs;
+        }
+    }
+
+    throw std::runtime_error("Unable to find a python binding for an object in-heriting from Base.");
+}
+
+py::object PythonFactory::toPython(sofa::core::objectmodel::Base* object)
+{
+    auto metaclass = object->getClass();
+
+    /// Let's first search if there is a casting function for the give type.
+    auto kv = s_componentDowncastingFct.find(metaclass->className);
+    if( kv != s_componentDowncastingFct.end())
+    {
+        return kv->second(object);
+    }
+
+    /// If the first search fail we will starting moving forward in the inheritance graph to
+    /// detect which of its parents has a downcast function available. This function stops
+    /// at first match.
+    kv = searchLowestCastAvailable(metaclass);
+
+    s_componentDowncastingFct[metaclass->className] = kv->second;
+    return kv->second(object);
+}
+
+
+py::object PythonFactory::toPython(sofa::core::objectmodel::BaseData* data)
+{
+    auto metaclass = data->getClass();
+
+    /// Let's first search if there is a casting function for the given type.
+    auto kv = s_dataDowncastingFct.find(metaclass->templateName);
+    if( kv != s_dataDowncastingFct.end())
+    {
+        return kv->second(data);
+    }
+
+    const sofa::defaulttype::AbstractTypeInfo& nfo { *(data->getValueTypeInfo()) };
+    /// In case the data is a container with a simple layout
+    /// we can expose the field as a numpy.array (no copy)
+    if(nfo.Container() && nfo.SimpleLayout())
+    {
+        s_dataDowncastingFct[metaclass->templateName] = s_dataDowncastingFct["DataContainer"];
+        return s_dataDowncastingFct[metaclass->templateName](data);
+    }
+    if(nfo.Container() && nfo.Text())
+    {
+        s_dataDowncastingFct[metaclass->templateName] = s_dataDowncastingFct["DataVectorString"];
+        return s_dataDowncastingFct[metaclass->templateName](data);
+    }
+    if(nfo.Text())
+    {
+        s_dataDowncastingFct[metaclass->templateName] = s_dataDowncastingFct["DataString"];
+        return s_dataDowncastingFct[metaclass->templateName](data);
+    }
+    return py::cast(data);
+}
+
+py::object PythonFactory::toPython(sofa::core::objectmodel::Event* event)
+{
+    std::string className = event->getClassName();
+
+    std::cout << "classname: " << className << std::endl;
+    for (const auto& [k,v] : s_eventDowncastingFct)
+        std::cout << k << std::endl;
+
+    /// Let's first search if there is a casting function for the give type.
+    auto kv = s_eventDowncastingFct.find(className);
+    if( kv != s_eventDowncastingFct.end())
+    {
+        return kv->second(event);
+    }
+
+    /// If the first search fail we return a dict based on the Event*
+    /// basic values (isHandled and type)
+    s_eventDowncastingFct[className] =
+            [](sofa::core::objectmodel::Event* event) -> py::dict {
+        return py::dict("type"_a=event->getClassName(),
+                        "isHandled"_a=event->isHandled());
+    };
+
+    return s_eventDowncastingFct[className](event);
+}
+
+sofa::core::objectmodel::BaseData* PythonFactory::createInstance(const std::string& typeName)
+{
+    auto kv = s_dataCreationFct.find(typeName);
+    if( kv != s_dataCreationFct.end())
+    {
+        return kv->second();
+    }
+    return nullptr;
+}
+
+bool PythonFactory::registerDefaultEvents()
+{
+//    s_eventDowncastingFct = std::map<std::string, eventDowncastingFunction>();
+
+    AnimateBeginEvent abe(.0);
+    s_eventDowncastingFct[std::string(abe.getClassName())] = [] (Event* event) -> py::dict {
+        auto evt = dynamic_cast<AnimateBeginEvent*>(event);
+        return py::dict("type"_a=evt->getClassName(),
+                        "isHandled"_a=evt->isHandled(),
+                        "dt"_a=evt->getDt());
+    };
+    AnimateEndEvent aee(.0);
+    s_eventDowncastingFct[aee.getClassName()] = [] (Event* event) -> py::dict {
+        auto evt = dynamic_cast<AnimateEndEvent*>(event);
+        return py::dict("type"_a=evt->getClassName(),
+                        "isHandled"_a=evt->isHandled(),
+                        "dt"_a=evt->getDt());
+    };
+    KeypressedEvent kpe('\0');
+    s_eventDowncastingFct[kpe.getClassName()] = [] (Event* event) -> py::dict {
+        auto evt = dynamic_cast<KeypressedEvent*>(event);
+        return py::dict("type"_a=evt->getClassName(),
+                        "isHandled"_a=evt->isHandled(),
+                        "key"_a=evt->getKey());
+    };
+    KeyreleasedEvent kre('\0');
+    s_eventDowncastingFct[kre.getClassName()] = [] (Event* event) -> py::dict {
+        auto evt = dynamic_cast<KeyreleasedEvent*>(event);
+        return py::dict("type"_a=evt->getClassName(),
+                        "isHandled"_a=evt->isHandled(),
+                        "key"_a=evt->getKey());
+    };
+    MouseEvent me(MouseEvent::State::Move);
+    s_eventDowncastingFct[me.getClassName()] = [] (Event* event) -> py::dict {
+        auto evt = dynamic_cast<MouseEvent*>(event);
+
+        return py::dict("type"_a=evt->getClassName(),
+                        "isHandled"_a=evt->isHandled(),
+                        "State"_a=int(evt->getState()),
+                        "mouseX"_a=evt->getPosX(),
+                        "mouseY"_a=evt->getPosY(),
+                        "wheelDelta"_a=evt->getWheelDelta());
+    };
+    ScriptEvent se(nullptr, "");
+    s_eventDowncastingFct[se.getClassName()] = [] (Event* event) -> py::dict {
+        auto evt = dynamic_cast<ScriptEvent*>(event);
+        return py::dict("type"_a=evt->getClassName(),
+                        "isHandled"_a=evt->isHandled(),
+                        "sender"_a=(evt->getSender() ? py::cast(evt->getSender()) : py::none()),
+                        "event_name"_a=evt->getEventName());
+    };
+    return true;
+}
+
+bool PythonFactory::registerDefaultTypes()
+{
+    // helper vector style containers
+    std::string containers[] = {"vector"};
+
+    // Scalars
+    PythonFactory::registerType<std::string>("string");
+    PythonFactory::registerType<float>("float");
+    PythonFactory::registerType<double>("double");
+    PythonFactory::registerType<bool>("bool");
+    PythonFactory::registerType<int>("int");
+
+    // vectors
+    PythonFactory::registerType<sofa::defaulttype::Vec2d>("Vec2d");
+    PythonFactory::registerType<sofa::defaulttype::Vec3d>("Vec3d");
+    PythonFactory::registerType<sofa::defaulttype::Vec4d>("Vec4d");
+    PythonFactory::registerType<sofa::defaulttype::Vec6d>("Vec6d");
+    PythonFactory::registerType<sofa::defaulttype::Vec2f>("Vec2f");
+    PythonFactory::registerType<sofa::defaulttype::Vec3f>("Vec3f");
+    PythonFactory::registerType<sofa::defaulttype::Vec4f>("Vec4f");
+    PythonFactory::registerType<sofa::defaulttype::Vec6f>("Vec6f");
+
+    // Matrices
+    PythonFactory::registerType<sofa::defaulttype::Mat2x2d>("Mat2x2d");
+    PythonFactory::registerType<sofa::defaulttype::Mat3x3d>("Mat3x3d");
+    PythonFactory::registerType<sofa::defaulttype::Mat3x4d>("Mat3x4d");
+    PythonFactory::registerType<sofa::defaulttype::Mat4x4d>("Mat4x4d");
+
+    PythonFactory::registerType<sofa::defaulttype::Mat2x2f>("Mat2x2f");
+    PythonFactory::registerType<sofa::defaulttype::Mat3x3f>("Mat3x3f");
+    PythonFactory::registerType<sofa::defaulttype::Mat3x4f>("Mat3x4f");
+    PythonFactory::registerType<sofa::defaulttype::Mat4x4f>("Mat4x4f");
+
+    // Topology
+    PythonFactory::registerType<sofa::core::topology::Topology::Edge>("Edge");
+    PythonFactory::registerType<sofa::core::topology::Topology::Triangle>("Triangle");
+    PythonFactory::registerType<sofa::core::topology::Topology::Quad>("Quad");
+    PythonFactory::registerType<sofa::core::topology::Topology::Tetra>("Tetra");
+    PythonFactory::registerType<sofa::core::topology::Topology::Hexa>("Hexa");
+    PythonFactory::registerType<sofa::core::topology::Topology::Penta>("Penta");
+
+    // State vectors
+    PythonFactory::registerType<sofa::defaulttype::Rigid3dTypes::VecCoord>("Rigid3d::VecCoord");
+    PythonFactory::registerType<sofa::defaulttype::Rigid3fTypes::VecCoord>("Rigid3f::VecCoord");
+    PythonFactory::registerType<sofa::defaulttype::Rigid3Types::VecCoord>("Rigid3::VecCoord");
+
+    // General vectors
+    for (const auto& container : containers)
+    {
+        // Scalars
+        PythonFactory::registerType<sofa::helper::vector<std::string>>(container + "<string>");
+        PythonFactory::registerType<sofa::helper::vector<float>>(container + "<float>");
+        PythonFactory::registerType<sofa::helper::vector<double>>(container + "<double>");
+        PythonFactory::registerType<sofa::helper::vector<bool>>(container + "<bool>");
+        PythonFactory::registerType<sofa::helper::vector<int>>(container + "<int>");
+
+        // vectors
+        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec2d>>(container + "<Vec2d>");
+        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec3d>>(container + "<Vec3d>");
+        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec4d>>(container + "<Vec4d>");
+        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec6d>>(container + "<Vec6d>");
+
+        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec2f>>(container + "<Vec2f>");
+        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec3f>>(container + "<Vec3f>");
+        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec4f>>(container + "<Vec4f>");
+        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec6f>>(container + "<Vec6f>");
+
+        // Matrices
+        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat2x2d>>(container + "<Mat2x2d>");
+        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat3x3d>>(container + "<Mat3x3d>");
+        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat3x4d>>(container + "<Mat3x4d>");
+        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat4x4d>>(container + "<Mat4x4d>");
+
+        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat2x2f>>(container + "<Mat2x2f>");
+        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat3x3f>>(container + "<Mat3x3f>");
+        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat3x4f>>(container + "<Mat3x4f>");
+        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat4x4f>>(container + "<Mat4x4f>");
+
+
+        // Topology
+        PythonFactory::registerType<sofa::helper::vector<sofa::core::topology::Topology::Edge>>(container + "<Edge>");
+        PythonFactory::registerType<sofa::helper::vector<sofa::core::topology::Topology::Triangle>>(container + "<Triangle>");
+        PythonFactory::registerType<sofa::helper::vector<sofa::core::topology::Topology::Quad>>(container + "<Quad>");
+        PythonFactory::registerType<sofa::helper::vector<sofa::core::topology::Topology::Tetra>>(container + "<Tetra>");
+        PythonFactory::registerType<sofa::helper::vector<sofa::core::topology::Topology::Hexa>>(container + "<Hexa>");
+        PythonFactory::registerType<sofa::helper::vector<sofa::core::topology::Topology::Penta>>(container + "<Penta>");
+    }
+    return true;
+}
+
+void PythonFactory::uniqueKeys(std::back_insert_iterator<sofa::helper::vector<std::string> > it)
+{
+    std::transform(s_dataCreationFct.begin(), s_dataCreationFct.end(),
+                   it, [](const auto& item){ return item.first; });
+}
+
+} /// sofapython3
+
+
+

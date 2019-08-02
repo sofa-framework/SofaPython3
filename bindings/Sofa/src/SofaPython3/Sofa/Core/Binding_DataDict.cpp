@@ -59,7 +59,7 @@ void moduleAddDataDict(py::module& m)
 
 void moduleAddDataDictIterator(py::module &m)
 {
-    PythonDownCast::registerType<sofa::core::objectmodel::Base>(
+    PythonFactory::registerType<sofa::core::objectmodel::Base>(
                 [](sofa::core::objectmodel::Base* object)
     {
         return py::cast(object);

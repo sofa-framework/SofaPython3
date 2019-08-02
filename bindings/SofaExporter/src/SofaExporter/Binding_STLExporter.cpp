@@ -1,7 +1,7 @@
 #include <SofaExporter/Binding_STLExporter.h>
 #include <SofaExporter/Binding_STLExporter_doc.h>
 
-#include <SofaPython3/PythonDownCast.h>
+#include <SofaPython3/PythonFactory.h>
 
 using  sofa::component::exporter::STLExporter;
 
@@ -10,7 +10,7 @@ namespace sofapython3
 
 void moduleAddSTLExporter(py::module &m)
 {
-    PythonDownCast::registerType<STLExporter>(
+    PythonFactory::registerType<STLExporter>(
                 [](sofa::core::objectmodel::Base* object)
     {
         return py::cast(dynamic_cast<STLExporter*>(object));

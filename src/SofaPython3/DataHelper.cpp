@@ -5,6 +5,7 @@
 
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/DataCache.h>
+#include <SofaPython3/PythonFactory.h>
 
 namespace sofapython3
 {
@@ -33,15 +34,6 @@ void fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& d
     {
         desc.setAttribute(py::str(kv.first), toSofaParsableString(kv.second));
     }
-}
-
-BindingDataFactory* getBindingDataFactoryInstance(){
-    static BindingDataFactory* s_localfactory = new BindingDataFactory();
-    if (s_localfactory == nullptr)
-    {
-        s_localfactory = new BindingDataFactory();
-    }
-    return s_localfactory ;
 }
 
 PythonTrampoline::~PythonTrampoline(){}
@@ -369,9 +361,6 @@ py::object convertToPython(BaseData* d)
     if(nfo.Scalar())
         return py::cast(nfo.getScalarValue(d->getValueVoidPtr(), 0));
 
-    if (!getBindingDataFactoryInstance()->createObject(nfo.name(), d).is_none())
-        return getBindingDataFactoryInstance()->createObject(nfo.name(), d);
-
     return py::cast(d->getValueString());
 }
 
@@ -412,28 +401,6 @@ py::array getPythonArrayFor(BaseData* d)
     return memcache[d];
 }
 
-/// Make a python version of our BaseData.
-/// Downcast everything.
-py::object dataToPython(BaseData* d)
-{
-    const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
-    /// In case the data is a container with a simple layout
-    /// we can expose the field as a numpy.array (no copy)
-    if(nfo.Container() && nfo.SimpleLayout())
-    {
-        return getBindingDataFactoryInstance()->createObject("DataContainer", d);
-    }
-    if(nfo.Container() && nfo.Text())
-    {
-        return getBindingDataFactoryInstance()->createObject("DataVectorString", d);
-    }
-    if(nfo.Text())
-    {
-        return getBindingDataFactoryInstance()->createObject("DataString", d);
-    }
-
-    return py::cast(d);
-}
 
 /// Make a python version of our BaseData.
 /// If possible the data is exposed as a numpy.array to minmize copy and data conversion
@@ -447,7 +414,7 @@ py::object toPython(BaseData* d, bool writeable)
         if(!writeable)
         {
             getPythonArrayFor(d);
-            return getBindingDataFactoryInstance()->createObject("DataContainer", d);
+            return PythonFactory::toPython(d);
         }
         return getPythonArrayFor(d);
     }

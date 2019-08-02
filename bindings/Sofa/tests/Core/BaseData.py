@@ -4,6 +4,7 @@ import unittest
 import numpy
 import Sofa
 import Sofa.Core
+import Sofa.Types
 from Sofa.PyTypes import RGBAColor
 import numpy as np
 import io
@@ -95,6 +96,20 @@ class NpArrayTestController(Sofa.Core.Controller):
 
 
 class Test(unittest.TestCase):
+
+    def test_getattr(self):
+        root = Sofa.Core.Node("root")
+        c = root.addObject("MechanicalObject", name="c")
+        self.assertEqual(str(type(c.position)), "<class 'Sofa.Core.DataContainer'>")
+        c.addData("d1", type="string", value="coucou")
+        c.addData("d2", type="vector<Vec3d>", value=[[0,1,2],[3,4,5]])
+        c.addData("d3", type="vector<string>", value=["coucou1","coucou2"])
+
+        self.assertEqual(str(type(c.d1)), "<class 'Sofa.Core.DataString'>")
+        self.assertEqual(str(type(c.d2)), "<class 'Sofa.Core.DataContainer'>")
+        self.assertEqual(str(type(c.d3)), "<class 'Sofa.Core.DataVectorString'>")
+        self.assertEqual(str(type(c.bbox)), "<class 'Sofa.Types.BoundingBox'>")
+
     def test_typeName(self):
         root = Sofa.Core.Node("rootNode")
         c = root.addObject("MechanicalObject", name="t", position=[
@@ -254,6 +269,8 @@ class Test(unittest.TestCase):
         c = root.addObject("MechanicalObject", name="t", position=v.tolist())
         c2 = root.addObject("BoxROI", name="c2", indices=[0, 1, 2, 3, 4, 5])
 
+        print("indices are")
+        print (c2.indices.value)
         numpy.testing.assert_array_equal(c2.indices.array(), v2)
         numpy.testing.assert_array_equal(c2.indices.value, [0, 1, 2, 3, 4, 5])
 
@@ -348,7 +365,7 @@ class Test(unittest.TestCase):
         data = root.getData("aField")
         dataParent = root.getData("aFieldParent")
         self.assertFalse(data.hasParent())
-        data.setParent(dataParent, "@/dataParent/data")
+        data.setParent(dataParent)
         self.assertTrue(data.hasParent())
         self.assertEqual(data.getParent().getName(),"aFieldParent")
 
@@ -358,10 +375,10 @@ class Test(unittest.TestCase):
         root.addData("aFieldParent", 1.0 , "help message","theDataGroup", "float")
         data = root.getData("aField")
         dataParent = root.getData("aFieldParent")
-        data.setParent(dataParent, "@/dataParent/data")
-        self.assertEqual(data.getLinkPath(), "@/dataParent/data")
-        self.assertEqual(dataParent.getLinkPath(),"")
-        self.assertEqual(data.getAsACreateObjectParameter(), "@/dataParent/data")
+        data.setParent(dataParent)
+        self.assertEqual(data.getLinkPath(), "@.aField")
+        self.assertEqual(dataParent.getLinkPath(),"@.aFieldParent")
+        self.assertEqual(data.getAsACreateObjectParameter(), "@.aFieldParent")
         self.assertEqual(dataParent.getAsACreateObjectParameter(),"")
 
     def test_read(self):

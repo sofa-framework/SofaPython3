@@ -37,42 +37,6 @@ using sofa::core::objectmodel::BaseObject;
 using sofa::defaulttype::AbstractTypeInfo;
 
 
-template<typename DataType>
-class TypeCreator : public sofa::helper::BaseCreator<sofa::core::objectmodel::BaseData*, sofa::core::objectmodel::BaseData*, py::object>
-{
-public:
-    virtual py::object createInstance(
-            sofa::core::objectmodel::BaseData* data) override
-    {
-        return py::cast(reinterpret_cast<DataType>(data));
-    }
-    virtual const std::type_info& type() override { return typeid(DataType);}
-};
-
-class BindingDataFactory : public sofa::helper::Factory< std::string, sofa::core::objectmodel::BaseData*, sofa::core::objectmodel::BaseData*, py::object>
-{
-public:
-    py::object createObject(std::string key, sofa::core::objectmodel::BaseData* arg) {
-        Creator* creator;
-        typename std::multimap<std::string, Creator*>::iterator it = registry.lower_bound(key);
-        typename std::multimap<std::string, Creator*>::iterator end = registry.upper_bound(key);
-        while (it != end)
-        {
-            creator = (*it).second;
-            py::object object = creator->createInstance(arg);
-            if (!object.is_none())
-            {
-                return creator->createInstance(arg);
-            }
-            ++it;
-        }
-        return py::none();
-    }
-
-};
-
-BindingDataFactory* getBindingDataFactoryInstance();
-
 class SOFAPYTHON3_API PythonTrampoline
 {
 protected:
@@ -121,7 +85,7 @@ void SOFAPYTHON3_API fromPython(BaseData* d, const py::object& o);
 
 std::string SOFAPYTHON3_API toSofaParsableString(const py::handle& p);
 
-py::object SOFAPYTHON3_API dataToPython(BaseData* d);
+//py::object SOFAPYTHON3_API dataToPython(BaseData* d);
 
 /// RVO optimized function. Don't care about copy on the return code.
 void SOFAPYTHON3_API fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc,

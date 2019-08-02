@@ -1,6 +1,8 @@
-#include <sofa/core/objectmodel/Data.h>
 #include "Binding_BoundingBox.h"
-#include "SofaPython3/DataHelper.h"
+
+#include <sofa/core/objectmodel/Data.h>
+#include <SofaPython3/DataHelper.h>
+#include <SofaPython3/PythonFactory.h>
 
 namespace sofapython3 {
 
@@ -45,12 +47,11 @@ void moduleAddBoundingBox(py::module& m)
         return list;
     }, "returns the center of the bbox");
 
+    std::cout << "Lets register BoundingBox" << std::endl;
 
-    std::cout << "ADDING BOUNDINGBOX" << std::endl;
-    getBindingDataFactoryInstance()->registerCreator(
-                "BoundingBox", new TypeCreator<sofa::Data<sofa::defaulttype::BoundingBox>*>());
-    std::cout << "ADDING BOUNDINGBOX" << std::endl;
-
+    PythonFactory::registerType<sofa::Data<BoundingBox>>("BoundingBox", [](BaseData* data) -> py::object {
+        return py::cast(reinterpret_cast<sofa::Data<BoundingBox>*>(data));
+    });
 
 }
 

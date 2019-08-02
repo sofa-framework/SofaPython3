@@ -3,7 +3,8 @@
 #include "Binding_Controller.h"
 
 #include <SofaPython3/DataHelper.h>
-#include <SofaPython3/EventFactory.h>
+#include <SofaPython3/PythonFactory.h>
+using sofa::core::objectmodel::Event;
 
 
 PYBIND11_DECLARE_HOLDER_TYPE(Controller,
@@ -58,17 +59,13 @@ namespace sofapython3
         if( py::hasattr(self, methodName.c_str()) )
         {
             py::object fct = self.attr(methodName.c_str());
-
-            if (getEventDict().at(event->getEventTypeIndex()) != nullptr)
-                fct(getEventDict()[event->getEventTypeIndex()](event));
-            else
-                fct(py::dict("type"_a=event->getClassName(),
-                             "isHandled"_a=event->isHandled()));
+            fct(PythonFactory::toPython(event));
         }
     }
 
     void Controller_Trampoline::handleEvent(Event* event)
     {
+
         py::object self = py::cast(this);
         std::string name = std::string("on")+event->getClassName();
 

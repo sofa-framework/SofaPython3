@@ -1,11 +1,14 @@
 #include "Binding_PythonScriptEvent.h"
 
-#include <SofaPython3/EventFactory.h>
+#include <SofaPython3/PythonFactory.h>
+#include <sofa/core/objectmodel/Event.h>
 
 namespace sofapython3 {
 using namespace pybind11::literals;
 
-PythonScriptEvent::PythonScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventName, py::object* userData)
+SOFA_EVENT_CPP(PythonScriptEvent)
+
+PythonScriptEvent::PythonScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventName, py::object userData)
     : sofa::core::objectmodel::ScriptEvent(sender,eventName)
     , m_userData(userData){}
 
@@ -13,16 +16,18 @@ PythonScriptEvent::~PythonScriptEvent(){}
 
 void moduleAddPythonScriptEvent()
 {
-    PythonScriptEvent pse(nullptr, "", nullptr);
-    registerEvent([] (Event* event) -> py::object {
+    PythonFactory::registerType<PythonScriptEvent>(
+                [] (sofa::core::objectmodel::Event* event) -> py::dict {
         auto evt = dynamic_cast<PythonScriptEvent*>(event);
-        return py::dict("type"_a=evt->getClassName(),
-                        "isHandled"_a=evt->isHandled(),
-                        "sender"_a=(evt->getSender() ? py::cast(evt->getSender()) : py::none()),
-                        "event_name"_a=evt->getEventName(),
-                        "userData"_a=evt->getUserData());
-    }, &pse);
 
+        py::dict d("type"_a=evt->getClassName(),
+                   "isHandled"_a=evt->isHandled(),
+                   "sender"_a=(evt->getSender().get() ? py::cast(evt->getSender().get()) : py::none()),
+                   "event_name"_a=py::cast(evt->getEventName()),
+                   "userData"_a=evt->getUserData()
+                   );
+        return d;
+    });
 }
 
 }  // namespace sofapython3

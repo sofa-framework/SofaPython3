@@ -12,6 +12,7 @@ using  sofa::core::objectmodel::BaseObject;
 using  sofa::core::objectmodel::BaseNode;
 
 #include <SofaPython3/DataHelper.h>
+#include <SofaPython3/PythonFactory.h>
 #include "../Binding_Base.h"
 #include "../Binding_BaseData.h"
 #include "Binding_DataContainer.h"
@@ -27,8 +28,9 @@ void moduleAddDataContainer(py::module& m)
     py::class_<DataContainer, BaseData, raw_ptr<DataContainer>> p(m, "DataContainer",
                                                                   py::buffer_protocol());
 
-    getBindingDataFactoryInstance()->registerCreator(
-                "DataContainer", new TypeCreator<DataContainer*>());
+    PythonFactory::registerType<DataContainer>("DataContainer", [](BaseData* data) -> py::object {
+        return py::cast(reinterpret_cast<DataContainer*>(data));
+    });
 
     p.def("__getitem__", [](DataContainer* self, py::object& index) -> py::object
     {

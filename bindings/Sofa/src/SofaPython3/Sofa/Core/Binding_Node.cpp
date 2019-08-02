@@ -23,8 +23,8 @@ using sofa::core::ExecParams;
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
-#include <SofaPython3/PythonDownCast.h>
-using sofapython3::PythonDownCast;
+#include <SofaPython3/PythonFactory.h>
+using sofapython3::PythonFactory;
 
 using sofa::core::objectmodel::BaseObjectDescription;
 
@@ -71,7 +71,7 @@ void moduleAddBaseIterator(py::module &m)
     {
         if(index>=d.size(d.owner.get()))
             throw py::index_error("Too large index '"+std::to_string(index)+"'");
-        return PythonDownCast::toPython(d.get(d.owner.get(), index).get());
+        return PythonFactory::toPython(d.get(d.owner.get(), index).get());
     });
 
     d.def("__getitem__", [](BaseIterator& d, const std::string& name) -> py::object
@@ -79,7 +79,7 @@ void moduleAddBaseIterator(py::module &m)
         BaseObject* obj =d.owner->getObject(name);
         if(obj==nullptr)
             throw py::index_error("No existing object '"+name+"'");
-        return PythonDownCast::toPython(obj);
+        return PythonFactory::toPython(obj);
     });
 
     d.def("__iter__", [](BaseIterator& d)
@@ -91,7 +91,7 @@ void moduleAddBaseIterator(py::module &m)
     {
         if(d.index>=d.size(d.owner.get()))
             throw py::stop_iteration();
-        return PythonDownCast::toPython(d.get(d.owner.get(), d.index++).get());
+        return PythonFactory::toPython(d.get(d.owner.get(), d.index++).get());
     });
     d.def("__len__", [](BaseIterator& d) -> py::object
     {
@@ -168,7 +168,7 @@ void init(Node& self) { self.init(ExecParams::defaultInstance()); }
 py::object addObject(Node& self, BaseObject* object)
 {
     if(self.addObject(object))
-        return PythonDownCast::toPython(object);
+        return PythonFactory::toPython(object);
     return py::none();
 }
 
@@ -298,12 +298,12 @@ py::object __getattr__(Node& self, const std::string& name)
     /// Search in the object lists
     BaseObject *object = self.getObject(name);
     if (object)
-        return PythonDownCast::toPython(object);
+        return PythonFactory::toPython(object);
 
     /// Search in the child lists
     Node *child = self.getChild(name);
     if (child)
-        return PythonDownCast::toPython(child);
+        return PythonFactory::toPython(child);
 
     /// Search in the data & link lists
     return BindingBase::GetAttr(&self, name, true);
@@ -356,7 +356,7 @@ py::object getMass(Node *self)
 {
     sofa::core::behavior::BaseMass* mass = self->mass.get();
     if (mass) {
-        return PythonDownCast::toPython(mass);
+        return PythonFactory::toPython(mass);
     }
     return py::none();
 }
@@ -366,7 +366,7 @@ py::object getForceField(Node *self, unsigned int index)
 {
     sofa::core::behavior::BaseForceField* ff = self->forceField.get(index);
     if (ff) {
-        return PythonDownCast::toPython(ff);
+        return PythonFactory::toPython(ff);
     }
     return py::none();
 }
@@ -376,7 +376,7 @@ py::object getMechanicalState(Node *self)
 {
     sofa::core::behavior::BaseMechanicalState* state = self->mechanicalState.get();
     if (state) {
-        return PythonDownCast::toPython(state);
+        return PythonFactory::toPython(state);
     }
     return py::none();
 }
@@ -386,12 +386,12 @@ py::object getMechanicalMapping(Node *self)
 {
     sofa::core::BaseMapping* mapping = self->mechanicalMapping.get();
     if (mapping) {
-        return PythonDownCast::toPython(mapping);
+        return PythonFactory::toPython(mapping);
     }
     return py::none();
 }
 
-void sendEvent(Node* self, py::object* pyUserData, char* eventName)
+void sendEvent(Node* self, py::object pyUserData, char* eventName)
 {
     sofapython3::PythonScriptEvent event(self, eventName, pyUserData);
     self->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
@@ -400,7 +400,7 @@ void sendEvent(Node* self, py::object* pyUserData, char* eventName)
 void moduleAddNode(py::module &m) {
     moduleAddBaseIterator(m);
 
-    PythonDownCast::registerType<sofa::simulation::graph::DAGNode>(
+    PythonFactory::registerType<sofa::simulation::graph::DAGNode>(
                 [](sofa::core::objectmodel::Base* object)
     {
         return py::cast(static_cast<Node*>(object->toBaseNode()));

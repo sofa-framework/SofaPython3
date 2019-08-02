@@ -14,8 +14,8 @@ using sofa::core::objectmodel::BaseLink;
 #include <sofa/helper/accessor.h>
 using sofa::helper::WriteOnlyAccessor;
 
-#include <SofaPython3/PythonDownCast.h>
-#include <SofaPython3/DataFactory.h>
+#include <SofaPython3/PythonFactory.h>
+//#include <SofaPython3/DataFactory.h>
 
 #include "Binding_Base.h"
 #include "Binding_Base_doc.h"
@@ -63,7 +63,7 @@ py::object BindingBase::GetAttr(Base* self, const std::string& s, bool doThrowEx
     /// Search if there is a data with the given name.
     /// If this is the case returns the corresponding python type.
     if(BaseData* d = self->findData(s)){
-        return dataToPython(d);
+        return PythonFactory::toPython(d);
     }
 
     /// Search if there is a link with the given name.
@@ -397,11 +397,11 @@ void BindingBase::addData(py::object py_self, const std::string& name, py::objec
     // create the data from the type given in `type` and fill it up
     else
     {
-        data = getFactoryInstance()->createObject(type, sofa::helper::NoArgument());
+        data = PythonFactory::createInstance(type);
         if (!data)
         {
             sofa::helper::vector<std::string> validTypes;
-            getFactoryInstance()->uniqueKeys(std::back_inserter(validTypes));
+            PythonFactory::uniqueKeys(std::back_inserter(validTypes));
             std::string typesString = "[";
             for (const auto& i : validTypes)
                 typesString += i + ", ";

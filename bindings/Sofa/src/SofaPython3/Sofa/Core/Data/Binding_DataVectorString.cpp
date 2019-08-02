@@ -11,6 +11,7 @@ using  sofa::core::objectmodel::BaseObject;
 using  sofa::core::objectmodel::BaseNode;
 
 #include <SofaPython3/DataHelper.h>
+#include <SofaPython3/PythonFactory.h>
 #include "../Binding_Base.h"
 #include "../Binding_BaseData.h"
 #include "Binding_DataVectorString.h"
@@ -48,8 +49,9 @@ void moduleAddDataVectorString(py::module& m)
 {
     py::class_<DataVectorString, BaseData, raw_ptr<DataVectorString>> s(m, "DataVectorString");
 
-    getBindingDataFactoryInstance()->registerCreator(
-                "DataVectorString", new TypeCreator<DataVectorString*>());
+    PythonFactory::registerType<DataVectorString>("DataVectorString", [](BaseData* data) -> py::object {
+        return py::cast(reinterpret_cast<DataVectorString*>(data));
+    });
 
     s.def("__len__", &DataVectorString::__len__);
     s.def("__getitem__",&DataVectorString::__getitem__);

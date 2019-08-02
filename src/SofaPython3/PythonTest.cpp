@@ -111,8 +111,6 @@ py::object getTestSuite(py::module& unittest, py::module& module, const std::vec
 
 bool runTests(py::module& unittest, py::object suite)
 {
-    std::cout << "running tests" << std::endl;
-
     py::dict kwargs = py::dict("verbosity"_a=1);
     py::object testRunner = unittest.attr("TextTestRunner")(**kwargs);
 
