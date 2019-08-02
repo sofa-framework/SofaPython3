@@ -115,7 +115,7 @@ class Test(unittest.TestCase):
         c = root.addObject("MechanicalObject", name="t", position=[
                            [0, 0, 0], [1, 1, 1], [2, 2, 2]])
         self.assertEqual(c.position.typeName(), "vector<Vec3d>")
-        self.assertEqual(c.showColor.typeName(), "RGBAColor")
+        self.assertEqual(c.showColor.typeName(), "Vec4f")
 
     # @unittest.skip  # no reason needed
     def test_ValidDataAccess(self):
@@ -396,7 +396,7 @@ class Test(unittest.TestCase):
         root.addData("aFieldParent", 1.0 , "help message","theDataGroup", "float")
         data = root.getData("aField")
         dataParent = root.getData("aFieldParent")
-        data.setParent(dataParent, "@/dataParent/data")
+        data.setParent(dataParent)
         dataParent.read("3.0")
         self.assertFalse(dataParent.isDirty())
         self.assertTrue(data.isDirty())

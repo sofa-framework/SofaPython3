@@ -23,6 +23,8 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 #include <functional>
 #include "PythonFactory.h"
+#include "DataHelper.h"
+
 #include <SofaSimulationGraph/DAGNode.h>
 
 #include "sofa/simulation/AnimateBeginEvent.h"
@@ -122,8 +124,8 @@ py::object PythonFactory::toPython(sofa::core::objectmodel::BaseData* data)
     }
 
     const sofa::defaulttype::AbstractTypeInfo& nfo { *(data->getValueTypeInfo()) };
-    /// In case the data is a container with a simple layout
-    /// we can expose the field as a numpy.array (no copy)
+
+
     if(nfo.Container() && nfo.SimpleLayout())
     {
         s_dataDowncastingFct[metaclass->templateName] = s_dataDowncastingFct["DataContainer"];
@@ -142,13 +144,137 @@ py::object PythonFactory::toPython(sofa::core::objectmodel::BaseData* data)
     return py::cast(data);
 }
 
+py::object PythonFactory::valueToPython_ro(sofa::core::objectmodel::BaseData* data)
+{
+    const AbstractTypeInfo& nfo{ *(data->getValueTypeInfo()) };
+    /// In case the data is a container with a simple layout
+    /// we can expose the field as a numpy.array (no copy)
+    if(nfo.Container() && nfo.SimpleLayout())
+    {
+        return getPythonArrayFor(data);
+    }
+
+    /// If this is not the case we return the converted datas (copy)
+    return convertToPython(data);
+}
+
+template<class SrcType>
+void copyFromListOf(const AbstractTypeInfo& nfo, void* ptr, size_t index, py::object o);
+
+template<> void copyFromListOf<double>(const AbstractTypeInfo& nfo, void* ptr, size_t index, py::object o)
+{
+    nfo.setScalarValue(ptr, index, py::cast<double>(o));
+}
+
+template<> void copyFromListOf<int>(const AbstractTypeInfo& nfo, void* ptr, size_t index, py::object o)
+{
+    nfo.setIntegerValue(ptr, index, py::cast<int>(o));
+}
+
+template<> void copyFromListOf<std::string>(const AbstractTypeInfo& nfo, void* ptr, size_t index, py::object o)
+{
+    nfo.setTextValue(ptr, index, py::cast<std::string>(o));
+}
+
+
+template<class DestType>
+void copyFromListOf(BaseData& d, const AbstractTypeInfo& nfo, const py::list& l)
+{
+    /// Check if the data is a single dimmension or not.
+    py::buffer_info dstinfo = toBufferInfo(d);
+
+    if(dstinfo.ndim>2)
+        throw py::index_error("Invalid number of dimension only 1 or 2 dimensions are supported).");
+
+    if(dstinfo.ndim==1)
+    {
+        void* ptr = d.beginEditVoidPtr();
+        if( size_t(dstinfo.shape[0]) != l.size())
+            nfo.setSize(ptr, l.size());
+
+        for(size_t i=0;i<l.size();++i)
+        {
+            copyFromListOf<DestType>(nfo, ptr, i, l[i]);
+        }
+        d.endEditVoidPtr();
+        return;
+    }
+    void* ptr = d.beginEditVoidPtr();
+    if( size_t(dstinfo.shape[0]) != l.size())
+    {
+        if( !nfo.setSize(ptr, l.size()*nfo.size()) )
+            throw std::runtime_error("Unable to resize vector to match list size. Is the data type resizable ?");
+
+        /// Update the buffer info entry to take into account the change of size.
+        dstinfo = toBufferInfo(d);
+    }
+
+    for(auto i=0;i<dstinfo.shape[0];++i)
+    {
+        py::list ll = l[size_t(i)];
+        for(auto j=0;j<dstinfo.shape[1];++j)
+        {
+            copyFromListOf<DestType>(nfo, ptr, size_t(i*dstinfo.shape[1]+j), ll[size_t(j)]);
+        }
+    }
+
+    d.endEditVoidPtr();
+    return;
+}
+
+template<>
+void copyFromListOf<std::string>(BaseData& d, const AbstractTypeInfo& nfo, const py::list& l)
+{
+    void* ptr = d.beginEditVoidPtr();
+    if( size_t(nfo.size()) != l.size())
+        nfo.setSize(ptr, l.size());
+
+    for(size_t i=0;i<l.size();++i)
+    {
+        copyFromListOf<std::string>(nfo, ptr, i, l[i]);
+    }
+    d.endEditVoidPtr();
+    return;
+}
+
+void PythonFactory::fromPython(BaseData* d, const py::object& o)
+{
+
+    const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
+
+    if(!nfo.Container())
+    {
+        scoped_writeonly_access guard(d);
+        if(nfo.Integer())
+            nfo.setIntegerValue(guard.ptr, 0, py::cast<int>(o));
+        else if(nfo.Text())
+            nfo.setTextValue(guard.ptr, 0, py::cast<py::str>(o));
+        else if(nfo.Scalar())
+            nfo.setScalarValue(guard.ptr, 0, py::cast<double>(o));
+        return ;
+    }
+
+    if(nfo.Integer())
+        return copyFromListOf<int>(*d, nfo, o);
+
+    if(nfo.Text())
+    {
+        return copyFromListOf<std::string>(*d, nfo, o);
+    }
+
+    if(nfo.Scalar())
+        return copyFromListOf<double>(*d, nfo, o);
+
+    std::stringstream s;
+    s<< "binding problem, trying to set value for "
+     << d->getName() << ", " << py::cast<std::string>(py::str(o));
+    throw std::runtime_error(s.str());
+}
+
+
 py::object PythonFactory::toPython(sofa::core::objectmodel::Event* event)
 {
     std::string className = event->getClassName();
-
-    std::cout << "classname: " << className << std::endl;
-    for (const auto& [k,v] : s_eventDowncastingFct)
-        std::cout << k << std::endl;
 
     /// Let's first search if there is a casting function for the give type.
     auto kv = s_eventDowncastingFct.find(className);

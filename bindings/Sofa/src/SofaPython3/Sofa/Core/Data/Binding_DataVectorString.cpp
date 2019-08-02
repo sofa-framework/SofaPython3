@@ -25,7 +25,7 @@ py::str DataVectorString::__str__()
     std::stringstream s;
     s << "Sofa.Core.DataVectorString<name='" << getName()
                         << "', value='" << getValueString()
-                        << "', address='"<< (void*)this <<"'>";
+                        << "', address='" << reinterpret_cast<void*>(this) << "'>";
     return s.str();
 }
 

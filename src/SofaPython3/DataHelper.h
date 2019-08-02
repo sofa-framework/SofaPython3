@@ -79,9 +79,7 @@ py::array SOFAPYTHON3_API getPythonArrayFor(BaseData* d);
 py::buffer_info SOFAPYTHON3_API toBufferInfo(BaseData& m);
 py::object SOFAPYTHON3_API convertToPython(BaseData* d);
 
-py::object SOFAPYTHON3_API toPython(BaseData* d, bool writeable=false);
 void SOFAPYTHON3_API copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo, const py::list& l);
-void SOFAPYTHON3_API fromPython(BaseData* d, const py::object& o);
 
 std::string SOFAPYTHON3_API toSofaParsableString(const py::handle& p);
 

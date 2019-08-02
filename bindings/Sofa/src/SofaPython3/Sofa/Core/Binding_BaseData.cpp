@@ -17,6 +17,7 @@ using  sofa::core::objectmodel::BaseNode;
 #include "Binding_BaseData.h"
 #include "Data/Binding_DataContainer.h"
 #include <SofaPython3/DataHelper.h>
+#include <SofaPython3/PythonFactory.h>
 #include "Binding_BaseData_doc.h"
 namespace sofapython3
 {
@@ -53,7 +54,7 @@ py::str __str__(BaseData* self)
 
 py::str __repr__(BaseData* self)
 {
-    return py::repr(toPython(self));
+    return py::repr(PythonFactory::toPython(self));
 }
 
 py::list toList(BaseData* self)
@@ -112,7 +113,7 @@ py::object __getattr__(py::object self, const std::string& s)
     /// a python object that is easy to manipulate. The conversion is done with the toPython
     /// function.
     if(s == "value")
-        return toPython(py::cast<BaseData*>(self));
+        return PythonFactory::valueToPython_ro(py::cast<BaseData*>(self));
 
     /// BaseData does not support dynamic attributes, if you think this is an important feature
     /// please request for its integration.

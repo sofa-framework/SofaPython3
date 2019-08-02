@@ -92,10 +92,10 @@ bool BindingBase::SetData(BaseData* d, py::object value)
     /// We go for the container path.
     if(nfo.Container())
     {
-        fromPython(d,value);
+        PythonFactory::fromPython(d,value);
         return true;
     }
-    fromPython(d, value);
+    PythonFactory::fromPython(d, value);
     return true;
 }
 
@@ -140,10 +140,10 @@ void BindingBase::SetAttr(Base& self, const std::string& s, py::object value)
         /// We go for the container path.
         if(nfo.Container())
         {
-            fromPython(d,value);
+            PythonFactory::fromPython(d,value);
             return;
         }
-        fromPython(d, value);
+        PythonFactory::fromPython(d, value);
         return;
     }
 
@@ -233,7 +233,7 @@ void BindingBase::SetDataFromArray(BaseData* data, const py::array& value)
 
     }
 
-    fromPython(data, value);
+    PythonFactory::fromPython(data, value);
     return;
 }
 
@@ -410,7 +410,7 @@ void BindingBase::addData(py::object py_self, const std::string& name, py::objec
             throw py::type_error(std::string("Invalid Type string: available types are\n") + typesString);
         }
         self->addData(data, name);
-        fromPython(data, value);
+        PythonFactory::fromPython(data, value);
     }
     data->setName(name);
     data->setGroup(group.c_str());

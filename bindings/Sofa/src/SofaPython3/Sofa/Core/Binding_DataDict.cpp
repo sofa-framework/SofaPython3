@@ -20,7 +20,7 @@ void moduleAddDataDict(py::module& m)
         const Base::VecData& vd = self.owner->getDataFields();
         if(i > vd.size())
             throw py::index_error(std::to_string(i));
-        return toPython(vd[i]);
+        return PythonFactory::toPython(vd[i]);
     });
 
     d.def("__getitem__",
@@ -78,14 +78,14 @@ void moduleAddDataDictIterator(py::module &m)
 
         BaseData* data = d.owner->getDataFields()[d.index++];
         if(!d.key)
-            return toPython(data);
+            return PythonFactory::toPython(data);
 
         if(!d.value)
             return py::cast(data->getName());
 
         py::tuple t {2};
         t[0] = data->getName();
-        t[1] = toPython(data);
+        t[1] = PythonFactory::toPython(data);
         return std::move(t);
     });
 }

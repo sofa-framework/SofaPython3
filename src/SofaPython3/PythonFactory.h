@@ -51,6 +51,8 @@ namespace sofapython3
     public:
         static py::object SOFAPYTHON3_API toPython(sofa::core::objectmodel::Base* object);
         static py::object SOFAPYTHON3_API toPython(sofa::core::objectmodel::BaseData* data);
+        static py::object SOFAPYTHON3_API valueToPython_ro(sofa::core::objectmodel::BaseData* data);
+        static void SOFAPYTHON3_API fromPython(sofa::core::objectmodel::BaseData* data, const py::object& value);
         static py::object SOFAPYTHON3_API toPython(sofa::core::objectmodel::Event* event);
         static sofa::core::objectmodel::BaseData* SOFAPYTHON3_API createInstance(const std::string& typeName);
 

@@ -3,6 +3,7 @@
 #include "Binding_BaseObject.h"
 #include "Binding_ForceField.h"
 #include <SofaPython3/DataHelper.h>
+#include <SofaPython3/PythonFactory.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/ForceField.h>
@@ -42,14 +43,14 @@ public:
     {
         auto xx = const_cast<BaseData*>(static_cast<const BaseData*>(&x));
         auto vv = const_cast<BaseData*>(static_cast<const BaseData*>(&v));
-        PYBIND11_OVERLOAD_PURE(void, ForceField, addForce, py::none(), toPython(&f,true), toPython(xx,true), toPython(vv,true));
+        PYBIND11_OVERLOAD_PURE(void, ForceField, addForce, py::none(), PythonFactory::toPython(&f), PythonFactory::toPython(xx), PythonFactory::toPython(vv));
     }
 
     void addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) override
     {
         auto dxx = const_cast<BaseData*>(static_cast<const BaseData*>(&dx));
         PYBIND11_OVERLOAD_PURE(void, ForceField, addDForce,
-                               toPython(&df,true), toPython(dxx,true),
+                               PythonFactory::toPython(&df), PythonFactory::toPython(dxx),
                                py::cast(mparams->kFactor()), py::cast(mparams->bFactor()));
     }
 

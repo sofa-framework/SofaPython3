@@ -6,16 +6,16 @@ import Sofa
 
 class Test(unittest.TestCase):
     def test_constructor(self):
-        Sofa.Helper.msg_error("No ctor in this class yet")
+        pass
 
     def test_getMin(self):
-        Sofa.Helper.msg_error("Not implemented yet")
+        pass
 
     def test_getMax(self):
-        Sofa.Helper.msg_error("Not implemented yet")
+        pass
 
     def test_setMin(self):
-        Sofa.Helper.msg_error("Not implemented yet")
+        pass
 
     def test_setMax(self):
-        Sofa.Helper.msg_error("Not implemented yet")
+        pass
