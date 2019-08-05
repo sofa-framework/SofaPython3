@@ -11,6 +11,7 @@
 #include "Binding_BaseCamera.h"
 #include "Binding_ForceField.h"
 #include "Binding_Controller.h"
+#include "Binding_DataEngine.h"
 #include "Binding_Node.h"
 #include "Binding_Simulation.h"
 #include "Binding_BaseLink.h"
@@ -78,6 +79,7 @@ PYBIND11_MODULE(Core, core)
     moduleAddBaseObject(core);
     moduleAddBaseCamera(core);
     moduleAddController(core);
+    moduleAddDataEngine(core);
     moduleAddForceField(core);
 
     py::class_<sofa::core::objectmodel::BaseNode,

@@ -387,7 +387,6 @@ void BindingBase::addData(py::object py_self, const std::string& name, py::objec
             !py::cast<std::string>(value).empty() &&
             (py::cast<std::string>(value))[0] == '@')
     {
-        std::cout << "    // create the data from the link passed as a string to the object" << std::endl;
         if (dynamic_cast<BaseNode*>(self))
             data = deriveTypeFromParent(dynamic_cast<BaseNode*>(self)->getContext(),
                                         py::cast<py::str>(value));
@@ -399,9 +398,8 @@ void BindingBase::addData(py::object py_self, const std::string& name, py::objec
         self->addData(data, name);
     }
     // create the data from another data (use as parent)
-    else if (py::isinstance<BaseData>(value))
+    else if (py::isinstance<BaseData>(value) || py::isinstance<BaseData*>(value))
     {
-        std::cout << "    // create the data from another data (use as parent)" << std::endl;
         data = deriveTypeFromParent(py::cast<BaseData*>(value));
         if (!data)
             throw py::type_error("Cannot deduce type from value");
@@ -410,7 +408,6 @@ void BindingBase::addData(py::object py_self, const std::string& name, py::objec
     // create the data from the type given in `type` and fill it up
     else
     {
-        std::cout << "// create the data from the type given in `type` and fill it up" << std::endl;
         data = PythonFactory::createInstance(type);
         if (!data)
         {
@@ -424,9 +421,7 @@ void BindingBase::addData(py::object py_self, const std::string& name, py::objec
             throw py::type_error(std::string("Invalid Type string: available types are\n") + typesString);
         }
         self->addData(data, name);
-        std::cout << "data added" << std::endl;
         PythonFactory::fromPython(data, value);
-        std::cout << "from python done" << std::endl;
     }
     data->setName(name);
     data->setGroup(group.c_str());

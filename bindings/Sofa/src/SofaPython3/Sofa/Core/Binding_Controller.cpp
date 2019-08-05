@@ -4,7 +4,6 @@
 
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/PythonFactory.h>
-using sofa::core::objectmodel::Event;
 
 
 PYBIND11_DECLARE_HOLDER_TYPE(Controller,
@@ -12,11 +11,18 @@ PYBIND11_DECLARE_HOLDER_TYPE(Controller,
 
 namespace sofapython3
 {
+    using sofa::core::objectmodel::Event;
 
     void Controller::init() {
     }
 
     void Controller::reinit() {
+    }
+
+    Controller::Controller() {
+    }
+
+    Controller::~Controller() {
     }
 
     class Controller_Trampoline : public Controller, public PythonTrampoline

@@ -20,13 +20,8 @@ public:
     void init() override ;
     void reinit() override;
 
-    Controller()
-    {
-    }
-
-    ~Controller() override
-    {
-    }
+    Controller();
+    ~Controller() override;
 };
 
 void moduleAddController(py::module &m);
