@@ -50,6 +50,7 @@ namespace sofapython3
         static std::map<std::string, dataCreatorFunction> SOFAPYTHON3_API s_dataCreationFct;
     public:
         static py::object SOFAPYTHON3_API toPython(sofa::core::objectmodel::Base* object);
+        static py::object SOFAPYTHON3_API toPython(const sofa::core::objectmodel::BaseData* data);
         static py::object SOFAPYTHON3_API toPython(sofa::core::objectmodel::BaseData* data);
         static py::object SOFAPYTHON3_API valueToPython_ro(sofa::core::objectmodel::BaseData* data);
         static void SOFAPYTHON3_API fromPython(sofa::core::objectmodel::BaseData* data, const py::object& value);

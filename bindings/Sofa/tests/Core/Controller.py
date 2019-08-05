@@ -2,7 +2,7 @@
 
 import unittest
 import gc
-import Sofa
+import Sofa.Core
 import Sofa.Simulation
 
 class MyController(Sofa.Core.Controller):
@@ -49,11 +49,11 @@ class Test(unittest.TestCase):
 
          def test_constructorOverriddenWithArgs(self):
              root = Sofa.Core.Node("rootNode")
-             root.addObject(MyController("controller", "pval1", "pval2", "pval3"))
+             root.addObject(MyController(name="controller", "pval1", "pval2", "pval3"))
 
          def test_constructorOverriddenWithKWArgs(self):
              root = Sofa.Core.Node("rootNode")
-             root.addObject(MyController("controller", kval1="value1", kval2="value2", kval3="value3"))
+             root.addObject(MyController(name="controller", kval1="value1", kval2="value2", kval3="value3"))
 
          def test_methodOverriding(self):
                  """Test that a custom controller 'MyController' correctly adds attributes when overridden.

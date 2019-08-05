@@ -111,6 +111,10 @@ py::object PythonFactory::toPython(sofa::core::objectmodel::Base* object)
     return kv->second(object);
 }
 
+py::object PythonFactory::toPython(const sofa::core::objectmodel::BaseData* data)
+{
+    return toPython(const_cast<BaseData*>(data));
+}
 
 py::object PythonFactory::toPython(sofa::core::objectmodel::BaseData* data)
 {

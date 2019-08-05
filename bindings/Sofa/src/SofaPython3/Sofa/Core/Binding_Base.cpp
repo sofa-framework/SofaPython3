@@ -366,15 +366,26 @@ void checkAmbiguousCreation(py::object& py_self, const std::string& name, const 
         msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getName() << ": Component alread has a python attribute with such name in __dict__";
 }
 
-void BindingBase::addData(py::object py_self, const std::string& name, py::object value, const std::string& help, const std::string& group, std::string type)
+void BindingBase::addData(py::object py_self, const std::string& name, py::object value, py::object defaultValue, const std::string& help, const std::string& group, std::string type)
 {
     Base* self = py::cast<Base*>(py_self);
     if (isProtectedKeyword(name))
         throw py::value_error("addData: Cannot call addData with name " + name + ": Protected keyword");
     checkAmbiguousCreation(py_self, name, "data");
     BaseData* data;
+
+    bool isSet = true;
+    if (value.is(py::none()))
+    {
+        value = defaultValue;
+        isSet = false;
+    }
+
+
     // create the data from the link passed as a string to the object
-    if (type.empty() && py::isinstance<py::str>(value))
+    if (py::isinstance<py::str>(value) &&
+            !py::cast<std::string>(value).empty() &&
+            (py::cast<std::string>(value))[0] == '@')
     {
         if (dynamic_cast<BaseNode*>(self))
             data = deriveTypeFromParent(dynamic_cast<BaseNode*>(self)->getContext(),
@@ -387,7 +398,7 @@ void BindingBase::addData(py::object py_self, const std::string& name, py::objec
         self->addData(data, name);
     }
     // create the data from another data (use as parent)
-    else if (type.empty() && py::cast<BaseData*>(value))
+    else if (py::isinstance<BaseData>(value) || py::isinstance<BaseData*>(value))
     {
         data = deriveTypeFromParent(py::cast<BaseData*>(value));
         if (!data)
@@ -417,6 +428,8 @@ void BindingBase::addData(py::object py_self, const std::string& name, py::objec
     data->setHelp(help.c_str());
     data->setDisplayed(true);
     data->setPersistent(true);
+    if (!isSet)
+        data->unset();
 }
 
 
@@ -504,7 +517,7 @@ void moduleAddBase(py::module &m)
     base.def("getDataFields", &Base::getDataFields, pybind11::return_value_policy::reference, sofapython3::doc::base::getDataFields);
     base.def("findLink", &Base::findLink, pybind11::return_value_policy::reference, sofapython3::doc::base::findLink);
     base.def("getLinks", &Base::getLinks, pybind11::return_value_policy::reference, sofapython3::doc::base::getLinks);
-    base.def("addData", &BindingBase::addData, "name"_a, "value"_a = "", "help"_a = "", "group"_a = "", "type"_a = "", sofapython3::doc::base::addData);
+    base.def("addData", &BindingBase::addData, "name"_a, "value"_a = py::none(), "default"_a = py::none(), "help"_a = "", "group"_a = "", "type"_a = "", sofapython3::doc::base::addData);
     base.def("addData", &BindingBase::addDataFromData, sofapython3::doc::base::addDataInitialized);
     base.def("__getattr__", &BindingBase::__getattr__);
     base.def("__setattr__", &BindingBase::__setattr__);
