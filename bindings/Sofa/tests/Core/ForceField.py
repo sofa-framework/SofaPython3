@@ -5,7 +5,7 @@ import Sofa
 import Sofa.Core
 import Sofa.Helper
 import SofaRuntime
-from MyRestShapeForceField import MyRestShapeSpringsForcefield
+from MyRestShapeForceField import *
 from numpy.linalg import norm as np_norm
 
 
@@ -34,7 +34,7 @@ def createParticle(node, node_name, use_implicit_scheme, use_iterative_solver):
     p.addObject('UniformMass', totalMass=1.0)
 
     print ("dofs.rest_position " + str(dofs.rest_position.value))
-    myRSSFF = MyRestShapeSpringsForcefield(name="Springs",
+    myRSSFF = NaiveRestShapeSpringsForcefield(name="Springs",
                                            stiffness=50,
                                            mstate=dofs, rest_pos=dofs.rest_position)
     p.addObject(myRSSFF)

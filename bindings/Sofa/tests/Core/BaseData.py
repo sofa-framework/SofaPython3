@@ -330,7 +330,7 @@ class Test(unittest.TestCase):
 
     def test_name(self):
         root = Sofa.Core.Node("root")
-        root.addData("aField", 1.0 , "help message","theDataGroup", "float")
+        root.addData(name="aField", value=1.0 , help="help message",group="theDataGroup", type="float")
         data = root.getData("aField")
         self.assertEqual(data.getName(),"aField")
         data.setName("aNewField")
@@ -352,7 +352,7 @@ class Test(unittest.TestCase):
 
     def test_Persistent(self):
         root = Sofa.Core.Node("root")
-        root.addData("aField", 1.0 , "help message","theDataGroup", "float")
+        root.addData(name="aField", value=1.0 , help="help message",group="theDataGroup", type="float")
         data = root.getData("aField")
         self.assertTrue(data.isPersistent())
         data.setPersistent(False)
@@ -360,8 +360,8 @@ class Test(unittest.TestCase):
 
     def test_Parent(self):
         root = Sofa.Core.Node("root")
-        root.addData("aField", 1.0 , "help message","theDataGroup", "float")
-        root.addData("aFieldParent", 1.0 , "help message","theDataGroup", "float")
+        root.addData(name="aField", value=1.0 , help="help message",group="theDataGroup", type="float")
+        root.addData(name="aFieldParent", value=1.0 , help="help message",group="theDataGroup", type="float")
         data = root.getData("aField")
         dataParent = root.getData("aFieldParent")
         self.assertFalse(data.hasParent())
@@ -371,8 +371,8 @@ class Test(unittest.TestCase):
 
     def test_getLinkPath(self):
         root = Sofa.Core.Node("root")
-        root.addData("aField", 1.0 , "help message","theDataGroup", "float")
-        root.addData("aFieldParent", 1.0 , "help message","theDataGroup", "float")
+        root.addData(name="aField", value=1.0 , help="help message",group="theDataGroup", type="float")
+        root.addData(name="aFieldParent", value=1.0 , help="help message",group="theDataGroup", type="float")
         data = root.getData("aField")
         dataParent = root.getData("aFieldParent")
         data.setParent(dataParent)
@@ -383,7 +383,7 @@ class Test(unittest.TestCase):
 
     def test_read(self):
         root = Sofa.Core.Node("root")
-        root.addData("aField", 1.0 , "help message","theDataGroup", "float")
+        root.addData(name="aField", value=1.0 , help="help message",group="theDataGroup", type="float")
         data = root.getData("aField")
         self.assertEqual(data.value,1.0)
         self.assertTrue(data.read("3.0"))
@@ -392,8 +392,8 @@ class Test(unittest.TestCase):
 
     def test_Dirty(self):
         root = Sofa.Core.Node("root")
-        root.addData("aField", 1.0 , "help message","theDataGroup", "float")
-        root.addData("aFieldParent", 1.0 , "help message","theDataGroup", "float")
+        root.addData(name="aField", value=1.0 , help="help message",group="theDataGroup", type="float")
+        root.addData(name="aFieldParent", value=1.0 , help="help message",group="theDataGroup", type="float")
         data = root.getData("aField")
         dataParent = root.getData("aFieldParent")
         data.setParent(dataParent)
@@ -405,7 +405,7 @@ class Test(unittest.TestCase):
 
     def test_readOnly(self):
         root = Sofa.Core.Node("root")
-        root.addData("aField", 1.0 , "help message","theDataGroup", "float")
+        root.addData(name="aField", value=1.0 , help="help message",group="theDataGroup", type="float")
         data = root.getData("aField")
         self.assertFalse(data.isReadOnly())
         data.setReadOnly(True)
