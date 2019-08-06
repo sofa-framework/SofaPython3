@@ -140,11 +140,7 @@ namespace sofapython3
                   auto c = new ForceField_Trampoline();
                   c->f_listening.setValue(true);
 
-                  if(args.size() != 0)
-                  {
-                      if(args.size()==1) c->setName(py::cast<std::string>(args[0]));
-                      else throw py::type_error("Only one un-named arguments can be provided.");
-                  }
+                  if(args.size()==1) c->setName(py::cast<std::string>(args[0]));
 
                   py::object cc = py::cast(c);
                   for(auto kv : kwargs)
