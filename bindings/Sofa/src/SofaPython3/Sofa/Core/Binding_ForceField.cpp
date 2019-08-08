@@ -42,25 +42,27 @@ namespace sofapython3
         PYBIND11_OVERLOAD(void, ForceField, init,);
     }
 
-    // pass bFactor, kFactor, readX, readV, readF, energy
+
     void ForceField_Trampoline::addForce(const MechanicalParams* mparams,  DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
     {
         // pass bFactor, kFactor, energy
         py::dict mp = py::dict("mFactor"_a=mparams->mFactor(),
                                "bFactor"_a=mparams->bFactor(),
                                "kFactor"_a=mparams->kFactor(),
+                               "isImplicit"_a=mparams->implicit(),
                                "energy"_a=mparams->energy());
         PYBIND11_OVERLOAD_PURE(void, ForceField, addForce, mp, PythonFactory::toPython(&f), PythonFactory::toPython(&x), PythonFactory::toPython(&v));
     }
 
 
-    // pass mFactor, kFactor
     void ForceField_Trampoline::addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx )
     {
         // pass bFactor, kFactor, energy
         py::dict mp = py::dict("nFactor"_a=mparams->mFactor(),
                                "bFactor"_a=mparams->bFactor(),
-                               "kFactor"_a=mparams->kFactor());
+                               "kFactor"_a=mparams->kFactor(),
+                               "isImplicit"_a=mparams->implicit()
+                               );
         PYBIND11_OVERLOAD_PURE(void, ForceField, addDForce, mp, PythonFactory::toPython(&df), PythonFactory::toPython(&dx));
     }
 
@@ -68,13 +70,14 @@ namespace sofapython3
     {
         py::dict mp = py::dict("mFactor"_a=mparams->mFactor(),
                                "bFactor"_a=mparams->bFactor(),
-                               "kFactor"_a=mparams->kFactor());
+                               "kFactor"_a=mparams->kFactor(),
+                               "isImplicit"_a=mparams->implicit()
+                               );
 
         PYBIND11_OVERLOAD_PURE(py::object, ForceField, addKToMatrix, mp, nIndices, nDofs);
     }
 
 
-    // pass k/b/mFactor
     void ForceField_Trampoline::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* dfId)
     {
         MultiMatrixAccessor::MatrixRef mref = dfId->getMatrix(this->mstate);
@@ -140,11 +143,7 @@ namespace sofapython3
                   auto c = new ForceField_Trampoline();
                   c->f_listening.setValue(true);
 
-                  if(args.size() != 0)
-                  {
-                      if(args.size()==1) c->setName(py::cast<std::string>(args[0]));
-                      else throw py::type_error("Only one un-named arguments can be provided.");
-                  }
+                  if(args.size()==1) c->setName(py::cast<std::string>(args[0]));
 
                   py::object cc = py::cast(c);
                   for(auto kv : kwargs)
