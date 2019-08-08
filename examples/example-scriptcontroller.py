@@ -31,7 +31,7 @@ class MyForceField(Sofa.ForceField):
         out_df -= dx * self.kd * kFactor
         
 def RestShapeObject(name="unnamed", position=[]):
-        node = Sofa.Node(name)
+        node = Sofa.Core.Node(name)
         c = node.addObject("MechanicalObject", name="mechanical", position=position)
         c.showObject = True
         c.drawMode = 1

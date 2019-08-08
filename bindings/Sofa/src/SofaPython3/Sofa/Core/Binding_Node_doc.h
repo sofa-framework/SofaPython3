@@ -28,26 +28,24 @@ namespace sofapython3::doc::sofa::core::Node
 static auto Class =
         R"(
         Node in the scene graph
-        ---------------
 
         A Node stores other nodes and components.
 
         Example of use:
-          .. code-block:: python
+        .. code-block:: python
 
-             import Sofa
+            >>> import Sofa
 
-             # Create a new node
-             n = Sofa.Core.Node("MyNode"")
+            >>> # Create a new node
+            >>> n = Sofa.Core.Node("MyNode"")
+            >>> # Add a child node name 'Node2'
+            >>> n.addChild("Node2")
 
-             # Add a child node name 'Node2'
-             n.addChild("Node2")
+            >>> # Add a mechanical component to MyNode
+            >>> n.addObject("MechanicalObject", name="dofs")
 
-             # Add a mechanical component to MyNode
-             n.addObject("MechanicalObject", name="dofs")
-
-             Sofa.Simulation.init(root)
-             Sofa.Simulation.print(root)
+            >>> Sofa.Simulation.init(root)
+            >>> Sofa.Simulation.print(root)
 
         The child nodes, components and parents can be accessed using generator attributes.
 
@@ -84,7 +82,7 @@ static auto Class =
              n["child1.child2.dofs.position"]
 
 
-        .. autoclass:: Sofa.Node
+        .. autoclass:: Sofa.Core.Node
         :members:
         :undoc-members:
         )";
