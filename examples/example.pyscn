@@ -1,5 +1,7 @@
-import sys
+# coding: utf8
 
+import sys
+import Sofa
 
 def createScene(root):
         node1 = root.addChild("Node1")

@@ -148,3 +148,12 @@ add_custom_target(Examples SOURCES ${EXAMPLES_FILES})
 
 ### Python binding
 add_subdirectory(bindings)
+
+
+SP3_add_python_package(
+        SOURCE_DIRECTORY
+            ${CMAKE_CURRENT_SOURCE_DIR}/splib
+        TARGET_DIRECTORY
+            ${SP3_PYTHON_PACKAGES_DIRECTORY}/Sofa/splib
+)
+
