@@ -1,17 +1,19 @@
 #!/usr/bin/python3
 
-import Sofa
+import Sofa.Core
+import Sofa.Simulation
 import SofaRuntime
+import os
 
 _runAsPythonScript = False
 
 
-class RotationController(Sofa.Controller):
+class RotationController(Sofa.Core.Controller):
     """ This is a custom controller to perform actions when events are triggered """
 
     def __init__(self, *args, **kwargs):
         # These are needed (and the normal way to override from a python class)
-        Sofa.Controller.__init__(self, *args, **kwargs)
+        Sofa.Core.Controller.__init__(self, *args, **kwargs)
         print(" Python::__init__::" + str(self.name.value))
 
         self.engine = kwargs["engine"]
@@ -33,8 +35,7 @@ class RotationController(Sofa.Controller):
 
 def createScene(root):
 
-    rpath = "/home/bruno/dev/sofa/share/mesh/"
-
+    rpath =os.environ["SOFA_ROOT"]+"../src/share/mesh/"
     # can be used by SceneLoaderPY:
     root.dt = 0.01
     root.name = 'root'
@@ -43,13 +44,13 @@ def createScene(root):
     loader = root.addObject('MeshObjLoader', name='loader',
                             filename=rpath + "liver.obj")
     te = root.addObject(
-        "TransformEngine", name="te", input_position=loader.position.getLink())
+        "TransformEngine", name="te", input_position=loader.position.getLinkPath(), rotation=[0,0,0])
     mo = root.addObject("MechanicalObject", name="mo",
-                        position=te.output_position.getLink())
+                        position=te.output_position.getLinkPath())
 
     visu = root.addChild("Visu")
-    visu.addObject('OglModel', name="visu", src=loader.getLink())
-    visu.addObject('IdentityMapping', name="BM", src=mo.getLink())
+    visu.addObject('OglModel', name="visu", src=loader.getLinkPath())
+    visu.addObject('IdentityMapping', name="BM", src=mo.getLinkPath())
 
     if not _runAsPythonScript:
         root.addObject(RotationController(name="MyController", engine=root.te))
@@ -60,16 +61,18 @@ def main():
 
     # Register all the common component in the factory.
     SofaRuntime.importPlugin("SofaAllCommonComponents")
-
+    SofaRuntime.importPlugin("SofaOpenglVisual")
+    global _runAsPythonScript
     _runAsPythonScript = True
-    root = Sofa.Node()
+    root = Sofa.Core.Node()
 
     createScene(root)
     Sofa.Simulation.init(root)
     for i in range(0, 360):
         Sofa.Simulation.animate(root, root.dt.value)
-        root.te.rotation.value[0] += 1
-
+        root.te.rotation[0] += 1
+        #print("For i = "+ str(i)+", we have : "+str(root.te.rotation.value[0]))
+    print("Last value is : "+ str(root.te.rotation.value[0]))
 
 if __name__ == '__main__':
     main()
