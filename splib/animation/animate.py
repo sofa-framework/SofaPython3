@@ -78,6 +78,9 @@ class AnimationManagerController(Sofa.Core.Controller):
         self.animations = []
         self.currentTime = 0
         self.realTimeStep = None
+        self.realTimeClock= kwargs.get('realTimeClock', False)
+        self.begin = time()
+
 
     def addAnimation(self, animation):
         self.animations.append(animation)
@@ -91,7 +94,10 @@ class AnimationManagerController(Sofa.Core.Controller):
     def onAnimateBeginEvent(self, event):
         if self.realTimeStep is not None:
             self.currentTime = time()
-        self.totalTime = self.totalTime + float(event.get('dt', None))
+        if (self.realTimeClock):
+            self.totalTime = time() - self.begin
+        else:
+            self.totalTime = self.totalTime + float(event.get('dt', None))
         nextanimations = []
         for animation in self.animations:
             animation.update(self.totalTime)
@@ -188,7 +194,7 @@ def removeAnimation(animation):
 
     manager.removeAnimation(animation)
 
-def AnimationManager(node, realTimeStep=None):
+def AnimationManager(node, realTimeStep=None, realTimeClock=False):
     """
     A Controller to manage all animations in the scene
 
@@ -209,7 +215,7 @@ def AnimationManager(node, realTimeStep=None):
     if manager is not None:
         print("There is already one animation manager in this scene...why do you need a second one ?")
         return manager
-    manager = AnimationManagerController(name="AnimationController")
+    manager = AnimationManagerController( realTimeClock=realTimeClock, name="AnimationController")
     manager.realTimeStep = realTimeStep
     node.addObject(manager)
     return manager
