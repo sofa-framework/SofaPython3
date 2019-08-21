@@ -135,6 +135,7 @@ py::module addSubmoduleTimer(py::module &m)
     timer.doc() = R"doc(
            Timer
            -----------------------
+
            Advanced timer, meant to gather precise statistics for results in published papers.
            Not so advanced for now, but it will be...
        )doc";

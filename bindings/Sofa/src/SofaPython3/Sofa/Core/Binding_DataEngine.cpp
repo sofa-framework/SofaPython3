@@ -1,4 +1,5 @@
 #include "Binding_DataEngine.h"
+#include "Binding_DataEngine_doc.h"
 
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/PythonFactory.h>
@@ -75,7 +76,7 @@ namespace sofapython3
                 BaseObject,
                 py_shared_ptr<PyDataEngine>> f(m, "DataEngine",
                                                py::dynamic_attr(),
-                                               py::multiple_inheritance());
+                                               py::multiple_inheritance(), sofapython3::doc::dataengine::DataEngine);
 
         f.def(py::init([](py::args& /*args*/, py::kwargs& kwargs)
         {
@@ -99,11 +100,8 @@ namespace sofapython3
                   return c;
               }));
 
-        f.def("init", &PyDataEngine::init);
-        f.def("doUpdate", &PyDataEngine::doUpdate);
-
-        f.def("addInput", &PyDataEngine::addInput);
-        f.def("addOutput", &PyDataEngine::addOutput);
+        f.def("addInput", &PyDataEngine::addInput, sofapython3::doc::dataengine::addInput);
+        f.def("addOutput", &PyDataEngine::addOutput, sofapython3::doc::dataengine::addOutput);
     }
 
 } /// namespace sofapython3

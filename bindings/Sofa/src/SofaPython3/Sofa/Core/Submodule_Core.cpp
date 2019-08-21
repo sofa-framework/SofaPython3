@@ -41,6 +41,7 @@ PYBIND11_MODULE(Core, core)
                :toctree: _autosummary/_autosummary
 
                Sofa.Core.Data
+               Sofa.Core.Link
                Sofa.Core.Node
                Sofa.Core.Object
                Sofa.Core.Camera
@@ -52,6 +53,7 @@ PYBIND11_MODULE(Core, core)
 
                Sofa.Core.Controller
                Sofa.Core.ForceField
+               Sofa.Core.DataEngine
 
 
            Utilitary classe:
@@ -64,7 +66,6 @@ PYBIND11_MODULE(Core, core)
                Sofa.Core.DataContainer
                Sofa.Core.DataString
                Sofa.Core.DataVectorString
-               Sofa.Core.WriteAccessor
        )doc";
 
     moduleAddPythonScriptEvent();
