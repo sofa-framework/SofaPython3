@@ -66,6 +66,7 @@ PYBIND11_MODULE(Core, core)
                Sofa.Core.DataContainer
                Sofa.Core.DataString
                Sofa.Core.DataVectorString
+               #Sofa.Core.WriteAccessor
        )doc";
 
     moduleAddPythonScriptEvent();

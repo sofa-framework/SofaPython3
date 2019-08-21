@@ -7,7 +7,7 @@ Example of use:
 
      import Sofa
 
-     n = Sofa.Core.Node("MyNode"")
+     n = Sofa.Core.Node("MyNode")
      n.addChild("Node2")
      n.addObject("MechanicalObject", name="dofs")
 

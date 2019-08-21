@@ -1,5 +1,5 @@
 Welcome to SofaPython3's documentation!
-========================================
+=======================================
 
 The project is composed of a Sofa plugin and python modules. 
 
@@ -10,7 +10,7 @@ Appart from the SofaPython3 plugin this project also provide several python modu
 These binding are designed to be idiomatic python3 API with tight integration for numpy. 
 
 Features
------------
+--------
 The Sofa python module:
 ^^^^^^^^^^^^^^^^^^^^^^^
 Exposes the base Sofa object to build and manipulate a Sofa simulation. 
@@ -52,7 +52,7 @@ Try it: ```python python3 minimalscene.py```
 
 
 Global diagram of SofaPython3:
----------------------------------
+------------------------------
 .. figure:: images/SP3_global_arch.png
 	:alt: How SP3 fits in the SOFA usage pipeline
 	:align: center

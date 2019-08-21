@@ -75,7 +75,6 @@ namespace sofapython3
 
         py::object self = py::cast(this);
         std::string name = std::string("on")+event->getClassName();
-
         /// Is there a method with this name in the class ?
         if( py::hasattr(self, name.c_str()) )
         {

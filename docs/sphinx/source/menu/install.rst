@@ -4,13 +4,13 @@ Download and Install
 The plugin can be compiled from the source. 
 
 Install from source
------------
+-------------------
 
 Requirement Install
 ^^^^^^^^^^^^^^^^^^^
 - pybind11 (minimal 2.2.4)
 - cmake (minimal 3.12)
-- developement package for python3 (python3-dev)
+- developement package for python3.7 (python3.7-dev)
 - numpy
 
 In-tree build

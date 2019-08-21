@@ -32,7 +32,7 @@ PYBIND11_MODULE(Simulation, simulation)
               .. code-block:: python
 
                 import Sofa
-                n = Sofa.Core.Node("MyNode"")
+                n = Sofa.Core.Node("MyNode")
                 Sofa.Simulation.init(root)
                 Sofa.Simulation.print(root)
 

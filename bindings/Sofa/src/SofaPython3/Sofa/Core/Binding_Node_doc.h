@@ -27,14 +27,15 @@ namespace sofapython3::doc::sofa::core::Node
 
 static auto Class =
         R"(
-        Node in the scene graph
-
         A Node stores other nodes and components.
 
         Example of use:
-        .. code-block:: python
+          .. code-block:: python
 
-            >>> import Sofa
+            >>> import Sofa.Core
+
+            >>> # Create a new node
+            >>> n = Sofa.Core.Node("MyNode")
 
             >>> # Create a new node
             >>> n = Sofa.Core.Node("MyNode"")
@@ -53,7 +54,7 @@ static auto Class =
           .. code-block:: python
 
              # ...
-             n = Sofa.Core.Node("MyNode"")
+             n = Sofa.Core.Node("MyNode")
              for child in n.children:
                  print(child.name)
 
@@ -67,7 +68,7 @@ static auto Class =
           .. code-block:: python
 
              # ...
-             n = Sofa.Core.Node("MyNode"")
+             n = Sofa.Core.Node("MyNode")
              c1 = n.addChild("child1")
              c2 = n.addChild("child2")
              c2.addObject("MechanicalObject", name="dofs")
@@ -81,10 +82,6 @@ static auto Class =
              # fast access.
              n["child1.child2.dofs.position"]
 
-
-        .. autoclass:: Sofa.Core.Node
-        :members:
-        :undoc-members:
         )";
 static auto init =
         R"(
@@ -224,7 +221,7 @@ static auto children =
         Field interface to acces the children of a node.
 
         :Example:
-        >>> n = Sofa.Core.Node("MyNode"")
+        >>> n = Sofa.Core.Node("MyNode")
         >>> for child in n.children:
         >>>     print(child.name)
         )";
@@ -233,7 +230,7 @@ static auto parents =
         R"(
         Field interface to acces the parents of a node.
         :Example:
-        >>> n = Sofa.Core.Node("MyNode"")
+        >>> n = Sofa.Core.Node("MyNode")
         >>> for parent in n.parents:
         >>>     print(parent.name)
         )";
@@ -242,7 +239,7 @@ static auto objects =
         Field interface to acces the objects of a node.
 
         :Example:
-        >>> n = Sofa.Core.Node("MyNode"")
+        >>> n = Sofa.Core.Node("MyNode")
         >>> for object in n.objects:
         >>>     print(object.name)
         )";
