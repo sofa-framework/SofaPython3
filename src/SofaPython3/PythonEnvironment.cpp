@@ -47,6 +47,7 @@ using sofa::simulation::SceneLoaderFactory;
 //#include "Python.h"
 
 #include <pybind11/embed.h>
+#include <pybind11/eval.h>
 namespace py = pybind11;
 
 #include "SceneLoaderPY3.h"
@@ -200,7 +201,7 @@ void PythonEnvironment::Init()
     /// Add the directories listed in the SOFAPYTHON_PLUGINS_PATH environnement
     /// variable (colon-separated) to sys.path
     char * pathVar = getenv("SOFAPYTHON_PLUGINS_PATH");
-    if (pathVar != NULL)
+    if (pathVar != nullptr)
     {
         std::istringstream ss(pathVar);
         std::string path;
@@ -337,6 +338,16 @@ bool PythonEnvironment::runString(const std::string& script)
     return true;
 }
 
+bool PythonEnvironment::runFile(const std::string& filename,
+                                       const std::vector<std::string>& arguments)
+{
+    py::object main = py::module::import(filename.c_str()).attr("__main__");
+
+    main(arguments);
+    return true;
+}
+
+
 std::string PythonEnvironment::getStackAsString()
 {
     gil lock;
@@ -383,6 +394,75 @@ sofa::helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAs
         }
     }
     return SOFA_FILE_INFO_COPIED_FROM("undefined", -1);
+}
+
+std::map<std::string, std::map<std::string, std::string>> PythonEnvironment::getPythonModuleContent(const std::string& moduleDir, const std::string& moduleName)
+{
+    PythonEnvironment::gil lock;
+    std::map<std::string, std::map<std::string, std::string>> map;
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaPython"));
+    if(pDict==nullptr)
+    {
+        msg_error("PythonEnvironment") << "Could not find SofaPython";
+        return map;
+    }
+
+    PyObject* pFunc = PyDict_GetItemString(pDict, "getPythonModuleContent");
+    if (PyCallable_Check(pFunc))
+    {
+        PyObject* mDir = py::str(moduleDir).ptr();
+        PyObject* mName = py::str(moduleName).ptr();
+        PyObject* args = PyTuple_Pack(2, mDir, mName);
+        PyObject* dict = PyObject_CallObject(pFunc, args);
+
+        if(dict == nullptr)
+        {
+            PyErr_Print();
+            return map;
+        }
+
+        PyObject* key;
+        PyObject* value;
+        Py_ssize_t pos = 0;
+
+        if (dict == nullptr)
+        {
+            msg_error("PythonEnvironment::getPythonModuleContent()") << "Could not retrieve script " << moduleName << " in " << moduleDir;
+            return map;
+        }
+
+        while (PyDict_Next(dict, &pos, &key, &value))
+        {
+            std::string k = py::str(key);
+
+            std::map<std::string, std::string> stringmap;
+
+            if (value == nullptr)
+            {
+                map[k] = stringmap;
+                continue;
+            }
+
+            PyObject* _key;
+            PyObject* _value;
+            Py_ssize_t _pos = 0;
+            while (PyDict_Next(value, &_pos, &_key, &_value))
+                stringmap[py::str(_key)] = py::str(_value);
+            map[k] = stringmap;
+        }
+
+        Py_DecRef(dict) ;
+        return map;
+    }
+    msg_warning("PythonEnvironment") << "Could not find callable getPythonModuleContent in module SofaPython";
+    return map;
+}
+
+
+std::string PythonEnvironment::getPythonModuleDocstring(const std::string &modulepath)
+{
+    py::module m = py::module::import(modulepath.c_str());
+    return py::str(m.doc());
 }
 
 void PythonEnvironment::setArguments(const std::string& filename, const std::vector<std::string>& arguments)

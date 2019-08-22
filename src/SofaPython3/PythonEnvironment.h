@@ -24,8 +24,15 @@
 #include <vector>
 #include <string>
 
+
+/// Fixes compile errors:
+/// removing all slots macros is necessary if embedded in a Qt project
+/// https://stackoverflow.com/questions/23068700/embedding-python3-in-qt-5
+#pragma push_macro("slots")
+#undef slots
 /// This should come from python3.
 #include <Python.h>
+#pragma pop_macro("slots")
 
 #include <sofa/simulation/SceneLoaderFactory.h>
 
@@ -79,6 +86,9 @@ public:
 
     /// returns the calling point as a file info structure to be used with the message api.
     static sofa::helper::logging::FileInfo::SPtr getPythonCallingPointAsFileInfo() ;
+
+    static std::string getPythonModuleDocstring(const std::string &modulepath);
+    static std::map<std::string, std::map<std::string, std::string>> getPythonModuleContent(const std::string& moduleDir, const std::string& moduleName);
 
     /// should the future scene loadings reload python modules?
     static void setAutomaticModuleReload( bool );
