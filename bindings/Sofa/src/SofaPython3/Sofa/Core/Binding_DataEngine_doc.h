@@ -4,7 +4,9 @@ namespace sofapython3::doc::dataengine
 {
 static auto DataEngine =
         R"(
-        A trampoline class that enables python implementations
+        DataEngine is a class that computes a set of Data outputs from a set of Data inputs.
+
+        It is a trampoline class that enables python implementations
         of the C++ sofa::core::DataEngine class
         )";
 
@@ -25,9 +27,8 @@ static auto addInput =
 
 static auto addOutput =
         R"(
-        .. function:: addOutput(data: Sofa.Core.Data)
-        registers a data field as being an output for this engine.
-        Iff an Engine's output is accessed (getValue, beginEdit...)
+        Registers a data field as being an output for this engine.
+        If an Engine's output is accessed (getValue, beginEdit...)
         AND one or more of its input is dirty, the engine's update()
         method will be called
         :param data: the data to register as an output

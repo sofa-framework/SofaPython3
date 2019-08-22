@@ -21,8 +21,8 @@ Having the SofaPython3 plugin active will allow you to open scene files using th
 
 	<SOFA_build>/bin/runSofa <your_file>
 
-Using SofaPython3 in the command line:
---------------------------------------
+Using SofaPython3 from the command line:
+----------------------------------------
 
 It is possible to use Sofa in a Python3 command line, as long as the right modules are imported. The following code should cover most basic SOFA elements:
 
@@ -40,7 +40,7 @@ Create your first SOFA scene using the SofaPython3 plugin:
 
 A scene in SOFA is an ordered tree of nodes representing objects (example of node: hand), with parent/child relationship (example of hand's child: finger). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is usually called "rootNode" or "root".
 
-Just like with the legacy SofaPython plugin, SofaPython3 searches for a `createScene(arg0: Sofa.Core.Node) -> Sofa.Core.Node` method in the python script, to use as the entry point of the SOFA simulation, and taking a single parameter :the root Node.  Thus define this method:
+Just like with the legacy SofaPython plugin, SofaPython3 searches for a `createScene(arg0: Sofa.Core.Node) -> Sofa.Core.Node` method in the python script, to use as the entry point of the SOFA simulation, and taking a single parameter: the root Node.  Thus define this method:
 
 .. code-block:: python
 		

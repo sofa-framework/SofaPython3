@@ -5,14 +5,17 @@ Sofa binding
 Example of use:
   .. code-block:: python
 
-     import Sofa
+    import Sofa.Core
+    import Sofa.Simulation
+    import SofaRuntime
+    SofaRuntime.importPlugin("SofaAllCommonComponents")
 
-     n = Sofa.Core.Node("MyNode")
-     n.addChild("Node2")
-     n.addObject("MechanicalObject", name="dofs")
+    n = Sofa.Core.Node("MyNode")
+    n.addChild("Node2")
+    n.addObject("MechanicalObject", name="dofs")
 
-     Sofa.Simulation.init(root)
-     Sofa.Simulation.print(root)
+    Sofa.Simulation.init(n)
+    Sofa.Simulation.print(n)
 
 Submodules:
   .. autosummary::

@@ -29,6 +29,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include "Binding_BaseCamera.h"
 
 #include <SofaPython3/PythonFactory.h>
+#include "Binding_BaseCamera_doc.h"
 
 namespace sofapython3
 {
@@ -72,7 +73,7 @@ void moduleAddBaseCamera(py::module &m)
     /// register the BaseCamera binding in the pybind11 typeing sytem
     py::class_<BaseCamera,
                sofa::core::objectmodel::BaseObject,
-               sofa::core::sptr<BaseCamera>> c(m, "Camera");
+               sofa::core::sptr<BaseCamera>> c(m, "Camera", sofapython3::doc::baseCamera::baseCameraClass);
 
     /// register the BaseCamera binding in the downcasting subsystem
     PythonFactory::registerType<BaseCamera>([](sofa::core::objectmodel::Base* object)

@@ -56,7 +56,7 @@ PYBIND11_MODULE(Core, core)
                Sofa.Core.DataEngine
 
 
-           Utilitary classe:
+           Utilitary classes:
 
            .. autosummary::
                :toctree: _autosummary/_autosummary

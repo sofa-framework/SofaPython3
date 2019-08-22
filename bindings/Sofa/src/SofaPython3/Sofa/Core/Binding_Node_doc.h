@@ -29,24 +29,29 @@ static auto Class =
         R"(
         A Node stores other nodes and components.
 
+        A simulation in SOFA is described as a scene with an intrinsic generalized hierarchy.
+        A scene is composed of nodes organized as a tree or as a Directed Acyclic Graph (DAG).
+        The different simulated objects are described in separate nodes, and different representations
+        of a same object can be done in different sub-nodes.
+
         Example of use:
           .. code-block:: python
 
-            >>> import Sofa.Core
+                import Sofa.Core
 
-            >>> # Create a new node
-            >>> n = Sofa.Core.Node("MyNode")
+                # Create a new node
+                n = Sofa.Core.Node("MyNode")
 
-            >>> # Create a new node
-            >>> n = Sofa.Core.Node("MyNode"")
-            >>> # Add a child node name 'Node2'
-            >>> n.addChild("Node2")
+                # Create a new node
+                n = Sofa.Core.Node("MyNode"")
+                # Add a child node name 'Node2'
+                n.addChild("Node2")
 
-            >>> # Add a mechanical component to MyNode
-            >>> n.addObject("MechanicalObject", name="dofs")
+                # Add a mechanical component to MyNode
+                n.addObject("MechanicalObject", name="dofs")
 
-            >>> Sofa.Simulation.init(root)
-            >>> Sofa.Simulation.print(root)
+                Sofa.Simulation.init(root)
+                Sofa.Simulation.print(root)
 
         The child nodes, components and parents can be accessed using generator attributes.
 

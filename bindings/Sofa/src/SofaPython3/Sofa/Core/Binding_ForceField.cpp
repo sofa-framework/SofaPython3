@@ -2,6 +2,7 @@
 #include <pybind11/detail/init.h>
 #include "Binding_BaseObject.h"
 #include "Binding_ForceField.h"
+#include "Binding_ForceField_doc.h"
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/PythonFactory.h>
 
@@ -136,7 +137,7 @@ namespace sofapython3
                 BaseObject, ForceField_Trampoline,
                 py_shared_ptr<ForceField<Vec3dTypes>>> f(m, "ForceField",
                                                          py::dynamic_attr(),
-                                                         py::multiple_inheritance());
+                                                         py::multiple_inheritance(), sofapython3::doc::forceField::forceFieldClass);
 
         f.def(py::init([](py::args& args, py::kwargs& kwargs)
         {
