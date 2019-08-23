@@ -351,7 +351,7 @@ bool PythonEnvironment::runFile(const std::string& filename,
 std::string PythonEnvironment::getStackAsString()
 {
     gil lock;
-    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaPython"));
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaRuntime"));
     PyObject* pFunc = PyDict_GetItemString(pDict, "getStackForSofa");
     if (PyCallable_Check(pFunc))
     {
@@ -365,7 +365,7 @@ std::string PythonEnvironment::getStackAsString()
 
 std::string PythonEnvironment::getPythonCallingPointString()
 {
-    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaPython"));
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaRuntime"));
     PyObject* pFunc = PyDict_GetItemString(pDict, "getPythonCallingPointAsString");
     if (PyCallable_Check(pFunc))
     {
@@ -379,7 +379,7 @@ std::string PythonEnvironment::getPythonCallingPointString()
 
 sofa::helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAsFileInfo()
 {
-    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaPython"));
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaRuntime"));
     PyObject* pFunc = PyDict_GetItemString(pDict, "getPythonCallingPoint");
     if (pFunc && PyCallable_Check(pFunc))
     {
@@ -394,75 +394,6 @@ sofa::helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAs
         }
     }
     return SOFA_FILE_INFO_COPIED_FROM("undefined", -1);
-}
-
-std::map<std::string, std::map<std::string, std::string>> PythonEnvironment::getPythonModuleContent(const std::string& moduleDir, const std::string& moduleName)
-{
-    PythonEnvironment::gil lock;
-    std::map<std::string, std::map<std::string, std::string>> map;
-    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaPython"));
-    if(pDict==nullptr)
-    {
-        msg_error("PythonEnvironment") << "Could not find SofaPython";
-        return map;
-    }
-
-    PyObject* pFunc = PyDict_GetItemString(pDict, "getPythonModuleContent");
-    if (PyCallable_Check(pFunc))
-    {
-        PyObject* mDir = py::str(moduleDir).ptr();
-        PyObject* mName = py::str(moduleName).ptr();
-        PyObject* args = PyTuple_Pack(2, mDir, mName);
-        PyObject* dict = PyObject_CallObject(pFunc, args);
-
-        if(dict == nullptr)
-        {
-            PyErr_Print();
-            return map;
-        }
-
-        PyObject* key;
-        PyObject* value;
-        Py_ssize_t pos = 0;
-
-        if (dict == nullptr)
-        {
-            msg_error("PythonEnvironment::getPythonModuleContent()") << "Could not retrieve script " << moduleName << " in " << moduleDir;
-            return map;
-        }
-
-        while (PyDict_Next(dict, &pos, &key, &value))
-        {
-            std::string k = py::str(key);
-
-            std::map<std::string, std::string> stringmap;
-
-            if (value == nullptr)
-            {
-                map[k] = stringmap;
-                continue;
-            }
-
-            PyObject* _key;
-            PyObject* _value;
-            Py_ssize_t _pos = 0;
-            while (PyDict_Next(value, &_pos, &_key, &_value))
-                stringmap[py::str(_key)] = py::str(_value);
-            map[k] = stringmap;
-        }
-
-        Py_DecRef(dict) ;
-        return map;
-    }
-    msg_warning("PythonEnvironment") << "Could not find callable getPythonModuleContent in module SofaPython";
-    return map;
-}
-
-
-std::string PythonEnvironment::getPythonModuleDocstring(const std::string &modulepath)
-{
-    py::module m = py::module::import(modulepath.c_str());
-    return py::str(m.doc());
 }
 
 void PythonEnvironment::setArguments(const std::string& filename, const std::vector<std::string>& arguments)
@@ -487,7 +418,7 @@ void PythonEnvironment::SceneLoaderListerner::rightBeforeLoadingScene()
 {
     gil lock;
     // unload python modules to force importing their eventual modifications
-    PyRun_SimpleString("SofaPython.unloadModules()");
+    PyRun_SimpleString("SofaRuntime.unloadModules()");
 }
 
 void PythonEnvironment::setAutomaticModuleReload( bool b )
@@ -501,7 +432,7 @@ void PythonEnvironment::setAutomaticModuleReload( bool b )
 void PythonEnvironment::excludeModuleFromReload( const std::string& moduleName )
 {
     gil lock;
-    PyRun_SimpleString( std::string( "try: SofaPython.__SofaPythonEnvironment_modulesExcludedFromReload.append('" + moduleName + "')\nexcept:pass" ).c_str() );
+    PyRun_SimpleString( std::string( "try: SofaRuntime.__SofaPythonEnvironment_modulesExcludedFromReload.append('" + moduleName + "')\nexcept:pass" ).c_str() );
 }
 
 static const bool debug_gil = false;

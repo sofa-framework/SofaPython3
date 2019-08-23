@@ -87,9 +87,6 @@ public:
     /// returns the calling point as a file info structure to be used with the message api.
     static sofa::helper::logging::FileInfo::SPtr getPythonCallingPointAsFileInfo() ;
 
-    static std::string getPythonModuleDocstring(const std::string &modulepath);
-    static std::map<std::string, std::map<std::string, std::string>> getPythonModuleContent(const std::string& moduleDir, const std::string& moduleName);
-
     /// should the future scene loadings reload python modules?
     static void setAutomaticModuleReload( bool );
 
