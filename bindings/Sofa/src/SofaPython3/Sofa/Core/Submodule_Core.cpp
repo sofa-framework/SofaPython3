@@ -13,6 +13,7 @@
 #include "Binding_Controller.h"
 #include "Binding_DataEngine.h"
 #include "Binding_Node.h"
+#include "Binding_NodeIterator.h"
 #include "Binding_Simulation.h"
 #include "Binding_BaseLink.h"
 #include "Binding_PythonScriptEvent.h"
@@ -66,6 +67,7 @@ PYBIND11_MODULE(Core, core)
                Sofa.Core.DataContainer
                Sofa.Core.DataString
                Sofa.Core.DataVectorString
+               Sofa.Core.NodeIterator
                #Sofa.Core.WriteAccessor
        )doc";
 
@@ -84,19 +86,8 @@ PYBIND11_MODULE(Core, core)
     moduleAddDataEngine(core);
     moduleAddForceField(core);
 
-    py::class_<sofa::core::objectmodel::BaseNode,
-            sofa::core::objectmodel::Base,
-            sofa::core::objectmodel::BaseNode::SPtr>(core, "BaseNode");
-
-    py::class_<sofa::core::objectmodel::BaseContext,
-            sofa::core::objectmodel::Base,
-            sofa::core::objectmodel::BaseContext::SPtr>(core, "BaseContext");
-
-    py::class_<sofa::core::objectmodel::Context,
-            sofa::core::objectmodel::BaseContext,
-            sofa::core::objectmodel::Context::SPtr>(core, "Context");
-
     moduleAddNode(core);
+    moduleAddNodeIterator(core);
     moduleAddBaseLink(core);
 
 }

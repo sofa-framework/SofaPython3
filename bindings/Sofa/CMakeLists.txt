@@ -27,6 +27,7 @@ set(CORE_HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_Visitor_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_Node.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_Node_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_NodeIterator.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Data/Binding_DataContainer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Data/Binding_DataContainer_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Data/Binding_DataString.h
@@ -78,6 +79,7 @@ set(CORE_SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_ForceField.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_Visitor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_Node.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_NodeIterator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Submodule_Core.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_PythonScriptEvent.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_BaseLink.cpp
