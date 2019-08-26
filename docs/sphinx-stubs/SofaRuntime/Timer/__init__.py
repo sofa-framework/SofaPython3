@@ -1,6 +1,7 @@
 """
            Timer
            -----------------------
+
            Advanced timer, meant to gather precise statistics for results in published papers.
            Not so advanced for now, but it will be...
        """
@@ -29,7 +30,7 @@ def clear() -> None:
     pass
 def end(id: str) -> None:
     pass
-def getInterval(id: object) -> int:
+def getInterval(id: sofa::helper::AdvancedTimer::Id<sofa::helper::AdvancedTimer::Timer>) -> int:
     pass
 def getRecords(id: str) -> dict:
     pass
@@ -37,9 +38,9 @@ def isEnabled(id: str) -> None:
     pass
 def setEnabled(name: str, enabled: bool) -> None:
     pass
-def setInterval(id: object, interval: int) -> None:
+def setInterval(id: sofa::helper::AdvancedTimer::Id<sofa::helper::AdvancedTimer::Timer>, interval: int) -> None:
     pass
-def setOutputType(id: object, newOutputType: str) -> None:
+def setOutputType(id: sofa::helper::AdvancedTimer::Id<sofa::helper::AdvancedTimer::Timer>, newOutputType: str) -> None:
     pass
 def stepBegin(id: str) -> None:
     pass

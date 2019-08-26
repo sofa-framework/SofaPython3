@@ -2,16 +2,21 @@
               SofaRuntime
               -----------------------
 
+              .. autosummary::
+                  :toctree:_autosummary/_autosummary
+                  SofaRuntime.importPlugin
+
+
               Example of use:
-              .. code-block:: python
+                .. code-block:: python
 
-              import SofaRuntime
-              SofaRuntime.importPlugin("MechanicalObject"")
+                   import SofaRuntime
+                   SofaRuntime.importPlugin("MechanicalObject"")
 
-              .. automethod::
-              :toctree: _autosummary
+              #.. automethod:: importPlugin
 
-              SofaRuntime.importPlugin
+
+
               """
 import SofaRuntime
 from typing import *
@@ -28,5 +33,5 @@ __all__  = [
 ]
 def importPlugin(arg0: str) -> bool:
     pass
-DataRepository = None # type: Sofa.Helper.System.FileRepository # value = <Sofa.Helper.System.FileRepository object at 0x7f71ee33a1b8>
-PluginRepository = None # type: Sofa.Helper.System.FileRepository # value = <Sofa.Helper.System.FileRepository object at 0x7f71ee0583b0>
+DataRepository = None # type: Sofa.Helper.System.FileRepository # value = <Sofa.Helper.System.FileRepository object at 0x7f981c060f10>
+PluginRepository = None # type: Sofa.Helper.System.FileRepository # value = <Sofa.Helper.System.FileRepository object at 0x7f981c060f80>

@@ -13,5 +13,5 @@ def isKeyPressed(arg0: int) -> bool:
     pass
 def isMouseButtonPressed(arg0: int) -> bool:
     pass
-def mousePosition() -> object:
+def mousePosition() -> Tuple[int, int]:
     pass
