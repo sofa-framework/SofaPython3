@@ -244,6 +244,7 @@ void moduleAddBaseObject(py::module& m)
     p.def("getLinkPath", &getLinkPath, sofapython3::doc::baseObject::getLinkPath);
     p.def("getAsACreateObjectParameter", getAsACreateObjectParameter, sofapython3::doc::baseObject::getAsACreateObjectParameter);
     p.def("setSrc", setSrc, sofapython3::doc::baseObject::setSrc);
+    p.def("computeBBox", &BaseObject::computeBBox, sofapython3::doc::baseObject::computeBBox);
     p.def("__getitem__", __getitem__, sofapython3::doc::baseObject::__getitem__);
 }
 
