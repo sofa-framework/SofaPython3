@@ -2,6 +2,26 @@
 
 namespace sofapython3::doc::baseLink
 {
+static auto baseLinkClass =
+        R"(
+        A Link allows you to access a sofa component from another one anywhere in the simulation graph.
+        In your scene creation file, it usually appear as : input=@../component.
+
+        :Example of use:
+
+        .. code-block:: python
+
+            import Sofa.Core
+            import SofaRuntime
+            SofaRuntime.importPlugin("SofaAllCommonComponents")
+
+            root = Sofa.Core.Node("root")
+            root.addObject("MechanicalObject", name="t")
+            link = root.findLink("mechanicalState") # access the link
+            link.getValueString() # will print '@/t'
+            link.getHelp() # will print the help message for all mechanical states
+        )";
+
 static auto getName =
         R"(
         Get the name of the link.

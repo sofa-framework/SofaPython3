@@ -56,7 +56,7 @@ PYBIND11_MODULE(Core, core)
                Sofa.Core.DataEngine
 
 
-           Utilitary classe:
+           Utilitary classes:
 
            .. autosummary::
                :toctree: _autosummary/_autosummary
@@ -66,6 +66,7 @@ PYBIND11_MODULE(Core, core)
                Sofa.Core.DataContainer
                Sofa.Core.DataString
                Sofa.Core.DataVectorString
+               #Sofa.Core.WriteAccessor
        )doc";
 
     moduleAddPythonScriptEvent();

@@ -14,6 +14,7 @@ using sofa::simulation::Simulation;
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
+#include "Submodule_Simulation_doc.h"
 
 namespace sofapython3
 {
@@ -23,36 +24,14 @@ PYBIND11_MODULE(Simulation, simulation)
     if(!sofa::simulation::getSimulation())
         sofa::simulation::setSimulation(new DAGSimulation());
 
-    simulation.doc() = R"doc(
-           Simulation
-           -----------------------
+    simulation.doc() =sofapython3::doc::simulation::Class;
 
-           Example:
-
-              .. code-block:: python
-
-                import Sofa
-                n = Sofa.Core.Node("MyNode"")
-                Sofa.Simulation.init(root)
-                Sofa.Simulation.print(root)
-
-           Functions:
-
-           .. autosummary::
-               Sofa.Simulation.animate
-               Sofa.Simulation.init
-               Sofa.Simulation.print
-               Sofa.Simulation.reset
-               Sofa.Simulation.load
-               Sofa.Simulation.unload
-       )doc";
-
-    simulation.def("print", [](Node* n){ sofa::simulation::getSimulation()->print(n); });
-    simulation.def("animate", [](Node* n, SReal dt=0.0){ sofa::simulation::getSimulation()->animate(n, dt); });
-    simulation.def("init", [](Node* n){ sofa::simulation::getSimulation()->init(n); });
-    simulation.def("reset", [](Node* n){ sofa::simulation::getSimulation()->reset(n); });
-    simulation.def("load", [](const std::string name){ return sofa::simulation::getSimulation()->load(name.c_str());});
-    simulation.def("unload", [](Node* n){ sofa::simulation::getSimulation()->unload(n); });
+    simulation.def("print", [](Node* n){ sofa::simulation::getSimulation()->print(n); }, sofapython3::doc::simulation::print);
+    simulation.def("animate", [](Node* n, SReal dt=0.0){ sofa::simulation::getSimulation()->animate(n, dt); },sofapython3::doc::simulation::animate);
+    simulation.def("init", [](Node* n){ sofa::simulation::getSimulation()->init(n); }, sofapython3::doc::simulation::init);
+    simulation.def("reset", [](Node* n){ sofa::simulation::getSimulation()->reset(n); }, sofapython3::doc::simulation::reset);
+    simulation.def("load", [](const std::string name){ return sofa::simulation::getSimulation()->load(name.c_str());}, sofapython3::doc::simulation::load);
+    simulation.def("unload", [](Node* n){ sofa::simulation::getSimulation()->unload(n); }, sofapython3::doc::simulation::unload);
 
 
 

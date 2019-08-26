@@ -15,7 +15,7 @@ void setHelp(BaseLink* self, const std::string value)
 
 void moduleAddBaseLink(py::module& m)
 {
-    py::class_<BaseLink> link(m, "Link");
+    py::class_<BaseLink> link(m, "Link", sofapython3::doc::baseLink::baseLinkClass);
     link.def("getName", &BaseLink::getName, sofapython3::doc::baseLink::getName);
     link.def("setName", &BaseLink::setName, sofapython3::doc::baseLink::setName);
     link.def("isMultiLink", &BaseLink::isMultiLink, sofapython3::doc::baseLink::isMultiLink);

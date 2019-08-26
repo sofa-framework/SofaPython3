@@ -505,8 +505,8 @@ void moduleAddBase(py::module &m)
     py::class_<Base, Base::SPtr> base(m, "Base", py::dynamic_attr(), doc::base::BaseClass);
     /// set & get the name as string. The alternative is to access the data field using
     /// obj.name.value = "aName"
-    base.def("getName", [](Base& b){ return b.getName(); });
-    base.def("setName", [](Base& b, const std::string& s){ b.setName(s); } );
+    base.def("getName", [](Base& b){ return b.getName(); }, sofapython3::doc::base::getName);
+    base.def("setName", [](Base& b, const std::string& s){ b.setName(s); }, sofapython3::doc::base::setName);
     base.def("getClassName",&Base::getClassName, sofapython3::doc::base::getClassName);
     base.def("getTemplateName",&Base::getTemplateName, sofapython3::doc::base::getTemplateName);
     base.def("getClass", &Base::getClass, pybind11::return_value_policy::reference, sofapython3::doc::base::getClass);

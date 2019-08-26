@@ -23,7 +23,7 @@ namespace sofapython3::doc::baseObject
 {
 static auto Class =
         R"(
-        Base class for simulation components.
+        The class object is a base class for simulation components.
 
         An object defines a part of the functionnality in the simulation
         (stores state data, specify topology, compute forces, etc).

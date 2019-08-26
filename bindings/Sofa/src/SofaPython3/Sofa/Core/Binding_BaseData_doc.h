@@ -4,8 +4,79 @@ namespace sofapython3::doc::baseData
 {
 static auto BaseDataClass =
         R"(
-        Abstract base class for Data. The purpose of a data is to store
-        all the parameters of your component.
+        The purpose of a data is to store the attributs of your component.
+
+        :Create a data field:
+
+        To create a data field, you can use the function addData, as shown in the example below. Note that the help
+        parameter allows you  to create a help message for the data field, accessible with the getHelp method.
+
+        .. code-block:: python
+
+            import Sofa.Core
+
+            root = Sofa.Core.Node("root")
+            root.addData(name="aField", value=1.0 , help="help message",group="theDataGroup",
+                type="float")
+
+        :Access the value of a data field in read-only:
+
+        Accessing a data field is easy thanks to the generalized access API. You simply need the name of the data field,
+        as shown in the following :
+
+        .. code-block:: python
+
+            import Sofa.Core
+
+            root = Sofa.Core.Node("root")
+            root.addData(name="aField", value=1.0 , help="help message",group="theDataGroup",
+                type="float")
+            valueOfaField = root.aField.value
+            print(valueOfaField) #will print '1.0'
+
+        Please note that here valueOfaField is a copy of the real value of aField. You can change its value, but it won't change the value of aField.
+
+        SOFA elements are often created with data fields, so you won't always need to create data fields.
+        For example, most SOFA elements are created with the data field `name` :
+
+        .. code-block:: python
+
+            import Sofa.Core
+
+            root = Sofa.Core.Node("rootNode")
+            print(root.name.value) #will print 'rootNode'
+
+        However, this API only allows you to access the value of a data field, but not to change it.
+
+        :Change the value of a data field:
+
+        To change the value of a data field, there are two possibilities. If the type of the data field is a scalar, you can do the following :
+
+        .. code-block:: python
+
+            import Sofa.Core
+
+            root = Sofa.Core.Node("root")
+            root.addData(name="aField", value=1.0 , help="help message",group="theDataGroup",
+                type="float")
+            root.aField = 3.0 # will change the value of aField
+            print(root.aField.value) # will print '3.0'
+
+        Or you can create a temporary pointer that will allow you to change the value of aField, instead of giving it a whole new one,
+        which is more cost effective when the type of the data field is something other than a scalar:
+
+        .. code-block:: python
+
+            import Sofa.Core
+
+            root = Sofa.Core.Node("root")
+            root.addData(name="aField", value=[0.0, 1.0, 3.0] , help="help message",group="theDataGroup",
+                type="Vec3d")
+            with root.aField.writeable() as value:
+                    value[0] = 3.0
+
+            print(root.aField.value) # will print '[3.0, 1.0, 3.0]'
+
         )";
 static auto getName =
         R"(

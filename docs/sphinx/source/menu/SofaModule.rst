@@ -19,10 +19,11 @@ in python3 interpretor (CPython, ipython, jupyter).
                 print("WARNING: missing SOFA_ROOT in you environment variable. ") 
                 sys.exit(-1)
 
-        import Sofa
+        import Sofa.Core
         import SofaRuntime
+        import Sofa.Simulation
                               
-        root = Sofa.Node("root") 
+        root = Sofa.Core.Node("root") 
         root.addChild("MechanicalObject", name="dofs")
         
         Sofa.Simulation.init(root)

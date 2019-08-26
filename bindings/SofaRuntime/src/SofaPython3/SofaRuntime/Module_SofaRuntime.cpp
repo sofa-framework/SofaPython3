@@ -71,16 +71,21 @@ PYBIND11_MODULE(SofaRuntime, m) {
               SofaRuntime
               -----------------------
 
+              .. autosummary::
+                  :toctree:_autosummary/_autosummary
+                  SofaRuntime.importPlugin
+
+
               Example of use:
-              .. code-block:: python
+                .. code-block:: python
 
-              import SofaRuntime
-              SofaRuntime.importPlugin("MechanicalObject"")
+                   import SofaRuntime
+                   SofaRuntime.importPlugin("MechanicalObject"")
 
-              .. automethod::
-              :toctree: _autosummary
+              #.. automethod:: importPlugin
 
-              SofaRuntime.importPlugin
+
+
               )doc";
 
     // Add the plugin directory to PluginRepository

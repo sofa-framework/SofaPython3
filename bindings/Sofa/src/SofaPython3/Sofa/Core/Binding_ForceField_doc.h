@@ -1,9 +1,8 @@
 #pragma once
 
-namespace sofapython3::doc::controller
+namespace sofapython3::doc::forceField
 {
-static auto Controller = R"(
-                         An Interface for user interaction on SOFA Components.
-                         Can catch events to trigger actions
+static auto forceFieldClass = R"(
+                         An overridable class to create your own customized force field.
                          )";
 }

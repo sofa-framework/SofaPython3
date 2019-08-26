@@ -66,7 +66,7 @@ void moduleAddDataDictIterator(py::module &m)
     });
 
 
-    py::class_<DataDictIterator> ddi(m, "DataDictIterator");
+    py::class_<DataDictIterator> ddi(m, "DataDictIterator", sofapython3::doc::dataDictIterator::Class);
     ddi.def("__iter__", [](DataDictIterator& d)
     {
         return d;
