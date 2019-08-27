@@ -21,7 +21,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - damien.marchal@univ-lille.fr
     - bruno.josue.marques@inria.fr
     - eve.le-guillou@centrale.centralelille.fr
-    - Jean Nicolas Brunet
-    - Thierry Gagry
+    - jean-nicolas.brunet@inria.fr
+    - thierry.gaugry@inria.fr
 ********************************************************************/
 
