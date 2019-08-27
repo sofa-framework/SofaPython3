@@ -38,5 +38,5 @@ void Binding_BaseObject_MockComponent::reinit(){
 
 
 
-int Binding_BaseObject_MockComponentClass = sofa::core::RegisterObject("This component is used to test several functions of Binding_BaseObject")
+static int Binding_BaseObject_MockComponentClass = sofa::core::RegisterObject("This component is used to test several functions of Binding_BaseObject")
         .add< Binding_BaseObject_MockComponent >();
