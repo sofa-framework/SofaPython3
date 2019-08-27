@@ -1,29 +1,38 @@
-Welcome to SofaPython3's documentation!
-=======================================
+Welcome to SofaPython3 !
+========================
 
-The project is composed of a Sofa plugin and python modules. 
+The project is python3 binding for the Sofa simulation framework.
+It is composed of one *Sofa plugin* and several *python modules*.
 
-The Sofa plugin is named SofaPython3 and it embeds a python3 interpreter and a scene loader to write scene directly using python and 
-to implement component behavior in python. 
+*Sofa plugin* embeds a python3 interpreter and a scene loader. This plugins allows you to load
+a python interpreter in a sofa simulation to write Sofa scene directly using python. It also
+permits to implement in python3 custom sofa component like ForceField, Controllers, Visitors.
 
-Apart from the SofaPython3 plugin this project also provide several python modules that exposes the different c++ components from Sofa. 
-These binding are designed to be idiomatic python3 API with tight integration for numpy. 
+Apart from the SofaPython3 plugin we also provide several *python modules* that exposes python different
+parts of Sofa.
 
-Features
---------
+The general guidelines design for these binding was to be as much as possible idiomatic python3 API
+and with tight integration for numpy.
+
+General overview
+-----------------
 The Sofa python module:
 ^^^^^^^^^^^^^^^^^^^^^^^
-Exposes the base Sofa object to build and manipulate a Sofa simulation. 
+Exposes the base Sofa object to build and manipulate a Sofa simulation.
 
-- contains 4 submodules : Sofa.Core, that contains bindings for scene components, Sofa.Simulation, that contains functions to conduct simulation, Sofa.Types, that contains default types available in Sofa, and Sofa.Helper, that contains utility functions.
-- provides a copy-less API to access the sofa Data containers 
+- contains 4 submodules :
+    - Sofa.Core, that contains bindings for scene components,
+    - Sofa.Simulation, that contains functions to conduct simulation,
+    - Sofa.Types, that contains default types available in Sofa,
+    - Sofa.Helper, that contains utility functions.
+- provides a copy-less API to access the sofa Data containers
 - allows to implement custom sofa object (ForceField,  Controller) in python
 - has docstring documentation
 
 Try it: ```python import Sofa```
 
-The SofaRuntime python module:
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The SofaRuntime python module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 - access the runtime specific stuff (GUI, GLViewers, runSofa internal status) [POC]
 - docstring with sphinx content [TBD]
 
@@ -36,8 +45,8 @@ Developer's environment
 - code completion with common editor [WIP, some editor are not working with c++ modules]
 
 
-Execution environment: 
-^^^^^^^^^^^^^^^^^^^^^^
+Execution environment
+^^^^^^^^^^^^^^^^^^^^^
 - SofaPython3 is a plugin to include a python3 environment in a Sofa scene [DONE],
 
 Try it: ```xml <RequiredPlugin='SofaPython3'/>```
@@ -51,9 +60,8 @@ Try it: ```python python3 minimalscene.py```
 - Make a full python GUI application (with UI framework like PySide2, pygame) and render an integrated sofa scene in an opengl context [POC]
  
 
-
-Global diagram of SofaPython3:
-------------------------------
+Global diagram of SofaPython3
+-----------------------------
 .. figure:: images/SP3_global_arch.png
 	:alt: How SP3 fits in the SOFA usage pipeline
 	:align: center
@@ -63,17 +71,11 @@ Global diagram of SofaPython3:
    :glob:
    :maxdepth: 1
     
+   menu/Welcome
    menu/install
    menu/SofaPlugin
    menu/SofaModule
    menu/CustomModule
-  
+   menu/Contributing
+
    
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
-

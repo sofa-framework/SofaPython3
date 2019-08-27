@@ -95,11 +95,12 @@ static SofaInitializer s;
 PYBIND11_MODULE(SofaRuntime, m) {
 
     m.doc() = R"doc(
-              SofaRuntime
-              -----------------------
+              Expose aspect specific to the application/runtime
+              -------------------------------------------------
 
               .. autosummary::
                   :toctree:_autosummary/_autosummary
+
                   SofaRuntime.importPlugin
 
 
@@ -107,20 +108,13 @@ PYBIND11_MODULE(SofaRuntime, m) {
                 .. code-block:: python
 
                    import SofaRuntime
-                   SofaRuntime.importPlugin("MechanicalObject"")
-
-              #.. automethod:: importPlugin
-
-
+                   SofaRuntime.importPlugin("MechanicalObject")
 
               )doc";
 
     // Add the plugin directory to PluginRepository
     const std::string& pluginDir = Utils::getExecutableDirectory();
     PluginRepository.addFirstPath(pluginDir);
-
-    // if( !sofa::simulation::getSimulation() )
-    //    sofa::simulation::setSimulation(new DAGSimulation());
 
     /// We need to import the project dependencies
     py::module::import("Sofa.Core");
@@ -136,7 +130,7 @@ PYBIND11_MODULE(SofaRuntime, m) {
     m.def("importPlugin", [](const std::string& name)
     {
         return simpleapi::importPlugin(name);
-    });
+    }, "import a sofa plugin into the current environment");
 
     m.add_object("DataRepository", py::cast(&sofa::helper::system::DataRepository));
     m.add_object("PluginRepository", py::cast(&sofa::helper::system::PluginRepository));

@@ -30,8 +30,8 @@ namespace sofapython3::doc::simulation {
 
 static auto Class =
         R"(
-        Sofa.Simulation
-        ---------------
+        Controlling a simulation
+        ------------------------
         Main controller of the scene.
         It defines how the scene is inited at the beginning, and updated at each time step.
         It derives from Base in order to use smart pointers and model the parameters as Datas,

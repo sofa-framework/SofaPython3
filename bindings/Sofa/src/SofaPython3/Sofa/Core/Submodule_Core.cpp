@@ -63,7 +63,8 @@ PYBIND11_MODULE(Core, core)
            Scene components
            -----------------------
 
-           Core components:
+           Core components
+           ^^^^^^^^^^^^^^^
 
            .. autosummary::
                :toctree: _autosummary/_autosummary
@@ -74,7 +75,8 @@ PYBIND11_MODULE(Core, core)
                Sofa.Core.Object
                Sofa.Core.Camera
 
-           Overridable components:
+           Overridable components
+           ^^^^^^^^^^^^^^^^^^^^^^
 
            .. autosummary::
                :toctree: _autosummary/_autosummary
@@ -84,7 +86,8 @@ PYBIND11_MODULE(Core, core)
                Sofa.Core.DataEngine
 
 
-           Utilitary classes:
+           Utilitary classes
+           ^^^^^^^^^^^^^^^^^
 
            .. autosummary::
                :toctree: _autosummary/_autosummary

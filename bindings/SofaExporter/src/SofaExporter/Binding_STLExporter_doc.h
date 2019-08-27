@@ -32,7 +32,7 @@ namespace sofapython3::doc::SofaExporter::STLExporter::write
 
 static auto docstring =
         R"(
-        Exports a STL file
+        Exports an STL file
         ---------------------------------------
 
         Will export a binary or ascii file depending on the binary flag of STLExporter

@@ -1,10 +1,11 @@
-The SofaPython3 plugin
-================================
+Using the plugin
+================
 
-The SofaPython3 plugins embeds a python interpreter into a Sofa simulation. 
+The SofaPython3 plugins allows you to embeds a python3 interpreter into an exising
+Sofa application (eg: runSofa).
 
-Using SofaPyton3 in runSofa:
-----------------------------
+Within runSofa
+--------------
 
 Using SofaPython3 in runSofa requires loading the SofaPython3 plugin in your runSofa environment.
 
@@ -21,22 +22,26 @@ Having the SofaPython3 plugin active will allow you to open scene files using th
 
 	<SOFA_build>/bin/runSofa <your_file>
 
-Using SofaPython3 from the command line:
-----------------------------------------
 
-It is possible to use Sofa in a Python3 command line, as long as the right modules are imported. The following code should cover most basic SOFA elements:
+Within a python3 interpretor
+----------------------------
+
+It is possible to use Sofa in any python3 interpreter.
+The following code should cover most basic SOFA elements:
 
 .. code-block:: python
-	
-	# to be able to create elements like a Node
+        # to be able to create sofa objects you need to first load the plugins that implement them.
+        # For simplicity you can load the plugin "SofaAllCommonComponents" that will load all most
+        # common sofa object.
+        import SofaRuntime
+        SofaRuntime.importPlugin("SofaAllCommonComponents")
+
+        # to create elements like Node or objects
 	import Sofa.Core
-	# to be able to create elements like an Object
-	import SofaRuntime
-	SofaRuntime.importPlugin("SofaAllCommonComponents")
 
 
-Create your first SOFA scene using the SofaPython3 plugin:
-----------------------------------------------------------
+Simple example
+--------------
 
 A scene in SOFA is an ordered tree of nodes representing objects (example of node: hand), with parent/child relationship (example of hand's child: finger). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is usually called "rootNode" or "root".
 
@@ -283,5 +288,9 @@ Here is the entire code of the scene :
 		sphereVisu.addObject('RigidMapping')
 
 		return rootNode
+
+
+For SofaPython2 users
+---------------------
 
 
