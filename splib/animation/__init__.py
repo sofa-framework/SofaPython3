@@ -44,4 +44,4 @@ Modules:
 """
 __all__=["animate", "easing"]
 
-from .animate import AnimationManager, AnimationManagerController, addAnimation, realTimeAnimation
+from .animate import AnimationManager, AnimationManagerController, addAnimation

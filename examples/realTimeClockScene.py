@@ -1,79 +1,33 @@
-#!/usr/bin/python3
-
 import Sofa.Core
-import Sofa.Simulation
-import SofaRuntime
-import os
-import splib.animation
-from time import time
-g_keepAnimating = True
+from splib.animation import AnimationManager, addAnimation
+import Sofa.Core
+from splib.animation import easing
+from splib.animation import AnimationManager, addAnimation
 
-def simulatedTimeLoop(root):
-    """ Here we simulate in simulated time
-    """
-    def myAnimate(target, factor):
-        #print("New rotation : "+str(target.rotation[0])+" factor is: "+str(factor))
-        target.rotation[0] += 1
+def myAnimate(target, factor):
+	with target.mstate.position.writeable() as tr:
+		tr[0][0] = -20 + easing.sineInOut(factor)*20
+	target.mstate.init()
 
-    def myOnDone(target, factor):
-        global g_keepAnimating
-        g_keepAnimating = False
-        print(g_keepAnimating)
-        print("The final angle is : " +str(target.rotation[0]))
-        print("Duration of the simulation : "+str(time() - begin))
+def Sphere(rootNode, name, position, color):
+	#Creating the sphere
+	sphere = rootNode.addChild(name)
+	sphere.addObject('MechanicalObject', name="mstate", template="Rigid3", position=position)
+    	#### Visualization of the sphere
+	sphereVisu = sphere.addChild("VisualModel")
+	sphereVisu.loader = sphereVisu.addObject('MeshObjLoader', name="loader", filename="mesh/ball.obj", scale=0.5)
+	sphereVisu.addObject('OglModel', name="model", src="@loader", color=color)
+	sphereVisu.addObject('RigidMapping')
+	return sphere
 
-    manager = splib.animation.AnimationManager(root)
-
-    splib.animation.addAnimation(myAnimate, {"target": root.te}, 3, onDone=myOnDone)
-    print("Simulated time : ")
-    begin = time()
-    while(g_keepAnimating):
-        Sofa.Simulation.animate(root,0.0)
-
-    return manager
-
-def realTimeClockLoop(root, manager):
-    """ Here we simulate in machine time, by setting the realTimeClock of the manager to True
-    """
-    def myAnimate(target, factor):
-        #print("New rotation : "+str(target.rotation[0])+" factor is: "+str(factor))
-        target.rotation[0] += 1
-
-    def myOnDone(target, factor):
-        global g_keepAnimating
-        g_keepAnimating = False
-        print("The final angle is : " +str(target.rotation[0]))
-        print("Duration of the simulation : "+str(time() - begin))
-    manager.realTimeClock = True
-
-    splib.animation.addAnimation(myAnimate, {"target": root.te}, 3, onDone=myOnDone)
-    print("Real time : ")
-    begin = time()
-    while (g_keepAnimating):
-        Sofa.Simulation.animate(root,0.0)
-
-def main():
-    
-    rpath =os.environ["SOFA_ROOT"]+"../src/share/mesh/"
-
-    # Register all the common component in the factory.
-    SofaRuntime.importPlugin("SofaAllCommonComponents")
-    
-    root = Sofa.Core.Node("root")
-    Sofa.Simulation.init(root)
-    loader = root.addObject('MeshObjLoader', name='loader',
-                            filename=rpath + "liver.obj")
-    te = root.addObject(
-        "TransformEngine", name="te", input_position=loader.position.getLinkPath(), rotation=[0,0,0])
-    mo = root.addObject("MechanicalObject", name="mo", position=te.output_position.getLinkPath())
-
-    manager = simulatedTimeLoop(root)    
-    
-    root.te.rotation[0] = 0
-    global g_keepAnimating
-    g_keepAnimating = True
-    realTimeClockLoop(root, manager)
-
-
-if __name__ == '__main__':
-    main()
+def createScene(rootNode):
+	confignode = rootNode.addChild("Config")
+	confignode.addObject('RequiredPlugin', name="SofaPython3", printLog=False)
+	manager = AnimationManager(rootNode)
+	rootNode.addObject(manager)
+	sphere1 = Sphere(rootNode, "sphere1", [-20,0,0,0,0,0,1],[1/10.0,1*0.7/10.0,0.9])
+	sphere2 = Sphere(rootNode, "sphere2", [-20,1,0,0,0,0,1],[7/10.0,7*0.7/10.0,0.9])
+	addAnimation(myAnimate, {"target": sphere1}, 5, mode="pingpong")
+	addAnimation(myAnimate, {"target": sphere2}, 5, mode="pingpong", realTimeClock=True)
+	return rootNode
+ 
