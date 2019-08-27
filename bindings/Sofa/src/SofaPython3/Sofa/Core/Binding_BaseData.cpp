@@ -25,7 +25,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - thierry.gaugry@inria.fr
 ********************************************************************/
 
-﻿#include <pybind11/numpy.h>
+#include <pybind11/numpy.h>
 #include <pybind11/eval.h>
 
 #include <sofa/defaulttype/DataTypeInfo.h>
