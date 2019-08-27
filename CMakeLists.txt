@@ -141,6 +141,7 @@ sofa_create_package(${PROJECT_NAME} ${PROJECT_VERSION} SofaPython3 "SofaPython3"
 
 set(EXAMPLES_FILES
         examples/example-forcefield.py
+        examples/example-forcefield2.py
         examples/example-scriptcontroller.py
     )
 

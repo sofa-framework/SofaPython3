@@ -37,6 +37,7 @@ set(PYTHON_FILES
     Core/Controller.py
     Core/ForceField.py
     Core/DataEngine.py
+    Core/MyRestShapeForceField.py
     Core/PythonRestShapeForceField.py
     Core/BaseLink.py
     Helper/Message.py
