@@ -34,11 +34,10 @@ namespace sofapython3
 PYBIND11_MODULE(Types, types)
 {
     types.doc() = R"doc(
-           Default types available in Sofa
+           Default data types
            -------------------------------
 
            .. autosummary::
-               Sofa.Types.Vec3
                Sofa.Types.BoundingBox
                ...
 

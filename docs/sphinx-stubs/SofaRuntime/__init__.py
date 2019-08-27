@@ -1,9 +1,10 @@
 """
-              SofaRuntime
-              -----------------------
+              Expose aspect specific to the application/runtime
+              -------------------------------------------------
 
               .. autosummary::
                   :toctree:_autosummary/_autosummary
+
                   SofaRuntime.importPlugin
 
 
@@ -11,11 +12,7 @@
                 .. code-block:: python
 
                    import SofaRuntime
-                   SofaRuntime.importPlugin("MechanicalObject"")
-
-              #.. automethod:: importPlugin
-
-
+                   SofaRuntime.importPlugin("MechanicalObject")
 
               """
 import SofaRuntime
@@ -32,6 +29,8 @@ __all__  = [
 "PluginRepository"
 ]
 def importPlugin(arg0: str) -> bool:
-    pass
-DataRepository = None # type: Sofa.Helper.System.FileRepository # value = <Sofa.Helper.System.FileRepository object at 0x7f981c060f10>
-PluginRepository = None # type: Sofa.Helper.System.FileRepository # value = <Sofa.Helper.System.FileRepository object at 0x7f981c060f80>
+    """
+import a sofa plugin into the current environment
+"""
+DataRepository = None # type: Sofa.Helper.System.FileRepository # value = <Sofa.Helper.System.FileRepository object at 0x7f7f39a2a228>
+PluginRepository = None # type: Sofa.Helper.System.FileRepository # value = <Sofa.Helper.System.FileRepository object at 0x7f7f39a2a298>

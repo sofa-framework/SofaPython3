@@ -38,8 +38,8 @@ namespace sofapython3
 
 PYBIND11_MODULE(SofaExporter, m) {
     m.doc() = R"doc(
-              SofaRuntime
-              -----------------------
+              Binding for the SofaExporter plugin
+              -----------------------------------
 
               Provides python bindings for the SofaExporter module
 
@@ -48,8 +48,10 @@ PYBIND11_MODULE(SofaExporter, m) {
 
               import SofaExporter
 
-              .. automethod::
-              :toctree: _autosummary
+              .. autosummary::
+                  :toctree: _autosummary/_autosummary
+
+                  SofaExporter.STLExporter
 
               )doc";
 

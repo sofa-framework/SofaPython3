@@ -92,7 +92,6 @@ set(SOURCE_FILES
 
 set(EXTRA_FILES
     SofaPython3Config.cmake.in
-    README.md
    )
 
 if(SP3_BUILD_TEST)
@@ -146,6 +145,20 @@ set(EXAMPLES_FILES
     )
 
 add_custom_target(Examples SOURCES ${EXAMPLES_FILES})
+
+set(DOCUMENTATION_FILES
+    README.md
+    License.md
+    docs/sphinx/source/index.rst
+    docs/sphinx/source/menu/install.rst
+    docs/sphinx/source/menu/Welcome.rst
+    docs/sphinx/source/menu/Contributing.rst
+    docs/sphinx/source/menu/SofaPlugin.rst
+    docs/sphinx/source/menu/SofaModule.rst
+    docs/sphinx/source/menu/CustomModule.rst
+    )
+
+add_custom_target(Documentation SOURCES ${DOCUMENTATION_FILES})
 
 ### Python binding
 add_subdirectory(bindings)

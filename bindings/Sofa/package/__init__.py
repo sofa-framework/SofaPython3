@@ -1,6 +1,6 @@
 """
-Sofa binding
------------------------
+Package containg the binding for the core of Sofa
+-------------------------------------------------
 
 Example of use:
   .. code-block:: python
