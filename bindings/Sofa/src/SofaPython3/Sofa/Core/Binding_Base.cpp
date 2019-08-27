@@ -376,6 +376,16 @@ py::list BindingBase::getDataFields(Base& self)
     return list;
 }
 
+py::list BindingBase::getLinks(Base& self)
+{
+    py::list list;
+    for(auto i : self.getLinks())
+    {
+        list.append(i);
+    }
+    return list;
+}
+
 void BindingBase::addData(py::object py_self, const std::string& name, py::object value, py::object defaultValue, const std::string& help, const std::string& group, std::string type)
 {
     Base* self = py::cast<Base*>(py_self);
