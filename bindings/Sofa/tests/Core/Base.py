@@ -101,8 +101,6 @@ class Test(unittest.TestCase):
         for val in TypeError_ToTest:
             self.assertRaises(TypeError, c1.addData, name="d", value=val)
 
-
-
     def test_getClassName(self):
         root = Sofa.Core.Node("root")
         self.assertEqual(root.getClassName(), "DAGNode")
@@ -111,6 +109,16 @@ class Test(unittest.TestCase):
         root = Sofa.Core.Node("root")
         c = root.addObject("MechanicalObject", name="t")
         self.assertEqual(c.getTemplateName(),"Vec3d")
+
+    def test_getDataFields(self):
+        root = Sofa.Core.Node("root")
+        c = root.addObject("MechanicalObject", name="t")
+        fields = c.getDataFields()
+
+        for data in fields:
+            print (data)
+
+
 
     def test_addExistingDataAsParentOfNewData(self):
         # TODO(@marques-bruno)

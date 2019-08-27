@@ -39,6 +39,8 @@ public:
     static void SetDataFromArray(BaseData* data, const py::array& value);
     static bool SetData(BaseData* data, pybind11::object value);
 
+    static py::list getDataFields(Base& self);
+    static py::list getLinks(Base& self);
     static void addData(py::object py_self, const std::string& name, py::object value = py::object(), py::object defaultValue = py::object(), const std::string& help = "", const std::string& group = "Property", std::string type = "");
     static void addDataFromData(Base* self, py::object d);
     static py::list __dir__(Base* self);
