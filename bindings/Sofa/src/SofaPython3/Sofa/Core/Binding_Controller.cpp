@@ -1,6 +1,7 @@
 #include <pybind11/pybind11.h>
 
 #include "Binding_Controller.h"
+#include "Binding_Controller_doc.h"
 
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/PythonFactory.h>
@@ -74,7 +75,6 @@ namespace sofapython3
 
         py::object self = py::cast(this);
         std::string name = std::string("on")+event->getClassName();
-
         /// Is there a method with this name in the class ?
         if( py::hasattr(self, name.c_str()) )
         {
@@ -103,7 +103,8 @@ namespace sofapython3
                 BaseObject,
                 py_shared_ptr<Controller>> f(m, "Controller",
                                              py::dynamic_attr(),
-                                             py::multiple_inheritance());
+                                             py::multiple_inheritance(),
+                                             sofapython3::doc::controller::Controller);
 
         f.def(py::init([](py::args& /*args*/, py::kwargs& kwargs)
         {

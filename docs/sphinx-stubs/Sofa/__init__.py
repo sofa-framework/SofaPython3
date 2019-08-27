@@ -1,37 +1,37 @@
 """
-              Sofa
-              -----------------------
+Sofa binding
+-----------------------
 
-              Example of use:
-                .. code-block:: python
+Example of use:
+  .. code-block:: python
 
-                   import Sofa
+    import Sofa.Core
+    import Sofa.Simulation
+    import SofaRuntime
+    SofaRuntime.importPlugin("SofaAllCommonComponents")
 
-                   n = Sofa.Core.Node("MyNode"")
-                   n.addChild("Node2")
-                   n.addObject("MechanicalObject", name="dofs")
+    n = Sofa.Core.Node("MyNode")
+    n.addChild("Node2")
+    n.addObject("MechanicalObject", name="dofs")
 
-                   Sofa.Simulation.init(root)
-                   Sofa.Simulation.print(root)
+    Sofa.Simulation.init(n)
+    Sofa.Simulation.print(n)
 
-              Submodules:
-                .. autosummary::
-                  :toctree: _autosummary
+Submodules:
+  .. autosummary::
+    :toctree: _autosummary
 
-                  Sofa.Core
-                  Sofa.Simulation
-                  Sofa.Types
-                  Sofa.Helper
-             """
+    Sofa.Core
+    Sofa.Simulation
+    Sofa.Types
+    Sofa.Helper
+"""
+import Sofa
 from typing import *
-from array import array
 from typing import Iterable as iterable
 from typing import Iterator as iterator
 from numpy import float64
 _Shape = Tuple[int, ...]
 __all__  = [
-"Core",
-"Helper",
-"Simulation",
-"Types"
+
 ]

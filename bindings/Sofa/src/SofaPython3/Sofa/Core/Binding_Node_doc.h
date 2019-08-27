@@ -27,27 +27,31 @@ namespace sofapython3::doc::sofa::core::Node
 
 static auto Class =
         R"(
-        Node in the scene graph
-        ---------------
-
         A Node stores other nodes and components.
+
+        A simulation in SOFA is described as a scene with an intrinsic generalized hierarchy.
+        A scene is composed of nodes organized as a tree or as a Directed Acyclic Graph (DAG).
+        The different simulated objects are described in separate nodes, and different representations
+        of a same object can be done in different sub-nodes.
 
         Example of use:
           .. code-block:: python
 
-             import Sofa
+                import Sofa.Core
 
-             # Create a new node
-             n = Sofa.Core.Node("MyNode"")
+                # Create a new node
+                n = Sofa.Core.Node("MyNode")
 
-             # Add a child node name 'Node2'
-             n.addChild("Node2")
+                # Create a new node
+                n = Sofa.Core.Node("MyNode"")
+                # Add a child node name 'Node2'
+                n.addChild("Node2")
 
-             # Add a mechanical component to MyNode
-             n.addObject("MechanicalObject", name="dofs")
+                # Add a mechanical component to MyNode
+                n.addObject("MechanicalObject", name="dofs")
 
-             Sofa.Simulation.init(root)
-             Sofa.Simulation.print(root)
+                Sofa.Simulation.init(root)
+                Sofa.Simulation.print(root)
 
         The child nodes, components and parents can be accessed using generator attributes.
 
@@ -55,7 +59,7 @@ static auto Class =
           .. code-block:: python
 
              # ...
-             n = Sofa.Core.Node("MyNode"")
+             n = Sofa.Core.Node("MyNode")
              for child in n.children:
                  print(child.name)
 
@@ -69,7 +73,7 @@ static auto Class =
           .. code-block:: python
 
              # ...
-             n = Sofa.Core.Node("MyNode"")
+             n = Sofa.Core.Node("MyNode")
              c1 = n.addChild("child1")
              c2 = n.addChild("child2")
              c2.addObject("MechanicalObject", name="dofs")
@@ -83,10 +87,6 @@ static auto Class =
              # fast access.
              n["child1.child2.dofs.position"]
 
-
-        .. autoclass:: Sofa.Node
-        :members:
-        :undoc-members:
         )";
 static auto init =
         R"(
@@ -226,7 +226,7 @@ static auto children =
         Field interface to acces the children of a node.
 
         :Example:
-        >>> n = Sofa.Core.Node("MyNode"")
+        >>> n = Sofa.Core.Node("MyNode")
         >>> for child in n.children:
         >>>     print(child.name)
         )";
@@ -235,7 +235,7 @@ static auto parents =
         R"(
         Field interface to acces the parents of a node.
         :Example:
-        >>> n = Sofa.Core.Node("MyNode"")
+        >>> n = Sofa.Core.Node("MyNode")
         >>> for parent in n.parents:
         >>>     print(parent.name)
         )";
@@ -244,7 +244,7 @@ static auto objects =
         Field interface to acces the objects of a node.
 
         :Example:
-        >>> n = Sofa.Core.Node("MyNode"")
+        >>> n = Sofa.Core.Node("MyNode")
         >>> for object in n.objects:
         >>>     print(object.name)
         )";

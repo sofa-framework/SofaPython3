@@ -4,7 +4,7 @@ class RGBAColor(numpy.ndarray):
     """A wrapping-type to manipulate Sofa data field as an RGBAColor.
 
        Eg:
-           n = Sofa.Node("root")
+           n = Sofa.Core.Node("root")
            m = n.addObject("MechanicalObject")
            c = RGBAColor(m.showColor)
            print("Red is: ", c.r())
