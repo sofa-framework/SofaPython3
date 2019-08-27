@@ -18,13 +18,15 @@ using sofa::core::ExecParams;
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/DataHelper.h>
-#include "Binding_Node.h"
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
 #include <SofaPython3/PythonFactory.h>
 using sofapython3::PythonFactory;
+
+#include "Binding_Node.h"
+#include "Binding_NodeIterator.h"
 
 using sofa::core::objectmodel::BaseObjectDescription;
 
@@ -62,54 +64,6 @@ bool checkParamUsage(BaseObjectDescription& desc)
     }
     return hasFailure;
 }
-
-void moduleAddBaseIterator(py::module &m)
-{
-    py::class_<BaseIterator> d(m, "NodeIterator");
-
-    d.def("__getitem__", [](BaseIterator& d, size_t index) -> py::object
-    {
-        if(index>=d.size(d.owner.get()))
-            throw py::index_error("Too large index '"+std::to_string(index)+"'");
-        return PythonFactory::toPython(d.get(d.owner.get(), index).get());
-    });
-
-    d.def("__getitem__", [](BaseIterator& d, const std::string& name) -> py::object
-    {
-        BaseObject* obj =d.owner->getObject(name);
-        if(obj==nullptr)
-            throw py::index_error("No existing object '"+name+"'");
-        return PythonFactory::toPython(obj);
-    });
-
-    d.def("__iter__", [](BaseIterator& d)
-    {
-        return d;
-    });
-
-    d.def("__next__", [](BaseIterator& d) -> py::object
-    {
-        if(d.index>=d.size(d.owner.get()))
-            throw py::stop_iteration();
-        return PythonFactory::toPython(d.get(d.owner.get(), d.index++).get());
-    });
-    d.def("__len__", [](BaseIterator& d) -> py::object
-    {
-        return py::cast(d.size(d.owner.get()));
-    });
-
-    d.def("at", [](BaseIterator& d, size_t index) -> py::object
-    {
-        return py::cast(d.get(d.owner.get(), index));
-    });
-    d.def("remove_at", [](BaseIterator& d, size_t index)
-    {
-        BaseNode::SPtr n(dynamic_cast<BaseNode*>(d.get(d.owner.get(), index).get()));
-        d.owner->removeChild(n);
-    });
-}
-
-
 
 py::object getItem(Node& self, std::list<std::string>& path)
 {
@@ -271,24 +225,24 @@ py::object removeChildByName(Node& n, const std::string name)
     return py::cast(node);
 }
 
-BaseIterator* property_children(Node* node)
+NodeIterator* property_children(Node* node)
 {
-    return new BaseIterator(node, [](Node* n) -> size_t { return n->child.size(); },
+    return new NodeIterator(node, [](Node* n) -> size_t { return n->child.size(); },
     [](Node* n, unsigned int index) -> Base::SPtr { return n->child[index]; });
 }
 
-BaseIterator* property_parents(Node* node)
+NodeIterator* property_parents(Node* node)
 {
-    return new BaseIterator(node, [](Node* n) -> size_t { return n->getNbParents(); },
+    return new NodeIterator(node, [](Node* n) -> size_t { return n->getNbParents(); },
     [](Node* n, unsigned int index) -> Node::SPtr {
     auto p = n->getParents();
     return static_cast<Node*>(p[index]);
 });
 }
 
-BaseIterator* property_objects(Node* node)
+NodeIterator* property_objects(Node* node)
 {
-    return new BaseIterator(node, [](Node* n) -> size_t { return n->object.size(); },
+    return new NodeIterator(node, [](Node* n) -> size_t { return n->object.size(); },
     [](Node* n, unsigned int index) -> Base::SPtr { return (n->object[index]);
 });
 }
@@ -398,17 +352,29 @@ void sendEvent(Node* self, py::object pyUserData, char* eventName)
 }
 
 void moduleAddNode(py::module &m) {
-    moduleAddBaseIterator(m);
+    /// Register the complete parent-child relationship between Base and Node to the pybind11
+    /// typing system.
+    py::class_<sofa::core::objectmodel::BaseNode,
+            sofa::core::objectmodel::Base,
+            sofa::core::objectmodel::BaseNode::SPtr>(m, "BaseNode");
+
+    py::class_<sofa::core::objectmodel::BaseContext,
+            sofa::core::objectmodel::Base,
+            sofa::core::objectmodel::BaseContext::SPtr>(m, "BaseContext");
+
+    py::class_<sofa::core::objectmodel::Context,
+            sofa::core::objectmodel::BaseContext,
+            sofa::core::objectmodel::Context::SPtr>(m,"Context");
+
+    py::class_<Node, sofa::core::objectmodel::BaseNode,
+            sofa::core::objectmodel::Context, Node::SPtr>
+            p(m, "Node", sofapython3::doc::sofa::core::Node::Class);
 
     PythonFactory::registerType<sofa::simulation::graph::DAGNode>(
                 [](sofa::core::objectmodel::Base* object)
     {
         return py::cast(static_cast<Node*>(object->toBaseNode()));
     });
-
-    py::class_<Node, sofa::core::objectmodel::BaseNode,
-            sofa::core::objectmodel::Context, Node::SPtr>
-            p(m, "Node", sofapython3::doc::sofa::core::Node::Class);
 
     p.def(py::init(&__init__noname), sofapython3::doc::sofa::core::Node::init);
     p.def(py::init(&__init__), sofapython3::doc::sofa::core::Node::init1Arg, py::arg("name"));
