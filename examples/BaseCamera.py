@@ -1,7 +1,7 @@
 import Sofa.Core
-from Sofa.splib.constants import *
+from Sofa.constants import *
 from random import randint
-from Sofa.splib.animation import easing
+from splib.animation import easing
 import math
 import numpy
 

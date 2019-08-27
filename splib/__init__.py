@@ -7,5 +7,5 @@
 
 
 """
-__all__=["animation", "constants"]
+__all__=["animation"]
 

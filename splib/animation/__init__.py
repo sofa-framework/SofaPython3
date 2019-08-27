@@ -28,7 +28,7 @@ splib.animation.realTimeAnimation
 
 splib.animation.AnimationManagerController
 ******************************************
-.. autoclass:: AnimationManagerController(Sofa.PythonScriptController)
+.. autoclass:: AnimationManagerController(Sofa.Core.Controller)
    :members: addAnimation
 
 

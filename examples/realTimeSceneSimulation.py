@@ -1,5 +1,5 @@
 from time import time
-import Sofa.splib.animation
+import splib.animation
 import Sofa.Core
 
 
@@ -16,7 +16,7 @@ def createScene(rootNode):
 	confignode.addObject('RequiredPlugin', name="SofaPython3", printLog=False)
 	confignode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
 
-	Sofa.splib.animation.AnimationManager(rootNode, 1/100.0)
+	splib.animation.AnimationManager(rootNode, 1/100.0)
 
 
 	

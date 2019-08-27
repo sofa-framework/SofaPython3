@@ -4,7 +4,7 @@ import Sofa.Core
 import Sofa.Simulation
 import SofaRuntime
 import os
-import Sofa.splib.animation
+import splib.animation
 from time import time
 
 
@@ -35,13 +35,13 @@ def realTimeLoop(root):
         print("The final angle is : " +str(target.rotation[0]))
         print("Duration of the simulation : "+str(time() - begin))
     # Now, we simulate in real time, the real time step is here 0.01
-    manager = Sofa.splib.animation.AnimationManager(root, 0.01)
+    manager = splib.animation.AnimationManager(root, 0.01)
 
-    Sofa.splib.animation.addAnimation(myAnimate, {"target": root.te}, 3, onDone=myOnDone)
+    splib.animation.addAnimation(myAnimate, {"target": root.te}, 3, onDone=myOnDone)
     print("Real time : ")
     begin = time()
 
-    Sofa.splib.animation.realTimeAnimation(root,0.01,4)
+    splib.animation.realTimeAnimation(root,0.01,4)
 
 def main():
     rpath =os.environ["SOFA_ROOT"]+"../src/share/mesh/"

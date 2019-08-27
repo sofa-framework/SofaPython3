@@ -1,6 +1,6 @@
 import Sofa.Core
-import Sofa.splib.animation
-from Sofa.splib.animation import easing
+from splib.animation import easing
+from splib.animation import AnimationManager, addAnimation
 functionDict = {
 	"sphere0":easing.sineIn, "sphere1":easing.sineOut, "sphere2":easing.sineInOut,
 	"sphere3":easing.quadIn, "sphere4":easing.quadOut, "sphere5":easing.quadInOut,
@@ -34,12 +34,12 @@ def createScene(rootNode):
 	confignode = rootNode.addChild("Config")
 	confignode.addObject('RequiredPlugin', name="SofaPython3", printLog=False)
 
-	manager = Sofa.splib.animation.AnimationManager(rootNode)
+	manager = AnimationManager(rootNode)
 	spheres = []
 	for i in range(22):
 		sphere = Sphere(rootNode, "sphere"+str(i), [-20,i,0,0,0,0,1],[i/10.0,i*0.7/10.0,0.9])
 		spheres.append(sphere)
-		Sofa.splib.animation.addAnimation(myAnimate, {"target": sphere}, 10.0, mode="pingpong")
+		addAnimation(myAnimate, {"target": sphere}, 10.0, mode="pingpong")
 	Sofa.Simulation.init(rootNode)
 	print(len(spheres))
 	return rootNode

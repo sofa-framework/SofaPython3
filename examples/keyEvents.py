@@ -1,5 +1,5 @@
 import Sofa.Core
-from Sofa.splib.constants import *
+from Sofa.constants import *
 
 functionDict = { 
 	# Arrows

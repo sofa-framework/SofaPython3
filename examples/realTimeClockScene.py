@@ -4,7 +4,7 @@ import Sofa.Core
 import Sofa.Simulation
 import SofaRuntime
 import os
-import Sofa.splib.animation
+import splib.animation
 from time import time
 g_keepAnimating = True
 
@@ -22,9 +22,9 @@ def simulatedTimeLoop(root):
         print("The final angle is : " +str(target.rotation[0]))
         print("Duration of the simulation : "+str(time() - begin))
 
-    manager = Sofa.splib.animation.AnimationManager(root)
+    manager = splib.animation.AnimationManager(root)
 
-    Sofa.splib.animation.addAnimation(myAnimate, {"target": root.te}, 3, onDone=myOnDone)
+    splib.animation.addAnimation(myAnimate, {"target": root.te}, 3, onDone=myOnDone)
     print("Simulated time : ")
     begin = time()
     while(g_keepAnimating):
@@ -46,7 +46,7 @@ def realTimeClockLoop(root, manager):
         print("Duration of the simulation : "+str(time() - begin))
     manager.realTimeClock = True
 
-    Sofa.splib.animation.addAnimation(myAnimate, {"target": root.te}, 3, onDone=myOnDone)
+    splib.animation.addAnimation(myAnimate, {"target": root.te}, 3, onDone=myOnDone)
     print("Real time : ")
     begin = time()
     while (g_keepAnimating):

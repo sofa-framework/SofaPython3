@@ -1,5 +1,5 @@
 import numpy as np
-from Sofa.splib.animation import easing
+from splib.animation import easing
 import matplotlib.pyplot as plt
 
 Nbpoints = 150 
