@@ -92,7 +92,6 @@ set(SOURCE_FILES
 
 set(EXTRA_FILES
     SofaPython3Config.cmake.in
-    README.md
    )
 
 if(SP3_BUILD_TEST)
@@ -141,10 +140,25 @@ sofa_create_package(${PROJECT_NAME} ${PROJECT_VERSION} SofaPython3 "SofaPython3"
 
 set(EXAMPLES_FILES
         examples/example-forcefield.py
+        examples/example-forcefield2.py
         examples/example-scriptcontroller.py
     )
 
 add_custom_target(Examples SOURCES ${EXAMPLES_FILES})
+
+set(DOCUMENTATION_FILES
+    README.md
+    License.md
+    docs/sphinx/source/index.rst
+    docs/sphinx/source/menu/install.rst
+    docs/sphinx/source/menu/Welcome.rst
+    docs/sphinx/source/menu/Contributing.rst
+    docs/sphinx/source/menu/SofaPlugin.rst
+    docs/sphinx/source/menu/SofaModule.rst
+    docs/sphinx/source/menu/CustomModule.rst
+    )
+
+add_custom_target(Documentation SOURCES ${DOCUMENTATION_FILES})
 
 ### Python binding
 add_subdirectory(bindings)

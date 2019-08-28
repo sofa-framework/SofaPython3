@@ -1,3 +1,30 @@
+/*********************************************************************
+Copyright 2019, CNRS, University of Lille, INRIA
+
+This file is part of sofaPython3
+
+sofaPython3 is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+sofaPython3 is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
+*********************************************************************/
+/********************************************************************
+ Contributors:
+    - damien.marchal@univ-lille.fr
+    - bruno.josue.marques@inria.fr
+    - eve.le-guillou@centrale.centralelille.fr
+    - jean-nicolas.brunet@inria.fr
+    - thierry.gaugry@inria.fr
+********************************************************************/
+
 
 #include <pybind11/pybind11.h>
 
@@ -366,6 +393,26 @@ void checkAmbiguousCreation(py::object& py_self, const std::string& name, const 
         msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getName() << ": Component alread has a python attribute with such name in __dict__";
 }
 
+py::list BindingBase::getDataFields(Base& self)
+{
+    py::list list;
+    for(auto i : self.getDataFields())
+    {
+        list.append(PythonFactory::toPython(i));
+    }
+    return list;
+}
+
+py::list BindingBase::getLinks(Base& self)
+{
+    py::list list;
+    for(auto i : self.getLinks())
+    {
+        list.append(i);
+    }
+    return list;
+}
+
 void BindingBase::addData(py::object py_self, const std::string& name, py::object value, py::object defaultValue, const std::string& help, const std::string& group, std::string type)
 {
     Base* self = py::cast<Base*>(py_self);
@@ -514,7 +561,7 @@ void moduleAddBase(py::module &m)
     base.def("getDefinitionSourceFileName", &Base::getDefinitionSourceFileName, sofapython3::doc::base::getDefinitionSourceFileName);
     base.def("getInstanciationSourceFilePos", &Base::getInstanciationSourceFilePos, sofapython3::doc::base::getInstanciationSourceFilePos);
     base.def("getInstanciationFileName", &Base::getInstanciationSourceFileName, sofapython3::doc::base::getInstanciationSourceFilePos);
-    base.def("getDataFields", &Base::getDataFields, pybind11::return_value_policy::reference, sofapython3::doc::base::getDataFields);
+    base.def("getDataFields", &BindingBase::getDataFields, pybind11::return_value_policy::reference, sofapython3::doc::base::getDataFields);
     base.def("findLink", &Base::findLink, pybind11::return_value_policy::reference, sofapython3::doc::base::findLink);
     base.def("getLinks", &Base::getLinks, pybind11::return_value_policy::reference, sofapython3::doc::base::getLinks);
     base.def("addData", &BindingBase::addData, "name"_a, "value"_a = py::none(), "default"_a = py::none(), "help"_a = "", "group"_a = "", "type"_a = "", sofapython3::doc::base::addData);

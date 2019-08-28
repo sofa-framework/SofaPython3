@@ -1,14 +1,14 @@
 /*********************************************************************
-Copyright 2019, Inria, CNRS, University of Lille
+Copyright 2019, CNRS, University of Lille, INRIA
 
-This file is part of runSofa2
+This file is part of sofaPython3
 
-runSofa2 is free software: you can redistribute it and/or modify
+sofaPython3 is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-runSofa2 is distributed in the hope that it will be useful,
+sofaPython3 is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -19,7 +19,12 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 /********************************************************************
  Contributors:
     - damien.marchal@univ-lille.fr
+    - bruno.josue.marques@inria.fr
+    - eve.le-guillou@centrale.centralelille.fr
+    - jean-nicolas.brunet@inria.fr
+    - thierry.gaugry@inria.fr
 ********************************************************************/
+
 #pragma once
 
 namespace sofapython3::doc::sofa::core::Node

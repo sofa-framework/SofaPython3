@@ -1,3 +1,30 @@
+/*********************************************************************
+Copyright 2019, CNRS, University of Lille, INRIA
+
+This file is part of sofaPython3
+
+sofaPython3 is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+sofaPython3 is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
+*********************************************************************/
+/********************************************************************
+ Contributors:
+    - damien.marchal@univ-lille.fr
+    - bruno.josue.marques@inria.fr
+    - eve.le-guillou@centrale.centralelille.fr
+    - jean-nicolas.brunet@inria.fr
+    - thierry.gaugry@inria.fr
+********************************************************************/
+
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
 *                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
@@ -47,6 +74,7 @@ using sofa::simulation::SceneLoaderFactory;
 //#include "Python.h"
 
 #include <pybind11/embed.h>
+#include <pybind11/eval.h>
 namespace py = pybind11;
 
 #include "SceneLoaderPY3.h"
@@ -200,7 +228,7 @@ void PythonEnvironment::Init()
     /// Add the directories listed in the SOFAPYTHON_PLUGINS_PATH environnement
     /// variable (colon-separated) to sys.path
     char * pathVar = getenv("SOFAPYTHON_PLUGINS_PATH");
-    if (pathVar != NULL)
+    if (pathVar != nullptr)
     {
         std::istringstream ss(pathVar);
         std::string path;
@@ -337,10 +365,20 @@ bool PythonEnvironment::runString(const std::string& script)
     return true;
 }
 
+bool PythonEnvironment::runFile(const std::string& filename,
+                                       const std::vector<std::string>& arguments)
+{
+    py::object main = py::module::import(filename.c_str()).attr("__main__");
+
+    main(arguments);
+    return true;
+}
+
+
 std::string PythonEnvironment::getStackAsString()
 {
     gil lock;
-    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaPython"));
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaRuntime"));
     PyObject* pFunc = PyDict_GetItemString(pDict, "getStackForSofa");
     if (PyCallable_Check(pFunc))
     {
@@ -354,7 +392,7 @@ std::string PythonEnvironment::getStackAsString()
 
 std::string PythonEnvironment::getPythonCallingPointString()
 {
-    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaPython"));
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaRuntime"));
     PyObject* pFunc = PyDict_GetItemString(pDict, "getPythonCallingPointAsString");
     if (PyCallable_Check(pFunc))
     {
@@ -368,7 +406,7 @@ std::string PythonEnvironment::getPythonCallingPointString()
 
 sofa::helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAsFileInfo()
 {
-    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaPython"));
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaRuntime"));
     PyObject* pFunc = PyDict_GetItemString(pDict, "getPythonCallingPoint");
     if (pFunc && PyCallable_Check(pFunc))
     {
@@ -407,7 +445,7 @@ void PythonEnvironment::SceneLoaderListerner::rightBeforeLoadingScene()
 {
     gil lock;
     // unload python modules to force importing their eventual modifications
-    PyRun_SimpleString("SofaPython.unloadModules()");
+    PyRun_SimpleString("SofaRuntime.unloadModules()");
 }
 
 void PythonEnvironment::setAutomaticModuleReload( bool b )
@@ -421,7 +459,7 @@ void PythonEnvironment::setAutomaticModuleReload( bool b )
 void PythonEnvironment::excludeModuleFromReload( const std::string& moduleName )
 {
     gil lock;
-    PyRun_SimpleString( std::string( "try: SofaPython.__SofaPythonEnvironment_modulesExcludedFromReload.append('" + moduleName + "')\nexcept:pass" ).c_str() );
+    PyRun_SimpleString( std::string( "try: SofaRuntime.__SofaPythonEnvironment_modulesExcludedFromReload.append('" + moduleName + "')\nexcept:pass" ).c_str() );
 }
 
 static const bool debug_gil = false;

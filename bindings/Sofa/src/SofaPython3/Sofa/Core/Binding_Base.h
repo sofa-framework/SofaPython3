@@ -1,3 +1,30 @@
+/*********************************************************************
+Copyright 2019, CNRS, University of Lille, INRIA
+
+This file is part of sofaPython3
+
+sofaPython3 is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+sofaPython3 is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
+*********************************************************************/
+/********************************************************************
+ Contributors:
+    - damien.marchal@univ-lille.fr
+    - bruno.josue.marques@inria.fr
+    - eve.le-guillou@centrale.centralelille.fr
+    - jean-nicolas.brunet@inria.fr
+    - thierry.gaugry@inria.fr
+********************************************************************/
+
 #pragma once
 
 #include <pybind11/pybind11.h>
@@ -39,6 +66,8 @@ public:
     static void SetDataFromArray(BaseData* data, const py::array& value);
     static bool SetData(BaseData* data, pybind11::object value);
 
+    static py::list getDataFields(Base& self);
+    static py::list getLinks(Base& self);
     static void addData(py::object py_self, const std::string& name, py::object value = py::object(), py::object defaultValue = py::object(), const std::string& help = "", const std::string& group = "Property", std::string type = "");
     static void addDataFromData(Base* self, py::object d);
     static py::list __dir__(Base* self);

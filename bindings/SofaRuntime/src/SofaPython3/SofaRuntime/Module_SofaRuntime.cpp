@@ -1,3 +1,30 @@
+/*********************************************************************
+Copyright 2019, CNRS, University of Lille, INRIA
+
+This file is part of sofaPython3
+
+sofaPython3 is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+sofaPython3 is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
+*********************************************************************/
+/********************************************************************
+ Contributors:
+    - damien.marchal@univ-lille.fr
+    - bruno.josue.marques@inria.fr
+    - eve.le-guillou@centrale.centralelille.fr
+    - jean-nicolas.brunet@inria.fr
+    - thierry.gaugry@inria.fr
+********************************************************************/
+
 #include <pybind11/eval.h>
 namespace py = pybind11;
 
@@ -68,11 +95,12 @@ static SofaInitializer s;
 PYBIND11_MODULE(SofaRuntime, m) {
 
     m.doc() = R"doc(
-              SofaRuntime
-              -----------------------
+              Expose aspect specific to the application/runtime
+              -------------------------------------------------
 
               .. autosummary::
                   :toctree:_autosummary/_autosummary
+
                   SofaRuntime.importPlugin
 
 
@@ -80,20 +108,13 @@ PYBIND11_MODULE(SofaRuntime, m) {
                 .. code-block:: python
 
                    import SofaRuntime
-                   SofaRuntime.importPlugin("MechanicalObject"")
-
-              #.. automethod:: importPlugin
-
-
+                   SofaRuntime.importPlugin("MechanicalObject")
 
               )doc";
 
     // Add the plugin directory to PluginRepository
     const std::string& pluginDir = Utils::getExecutableDirectory();
     PluginRepository.addFirstPath(pluginDir);
-
-    // if( !sofa::simulation::getSimulation() )
-    //    sofa::simulation::setSimulation(new DAGSimulation());
 
     /// We need to import the project dependencies
     py::module::import("Sofa.Core");
@@ -109,7 +130,7 @@ PYBIND11_MODULE(SofaRuntime, m) {
     m.def("importPlugin", [](const std::string& name)
     {
         return simpleapi::importPlugin(name);
-    });
+    }, "import a sofa plugin into the current environment");
 
     m.add_object("DataRepository", py::cast(&sofa::helper::system::DataRepository));
     m.add_object("PluginRepository", py::cast(&sofa::helper::system::PluginRepository));

@@ -1,3 +1,30 @@
+/*********************************************************************
+Copyright 2019, CNRS, University of Lille, INRIA
+
+This file is part of sofaPython3
+
+sofaPython3 is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+sofaPython3 is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
+*********************************************************************/
+/********************************************************************
+ Contributors:
+    - damien.marchal@univ-lille.fr
+    - bruno.josue.marques@inria.fr
+    - eve.le-guillou@centrale.centralelille.fr
+    - jean-nicolas.brunet@inria.fr
+    - thierry.gaugry@inria.fr
+********************************************************************/
+
 
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/objectmodel/BaseContext.h>
@@ -36,7 +63,8 @@ PYBIND11_MODULE(Core, core)
            Scene components
            -----------------------
 
-           Core components:
+           Core components
+           ^^^^^^^^^^^^^^^
 
            .. autosummary::
                :toctree: _autosummary/_autosummary
@@ -47,7 +75,8 @@ PYBIND11_MODULE(Core, core)
                Sofa.Core.Object
                Sofa.Core.Camera
 
-           Overridable components:
+           Overridable components
+           ^^^^^^^^^^^^^^^^^^^^^^
 
            .. autosummary::
                :toctree: _autosummary/_autosummary
@@ -57,7 +86,8 @@ PYBIND11_MODULE(Core, core)
                Sofa.Core.DataEngine
 
 
-           Utilitary classes:
+           Utilitary classes
+           ^^^^^^^^^^^^^^^^^
 
            .. autosummary::
                :toctree: _autosummary/_autosummary
