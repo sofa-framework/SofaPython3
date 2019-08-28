@@ -49,7 +49,7 @@ Try it: ```python python3 minimalscene.py```
 
 - Access to Sofa simulation within the MathLab python interpreter [WIP-POC].  
 - Make a full python GUI application (with UI framework like PySide2, pygame) and render an integrated sofa scene in an opengl context [POC]
- 
+
 
 
 Global diagram of SofaPython3:
@@ -57,6 +57,7 @@ Global diagram of SofaPython3:
 .. figure:: images/SP3_global_arch.png
 	:alt: How SP3 fits in the SOFA usage pipeline
 	:align: center
+
 
 
 .. toctree::

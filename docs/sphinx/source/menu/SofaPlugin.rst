@@ -27,12 +27,15 @@ Using SofaPython3 from the command line:
 It is possible to use Sofa in a Python3 command line, as long as the right modules are imported. The following code should cover most basic SOFA elements:
 
 .. code-block:: python
-	
-	# to be able to create elements like a Node
+
+        # to be able to create sofa objects you need to first load the plugins that implement them.
+        # For simplicity you can load the plugin "SofaAllCommonComponents" that will load all most
+        # common sofa object.
+        import SofaRuntime
+        SofaRuntime.importPlugin("SofaAllCommonComponents")
+
+        # to create elements like Node or objects
 	import Sofa.Core
-	# to be able to create elements like an Object
-	import SofaRuntime
-	SofaRuntime.importPlugin("SofaAllCommonComponents")
 
 
 Create your first SOFA scene using the SofaPython3 plugin:
