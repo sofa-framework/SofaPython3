@@ -1,3 +1,7 @@
+"""
+ASCII code in hexadecimal
+"""
+
 leftarrow = chr(18)
 rightarrow = chr(20)
 uparrow = chr(19)

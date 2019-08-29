@@ -151,7 +151,6 @@ set(DOCUMENTATION_FILES
     License.md
     docs/sphinx/source/index.rst
     docs/sphinx/source/menu/install.rst
-    docs/sphinx/source/menu/Welcome.rst
     docs/sphinx/source/menu/Contributing.rst
     docs/sphinx/source/menu/SofaPlugin.rst
     docs/sphinx/source/menu/SofaModule.rst

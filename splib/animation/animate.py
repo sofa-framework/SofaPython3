@@ -1,4 +1,27 @@
 # -*- coding: utf-8 -*-
+"""
+Module for a better control over animations in Sofa
+------------------------------------------------------------------
+
+splib.animation.Animation
+*************************
+.. autoclass:: Animation
+   :members: __init__
+
+splib.animation.AnimationManager
+********************************
+.. autoclass:: AnimationManager
+
+splib.animation.AnimationManagerController
+******************************************
+.. autoclass:: AnimationManagerController(Sofa.Core.Controller)
+
+splib.animation.addAnimation
+****************************
+.. autofunction:: addAnimation
+
+"""
+
 import Sofa
 import Sofa.Core
 import Sofa.Types
@@ -7,14 +30,12 @@ from time import time
 from time import sleep
 
 class Animation(object):
-    """An animation clip that trigger callback at regular intervales for a given duration.
-           :param mode: specify how the animation will continue (None, "loop", "pingpong")
-           :param duration: the duration of the animation in seconds.
-           :param onUpdate: callback function called each update.
-           :param onDone: callback function called when the animation is terminated.
-           :param params: a dictionnary with user specified extra parameters that are passed to the callback.
-    Example of use:
+    """An animation clip that triggers a callback at regular intervales for a given duration.
+
+    :Example of use:
+
     .. code-block:: python
+
         def createScene(rootNode):
             AnimationManager(rootNode)
             def onUpdate(target, factor):
@@ -24,6 +45,16 @@ class Animation(object):
             animate(onUpdate, {"target" : rootNode }, 12, onDone=onDone)
     """
     def __init__(self, duration, mode, onUpdate, params, realTimeClock, onDone=None):
+        """
+        :param str mode: specify how the animation will continue (None, "loop", "pingpong")
+        :param float duration: the duration of the animation in seconds.
+        :param function onUpdate: callback function called each update.
+        :param function onDone: callback function called when the animation is terminated.
+        :param dict params: a dictionnary with user specified extra parameters that are passed to the callback.
+
+        """
+
+
         if 'startTime' in params:
             self.startTime = params['startTime']
         else:
@@ -126,19 +157,58 @@ def addAnimation(onUpdate, params, duration, mode="once", onDone=None, realTimeC
 
     Animation can be added from any code location (createScene, PythonScriptController)
 
+    :param function onUpdate: the function to execute at every step of the simulation
+    :param dict params: a dictionnary with user specified extra parameters
     :param float duration: duration of the animation in seconds.
     :param str mode: once, loop, pingpong
+    :param function onDone: the callback function to execute at the end of the animation
+    :param bool realTimeClock: sets the clock of the animation to machine time or simulation time
 
-    Example:
-        .. sourcecode:: python
+    :Example of use:
 
-            def myAddAnimation(target, factor):
-                print("I should do something on: "+target.name)
+    .. image:: ../../../../images/realTimeClockScene.gif
+            :alt: Animation of the example scene
+            :align: center
+            :height: 250pt
 
+    This example creates two spheres, with one moving in machine time and the other in simulated time.
 
-            def createScene(rootNode)
-                AnimationManager(rootNode)
-                addAnimation(myAddAnimation, {"target" : rootNode }, 10)
+    .. sourcecode:: python
+
+        import Sofa.Core
+        from splib.animation import AnimationManager, addAnimation
+        from splib.animation import easing
+
+        def myAnimate(target, factor):
+                with target.mstate.position.writeable() as tr:
+                        tr[0][0] = -20 + easing.sineInOut(factor)*20
+                target.mstate.init()
+
+        def Sphere(rootNode, name, position, color):
+                #Creating the sphere
+                sphere = rootNode.addChild(name)
+                sphere.addObject('MechanicalObject', name="mstate", template="Rigid3",
+                    position=position)
+                #### Visualization of the sphere
+                sphereVisu = sphere.addChild("VisualModel")
+                sphereVisu.loader = sphereVisu.addObject('MeshObjLoader', name="loader",
+                    filename="mesh/ball.obj", scale=0.5)
+                sphereVisu.addObject('OglModel', name="model", src="@loader", color=color)
+                sphereVisu.addObject('RigidMapping')
+                return sphere
+
+        def createScene(rootNode):
+                confignode = rootNode.addChild("Config")
+                confignode.addObject('RequiredPlugin', name="SofaPython3", printLog=False)
+                manager = AnimationManager(rootNode)
+                rootNode.addObject(manager)
+                sphere1 = Sphere(rootNode, "sphere1", [-20,0,0,0,0,0,1],[1/10.0,1*0.7/10.0,0.9])
+                sphere2 = Sphere(rootNode, "sphere2", [-20,1,0,0,0,0,1],[7/10.0,7*0.7/10.0,0.9])
+                addAnimation(myAnimate, {"target": sphere1}, 5, mode="pingpong")
+                addAnimation(myAnimate, {"target": sphere2}, 5, mode="pingpong",
+                    realTimeClock=True)
+                return rootNode
+
     """
     if manager == None:
         raise Exception("Missing manager in this scene")
@@ -152,10 +222,10 @@ def AnimationManager(node):
     must be added to the scene. It has in charge, at each time step
     to update all the running animations.
 
-    Returns:
+    :Returns:
         AnimationManagerController
 
-    Example:
+    :Example of use:
         .. sourcecode:: python
 
             def createScene(rootNode)

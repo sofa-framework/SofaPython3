@@ -1,3 +1,7 @@
+"""
+ASCII code in decimal
+"""
+
 leftarrow = 18
 rightarrow = 20
 uparrow = 19

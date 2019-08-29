@@ -1,14 +1,45 @@
 # -*- coding: utf-8 -*-
 """
-Easing function to use in animation
+Easing functions for smoother animations
+----------------------------------------
+Easing functions allow you to apply custom mathematical formulas to your animations. It helps making the animation smoother.
+You can see below the different behaviors of the easing functions available in SofaPython3.
+
+.. image:: ../../../../images/easingScene.gif
+        :alt: Different behavior of the easing functions available in SofaPython3
+        :align: center
+        :height: 250pt
+
+:Easing function to use in animation:
+
+.. autofunction:: LinearRamp
+.. autofunction:: sineIn
+.. autofunction:: sineOut
+.. autofunction:: sineInOut
+.. autofunction:: quadIn
+.. autofunction:: quadOut
+.. autofunction:: quadInOut
+.. autofunction:: cubicIn
+.. autofunction:: cubicOut
+.. autofunction:: cubicInOut
+.. autofunction:: quarticIn
+.. autofunction:: quarticOut
+.. autofunction:: quarticInOut
+.. autofunction:: quinticIn
+.. autofunction:: quinticOut
+.. autofunction:: quinticInOut
+.. autofunction:: expoIn
+.. autofunction:: expoOut
+.. autofunction:: expoInOut
+.. autofunction:: circIn
+.. autofunction:: circOut
+.. autofunction:: circInOut
 """
 
 import math
 
 def LinearRamp(currentTime, totalTime=1.0, beginValue=0.0, endValue=1.0):
     """Linear interpolation between two values
-    Examples:
-        LinearRamp(10, 20, 0.5)
     """
     return (endValue-beginValue) * currentTime/totalTime + beginValue
 

@@ -32,6 +32,32 @@ namespace sofapython3::doc::baseCamera {
 static auto baseCameraClass =
         R"(
         Camera is an API dedicated to the control of the Camera in SOFA.
+
+        :Example of use:
+
+        .. code-block:: python
+
+            import Sofa.Core
+            import SofaRuntime
+            SofaRuntime.importPlugin("SofaAllCommonComponents")
+
+            root = Sofa.Core.Node("root")
+            root.addObject("Camera", name="c")
+            root.c.position.value # Access the position of the camera
+            root.c.orientation.value # Access the orientation of the camera in quaternion
+
+        :More complex example of use:
+        The camera, added to a controller, can allow the user to create its own script to move and orientate the camera.
+
+        In the example below, the mouse is used to orientate the camera, and the following commands are used to move it : ctrl+z to move forward,
+        ctrl+x to move backward, ctrl+d to translate on the right, ctrl+q to translate on the left.
+        The code for this example is available in the folder examples under the name BaseCamera.py of the SofaPython3 GitHub repository.
+
+        .. image:: ../../../../../images/baseCamera.gif
+            :alt: Example of a controller for a BaseCamera
+            :align: center
+            :height: 250pt
+
         )";
 
 } // namespace sofapython3::doc::baseCamera

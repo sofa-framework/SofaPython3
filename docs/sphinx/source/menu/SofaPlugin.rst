@@ -94,7 +94,14 @@ Finally, we add the sphere itself, which consists of two parts : the mechanical 
 	       color=[0., 1., 0.], updateNormals=False)
 	sphereVisu.addObject('RigidMapping')
 
+.. image:: ../images/exampleScene_step1.png
+	:alt: This is what you should see in Sofa at this stage
+	:align: center
+	:height: 250pt
+
+
 Now, if you execute your scene, you can see a sphere, but it won't move if you click on the Animate button in SOFA. Let's change that!
+
 
 Add movements and forces
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -124,7 +131,13 @@ We add properties to the sphere. First, we add a mass, then an object called 'Un
 	sphere.addObject('EulerImplicitSolver', name='odesolver')
 	sphere.addObject('CGLinearSolver', name='Solver')
 
+.. image:: ../images/exampleScene_step2.gif
+	:alt: This is what you should see in Sofa at this stage
+	:align: center
+	:height: 250pt
+
 Now, if you click on the Animate button in SOFA, the sphere will fall.
+
 
 Add a second element 
 ^^^^^^^^^^^^^^^^^^^^
@@ -144,6 +157,11 @@ Let's add a second element, a floor, to see how they interact :
 		updateNormals=False)
 	floorVisu.addObject('RigidMapping')
         
+.. image:: ../images/exampleScene_step3.gif
+	:alt: This is what you should see in Sofa at this stage
+	:align: center
+	:height: 250pt
+
 A floor has now been added to the scene. It is a stationnary object, it won't move during the simulation. When you click on the Animate button, you can see that the sphere goes through the floor, as if there were nothing there. That is because there is no collision modeling in the scene yet.
 
 Add a collision model
@@ -192,6 +210,11 @@ We do the same for the floor, but we also specify that the floor is a stationnar
 	floorCollis.addObject('PointCollisionModel', moving=False, simulated=False)
 
 	floorCollis.addObject('RigidMapping')
+
+.. image:: ../images/exampleScene_step4.gif
+	:alt: This is what you should see in Sofa at this stage
+	:align: center
+	:height: 250pt
 
 Now, the sphere is stopped by the floor, as it should be.
 Congratulations! You made your first SOFA scene in Python3!
