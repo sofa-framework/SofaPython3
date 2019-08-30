@@ -47,6 +47,7 @@ static auto baseCameraClass =
             root.c.orientation.value # Access the orientation of the camera in quaternion
 
         :More complex example of use:
+
         The camera, added to a controller, can allow the user to create its own script to move and orientate the camera.
 
         In the example below, the mouse is used to orientate the camera, and the following commands are used to move it : ctrl+z to move forward,

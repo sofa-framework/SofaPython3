@@ -108,7 +108,7 @@ PYBIND11_MODULE(SofaRuntime, m) {
                 .. code-block:: python
 
                    import SofaRuntime
-                   SofaRuntime.importPlugin("MechanicalObject")
+                   SofaRuntime.importPlugin("SofaAllCommonComponents")
 
               )doc";
 

@@ -37,6 +37,21 @@ static auto Class =
         (stores state data, specify topology, compute forces, etc).
         Each simulation object is related to a context, which gives access to all available external data.
         It is able to process events, if listening enabled (default is false).
+
+        :Example of use:
+
+        .. code-block:: python
+
+            import Sofa.Core
+            import SofaRuntime
+            SofaRuntime.importPlugin("SofaAllCommonComponents")
+
+            root = Sofa.Core.Node("root")
+            root.addObject("MechanicalObject", name="obj") # Add a common Sofa object
+            root.obj # Access the object
+            root.obj.name # Access the name of the object
+            root.obj.position.value # Access the position of the object
+
         )";
 static auto init =
         R"(

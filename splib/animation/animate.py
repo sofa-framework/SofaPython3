@@ -10,7 +10,7 @@ splib.animation.Animation
 
 splib.animation.AnimationManager
 ********************************
-.. autoclass:: AnimationManager
+.. autofunction:: AnimationManager
 
 splib.animation.AnimationManagerController
 ******************************************
@@ -222,7 +222,7 @@ def AnimationManager(node):
     must be added to the scene. It has in charge, at each time step
     to update all the running animations.
 
-    :Returns:
+    :rtype:
         AnimationManagerController
 
     :Example of use:
@@ -230,6 +230,7 @@ def AnimationManager(node):
 
             def createScene(rootNode)
                 AnimationManager(rootNode)
+
     """
     global manager
     if manager is not None:

@@ -23,7 +23,7 @@ Having the SofaPython3 plugin active will allow you to open scene files using th
 	<SOFA_build>/bin/runSofa <your_file>
 
 
-Within a python3 interpretor
+Within a python3 interpreter
 ----------------------------
 
 It is possible to use Sofa in any python3 interpreter.
@@ -33,7 +33,7 @@ The following code should cover most basic SOFA elements:
 
         # to be able to create sofa objects you need to first load the plugins that implement them.
         # For simplicity you can load the plugin "SofaAllCommonComponents" that will load all most
-        # common sofa object.
+        # common sofa objects.
         import SofaRuntime
         SofaRuntime.importPlugin("SofaAllCommonComponents")
 
