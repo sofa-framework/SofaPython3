@@ -90,12 +90,6 @@ void moduleAddBaseCamera(py::module &m)
     c.def("getOpenGLProjectionMatrix", getOpenGLProjectionMatrix);
     c.def("getModelViewMatrix", getModelViewMatrix);
     c.def("getOpenGLModelViewMatrix", getOpenGLModelViewMatrix);
-
-    c.def("rotate", [](BaseCamera *self, py::list p){
-        sofa::defaulttype::Quat vec;
-        vec = sofa::defaulttype::Quat(py::cast<double>(p[0]),py::cast<double>(p[1]),py::cast<double>(p[2]),py::cast<double>(p[3]));
-        self->rotate(vec);
-    });
 }
 
 } /// namespace sofapython3
