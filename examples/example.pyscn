@@ -1,0 +1,16 @@
+# coding: utf8
+
+import sys
+import Sofa
+
+def createScene(root):
+        node1 = root.addChild("Node1")
+        node2 = root.addChild("Node2")
+        
+        node1.addObject("MechanicalObject")
+        node1.addObject("OglModel")
+        
+        node2.addObject("MechanicalObject")
+        node2.addObject("OglModel")
+                
+        return root
