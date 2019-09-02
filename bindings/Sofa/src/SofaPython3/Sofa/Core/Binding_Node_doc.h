@@ -75,7 +75,7 @@ static auto Class =
         Accessing children or object from the current node is easy thanks to the generalized access
         API.
         Example of use:
-          .. code-block:: python
+        .. code-block:: python
 
              # ...
              n = Sofa.Core.Node("MyNode")

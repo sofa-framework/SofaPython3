@@ -44,9 +44,10 @@ PYBIND11_MODULE(SofaExporter, m) {
               Provides python bindings for the SofaExporter module
 
               Example of use:
+
               .. code-block:: python
 
-              import SofaExporter
+                import SofaExporter
 
               .. autosummary::
                   :toctree: _autosummary/_autosummary

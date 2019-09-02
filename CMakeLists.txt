@@ -151,7 +151,6 @@ set(DOCUMENTATION_FILES
     License.md
     docs/sphinx/source/index.rst
     docs/sphinx/source/menu/install.rst
-    docs/sphinx/source/menu/Welcome.rst
     docs/sphinx/source/menu/Contributing.rst
     docs/sphinx/source/menu/SofaPlugin.rst
     docs/sphinx/source/menu/SofaModule.rst
@@ -162,3 +161,19 @@ add_custom_target(Documentation SOURCES ${DOCUMENTATION_FILES})
 
 ### Python binding
 add_subdirectory(bindings)
+
+
+SP3_add_python_package(
+        SOURCE_DIRECTORY
+            ${CMAKE_CURRENT_SOURCE_DIR}/splib
+        TARGET_DIRECTORY
+            ${SP3_PYTHON_PACKAGES_DIRECTORY}/splib
+)
+
+SP3_add_python_package(
+        SOURCE_DIRECTORY
+            ${CMAKE_CURRENT_SOURCE_DIR}/constants
+        TARGET_DIRECTORY
+            ${SP3_PYTHON_PACKAGES_DIRECTORY}/Sofa/constants
+)
+
