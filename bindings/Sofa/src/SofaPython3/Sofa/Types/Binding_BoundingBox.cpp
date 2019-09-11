@@ -35,7 +35,8 @@ namespace sofapython3 {
 
 void moduleAddBoundingBox(py::module& m)
 {
-    py::class_<sofa::Data<BoundingBox>> bbox(m, "BoundingBox");
+    py::class_<BoundingBoxData, BaseData,
+            raw_ptr<BoundingBoxData> > bbox(m, "BoundingBox");
     bbox.def("getMin", [](sofa::Data<BoundingBox>& bbox) {
         py::list list;
         list.append(bbox.getValue().minBBox()[0]);
@@ -76,8 +77,8 @@ void moduleAddBoundingBox(py::module& m)
 
     std::cout << "Lets register BoundingBox" << std::endl;
 
-    PythonFactory::registerType<sofa::Data<BoundingBox>>("BoundingBox", [](BaseData* data) -> py::object {
-        return py::cast(reinterpret_cast<sofa::Data<BoundingBox>*>(data));
+    PythonFactory::registerType<BoundingBoxData>("BoundingBox", [](BaseData* data) -> py::object {
+        return py::cast(reinterpret_cast<BoundingBoxData*>(data));
     });
 
 }
