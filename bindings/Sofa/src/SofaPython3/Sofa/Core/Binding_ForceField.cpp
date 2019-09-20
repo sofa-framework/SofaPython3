@@ -51,15 +51,18 @@ namespace sofapython3
     using sofa::core::behavior::MultiMatrixAccessor;
     using sofa::core::behavior::ForceField;
     using sofa::defaulttype::Vec3dTypes;
+    using sofa::defaulttype::Rigid3dTypes;
 
+    template<class TDOFType>
+    ForceField_Trampoline<TDOFType>::ForceField_Trampoline() = default;
 
+    template<class TDOFType>
+    ForceField_Trampoline<TDOFType>::~ForceField_Trampoline() = default;
 
-    ForceField_Trampoline::ForceField_Trampoline() = default;
-    ForceField_Trampoline::~ForceField_Trampoline() = default;
-
-    void ForceField_Trampoline::init()
+    template<class TDOFType>
+    void ForceField_Trampoline<TDOFType>::init()
     {
-        ForceField<Vec3dTypes>::init();
+        ForceField<TDOFType>::init();
 
         if (!mstate.get())
             mstate.set(dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState()));
@@ -67,46 +70,52 @@ namespace sofapython3
         if(!mstate.get())
             throw py::type_error("Missing mechanical state.");
 
-        PYBIND11_OVERLOAD(void, ForceField, init,);
+        PYBIND11_OVERLOAD(void, ForceField<TDOFType>, init,);
     }
 
 
-    void ForceField_Trampoline::addForce(const MechanicalParams* mparams,  DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
+    template<class TDOFType>
+    void ForceField_Trampoline<TDOFType>::addForce(const MechanicalParams* mparams,  DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
     {
         // pass bFactor, kFactor, energy
-        py::dict mp = py::dict("mFactor"_a=mparams->mFactor(),
+        py::dict mp = py::dict("time"_a=getContext()->getTime(),
+                               "mFactor"_a=mparams->mFactor(),
                                "bFactor"_a=mparams->bFactor(),
                                "kFactor"_a=mparams->kFactor(),
                                "isImplicit"_a=mparams->implicit(),
                                "energy"_a=mparams->energy());
-        PYBIND11_OVERLOAD_PURE(void, ForceField, addForce, mp, PythonFactory::toPython(&f), PythonFactory::toPython(&x), PythonFactory::toPython(&v));
+        PYBIND11_OVERLOAD_PURE(void, ForceField<TDOFType>, addForce, mp, PythonFactory::toPython(&f), PythonFactory::toPython(&x), PythonFactory::toPython(&v));
     }
 
-
-    void ForceField_Trampoline::addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx )
+    template<class TDOFType>
+    void ForceField_Trampoline<TDOFType>::addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx )
     {
         // pass bFactor, kFactor, energy
-        py::dict mp = py::dict("nFactor"_a=mparams->mFactor(),
+        py::dict mp = py::dict("time"_a=getContext()->getTime(),
+                               "nFactor"_a=mparams->mFactor(),
                                "bFactor"_a=mparams->bFactor(),
                                "kFactor"_a=mparams->kFactor(),
                                "isImplicit"_a=mparams->implicit()
                                );
-        PYBIND11_OVERLOAD_PURE(void, ForceField, addDForce, mp, PythonFactory::toPython(&df), PythonFactory::toPython(&dx));
+        PYBIND11_OVERLOAD_PURE(void, ForceField<TDOFType>, addDForce, mp, PythonFactory::toPython(&df), PythonFactory::toPython(&dx));
     }
 
-    py::object ForceField_Trampoline::_addKToMatrix(const MechanicalParams* mparams, int nIndices, int nDofs)
+
+    template<class TDOFType>
+    py::object ForceField_Trampoline<TDOFType>::_addKToMatrix(const MechanicalParams* mparams, int nIndices, int nDofs)
     {
-        py::dict mp = py::dict("mFactor"_a=mparams->mFactor(),
+        py::dict mp = py::dict("time"_a=getContext()->getTime(),
+                               "mFactor"_a=mparams->mFactor(),
                                "bFactor"_a=mparams->bFactor(),
                                "kFactor"_a=mparams->kFactor(),
                                "isImplicit"_a=mparams->implicit()
-                               );
+                );
 
-        PYBIND11_OVERLOAD_PURE(py::object, ForceField, addKToMatrix, mp, nIndices, nDofs);
+        PYBIND11_OVERLOAD_PURE(py::object, ForceField<TDOFType>, addKToMatrix, mp, nIndices, nDofs);
     }
 
-
-    void ForceField_Trampoline::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* dfId)
+    template<class TDOFType>
+    void ForceField_Trampoline<TDOFType>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* dfId)
     {
         MultiMatrixAccessor::MatrixRef mref = dfId->getMatrix(this->mstate);
         sofa::defaulttype::BaseMatrix* mat = mref.matrix;
@@ -151,24 +160,57 @@ namespace sofapython3
         }
     }
 
-    std::string ForceField_Trampoline::getClassName() const
+    template<class TDOFType>
+    std::string ForceField_Trampoline<TDOFType>::getClassName() const
     {
         return pyobject->ob_type->tp_name;
     }
 
-
-
     void moduleAddForceField(py::module &m)
     {
         py::class_<ForceField<Vec3dTypes>,
-                BaseObject, ForceField_Trampoline,
+                BaseObject, ForceField_Trampoline<Vec3dTypes>,
                 py_shared_ptr<ForceField<Vec3dTypes>>> f(m, "ForceField",
                                                          py::dynamic_attr(),
                                                          py::multiple_inheritance(), sofapython3::doc::forceField::forceFieldClass);
 
         f.def(py::init([](py::args& args, py::kwargs& kwargs)
         {
-                  auto c = new ForceField_Trampoline();
+                  auto c = new ForceField_Trampoline<Vec3dTypes>();
+                  c->f_listening.setValue(true);
+
+                  if(args.size()==1) c->setName(py::cast<std::string>(args[0]));
+
+                  py::object cc = py::cast(c);
+                  for(auto kv : kwargs)
+                  {
+                      std::string key = py::cast<std::string>(kv.first);
+                      py::object value = py::reinterpret_borrow<py::object>(kv.second);
+                      if( key == "name")
+                      {
+                          if( args.size() != 0 )
+                          {
+                              throw py::type_error("The name is setted twice as a "
+                              "named argument='"+py::cast<std::string>(value)+"' and as a"
+                              "positional argument='"+py::cast<std::string>(args[0])+"'.");
+                          }
+                      }
+                      BindingBase::SetAttr(cc, key, value);
+                  }
+                  return c;
+              }));
+
+
+        py::class_<ForceField<Rigid3dTypes>,
+                BaseObject, ForceField_Trampoline<Rigid3dTypes>,
+                py_shared_ptr<ForceField<Rigid3dTypes>>> f2(m, "ForceFieldRigid3",
+                                                         py::dynamic_attr(),
+                                                         py::multiple_inheritance(), sofapython3::doc::forceField::forceFieldClass);
+
+
+        f2.def(py::init([](py::args& args, py::kwargs& kwargs)
+        {
+                  auto c = new ForceField_Trampoline<Rigid3dTypes>();
                   c->f_listening.setValue(true);
 
                   if(args.size()==1) c->setName(py::cast<std::string>(args[0]));
@@ -192,5 +234,7 @@ namespace sofapython3
                   return c;
               }));
     }
+
+
 
 }  // namespace sofapython3
