@@ -131,7 +131,7 @@ void __setattr__(py::object self, const std::string& s, py::object value)
         BindingBase::SetDataFromArray(selfdata, py::cast<py::array>(value));
         return;
     }
-    BindingBase::SetAttr(py::cast(selfdata->getOwner()),s,value);
+    BindingBase::SetAttr(py::cast(selfdata->getOwner()),selfdata->getName(),value);
 }
 
 py::object __getattr__(py::object self, const std::string& s)
