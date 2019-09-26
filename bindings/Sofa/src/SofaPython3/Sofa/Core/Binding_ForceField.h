@@ -37,16 +37,25 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 namespace sofapython3
 {
-class SOFAPYTHON3_API ForceField_Trampoline  : public sofa::core::behavior::ForceField<sofa::defaulttype::Vec3dTypes>, public PythonTrampoline
+
+template<class TDOFType>
+class SOFAPYTHON3_API ForceField_Trampoline  : public sofa::core::behavior::ForceField<TDOFType>, public PythonTrampoline
 {
+
 public:
+    using sofa::core::behavior::ForceField<TDOFType>::mstate;
+    using sofa::core::behavior::ForceField<TDOFType>::getContext;
+    using typename sofa::core::behavior::ForceField<TDOFType>::DataTypes;
+    using typename sofa::core::behavior::ForceField<TDOFType>::Coord;
+    using typename sofa::core::behavior::ForceField<TDOFType>::DataVecDeriv;
+    using typename sofa::core::behavior::ForceField<TDOFType>::DataVecCoord;
+
     ForceField_Trampoline();
     ~ForceField_Trampoline() override;
 
     void init() override;
 
-    void addForce(const sofa::core::MechanicalParams* mparams,  DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
-
+    void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
     void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) override;
 
     py::object _addKToMatrix(const sofa::core::MechanicalParams* mparams, int nNodes, int nDofs);
