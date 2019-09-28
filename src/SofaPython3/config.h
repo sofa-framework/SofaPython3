@@ -59,4 +59,10 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
  * It will also do the job of adding the dllexport / dllimport declaration on
  * Windows Systems.
  **/
-#define SOFAPYTHON3_API PYBIND11_EXPORT // __attribute__(visibility("default")) && __declspec(dllexport)
+
+ // __attribute__(visibility("default")) && __declspec(dllexport)
+#ifdef SOFA_BUILD_SOFAPYTHON3
+	#define SOFAPYTHON3_API PYBIND11_EXPORT
+#else
+	#define SOFAPYTHON3_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif

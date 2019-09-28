@@ -79,7 +79,7 @@ function(SP3_add_python_module)
             set(PYBIND11_PYTHON_VERSION ${A_PYTHON_VERSION})
         endif()
 
-        set(PYBIND11_CPP_STANDARD -std=c++14)
+        set(PYBIND11_CPP_STANDARD -std=c++17)
 
         find_package(pybind11 CONFIG REQUIRED)
 
@@ -94,7 +94,9 @@ function(SP3_add_python_module)
             target_compile_options(${A_TARGET} PRIVATE -fsized-deallocation)
         endif()
 
-        target_compile_options(${A_TARGET} PRIVATE -Dregister=)
+        if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+            target_compile_options(${A_TARGET} PRIVATE -Dregister=)
+        endif()
 
         target_link_libraries(${A_TARGET} PRIVATE ${A_DEPENDS} ${PYTHON_LIBRARIES} pybind11::module)
 

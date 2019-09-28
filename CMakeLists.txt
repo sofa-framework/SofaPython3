@@ -119,6 +119,10 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)
 endif()
 
+if (CMAKE_SYSTEM_NAME STREQUAL Windows )
+    target_include_directories(${PROJECT_NAME} PUBLIC "${pybind11_INCLUDE_DIR}")
+endif()
+
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 

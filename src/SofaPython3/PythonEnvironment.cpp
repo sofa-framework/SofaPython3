@@ -139,7 +139,7 @@ PythonEnvironmentData* PythonEnvironment::getStaticData()
     return m_staticdata;
 }
 
-py::module PythonEnvironment::importFromFile(const std::string& module, const std::string& path, py::object& globals)
+SOFAPYTHON3_API py::module PythonEnvironment::importFromFile(const std::string& module, const std::string& path, py::object& globals)
 {
     PythonEnvironment::gil lock;
     py::dict locals;

@@ -42,9 +42,10 @@ void moduleAddDataContainerContext(py::module& m);
 
 class DataContainer : public BaseData {
 public:
-    py::tuple getShape();
-    size_t getNDim();
-    size_t getSize();
+	///TODO implementation ?
+	py::tuple getShape() { return py::tuple(); }
+	size_t getNDim() { return 1; }
+	size_t getSize() { return 1; }
 } ;
 
 /// @brief A python context manager to control writeable state of a DataContainer.

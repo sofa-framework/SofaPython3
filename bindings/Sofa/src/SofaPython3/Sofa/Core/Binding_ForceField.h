@@ -39,7 +39,7 @@ namespace sofapython3
 {
 
 template<class TDOFType>
-class SOFAPYTHON3_API ForceField_Trampoline  : public sofa::core::behavior::ForceField<TDOFType>, public PythonTrampoline
+class ForceField_Trampoline  : public sofa::core::behavior::ForceField<TDOFType>, public PythonTrampoline
 {
 
 public:
