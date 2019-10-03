@@ -190,7 +190,7 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         throw py::value_error(object->getLoggedMessagesAsString({Message::Error}));
     }
 
-    return py::cast(object);
+    return PythonFactory::toPython(object.get());
 }
 
 /// Only addObject is needed now, the createObject is deprecated and will prints
