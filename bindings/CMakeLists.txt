@@ -20,6 +20,7 @@ add_subdirectory(Sofa)
 add_subdirectory(SofaRuntime)
 add_subdirectory(SofaGui)
 add_subdirectory(SofaTypes)
+add_subdirectory(Modules)
 
 find_package(SofaExporter QUIET)
 if (SofaExporter_FOUND)
