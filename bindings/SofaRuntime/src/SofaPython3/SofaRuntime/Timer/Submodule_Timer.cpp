@@ -142,8 +142,19 @@ py::dict getRecords(const std::string & id) {
         }
     }
 
+    // There should be two remaining records: Top level "record" + "timer starts". The "timer starts" record remains in
+    // the stack since we normally get the records before the timer ends (ending the timer in Sofa destroys the
+    // records...)
+    if (tokens.size() == 2) {
+        token = tokens.top();
+        tokens.pop();
+    } else if (tokens.size() == 1) {
+        // This should not happen unless we successfully got the timer records AFTER the timer has ends, which would mean
+        // that Sofa's advanced timer has improved, let not warn the user for that.
+        token = tokens.top();
+    }
+
     // Pop the last token ("records")
-    token = tokens.top();
     tokens.pop();
 
     // The stack should be empty by now
