@@ -105,7 +105,22 @@ function(SP3_add_python_module)
                 PROPERTIES
                 OUTPUT_NAME ${MODULE_NAME}
                 LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${DESTINATION}"
+
+
         )
+
+        if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+            set_target_properties(
+                ${A_TARGET}
+                PROPERTIES
+                # https://cmake.org/cmake/help/latest/prop_tgt/LIBRARY_OUTPUT_DIRECTORY_CONFIG.html#prop_tgt:LIBRARY_OUTPUT_DIRECTORY_<CONFIG>
+                RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${DESTINATION}"
+                RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/${DESTINATION}"
+                RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/${DESTINATION}"
+                RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/${DESTINATION}"
+                RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${CMAKE_BINARY_DIR}/${DESTINATION}"
+            )
+        endif()
 
         install(TARGETS ${A_TARGET} LIBRARY DESTINATION ${DESTINATION})
 
