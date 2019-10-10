@@ -18,7 +18,7 @@ SP3_add_python_module(
     TARGET
         ${PROJECT_NAME}
     MODULE_NAME
-        SofaBaseTopology
+        BaseTopology
     SOURCES
         ${SOURCE_FILES}
         ${HEADER_FILES}
