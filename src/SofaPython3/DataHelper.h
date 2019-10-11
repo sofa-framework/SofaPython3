@@ -70,7 +70,7 @@ protected:
     std::shared_ptr<PyObject> pyobject;
 public:
     virtual ~PythonTrampoline();
-    virtual void SOFAPYTHON3_API setInstance(py::object s);
+    virtual void  setInstance(py::object s);
 };
 
 template <typename T> class py_shared_ptr : public sofa::core::sptr<T>
@@ -84,22 +84,22 @@ public:
     }
 };
 
-void SOFAPYTHON3_API setItem2D(py::array a, py::slice slice, py::object o);
-void SOFAPYTHON3_API setItem2D(py::array a, const py::slice& slice,
+SOFAPYTHON3_API void setItem2D(py::array a, py::slice slice, py::object o);
+SOFAPYTHON3_API void setItem2D(py::array a, const py::slice& slice,
                const py::slice& slice1, py::object o);
-void SOFAPYTHON3_API setItem1D(py::array a, py::slice slice, py::object o);
-void SOFAPYTHON3_API setItem(py::array a, py::slice slice, py::object value);
+SOFAPYTHON3_API void setItem1D(py::array a, py::slice slice, py::object o);
+SOFAPYTHON3_API void setItem(py::array a, py::slice slice, py::object value);
 
-py::slice SOFAPYTHON3_API toSlice(const py::object& o);
-std::string getPathTo(Base* b);
-const char* getFormat(const AbstractTypeInfo& nfo);
+SOFAPYTHON3_API py::slice toSlice(const py::object& o);
+SOFAPYTHON3_API std::string getPathTo(Base* b);
+SOFAPYTHON3_API const char* getFormat(const AbstractTypeInfo& nfo);
 
-std::map<void*, py::array>& SOFAPYTHON3_API getObjectCache();
-void trimCache();
+SOFAPYTHON3_API std::map<void*, py::array>& getObjectCache();
+SOFAPYTHON3_API void trimCache();
 
-bool hasArrayFor(BaseData* d);
-py::array SOFAPYTHON3_API resetArrayFor(BaseData* d);
-py::array SOFAPYTHON3_API getPythonArrayFor(BaseData* d);
+SOFAPYTHON3_API bool hasArrayFor(BaseData* d);
+SOFAPYTHON3_API py::array resetArrayFor(BaseData* d);
+SOFAPYTHON3_API py::array getPythonArrayFor(BaseData* d);
 
 
 
@@ -117,7 +117,7 @@ void SOFAPYTHON3_API fillBaseObjectdescription(sofa::core::objectmodel::BaseObje
                                const py::dict& dict);
 
 template<typename T>
-void SOFAPYTHON3_API copyScalar(BaseData* a, const AbstractTypeInfo& nfo, py::array_t<T, py::array::c_style> src)
+void copyScalar(BaseData* a, const AbstractTypeInfo& nfo, py::array_t<T, py::array::c_style> src)
 {
     void* ptr = a->beginEditVoidPtr();
 
@@ -133,7 +133,7 @@ void SOFAPYTHON3_API copyScalar(BaseData* a, const AbstractTypeInfo& nfo, py::ar
 }
 
 /// Following numpy convention returns the number of element in each dimmensions.
-std::tuple<int, int> getShape(BaseData* self);
+std::tuple<int, int> SOFAPYTHON3_API getShape(BaseData* self);
 
 /// Following numpy convention the number of dimmension in the container.
 size_t SOFAPYTHON3_API getNDim(BaseData* self);
@@ -142,7 +142,7 @@ size_t SOFAPYTHON3_API getNDim(BaseData* self);
 /// https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.size.html#numpy.ndarray.size
 size_t SOFAPYTHON3_API getSize(BaseData* self);
 
-std::ostream& SOFAPYTHON3_API operator<<(std::ostream& out, const py::buffer_info& p);
+SOFAPYTHON3_API std::ostream& operator<<(std::ostream& out, const py::buffer_info& p);
 
 // TODO: move this somewhere else as we will probably need it in several other places.
 template <class T> class raw_ptr

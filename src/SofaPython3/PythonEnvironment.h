@@ -81,7 +81,7 @@ public:
     static void Init();
     static void Release();
 
-    static py::module SOFAPYTHON3_API importFromFile(const std::string& module,
+    static py::module importFromFile(const std::string& module,
                                      const std::string& path,
                                      py::object& globals);
 

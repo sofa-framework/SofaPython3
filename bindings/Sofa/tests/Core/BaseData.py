@@ -3,12 +3,7 @@
 import unittest
 import numpy
 import Sofa
-import Sofa.Core
-import Sofa.Types
-from Sofa.PyTypes import RGBAColor
-import numpy as np
-import io
-from contextlib import redirect_stdout
+
 
 
 class NpArrayTestController(Sofa.Core.Controller):
