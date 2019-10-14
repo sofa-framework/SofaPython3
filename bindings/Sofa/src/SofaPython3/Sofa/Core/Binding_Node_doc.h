@@ -118,6 +118,19 @@ static auto initSofa =
         :rtype: Sofa.Simulation.Node
         )";
 
+static auto addKwargs =
+        R"(
+        Add an prefab,
+        example:
+            def Cube(parentNodes, name="Cube"):
+                cube = parentNode.addChild(name)
+                cube.addObject("MechanicalObject")
+                return cube
+
+            node.add(Cube, name="MyCube"")
+        )";
+
+
 static auto addObjectKwargs =
         R"(
         Add an object.

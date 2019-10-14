@@ -193,6 +193,41 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
     return PythonFactory::toPython(object.get());
 }
 
+/// Implement the addObject function.
+py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& kwargs)
+{
+    if(py::isinstance<BaseObject*>(callable))
+    {
+        BaseObject* obj = py::cast<BaseObject*>(callable);
+
+        self->addObject(obj);
+        return py::cast(obj);
+    }
+
+    if(py::isinstance<Node*>(callable))
+    {
+        Node* node = py::cast<Node*>(callable);
+        self->addChild(node);
+        return py::cast(node);
+    }
+
+    if(py::isinstance<py::str>(callable))
+    {
+        py::str type = callable;
+        return addObjectKwargs(self, type, kwargs);
+    }
+
+    if (kwargs.contains("name"))
+    {
+        std::string name = py::str(kwargs["name"]);
+        if (sofapython3::isProtectedKeyword(name))
+            throw py::value_error("addObject: Cannot call addObject with name " + name + ": Protected keyword");
+    }
+
+    return callable(self, **kwargs);
+}
+
+
 /// Only addObject is needed now, the createObject is deprecated and will prints
 /// a warning for old scenes.
 py::object createObject(Node* self, const std::string& type, const py::kwargs& kwargs)
@@ -406,6 +441,7 @@ void moduleAddNode(py::module &m) {
     p.def(py::init(&__init__noname), sofapython3::doc::sofa::core::Node::init);
     p.def(py::init(&__init__), sofapython3::doc::sofa::core::Node::init1Arg, py::arg("name"));
     p.def("init", &init, sofapython3::doc::sofa::core::Node::initSofa );
+    p.def("add", &addKwargs, sofapython3::doc::sofa::core::Node::addKwargs);
     p.def("addObject", &addObjectKwargs, sofapython3::doc::sofa::core::Node::addObjectKwargs);
     p.def("addObject", &addObject, sofapython3::doc::sofa::core::Node::addObject);
     p.def("createObject", &createObject, sofapython3::doc::sofa::core::Node::createObject);
