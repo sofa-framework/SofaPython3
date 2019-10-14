@@ -55,7 +55,7 @@ void moduleAddDataContainer(py::module& m)
     py::class_<DataContainer, BaseData, raw_ptr<DataContainer>> p(m, "DataContainer",
                                                                   py::buffer_protocol(), sofapython3::doc::datacontainer::Class);
 
-    PythonFactory::registerType<DataContainer>("DataContainer", [](BaseData* data) -> py::object {
+    PythonFactory::registerType("DataContainer", [](BaseData* data) -> py::object {
         return py::cast(reinterpret_cast<DataContainer*>(data));
     });
 

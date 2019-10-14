@@ -49,10 +49,6 @@ namespace sofapython3
 
     class SOFAPYTHON3_API PythonFactory
     {
-        static std::map<std::string, componentDowncastingFunction> s_componentDowncastingFct;
-        static std::map<std::string, dataDowncastingFunction> s_dataDowncastingFct;
-        static std::map<std::string, eventDowncastingFunction> s_eventDowncastingFct;
-        static std::map<std::string, dataCreatorFunction> s_dataCreationFct;
     public:
         static py::object toPython(sofa::core::objectmodel::Base* object);
         static py::object toPython(const sofa::core::objectmodel::BaseData* data);
@@ -62,26 +58,27 @@ namespace sofapython3
         static py::object toPython(sofa::core::objectmodel::Event* event);
         static sofa::core::objectmodel::BaseData* createInstance(const std::string& typeName);
 
+        static void registerType(const std::string& typeName, componentDowncastingFunction fct);
+        static void registerType(const std::string& typeName, dataDowncastingFunction fct);
+        static void registerType(const std::string& typeName, eventDowncastingFunction fct);
+        static void registerType(const std::string& typeName, dataCreatorFunction fct);
+
         template<class T>
         static void registerType(componentDowncastingFunction fct)
         {
-            PythonFactory::s_componentDowncastingFct[T::GetClass()->className] = fct;
+            registerType(T::GetClass()->className, fct);
         }
-        template<class T>
-        static void registerType(const std::string& typeName, dataDowncastingFunction fct)
-        {
-            PythonFactory::s_dataDowncastingFct[typeName] = fct;
-        }
+
         template<class T>
         static void registerType(eventDowncastingFunction fct)
         {
-            PythonFactory::s_eventDowncastingFct[T::GetClassName()] = fct;
+            registerType(T::GetClassName(), fct);
         }
 
         template <class T>
         static void registerType(const std::string& s) {
 			sofa::core::objectmodel::Data<T> a; //Solve compilation for Windows, apparently force instanciation for Data<T> ???
-            s_dataCreationFct[s] = [](){ return new sofa::core::objectmodel::Data<T>(); };
+            registerType(s, [](){ return new sofa::core::objectmodel::Data<T>(); });
         }
 
         static std::map<std::string, componentDowncastingFunction>::iterator searchLowestCastAvailable(const sofa::core::objectmodel::BaseClass* metaclass);

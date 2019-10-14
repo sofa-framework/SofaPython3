@@ -42,7 +42,7 @@ SP3_add_python_module(
         ${SOURCE_FILES}
         ${HEADER_FILES}
     DEPENDS
-        SofaPython3 SofaDefaultType
+        SofaDefaultType
     DESTINATION
         ${PACKAGE_DIRECTORY}
 )
