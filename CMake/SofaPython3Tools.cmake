@@ -124,6 +124,10 @@ function(SP3_add_python_module)
 
         install(TARGETS ${A_TARGET} LIBRARY DESTINATION ${DESTINATION})
 
+        if (TARGET ALL_BINDINGS)
+            add_dependencies(ALL_BINDINGS ${A_TARGET})
+        endif()
+
         if (NOT A_QUIET)
             message(STATUS "Python module '${MODULE_NAME}' added to ${DESTINATION} (python version ${PYTHON_VERSION_STRING}, pybind11 version ${pybind11_VERSION})")
         endif ()
