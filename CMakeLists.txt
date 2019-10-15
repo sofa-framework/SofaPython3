@@ -65,9 +65,18 @@ if(NOT pybind11_FOUND)#
   return()
 endif()
 
+message("-- Python executable: ${PYTHON_EXECUTABLE}")
+message("-- Python version: ${PYBIND11_PYTHON_VERSION}")
 message("-- Python include dirs: ${PYTHON_INCLUDE_DIRS}")
 message("-- Python libraries: ${PYTHON_LIBRARIES}")
 message("-- Python library: ${PYTHON_LIBRARY}")
+
+# Unset the following variables to not confuse the user between the variables used by find_package(Python) and
+# those used by find_package(pybind11). The later only uses the output of find_package(Python).
+unset(PYTHON_EXECUTABLE)
+unset(PYTHON_INCLUDE_DIRS)
+unset(PYTHON_LIBRARIES)
+unset(PYTHON_LIBRARY)
 
 set(HEADER_FILES
     src/SofaPython3/config.h
