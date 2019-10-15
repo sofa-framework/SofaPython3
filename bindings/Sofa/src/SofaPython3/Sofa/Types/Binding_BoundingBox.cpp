@@ -77,7 +77,7 @@ void moduleAddBoundingBox(py::module& m)
 
     std::cout << "Lets register BoundingBox" << std::endl;
 
-    PythonFactory::registerType<BoundingBoxData>("BoundingBox", [](BaseData* data) -> py::object {
+    PythonFactory::registerType("BoundingBox", [](BaseData* data) -> py::object {
         return py::cast(reinterpret_cast<BoundingBoxData*>(data));
     });
 

@@ -64,13 +64,33 @@ namespace sofapython3
 {
 using namespace pybind11::literals;
 
-std::map<std::string, componentDowncastingFunction> PythonFactory::s_componentDowncastingFct;
-std::map<std::string, dataDowncastingFunction> PythonFactory::s_dataDowncastingFct;
-std::map<std::string, eventDowncastingFunction> PythonFactory::s_eventDowncastingFct;
-std::map<std::string, dataCreatorFunction> PythonFactory::s_dataCreationFct;
+static std::map<std::string, componentDowncastingFunction> s_componentDowncastingFct;
+static std::map<std::string, dataDowncastingFunction> s_dataDowncastingFct;
+static std::map<std::string, eventDowncastingFunction> s_eventDowncastingFct;
+static std::map<std::string, dataCreatorFunction> s_dataCreationFct;
 
 bool PythonFactory::defaultTypesRegistered = registerDefaultTypes();
 bool PythonFactory::defaultEventsRegistered = registerDefaultEvents();
+
+void PythonFactory::registerType(const std::string& typeName, componentDowncastingFunction fct)
+{
+    s_componentDowncastingFct[typeName] = fct;
+}
+
+void PythonFactory::registerType(const std::string& typeName, dataDowncastingFunction fct)
+{
+    s_dataDowncastingFct[typeName] = fct;
+}
+
+void PythonFactory::registerType(const std::string& typeName, eventDowncastingFunction fct)
+{
+    s_eventDowncastingFct[typeName] = fct;
+}
+
+void PythonFactory::registerType(const std::string& typeName, dataCreatorFunction fct)
+{
+    s_dataCreationFct[typeName] = fct;
+}
 
 std::map<std::string, componentDowncastingFunction>::iterator PythonFactory::searchLowestCastAvailable(const sofa::core::objectmodel::BaseClass* metaclass)
 {

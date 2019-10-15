@@ -83,7 +83,7 @@ void moduleAddDataString(py::module& m)
 {
     py::class_<DataString, BaseData, raw_ptr<DataString>> s(m, "DataString");
 
-    PythonFactory::registerType<DataString>("DataString", [](BaseData* data) -> py::object {
+    PythonFactory::registerType("DataString", [](BaseData* data) -> py::object {
         return py::cast(reinterpret_cast<DataString*>(data));
     });
 

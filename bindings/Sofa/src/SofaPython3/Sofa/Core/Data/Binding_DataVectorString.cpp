@@ -76,7 +76,7 @@ void moduleAddDataVectorString(py::module& m)
 {
     py::class_<DataVectorString, BaseData, raw_ptr<DataVectorString>> s(m, "DataVectorString");
 
-    PythonFactory::registerType<DataVectorString>("DataVectorString", [](BaseData* data) -> py::object {
+    PythonFactory::registerType("DataVectorString", [](BaseData* data) -> py::object {
         return py::cast(reinterpret_cast<DataVectorString*>(data));
     });
 

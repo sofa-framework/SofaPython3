@@ -113,7 +113,7 @@ void moduleAddGuiManager(py::module& m)
     )doc";
     guiManager.def_static("SetScene", [](sofa::simulation::Node & node, const char * filename = nullptr, bool temporaryFile = false) {
         sofa::gui::GUIManager::SetScene(&node, filename, temporaryFile);
-    }, setSceneDoc);
+    }, py::arg("root"), py::arg("filename") = nullptr, py::arg("temporaryFile") = false, setSceneDoc);
 
 
     /*
