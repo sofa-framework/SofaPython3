@@ -15,7 +15,19 @@ Add this directory path in `CMAKE_EXTERNAL_DIRECTORIES`.
 NB: This plugin cannot be build through in-build process when the old SofaPython plugin is activated. To have both SofaPython3 and SofaPython you need to use out-of-tree build. 
 
 ### Out-of-tree build
-This plugin should compile with out-of-tree builds
+This plugin should compile with out-of-tree builds.
+You might need to add the Sofa's installation path to the CMake prefix path. If you compiled Sofa in directory _$SOFA_ROOT/build_, consider doing an install step (make install, ninja install, etc.) and adding this installation path (example `cmake -DCMAKE_PREFIX_PATH=$SOFA_ROOT/build/install ..`).
+
+### Changing the python path
+The compilation of SofaPython3 plugin and bindings are tied to the python core library found during the CMake stage.
+To change the python version used for the compilation, you can either:
+1. Provide the python executable path with `Python_EXECUTABLE`
+ ```cmake -DPython_EXECUTABLE=/usr/local/bin/python3 ..```
+2. Provide the python root path with `Python_ROOT_DIR`
+ ```cmake -DPython_ROOT_DIR=/usr/local ..```
+
+To see all the hints that can be provided to CMake, see the official CMake documentation on Python :
+https://cmake.org/cmake/help/latest/module/FindPython.html
 
 ## Features
 
