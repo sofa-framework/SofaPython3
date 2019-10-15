@@ -349,8 +349,10 @@ py::object __getitem__(Node& self, const std::string& s)
             stringlist.push_back(token);
     }
 
-    // perform here the syntax checks over the string to parse
+    if(stringlist.empty())
+        throw py::value_error("Invalid path provided");
 
+    // perform here the syntax checks over the string to parse
     // special case allowed: root[".attr1"]
     if (stringlist.front().empty()) stringlist.pop_front();
     for (const auto& string : stringlist)
