@@ -120,6 +120,8 @@ public:
     /// excluding a module from automatic reload
     static void excludeModuleFromReload( const std::string& moduleName );
 
+    static void executePython(std::function<void()>);
+
     /// to be able to react when a scene is loaded
     struct SceneLoaderListerner : public SceneLoader::Listener
     {
@@ -155,6 +157,7 @@ public:
     };
 
     struct system_exit : std::exception { };
+
 
 private:
     static PythonEnvironmentData* getStaticData() ;
