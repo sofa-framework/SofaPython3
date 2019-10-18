@@ -125,6 +125,8 @@ public:
     }
 
     std::set<std::string> addedPath;
+
+    py::module m_sofamodule ;
 private:
     std::vector<wchar_t*> m_argv;
 };
@@ -167,15 +169,15 @@ void PythonEnvironment::Init()
     }
 
 
-    #if defined(__linux__)
-        // WARNING: workaround to be able to import python libraries on linux (like
-        // numpy), at least on Ubuntu (see http://bugs.python.org/issue4434). It is
-        // not fixing the real problem, but at least it is working for now.
-        // dmarchal: The problem still exists python3 10/10/2018.
-        std::string pythonLibraryName = "libpython" + std::string(pythonVersion,0,3) + "m.so";
-        dlopen( pythonLibraryName.c_str(), RTLD_LAZY|RTLD_GLOBAL );
-        msg_info("SofaPython3") << "Shared library name is '" << pythonLibraryName << "'" ;
-    #endif
+#if defined(__linux__)
+    // WARNING: workaround to be able to import python libraries on linux (like
+    // numpy), at least on Ubuntu (see http://bugs.python.org/issue4434). It is
+    // not fixing the real problem, but at least it is working for now.
+    // dmarchal: The problem still exists python3 10/10/2018.
+    std::string pythonLibraryName = "libpython" + std::string(pythonVersion,0,3) + "m.so";
+    dlopen( pythonLibraryName.c_str(), RTLD_LAZY|RTLD_GLOBAL );
+    msg_info("SofaPython3") << "Shared library name is '" << pythonLibraryName << "'" ;
+#endif
 
     /// Prevent the python terminal from being buffered, not to miss or mix up traces.
     if( putenv( (char*)"PYTHONUNBUFFERED=1" ) )
@@ -241,6 +243,9 @@ void PythonEnvironment::Init()
         }
     }
 
+    getStaticData()->m_sofamodule = py::module::import("Sofa");
+
+
     // python livecoding related
     //PyRun_SimpleString("from SofaPython3.livecoding import onReimpAFile");
 
@@ -249,6 +254,17 @@ void PythonEnvironment::Init()
     // python modules are automatically reloaded at each scene loading
     //setAutomaticModuleReload( true );
 }
+
+void PythonEnvironment::executePython(std::function<void()> cb)
+{
+    try{
+        cb();
+    }catch(std::exception& e)
+    {
+        msg_error("SofaPython3") << e.what() ;
+    }
+}
+
 
 void PythonEnvironment::Release()
 {
@@ -366,7 +382,7 @@ bool PythonEnvironment::runString(const std::string& script)
 }
 
 bool PythonEnvironment::runFile(const std::string& filename,
-                                       const std::vector<std::string>& arguments)
+                                const std::vector<std::string>& arguments)
 {
     py::object main = py::module::import(filename.c_str()).attr("__main__");
 
