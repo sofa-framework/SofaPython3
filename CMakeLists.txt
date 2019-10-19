@@ -138,8 +138,7 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
-target_link_libraries(${PROJECT_NAME} PUBLIC "${PYTHON_LIBRARY}" )
-target_include_directories(${PROJECT_NAME} PUBLIC "${PYTHON_INCLUDE_DIR}")
+target_link_libraries(${PROJECT_NAME} PUBLIC Python::Python )
 
 ## When installing, copy the content of the example directory into module/SofaPython3
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/examples DESTINATION modules/SofaPython3 COMPONENT resources)
