@@ -95,69 +95,6 @@ def getPythonCallingPoint():
     return tmp
 
 
-# returns a dictionary of all callable objects in the module, with their type as key
-def getPythonModuleContent(moduledir, modulename):
-#    Sofa.msg_info("PythonAsset LOADING module " + modulename + " in " + moduledir)
-    objects = {}
-    # First let's load that script:
-    try:
-        sys.path.append(moduledir)
-
-        if modulename in sys.modules:
-            del(sys.modules[modulename])
-        m = importlib.import_module(modulename)
-    except ImportError(e):
-        print ("PythonAsset ERROR: could not import module " + modulename)
-        print (e)
-        return objects
-    except Exception(e):
-        print ("Exception: in " + modulename + ":\n" + str(e))
-        return objects
-
-    # module loaded, let's see what's inside:
-#    Sofa.msg_info("Module Loaded, let's see what's inside...")
-    if "createScene" in dir(m):
-        # print("We found a createScene entry point, let's load it")
-        objects["createScene"] = { "type":"function", "docstring": m.createScene.__doc__ }
-    for i in dir(m):
-        if i == "SofaObject" or i == "SofaPrefab" or inspect.isbuiltin(i) or not callable(getattr(m, i)):
-            continue
-        class_ = getattr(m, i)
-        if inspect.getmodule(class_).__file__ != m.__file__:
-            continue
-
-        docstring = str(class_.__doc__) if class_.__doc__ != None else "Undocumented prefab"
-        if inspect.isclass(eval("m." + i)):
-            # A non-decorated class
-            if issubclass(eval("m." + i), Sofa.PythonScriptController):
-                objects[i] = { "type":"PythonScriptController", "docstring": docstring }
-            elif issubclass(eval("m." + i), Sofa.PythonScriptDataEngine):
-                objects[i] = { "type":"PythonScriptDataEngine", "docstring": docstring }
-            else:
-                objects[i] = { "type":"Class", "docstring": docstring }
-        else:
-            # a class decorated with @SofaPrefab:
-            if class_.__class__.__name__ == "SofaPrefab" \
-               and i != "SofaPrefab":
-                objects[i] = { "type":"SofaPrefab", "docstring": docstring }
-            else:
-                objects[i] = { "type":"function", "docstring": docstring }
-                #    Sofa.msg_info(str(objects))
-    return objects
-
-
-import code
-def getPythonModuleDocstring(mpath):
-    "Get module-level docstring of Python module at mpath, e.g. 'path/to/file.py'."
-    print(mpath)
-    co = compile(open(mpath).read(), mpath, 'exec')
-    if co.co_consts and isinstance(co.co_consts[0], basestring):
-        docstring = co.co_consts[0]
-    else:
-        docstring = ""
-    return str(docstring)
-
-
 def sendMessageFromException(e):
     exc_type, exc_value, exc_tb = sys.exc_info()
     sofaExceptHandler(exc_type, exc_value, exc_tb)
