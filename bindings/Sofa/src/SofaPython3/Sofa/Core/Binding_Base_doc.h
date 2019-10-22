@@ -144,4 +144,10 @@ static auto getDefinitionSourceFilePos="Returns the line number where the object
 static auto getDefinitionSourceFileName="Returns the name of the file that contains the object definition.";
 static auto getInstanciationSourceFilePos="Returns the line number where the object is instanciatiated.";
 static auto getInstanciationSourceFileName="Returns the name of the file where this object instance is from.";
+
+static auto setDefinitionSourceFilePos="Set the line number where the object is defined.";
+static auto setDefinitionSourceFileName="set the name of the file that contains the object definition.";
+static auto setInstanciationSourceFilePos="Set the line number where the object is instanciatiated.";
+static auto setInstanciationSourceFileName="Set the name of the file where this object instance is from.";
+
 }
