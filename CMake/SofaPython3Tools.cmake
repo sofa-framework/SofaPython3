@@ -33,7 +33,7 @@ function(SP3_add_python_package)
     cmake_parse_arguments(A "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     configure_files("${A_SOURCE_DIRECTORY}" "${CMAKE_BINARY_DIR}/${A_TARGET_DIRECTORY}")
-    install(DIRECTORY "${CMAKE_BINARY_DIR}/${A_TARGET_DIRECTORY}" DESTINATION ${A_TARGET_DIRECTORY})
+    install(DIRECTORY "${CMAKE_BINARY_DIR}/${A_TARGET_DIRECTORY}" DESTINATION "${A_TARGET_DIRECTORY}")
     message(STATUS "Python package ${A_SOURCE_DIRECTORY} added to directory ${CMAKE_BINARY_DIR}/${A_TARGET_DIRECTORY}")
 endfunction()
 
