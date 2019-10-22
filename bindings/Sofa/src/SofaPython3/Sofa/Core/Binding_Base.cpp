@@ -561,6 +561,12 @@ void moduleAddBase(py::module &m)
     base.def("getDefinitionSourceFileName", &Base::getDefinitionSourceFileName, sofapython3::doc::base::getDefinitionSourceFileName);
     base.def("getInstanciationSourceFilePos", &Base::getInstanciationSourceFilePos, sofapython3::doc::base::getInstanciationSourceFilePos);
     base.def("getInstanciationFileName", &Base::getInstanciationSourceFileName, sofapython3::doc::base::getInstanciationSourceFilePos);
+
+    base.def("setDefinitionSourceFilePos", &Base::setDefinitionSourceFilePos, sofapython3::doc::base::setDefinitionSourceFilePos);
+    base.def("setDefinitionSourceFileName", &Base::setDefinitionSourceFileName, sofapython3::doc::base::setDefinitionSourceFileName);
+    base.def("setInstanciationSourceFilePos", &Base::setInstanciationSourceFilePos, sofapython3::doc::base::setInstanciationSourceFilePos);
+    base.def("setInstanciationFileName", &Base::setInstanciationSourceFileName, sofapython3::doc::base::setInstanciationSourceFilePos);
+
     base.def("getDataFields", &BindingBase::getDataFields, pybind11::return_value_policy::reference, sofapython3::doc::base::getDataFields);
     base.def("findLink", &Base::findLink, pybind11::return_value_policy::reference, sofapython3::doc::base::findLink);
     base.def("getLinks", &Base::getLinks, pybind11::return_value_policy::reference, sofapython3::doc::base::getLinks);
