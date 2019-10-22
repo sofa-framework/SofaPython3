@@ -90,7 +90,7 @@ static void parse_emitter_message_then(py::args args, const Action& action) {
         std::string filename = py::cast<std::string>(args[2]);
         int lineno = py::cast<int>(args[3]);
 
-        if( py::isinstance<std::string>(py_emitter) )
+        if( py::isinstance<py::str>(py_emitter) )
         {
             action(ComponentInfo::SPtr(new ComponentInfo(py::cast<std::string>(py_emitter))),
                    message.c_str(),  SOFA_FILE_INFO_COPIED_FROM(filename, lineno));
