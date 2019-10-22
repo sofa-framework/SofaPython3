@@ -68,8 +68,8 @@ public:
 
     static py::list getDataFields(Base& self);
     static py::list getLinks(Base& self);
-    static void addData(py::object py_self, const std::string& name, py::object value = py::object(), py::object defaultValue = py::object(), const std::string& help = "", const std::string& group = "Property", std::string type = "");
-    static void addDataFromData(Base* self, py::object d);
+    static BaseData* addData(py::object py_self, const std::string& name, py::object value = py::object(), py::object defaultValue = py::object(), const std::string& help = "", const std::string& group = "Property", std::string type = "");
+    static BaseData* addDataFromData(Base* self, py::object d);
     static py::list __dir__(Base* self);
     static py::object __getattr__(py::object self, const std::string& s);
     static void __setattr__(py::object self, const std::string& s, py::object value);

@@ -41,6 +41,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include "Binding_DataEngine.h"
 #include "Binding_Node.h"
 #include "Binding_NodeIterator.h"
+#include "Binding_Prefab.h"
 #include "Binding_Simulation.h"
 #include "Binding_BaseLink.h"
 #include "Binding_PythonScriptEvent.h"
@@ -72,6 +73,7 @@ PYBIND11_MODULE(Core, core)
                Sofa.Core.Data
                Sofa.Core.Link
                Sofa.Core.Node
+               Sofa.Core.Prefab
                Sofa.Core.Object
                Sofa.Core.Camera
 
@@ -118,6 +120,7 @@ PYBIND11_MODULE(Core, core)
 
     moduleAddNode(core);
     moduleAddNodeIterator(core);
+    moduleAddPrefab(core);
     moduleAddBaseLink(core);
 
 }
