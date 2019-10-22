@@ -413,7 +413,7 @@ py::list BindingBase::getLinks(Base& self)
     return list;
 }
 
-void BindingBase::addData(py::object py_self, const std::string& name, py::object value, py::object defaultValue, const std::string& help, const std::string& group, std::string type)
+BaseData* BindingBase::addData(py::object py_self, const std::string& name, py::object value, py::object defaultValue, const std::string& help, const std::string& group, std::string type)
 {
     Base* self = py::cast<Base*>(py_self);
     if (isProtectedKeyword(name))
@@ -477,24 +477,25 @@ void BindingBase::addData(py::object py_self, const std::string& name, py::objec
     data->setPersistent(true);
     if (!isSet)
         data->unset();
+    return data;
 }
 
-
-void BindingBase::addDataFromData(Base* self, py::object d)
+BaseData* BindingBase::addDataFromData(Base* self, py::object d)
 {
     BaseData* data = py::cast<BaseData*>(d);
     if (!data)
         throw py::type_error("Argument is not a Data!");
 
-    if (data->getOwner() == nullptr)
+    if (data->getOwner() == nullptr){
         self->addData(data, data->getName());
-    else
-    {
-        BaseData* newData = data->getNewInstance();
-        newData->setOwner(self);
-        newData->setParent(data);
-        newData->setName(data->getName());
+        return data;
     }
+
+    BaseData* newData = data->getNewInstance();
+    newData->setOwner(self);
+    newData->setParent(data);
+    newData->setName(data->getName());
+    return newData;
 }
 
 py::list BindingBase::__dir__(Base* self)
