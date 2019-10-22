@@ -11,14 +11,100 @@ Splib library
 
 
 """
+import Sofa
 import Sofa.Core
 import inspect
 import functools
-
+import inspect
 __all__=["animation"]
 
+def typeHelper(d):
+    if isinstance(d, int):
+        return "int"
+    if isinstance(d, str):
+        return "string"
+    if isinstance(d, float):
+        return "float"
+    return None
 
-class SofaPrefab(object):
+def SofaPrefab(**deckwargs):
+    def init_SofaPrefab(f):
+        frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
+        definedloc = (frameinfo.filename, frameinfo.lineno)
+
+        def SofaPrefabF(*args, **kwargs):
+            selfnode = args[0].addChild(f.__code__.co_name)
+
+            ## retrieve meta data from decorated class:
+            selfnode.addData(name="prefabname", value=f.__code__.co_name,
+                         type="string", help="The prefab's name", group="Infos")
+            selfnode.addData(name="docstring", value=f.__doc__,
+                         type="string", help="This prefab's docstring", group="Infos")
+
+            selfnode.setDefinitionSourceFileName(definedloc[0])
+            selfnode.setDefinitionSourceFilePos(definedloc[1])
+            args = [selfnode] + list(args)[1:]
+
+            inputCB = []
+            for k in deckwargs:
+                if k not in selfnode.__data__:
+                    value = deckwargs[k] if k not in kwargs else kwargs[k]
+                    inputCB.append( selfnode.addData(name=k, value=value, group="Prefab's properties", type=typeHelper(deckwargs[k])) )
+
+            keys = list(kwargs.keys())
+            for k in keys:
+                if k in selfnode.__data__:
+                    selfnode.__data__[k] = kwargs[k]
+                    del kwargs[k]
+
+            r = f(*args, **kwargs)
+            return selfnode
+        return SofaPrefabF
+    return init_SofaPrefab
+
+class SofaPrefab2(object):
+    def __init__(self, cls):
+        frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
+        self.cls = cls
+        self.definedloc = (frameinfo.filename, frameinfo.lineno)
+        functools.update_wrapper(self, cls) ## REQUIRED IN CLASS DECORATORS to transfer the docstring back to the decorated type
+
+    def __call__(self, *args, **kwargs):
+            if len(args) == 0:
+                Sofa.Helper.msg_error("SofaPython", """A prefab needs to have at least one un-named argument of Node type""")
+                return None
+
+            if not isinstance(args[0], Sofa.Core.Node):
+                Sofa.Helper.msg_error("SofaPython", "A prefab needs to have at least one un-named argument of Node type got '"+str(type(args[0]))+"'")
+                return None
+
+            selfnode = args[0].addChild("DEFAULTNAME")
+
+            ## retrieve meta data from decorated class:
+            selfnode.addData(name="prefabname", value=self.cls.__code__.co_name,
+                         type="string", help="The prefab's name", group="Infos")
+            selfnode.addData(name="docstring", value=self.cls.__doc__,
+                         type="string", help="This prefab's docstring", group="Infos")
+
+            selfnode.setDefinitionSourceFileName(self.definedloc[0])
+            selfnode.setDefinitionSourceFilePos(self.definedloc[1])
+
+            args = [selfnode] + list(args)
+            retnode = self.cls(*args, **kwargs)
+
+            if retnode is None:
+                Sofa.Helper.msg_warning(args[0], """The function '' has the SofaPrefab decorator but does not returns a Node.
+                                                  Weird behavior may happen.
+                                               """, self.definedloc[0], self.definedloc[1])
+                return None
+            if not isinstance(retnode, Sofa.Core.Node):
+                Sofa.Helper.msg_warning(args[0], """The function '' has the SofaPrefab decorator but does not returns a Node.
+                                                  Weird behavior may happen.
+                                               """, self.definedloc[0], self.definedloc[1])
+                return None
+            return retnode
+
+class SofaClassPrefab(object):
     """This decorator is used for a seamless integration of the Sofa.Core.Node interface with the Python classes:
 
     :param parent: The required parent node for this prefab
