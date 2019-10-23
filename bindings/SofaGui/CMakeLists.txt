@@ -7,6 +7,13 @@ project(PythonModule_SofaGui)
 ####################################################################################################
 find_package(SofaGui REQUIRED)
 
+if (NOT TARGET SofaPython3)
+    find_package(SofaPython3 REQUIRED)
+endif()
+if (NOT TARGET SofaPython3_Sofa_Core)
+    find_package(SofaPython3_Sofa_Core REQUIRED)
+endif()
+
 ####################################################################################################
 ### Module files
 ####################################################################################################
@@ -31,7 +38,7 @@ SP3_add_python_module(
         ${SOURCE_FILES}
         ${HEADER_FILES}
     DEPENDS
-        SofaCore SofaGuiCommon SofaGuiMain
+        SofaCore SofaGuiCommon SofaGuiMain SofaPython3 SofaPython3_Sofa_Core
     DESTINATION
         ${PACKAGE_DIRECTORY}/Sofa
 )

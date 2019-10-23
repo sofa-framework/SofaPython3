@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.1)
 project(PythonModule_SofaTypes)
 
+### Module dependencies
+####################################################################################################
+if (NOT TARGET SofaPython3)
+    find_package(SofaPython3 REQUIRED)
+endif()
+if (NOT TARGET SofaPython3_Sofa_Core)
+    find_package(SofaPython3_Sofa_Core REQUIRED)
+endif()
+
 ####################################################################################################
 ### Module files
 ####################################################################################################
@@ -42,7 +51,7 @@ SP3_add_python_module(
         ${SOURCE_FILES}
         ${HEADER_FILES}
     DEPENDS
-        SofaDefaultType
+        SofaCore SofaDefaultType SofaPython3 SofaPython3_Sofa_Core
     DESTINATION
         ${PACKAGE_DIRECTORY}
 )
