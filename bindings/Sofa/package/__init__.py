@@ -148,6 +148,8 @@ def sofaExceptHandler(type, value, tb):
 sys.excepthook=sofaExceptHandler
 
 def pyType2sofaType(v):
+    if isinstance(v, bool):
+        return "bool"
     if isinstance(v, str):
         return "string"
     if isinstance(v, int):
@@ -155,6 +157,13 @@ def pyType2sofaType(v):
     if isinstance(v, float):
         return "double"
     return None
+
+def getPrefabProperties(f):
+    frameinfo = inspect.getframeinfo(inspect.currentframe().f_back.f_back)
+    definedloc = (frameinfo.filename, frameinfo.lineno)
+
+    print("DEFINED LOC ", definedloc, f.__code__.co_name, f.__doc__)
+    return (definedloc[0], definedloc[1])
 
 def PrefabBuilder(f):
         frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)

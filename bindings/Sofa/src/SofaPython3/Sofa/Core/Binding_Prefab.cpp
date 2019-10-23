@@ -26,6 +26,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************/
 
 #include <pybind11/pybind11.h>
+#include <pybind11/eval.h>
 
 #include "Binding_Prefab.h"
 #include "Binding_Prefab_doc.h"
@@ -47,20 +48,19 @@ namespace sofapython3
 
     void Prefab::init()
     {
-            reinit();
-            Inherit1::init(sofa::core::ExecParams::defaultInstance());
+        reinit();
+        Inherit1::init(sofa::core::ExecParams::defaultInstance());
     }
 
     void Prefab::reinit()
     {
         /// remove everything in the node.
-            execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
-            doReInit();
-   }
+        execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
+        doReInit();
+    }
 
     void Prefab::doReInit()
     {
-        std::cout << " PREFAB INSTANCE" << std::endl;
     }
 
     Prefab::Prefab() {
@@ -86,7 +86,7 @@ namespace sofapython3
 
         std::string getClassName() const override
         {
-            return pyobject->ob_type->tp_name;
+            return "Prefab"; /// pyobject->ob_type->tp_name;
         }
 
         void doReInit() override ;
@@ -99,20 +99,32 @@ namespace sofapython3
 
     void moduleAddPrefab(py::module &m) {
         py::class_<sofa::core::objectmodel::BasePrefab,
-                   sofa::simulation::Node,
-                   sofa::core::objectmodel::BasePrefab::SPtr>(m, "BasePrefab");
+                sofa::simulation::Node,
+                sofa::core::objectmodel::BasePrefab::SPtr>(m, "BasePrefab");
 
         py::class_<Prefab,
                 Prefab_Trampoline,
                 BasePrefab,
                 py_shared_ptr<Prefab>> f(m, "Prefab",
-                                             py::dynamic_attr(),
-                                             py::multiple_inheritance(),
-                                             sofapython3::doc::prefab::Prefab);
+                                         py::dynamic_attr(),
+                                         py::multiple_inheritance(),
+                                         sofapython3::doc::prefab::Prefab);
 
         f.def(py::init([](py::args& /*args*/, py::kwargs& kwargs)
         {
                   auto c = new Prefab_Trampoline();
+
+//                  py::dict globals = py::module::import("__main__").attr("__dict__");
+//                  py::dict locals {"f"_a=PythonFactory::toPython(c)};
+//                  py::object res = py::eval<py::eval_statements>(            // tell eval we're passing multiple statements
+//                        "import Sofa\n"
+//                        "Sofa.getPrefabProperties(f)\n", globals, locals);
+
+//                  py::print(py::str(res));
+
+//                  c->addD
+//                  c->setDefinitionSourceFilePos();
+//                  c->setDefinitionSourceFileName();
 
                   for(auto kv : kwargs)
                   {
@@ -133,7 +145,7 @@ namespace sofapython3
               }));
 
         f.def("addPrefabParameter", &Prefab::addPrefabParameter,
-                                    "name"_a, "value"_a, "help"_a, "type"_a);
+              "name"_a, "value"_a, "help"_a, "type"_a);
         f.def("init", &Prefab::init);
         f.def("reinit", &Prefab::reinit);
     }
