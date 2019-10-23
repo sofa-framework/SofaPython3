@@ -48,6 +48,7 @@ namespace sofapython3
     void Prefab::init()
     {
             reinit();
+            Inherit1::init(sofa::core::ExecParams::defaultInstance());
     }
 
     void Prefab::reinit()
