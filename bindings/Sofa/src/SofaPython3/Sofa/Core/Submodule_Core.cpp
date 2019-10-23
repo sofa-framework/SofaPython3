@@ -73,7 +73,7 @@ PYBIND11_MODULE(Core, core)
                Sofa.Core.Data
                Sofa.Core.Link
                Sofa.Core.Node
-               Sofa.Core.Prefab
+               Sofa.Core.RawPrefab
                Sofa.Core.Object
                Sofa.Core.Camera
 

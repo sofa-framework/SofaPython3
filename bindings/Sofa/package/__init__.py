@@ -33,6 +33,7 @@ import inspect
 import functools
 import traceback
 import Sofa.Helper
+import Sofa.Core
 import importlib
 
 __all__=["animation"]
@@ -158,12 +159,27 @@ def pyType2sofaType(v):
         return "double"
     return None
 
-def getPrefabProperties(f):
-    frameinfo = inspect.getframeinfo(inspect.currentframe().f_back.f_back)
-    definedloc = (frameinfo.filename, frameinfo.lineno)
 
-    print("DEFINED LOC ", definedloc, f.__code__.co_name, f.__doc__)
-    return (definedloc[0], definedloc[1])
+class Prefab(Sofa.Core.RawPrefab):
+    def __init__(self):
+        Sofa.Core.RawPrefab.__init__(self)
+        frame = inspect.currentframe().f_back
+        frameinfo = inspect.getframeinfo(frame)
+        definedloc = (frameinfo.filename, frameinfo.lineno)
+
+        self.setDefinitionSourceFileName(definedloc[0])
+        self.setDefinitionSourceFilePos(definedloc[1])
+
+        frame = frame.f_back
+        if frame is not None:
+            frameinfo = inspect.getframeinfo(frame)
+            definedloc = (frameinfo.filename, frameinfo.lineno)
+            self.setInstanciationSourceFileName(definedloc[0])
+            self.setInstanciationSourceFilePos(definedloc[1])
+
+        self.addData("prefabname", value=type(self).__name__, type="string", group="Infos", help="Name of the prefab")
+        self.addData("docstring", value=self.__doc__, type="string", group="Infos", help="Name of the prefab")
+
 
 def PrefabBuilder(f):
         frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
@@ -180,9 +196,9 @@ def PrefabBuilder(f):
                     def __getattr__(self, name):
                         return getattr(self.node, name)
 
-            class InnerSofaPrefab(Sofa.Core.Prefab):
+            class InnerSofaPrefab(Sofa.Core.RawPrefab):
                 def __init__(self, name):
-                    Sofa.Core.Prefab.__init__(self, name=name)
+                    Sofa.Core.RawPrefab.__init__(self, name=name)
 
                 def doReInit(self):
                     argnames = inspect.getfullargspec(f).args
@@ -193,7 +209,8 @@ def PrefabBuilder(f):
                         kkwargs[name] = self.__data__[name].value
                     f(**kkwargs)
 
-            selfnode = InnerSofaPrefab(name="InnerSofaP")
+
+            selfnode = InnerSofaPrefab(name=f.__code__.co_name)
             selfnode.setDefinitionSourceFileName(definedloc[0])
             selfnode.setDefinitionSourceFilePos(definedloc[1])
 
@@ -212,7 +229,8 @@ def PrefabBuilder(f):
                 if argnames[i+n] not in selfnode.__data__:
                     selfnode.addPrefabParameter(name=argnames[i+n], value=defaults[n], type=pyType2sofaType(defaults[n]), help="Undefined")
 
-            selfnode.init()
+
+                selfnode.init()
             return selfnode
         return SofaPrefabF
 

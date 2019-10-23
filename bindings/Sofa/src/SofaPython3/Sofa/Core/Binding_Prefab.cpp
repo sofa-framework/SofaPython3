@@ -105,7 +105,7 @@ namespace sofapython3
         py::class_<Prefab,
                 Prefab_Trampoline,
                 BasePrefab,
-                py_shared_ptr<Prefab>> f(m, "Prefab",
+                py_shared_ptr<Prefab>> f(m, "RawPrefab",
                                          py::dynamic_attr(),
                                          py::multiple_inheritance(),
                                          sofapython3::doc::prefab::Prefab);
@@ -113,18 +113,6 @@ namespace sofapython3
         f.def(py::init([](py::args& /*args*/, py::kwargs& kwargs)
         {
                   auto c = new Prefab_Trampoline();
-
-//                  py::dict globals = py::module::import("__main__").attr("__dict__");
-//                  py::dict locals {"f"_a=PythonFactory::toPython(c)};
-//                  py::object res = py::eval<py::eval_statements>(            // tell eval we're passing multiple statements
-//                        "import Sofa\n"
-//                        "Sofa.getPrefabProperties(f)\n", globals, locals);
-
-//                  py::print(py::str(res));
-
-//                  c->addD
-//                  c->setDefinitionSourceFilePos();
-//                  c->setDefinitionSourceFileName();
 
                   for(auto kv : kwargs)
                   {
