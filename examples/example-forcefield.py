@@ -5,11 +5,11 @@ import numpy as np
 
 class RestShapeForceField(Sofa.Core.ForceField):
     """Implementation of a RestShapeForceField in python"""
-    def __init__(self, *args, **kwargs):
-        kwargs["ks"] = kwargs.get("ks", 1.0)
-        kwargs["kd"] = kwargs.get("kd", 0.1)
+    def __init__(self, ks=1.0, kd=1.0, *args, **kwargs):
         Sofa.Core.ForceField.__init__(self, *args, **kwargs)
-                        
+        self.addData("ks", type="float", value=ks, help="The stiffness spring", group="Spring's Properties")                  
+        self.addData("kd", type="float", value=kd, help="The stiffness spring", group="Spring's Properties")                  
+        
     def init(self):
         self.initpos = self.mstate.position.array().copy()
         self.k = np.zeros((1,1))
@@ -17,30 +17,16 @@ class RestShapeForceField(Sofa.Core.ForceField):
         self.d = 0.5
 
     def addForce(self, m, out_force, pos, vel):
-        out_force += ( (self.initpos-pos) * self.ks.value  )
+        out_force.value += ( (self.initpos-pos.value) * self.ks.value  )
                  
-    def addDForce(self, df, dx, kFactor, bFactor):
-        print(" Python::addDForce: ", a, " ", b)
+    def addDForce(self, df, dx, params):
+        pass
+        #print(" Python::addDForce: ", params)
         
-    def addKToMatrix(self, a, b):
-        print(" Python::addKToMatrix: ", a, " ", b)
-
-
-def ParticleSet(node, name="unnamed", position=[]):
-        node = Sofa.Core.Node(name)
-
-        c = node.addObject("MechanicalObject", name="mechanical", position=position)
-        c.showObject = True
-        c.drawMode = 1
-
-        m = node.addObject("UniformMass", name="mass", vertexMass=0.1)
-        return node
-                
-def addRestShapeForceField(node):
-    node.addChild( RestShapeObject( MyForceField("customFF", ks=5.0) , name="python", position=[[i*1-10.0, 0, 0] for i in range(200)] ) )
+    #def addKToMatrix(self, a, b):
+    #    print(" Python::addKToMatrix: ", a, " ", b)
 
 def createScene(node):
-        node = Sofa.Core.Node("TestAnimation")
         node.addObject("RequiredPlugin", name="SofaOpenglVisual")
         node.addObject("RequiredPlugin", name="SofaSparseSolver")
         node.addObject("OglLineAxis")
@@ -48,19 +34,14 @@ def createScene(node):
         node.addObject("EulerImplicit")
         node.addObject("CGLinearSolver", tolerance=1e-12, threshold=1e-12)
 
-        c = node.addObject("MechanicalObject", name="mechanical", position=position)
+        o = node.addChild("Object")
+        c = o.addObject("MechanicalObject", name="mechanical", position=[0.0,0.0,0.0, 1.0,0.0,0.0])
         c.showObject = True
+        c.showColor = [1.0,0.0,0.0,1.0]
         c.drawMode = 1
 
-        m = node.addObject("UniformMass", name="mass", vertexMass=0.1)
-
-
-        a.mechanical.showColor = [1.0,0.0,0.0,1.0]
-        b=node.addChild( RestShapeObject( CreateObject("RestShapeSpringsForceField", stiffness=5.0) , name="c++", position=[[i*0.5-1.0, 0, 0] for i in range(1)]))
-        b.mechanical.showColor = [1.0,1.0,0.0,1.0]
+        o.addObject("UniformMass", name="mass", vertexMass=0.1)
+        o.addObject( RestShapeForceField(name="CPPObject", kd=2.0))
         
         return node
-
-def createScene(rootNode):
-        rootNode.addChild(Test().test_animation())
 
