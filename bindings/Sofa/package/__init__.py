@@ -180,6 +180,9 @@ class Prefab(Sofa.Core.RawPrefab):
         self.addData("prefabname", value=type(self).__name__, type="string", group="Infos", help="Name of the prefab")
         self.addData("docstring", value=self.__doc__, type="string", group="Infos", help="Name of the prefab")
 
+def msg_error(target, message):
+    frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
+    Sofa.Helper.msg_error(target, message, frameinfo.filename, frameinfo.lineno)
 
 def PrefabBuilder(f):
         frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
@@ -199,7 +202,7 @@ def PrefabBuilder(f):
             class InnerSofaPrefab(Sofa.Core.RawPrefab):
                 def __init__(self, name):
                     Sofa.Core.RawPrefab.__init__(self, name=name)
-                    self.isValid = False
+                    self.isValid = True
 
                 def doReInit(self):
                     if not self.isValid:
@@ -213,6 +216,7 @@ def PrefabBuilder(f):
                             kkwargs[name] = self.__data__[name].value
                         f(**kkwargs)
                     except Exception as e:
+                        self.isValid = False
                         exc_type, exc_value, exc_tb = sys.exc_info()
                         Sofa.Helper.msg_error(self, "Unable to build prefab  \n  "+getSofaFormattedStringFromException(e))
             try:
@@ -236,7 +240,6 @@ def PrefabBuilder(f):
                         selfnode.addPrefabParameter(name=argnames[i+n], value=defaults[n], type=pyType2sofaType(defaults[n]), help="Undefined")
 
                 selfnode.init()
-                selfnode.isValid=True
             except Exception as e:
                 selfnode.isValid=False
                 Sofa.Helper.msg_error(selfnode, "Unable to create prefab cause: "+getSofaFormattedStringFromException(e))
