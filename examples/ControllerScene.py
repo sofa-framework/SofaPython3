@@ -19,30 +19,78 @@ class RotationController(Sofa.Core.Controller):
         self.engine = kwargs["engine"]
 
         self.inited = 0
+        self.axe = 0 
         self.iterations = 0
         self.step = 1
         self.max_iterations = 360
         self.other_direction = False
+        self.move = 0
 
-    def onAnimateBeginEvent(self, eventType):
+    def rotate(self):
         self.iterations += 1
-        self.engine.rotation.value[0] += self.step if (
+        self.engine.rotation[self.axe] += self.step if (
             self.other_direction) else -self.step
         if self.iterations > self.max_iterations:
             self.iterations = 0
             self.other_direction = not self.other_direction
 
+    def translate(self):
+        self.iterations += 1
+        self.engine.translation[self.axe] += 0.05 if (
+            self.other_direction) else -0.05
+        if self.iterations > self.max_iterations:
+            self.iterations = 0
+            self.other_direction = not self.other_direction
+
+    def onAnimateBeginEvent(self, eventType):
+        if(self.move == 0):
+            self.rotate()
+        elif (self.move == 1):
+            self.translate()
+        
+
+    def onEvent(self, event):
+        pass
+        # print ("Different event in Sofa : "+str(event))
+
+    def onKeypressedEvent(self, c):
+        key = c['key']
+        if key == "0":
+            print("You switch to X axis")
+            self.axe = 0
+        if key == "1":
+            print("You switch to Y axis")
+            self.axe = 1
+        if key == "2":
+            print("You switch to Z axis")
+            self.axe = 2
+
+        if ord(key) == 19:  # up
+            print("You just switch to rotation control ")
+            self.move = 0 
+
+        if ord(key) == 21:  # down
+            print("You just switch to rotation control ")
+            self.move = 0 
+
+        if ord(key) == 18:  # left
+            print("You just switch to rotation control ")
+            self.move = 1
+
+        if ord(key) == 20:  # right
+            print("You just switch to rotation control ")
+            self.move = 1
 
 def createScene(root):
 
-    rpath =os.environ["SOFA_ROOT"]+"../src/share/mesh/"
+    # rpath =os.environ["SOFA_ROOT"]+"../src/share/mesh/"
     # can be used by SceneLoaderPY:
     root.dt = 0.01
     root.name = 'root'
     root.gravity = [0.0, 9.8, 0.0]
 
     loader = root.addObject('MeshObjLoader', name='loader',
-                            filename=rpath + "liver.obj")
+                            filename="mesh/liver.obj")
     te = root.addObject(
         "TransformEngine", name="te", input_position=loader.position.getLinkPath(), rotation=[0,0,0])
     mo = root.addObject("MechanicalObject", name="mo",
