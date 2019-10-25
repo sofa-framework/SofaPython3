@@ -54,6 +54,13 @@ static auto Controller = R"(
                          ## These are needed (and the normal way to override from a python class)
                          Sofa.Core.Controller.__init__(self, *args, **kwargs)
                          print(" Python::__init__::"+str(self.name))
+
+                    def onEvent(self, event):
+                         """This function is the fallback one that is called if the XXXX event is
+                            received but there is not overriden onXXXX() method.
+                         """
+                         print("generic event handler catched ", event)
+
                     def onAnimateBeginEvent(self, event):
                          print("onAnimateBeginEvent")
 
@@ -61,6 +68,5 @@ static auto Controller = R"(
                     controller = MyController(name="MyC")
                     rootNode.addObject(controller)
                     return rootNode
-
          )";
 }
