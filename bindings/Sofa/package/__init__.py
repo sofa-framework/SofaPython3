@@ -119,7 +119,7 @@ def sofaFormatHandler(type, value, tb):
     for line in traceback.format_tb(tb):
         s += line
 
-    return repr(value)+" "+s
+    return repr(value)+"\n"+s
 
 
 def getSofaFormattedStringFromException(e):
@@ -199,38 +199,47 @@ def PrefabBuilder(f):
             class InnerSofaPrefab(Sofa.Core.RawPrefab):
                 def __init__(self, name):
                     Sofa.Core.RawPrefab.__init__(self, name=name)
+                    self.isValid = False
 
                 def doReInit(self):
-                    argnames = inspect.getfullargspec(f).args
+                    if not self.isValid:
+                        return
+                    try:
+                        argnames = inspect.getfullargspec(f).args
 
-                    kkwargs = {}
-                    kkwargs[argnames[0]] = self
-                    for name in argnames[1:]:
-                        kkwargs[name] = self.__data__[name].value
-                    f(**kkwargs)
+                        kkwargs = {}
+                        kkwargs[argnames[0]] = self
+                        for name in argnames[1:]:
+                            kkwargs[name] = self.__data__[name].value
+                        f(**kkwargs)
+                    except Exception as e:
+                        exc_type, exc_value, exc_tb = sys.exc_info()
+                        Sofa.Helper.msg_error(self, "Unable to build prefab  \n  "+getSofaFormattedStringFromException(e))
+            try:
+                selfnode = InnerSofaPrefab(name=f.__code__.co_name)
+                selfnode.setDefinitionSourceFileName(definedloc[0])
+                selfnode.setDefinitionSourceFilePos(definedloc[1])
 
-
-            selfnode = InnerSofaPrefab(name=f.__code__.co_name)
-            selfnode.setDefinitionSourceFileName(definedloc[0])
-            selfnode.setDefinitionSourceFilePos(definedloc[1])
-
-            ## retrieve meta data from decorated class:
-            selfnode.addData(name="prefabname", value=f.__code__.co_name,
+                ## retrieve meta data from decorated class:
+                selfnode.addData(name="prefabname", value=f.__code__.co_name,
                          type="string", help="The prefab's name", group="Infos")
-            selfnode.addData(name="docstring", value=f.__doc__,
+                selfnode.addData(name="docstring", value=f.__doc__,
                          type="string", help="This prefab's docstring", group="Infos")
 
-            ## Now we retrieve all params passed to the prefab and add them as datafields:
-            argnames = inspect.getfullargspec(f).args
-            defaults = inspect.getfullargspec(f).defaults
+                ## Now we retrieve all params passed to the prefab and add them as datafields:
+                argnames = inspect.getfullargspec(f).args
+                defaults = inspect.getfullargspec(f).defaults
 
-            i = len(argnames) - len(defaults)
-            for n in range(0, len(defaults)):
-                if argnames[i+n] not in selfnode.__data__:
-                    selfnode.addPrefabParameter(name=argnames[i+n], value=defaults[n], type=pyType2sofaType(defaults[n]), help="Undefined")
-
+                i = len(argnames) - len(defaults)
+                for n in range(0, len(defaults)):
+                    if argnames[i+n] not in selfnode.__data__:
+                        selfnode.addPrefabParameter(name=argnames[i+n], value=defaults[n], type=pyType2sofaType(defaults[n]), help="Undefined")
 
                 selfnode.init()
+                selfnode.isValid=True
+            except Exception as e:
+                selfnode.isValid=False
+                Sofa.Helper.msg_error(selfnode, "Unable to create prefab cause: "+getSofaFormattedStringFromException(e))
             return selfnode
         return SofaPrefabF
 
