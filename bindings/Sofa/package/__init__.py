@@ -184,6 +184,19 @@ def msg_error(target, message):
     frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
     Sofa.Helper.msg_error(target, message, frameinfo.filename, frameinfo.lineno)
 
+def msg_info(target, message):
+    frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
+    Sofa.Helper.msg_info(target, message, frameinfo.filename, frameinfo.lineno)
+
+def msg_warning(target, message):
+    frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
+    Sofa.Helper.msg_warning(target, message, frameinfo.filename, frameinfo.lineno)
+
+def msg_deprecated(target, message):
+    frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
+    Sofa.Helper.msg_deprecated(target, message, frameinfo.filename, frameinfo.lineno)
+
+
 def PrefabBuilder(f):
         frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
         definedloc = (frameinfo.filename, frameinfo.lineno)
