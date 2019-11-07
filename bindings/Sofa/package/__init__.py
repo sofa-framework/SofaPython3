@@ -213,8 +213,8 @@ def PrefabBuilder(f):
                         return getattr(self.node, name)
 
             class InnerSofaPrefab(Sofa.Core.RawPrefab):
-                def __init__(self, name):
-                    Sofa.Core.RawPrefab.__init__(self, name=name)
+                def __init__(self, *args, **kwargs):
+                    Sofa.Core.RawPrefab.__init__(self, *args, **kwargs)
                     self.isValid = True
 
                 def doReInit(self):
@@ -233,7 +233,9 @@ def PrefabBuilder(f):
                         exc_type, exc_value, exc_tb = sys.exc_info()
                         Sofa.Helper.msg_error(self, "Unable to build prefab  \n  "+getSofaFormattedStringFromException(e))
             try:
-                selfnode = InnerSofaPrefab(name=f.__code__.co_name)
+                selfnode = None
+                kwargs["name"] = kwargs.get("name", f.__code__.co_name)
+                selfnode = InnerSofaPrefab(*args, **kwargs)
                 selfnode.setDefinitionSourceFileName(definedloc[0])
                 selfnode.setDefinitionSourceFilePos(definedloc[1])
 
@@ -247,15 +249,27 @@ def PrefabBuilder(f):
                 argnames = inspect.getfullargspec(f).args
                 defaults = inspect.getfullargspec(f).defaults
 
+                if argnames is None:
+                    argnames = []
+                    defaults = []
+
+                if defaults is None:
+                    defaults = []
+
                 i = len(argnames) - len(defaults)
                 for n in range(0, len(defaults)):
                     if argnames[i+n] not in selfnode.__data__:
-                        selfnode.addPrefabParameter(name=argnames[i+n], value=defaults[n], type=pyType2sofaType(defaults[n]), help="Undefined")
+                        selfnode.addPrefabParameter(name=argnames[i+n],
+                                                    value=kwargs.get(argnames[i+n], defaults[n]),
+                                                    type=pyType2sofaType(defaults[n]), help="Undefined")
 
                 selfnode.init()
             except Exception as e:
-                selfnode.isValid=False
-                Sofa.Helper.msg_error(selfnode, "Unable to create prefab cause: "+getSofaFormattedStringFromException(e))
+                if selfnode is not None:
+                    selfnode.isValid=False
+                    Sofa.Helper.msg_error(selfnode, "Unable to create prefab because: "+getSofaFormattedStringFromException(e))
+                else:
+                    Sofa.Helper.msg_error("PrefabBuilder", "Unable to create prefab because: "+getSofaFormattedStringFromException(e))
             return selfnode
         return SofaPrefabF
 
