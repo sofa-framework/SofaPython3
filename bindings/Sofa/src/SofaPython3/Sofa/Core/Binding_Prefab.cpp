@@ -42,6 +42,12 @@ using sofa::core::objectmodel::DataCallback;
 PYBIND11_DECLARE_HOLDER_TYPE(Prefab,
                              sofapython3::py_shared_ptr<Prefab>, true)
 
+#include <sofa/simulation/VisualVisitor.h>
+using sofa::simulation::VisualInitVisitor;
+
+#include <sofa/simulation/Simulation.h>
+using sofa::simulation::Simulation;
+
 namespace sofapython3
 {
     using sofa::core::objectmodel::Event;
@@ -50,6 +56,7 @@ namespace sofapython3
     {
         reinit();
         Inherit1::init(sofa::core::ExecParams::defaultInstance());
+
     }
 
     void Prefab::reinit()
@@ -57,6 +64,12 @@ namespace sofapython3
         /// remove everything in the node.
         execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
         doReInit();
+
+        /// Beurk beurk beurk
+        sofa::simulation::getSimulation()->initNode(this);
+        sofa::simulation::getSimulation()->updateVisualContext(this);
+        execute<VisualInitVisitor>(nullptr);
+        sofa::simulation::getSimulation()->updateVisual(this);
     }
 
     void Prefab::doReInit()
