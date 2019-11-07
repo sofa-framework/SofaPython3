@@ -97,7 +97,7 @@ py::object getContext(const BaseObject &self)
 {
     const sofa::core::objectmodel::BaseContext* context =  self.getContext();
     if (context){
-        return py::cast(context);
+        return PythonFactory::toPython(const_cast<sofa::core::objectmodel::BaseContext*>(context));
     }
     return py::none();
 }
