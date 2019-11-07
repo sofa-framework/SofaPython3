@@ -190,6 +190,12 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         throw py::value_error(object->getLoggedMessagesAsString({Message::Error}));
     }
 
+    for(auto a : kwargs)
+    {
+        BaseData* d = object->findData(py::cast<std::string>(a.first));
+        if(d)
+            d->setPersistent(true);
+    }
     return PythonFactory::toPython(object.get());
 }
 
@@ -200,7 +206,7 @@ py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& k
     {
         BaseObject* obj = py::cast<BaseObject*>(callable);
 
-        self->addObject(obj);
+        self->addObject(obj);    
         return py::cast(obj);
     }
 
@@ -224,7 +230,16 @@ py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& k
             throw py::value_error("addObject: Cannot call addObject with name " + name + ": Protected keyword");
     }
 
-    return callable(self, **kwargs);
+    auto c = callable(self, **kwargs);
+    Base* base = py::cast<Base*>(c);
+    for(auto a : kwargs)
+    {
+        BaseData* d = base->findData(py::cast<std::string>(a.first));
+        if(d)
+            d->setPersistent(true);
+    }
+
+    return c;
 }
 
 
@@ -245,6 +260,14 @@ py::object addChildKwargs(Node* self, const std::string& name, const py::kwargs&
     fillBaseObjectdescription(desc,kwargs);
     auto node=simpleapi::createChild(self, desc);
     checkParamUsage(desc);
+
+    for(auto a : kwargs)
+    {
+        BaseData* d = node->findData(py::cast<std::string>(a.first));
+        if(d)
+            d->setPersistent(true);
+    }
+
     return py::cast(node);
 }
 
