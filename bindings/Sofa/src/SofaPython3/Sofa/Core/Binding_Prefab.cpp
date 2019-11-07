@@ -67,9 +67,9 @@ namespace sofapython3
 
         /// Beurk beurk beurk
         sofa::simulation::getSimulation()->initNode(this);
-        sofa::simulation::getSimulation()->updateVisualContext(this);
+        //sofa::simulation::getSimulation()->updateVisualContext(this);
         execute<VisualInitVisitor>(nullptr);
-        sofa::simulation::getSimulation()->updateVisual(this);
+        //sofa::simulation::getSimulation()->updateVisual(this);
     }
 
     void Prefab::doReInit()
