@@ -31,6 +31,8 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <sofa/core/objectmodel/DataCallback.h>
 #include <SofaSimulationGraph/DAGNode.h>
 
+#include <sofa/helper/system/FileMonitor.h>
+
 namespace sofa::core::objectmodel
 {
 class BasePrefab : public sofa::simulation::graph::DAGNode
@@ -50,6 +52,15 @@ using sofa::simulation::graph::DAGNode;
 using sofa::core::objectmodel::BasePrefab;
 using sofa::core::objectmodel::DataCallback;
 
+class Prefab;
+class PrefabFileEventListener : public sofa::helper::system::FileEventListener
+{
+public:
+    Prefab* m_prefab;
+
+    void fileHasChanged(const std::string& filename) override;
+};
+
 class Prefab : public BasePrefab
 {
 public:
@@ -59,10 +70,12 @@ public:
     virtual void doReInit() ;
 
     void addPrefabParameter(const std::string& name, py::object value, const std::string& help, std::string type);
+    void setSourceTracking(const std::string& filename);
 
     Prefab();
     ~Prefab() override;
 
+    PrefabFileEventListener m_filelistener;
     DataCallback m_datacallback;
 };
 

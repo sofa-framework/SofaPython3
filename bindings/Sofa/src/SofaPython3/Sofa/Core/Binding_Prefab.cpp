@@ -33,11 +33,16 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/PythonFactory.h>
+#include <SofaPython3/PythonEnvironment.h>
+
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <sofa/core/objectmodel/DataCallback.h>
 using sofa::core::objectmodel::DataCallback;
 
 #include <sofa/simulation/DeleteVisitor.h>
+#include <sofa/helper/system/FileMonitor.h>
+using sofa::helper::system::FileMonitor;
+using sofa::helper::system::FileEventListener;
 
 PYBIND11_DECLARE_HOLDER_TYPE(Prefab,
                              sofapython3::py_shared_ptr<Prefab>, true)
@@ -50,106 +55,147 @@ using sofa::simulation::Simulation;
 
 namespace sofapython3
 {
-    using sofa::core::objectmodel::Event;
+using sofa::core::objectmodel::Event;
 
-    void Prefab::init()
-    {
-        reinit();
-        Inherit1::init(sofa::core::ExecParams::defaultInstance());
+void Prefab::init()
+{
+    reinit();
+    Inherit1::init(sofa::core::ExecParams::defaultInstance());
+}
 
-    }
+void PrefabFileEventListener::fileHasChanged(const std::string &filename)
+{
+    std::cout << "TRIGERRING FILE CHANGE FOR " << filename << std::endl;
 
-    void Prefab::reinit()
-    {
-        /// remove everything in the node.
-        execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
-        doReInit();
+    //PythonEnvironment::gil state {__func__ } ;
+    //std::string file=filepath;
+    //SP_CALL_FILEFUNC(const_cast<char*>("onReimpAFile"),
+    //                 const_cast<char*>("s"),
+    //                 const_cast<char*>(file.data()));
 
-        /// Beurk beurk beurk
-        sofa::simulation::getSimulation()->initNode(this);
-        //sofa::simulation::getSimulation()->updateVisualContext(this);
-        execute<VisualInitVisitor>(nullptr);
-        //sofa::simulation::getSimulation()->updateVisual(this);
-    }
+    py::dict local;
+    local["filename"] = filename;
+    py::eval("onReimpAFile(filename)", py::globals(), local);
 
-    void Prefab::doReInit()
-    {
-    }
+    m_prefab->reinit();
+}
 
-    Prefab::Prefab() {
-        m_datacallback.addCallback( std::bind(&Prefab::reinit, this) );
-    }
+void Prefab::reinit()
+{
+    /// remove everything in the node.
+    execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
+    doReInit();
 
-    Prefab::~Prefab() {
-    }
+    /// Beurk beurk beurk
+    sofa::simulation::getSimulation()->initNode(this);
+    //sofa::simulation::getSimulation()->updateVisualContext(this);
+    //execute<VisualInitVisitor>(nullptr);
+    //sofa::simulation::getSimulation()->updateVisual(this);
 
-    void Prefab::addPrefabParameter(const std::string& name, py::object value, const std::string& help, std::string type)
+    m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
+}
+
+void Prefab::doReInit()
+{
+}
+
+Prefab::Prefab()
+{
+    m_filelistener.m_prefab = this;
+    m_datacallback.addCallback( std::bind(&Prefab::reinit, this) );
+}
+
+
+Prefab::~Prefab()
+{
+    FileMonitor::removeListener(&m_filelistener);
+}
+
+
+void Prefab::addPrefabParameter(const std::string& name, py::object value, const std::string& help, std::string type)
+{
+    BaseData* data = findData(name);
+    if(data == nullptr)
     {
         BaseData* data = BindingBase::addData(py::cast(this), name, value, py::object(), help, "Prefab's properties", type);
         m_datacallback.addInputs({data});
+        return;
+    }
+    //PythonFactory::fromPython(data, value);
+}
+
+void Prefab::setSourceTracking(const std::string& filename)
+{
+    std::cout << "Activating source tracking to " << filename << std::endl;
+    FileMonitor::addFile(filename, &m_filelistener);
+}
+
+
+class Prefab_Trampoline : public Prefab, public PythonTrampoline
+{
+public:
+    Prefab_Trampoline() = default;
+
+    ~Prefab_Trampoline() override = default;
+
+    std::string getClassName() const override
+    {
+        return "Prefab"; /// pyobject->ob_type->tp_name;
     }
 
+    void doReInit() override ;
+};
 
-    class Prefab_Trampoline : public Prefab, public PythonTrampoline
-    {
-    public:
-        Prefab_Trampoline() = default;
+void Prefab_Trampoline::doReInit()
+{
+    PYBIND11_OVERLOAD(void, Prefab, doReInit, );
+}
 
-        ~Prefab_Trampoline() override = default;
+void moduleAddPrefab(py::module &m) {
+    py::class_<sofa::core::objectmodel::BasePrefab,
+            sofa::simulation::Node,
+            sofa::core::objectmodel::BasePrefab::SPtr>(m, "BasePrefab");
 
-        std::string getClassName() const override
-        {
-            return "Prefab"; /// pyobject->ob_type->tp_name;
-        }
+    py::class_<Prefab,
+            Prefab_Trampoline,
+            BasePrefab,
+            py_shared_ptr<Prefab>> f(m, "RawPrefab",
+                                     py::dynamic_attr(),
+                                     py::multiple_inheritance(),
+                                     sofapython3::doc::prefab::Prefab);
 
-        void doReInit() override ;
-    };
+    f.def(py::init([](py::args& /*args*/, py::kwargs& kwargs){
+              auto c = new Prefab_Trampoline();
 
-    void Prefab_Trampoline::doReInit()
-    {
-        PYBIND11_OVERLOAD(void, Prefab, doReInit, );
-    }
+              for(auto kv : kwargs)
+              {
 
-    void moduleAddPrefab(py::module &m) {
-        py::class_<sofa::core::objectmodel::BasePrefab,
-                sofa::simulation::Node,
-                sofa::core::objectmodel::BasePrefab::SPtr>(m, "BasePrefab");
+                  std::string key = py::cast<std::string>(kv.first);
+                  py::object value = py::reinterpret_borrow<py::object>(kv.second);
 
-        py::class_<Prefab,
-                Prefab_Trampoline,
-                BasePrefab,
-                py_shared_ptr<Prefab>> f(m, "RawPrefab",
-                                         py::dynamic_attr(),
-                                         py::multiple_inheritance(),
-                                         sofapython3::doc::prefab::Prefab);
+                  std::cout << "PREFAB ARE BROKEN " << key << std::endl;
 
-        f.def(py::init([](py::args& /*args*/, py::kwargs& kwargs)
-        {
-                  auto c = new Prefab_Trampoline();
-
-                  for(auto kv : kwargs)
-                  {
-                      std::string key = py::cast<std::string>(kv.first);
-                      py::object value = py::reinterpret_borrow<py::object>(kv.second);
-
-                      if( key == "name")
+                  if( key == "name")
                       c->setName(py::cast<std::string>(kv.second));
-                      try {
-                          BindingBase::SetAttr(*c, key, value);
-                      } catch (py::attribute_error& /*e*/) {
-                          /// kwargs are used to set datafields to their initial values,
-                          /// but they can also be used as simple python attributes, unrelated to SOFA.
-                          /// thus we catch & ignore the py::attribute_error thrown by SetAttr
-                      }
+                  try {
+                      BindingBase::SetAttr(*c, key, value);
+                  } catch (py::attribute_error& /*e*/) {
+                      /// kwargs are used to set datafields to their initial values,
+                      /// but they can also be used as simple python attributes, unrelated to SOFA.
+                      /// thus we catch & ignore the py::attribute_error thrown by SetAttr
                   }
-                  return c;
-              }));
+              }
+              return c;
 
-        f.def("addPrefabParameter", &Prefab::addPrefabParameter,
-              "name"_a, "value"_a, "help"_a, "type"_a);
-        f.def("init", &Prefab::init);
-        f.def("reinit", &Prefab::reinit);
-    }
+          }
+          ));
+
+    f.def("setSourceTracking", &Prefab::setSourceTracking);
+    f.def("addPrefabParameter", &Prefab::addPrefabParameter,
+          "name"_a, "value"_a, "help"_a, "type"_a);
+    f.def("init", &Prefab::init);
+    f.def("reinit", &Prefab::reinit);
+}
 
 
 }

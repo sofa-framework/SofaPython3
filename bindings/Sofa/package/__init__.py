@@ -161,14 +161,15 @@ def pyType2sofaType(v):
 
 
 class Prefab(Sofa.Core.RawPrefab):
-    def __init__(self):
-        Sofa.Core.RawPrefab.__init__(self)
+    def __init__(self, *args, **kwargs):
+        Sofa.Core.RawPrefab.__init__(self, *args, **kwargs)
         frame = inspect.currentframe().f_back
         frameinfo = inspect.getframeinfo(frame)
         definedloc = (frameinfo.filename, frameinfo.lineno)
 
         self.setDefinitionSourceFileName(definedloc[0])
         self.setDefinitionSourceFilePos(definedloc[1])
+        self.setSourceTracking(definedloc[0])
 
         frame = frame.f_back
         if frame is not None:
@@ -177,8 +178,10 @@ class Prefab(Sofa.Core.RawPrefab):
             self.setInstanciationSourceFileName(definedloc[0])
             self.setInstanciationSourceFilePos(definedloc[1])
 
+        self.setName(str(self.__class__.__name__))
         self.addData("prefabname", value=type(self).__name__, type="string", group="Infos", help="Name of the prefab")
         self.addData("docstring", value=self.__doc__, type="string", group="Infos", help="Name of the prefab")
+        self.init()
 
 def msg_error(target, message):
     frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
@@ -196,7 +199,7 @@ def msg_deprecated(target, message):
     frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
     Sofa.Helper.msg_deprecated(target, message, frameinfo.filename, frameinfo.lineno)
 
-
+import inspect
 def PrefabBuilder(f):
         frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
         definedloc = (frameinfo.filename, frameinfo.lineno)
@@ -227,7 +230,9 @@ def PrefabBuilder(f):
                         kkwargs[argnames[0]] = self
                         for name in argnames[1:]:
                             kkwargs[name] = self.__data__[name].value
-                        f(**kkwargs)
+
+                        self.cb(**kkwargs)
+                        print("EXIT")
                     except Exception as e:
                         self.isValid = False
                         exc_type, exc_value, exc_tb = sys.exc_info()
@@ -238,7 +243,8 @@ def PrefabBuilder(f):
                 selfnode = InnerSofaPrefab(*args, **kwargs)
                 selfnode.setDefinitionSourceFileName(definedloc[0])
                 selfnode.setDefinitionSourceFilePos(definedloc[1])
-
+                selfnode.setSourceTracking(definedloc[0])
+                selfnode.cb = f
                 ## retrieve meta data from decorated class:
                 selfnode.addData(name="prefabname", value=f.__code__.co_name,
                          type="string", help="The prefab's name", group="Infos")
@@ -248,6 +254,7 @@ def PrefabBuilder(f):
                 ## Now we retrieve all params passed to the prefab and add them as datafields:
                 argnames = inspect.getfullargspec(f).args
                 defaults = inspect.getfullargspec(f).defaults
+                print("ICA ")
 
                 if argnames is None:
                     argnames = []
@@ -263,7 +270,10 @@ def PrefabBuilder(f):
                                                     value=kwargs.get(argnames[i+n], defaults[n]),
                                                     type=pyType2sofaType(defaults[n]), help="Undefined")
 
+                print("ICI")
                 selfnode.init()
+                print("ICI OO")
+
             except Exception as e:
                 if selfnode is not None:
                     selfnode.isValid=False
@@ -271,5 +281,6 @@ def PrefabBuilder(f):
                 else:
                     Sofa.Helper.msg_error("PrefabBuilder", "Unable to create prefab because: "+getSofaFormattedStringFromException(e))
             return selfnode
+        SofaPrefabF.__dict__["__original__"] = f
         return SofaPrefabF
 

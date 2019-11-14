@@ -250,7 +250,7 @@ void PythonEnvironment::Init()
 
 
     // python livecoding related
-    //PyRun_SimpleString("from SofaPython3.livecoding import onReimpAFile");
+    PyRun_SimpleString("from Sofa.livecoding import onReimpAFile");
 
     // general sofa-python stuff
 
