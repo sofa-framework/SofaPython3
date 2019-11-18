@@ -67,7 +67,7 @@ void PrefabFileEventListener::fileHasChanged(const std::string &filename)
 {
     std::cout << "TRIGERRING FILE CHANGE FOR " << filename << std::endl;
 
-    //PythonEnvironment::gil state {__func__ } ;
+    PythonEnvironment::gil acquire ;
     //std::string file=filepath;
     //SP_CALL_FILEFUNC(const_cast<char*>("onReimpAFile"),
     //                 const_cast<char*>("s"),

@@ -260,6 +260,8 @@ void PythonEnvironment::Init()
 
 void PythonEnvironment::executePython(std::function<void()> cb)
 {
+    sofapython3::PythonEnvironment::gil acquire;
+
     try{
         cb();
     }catch(std::exception& e)
