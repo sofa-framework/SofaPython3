@@ -65,8 +65,6 @@ void Prefab::init()
 
 void PrefabFileEventListener::fileHasChanged(const std::string &filename)
 {
-    std::cout << "TRIGERRING FILE CHANGE FOR " << filename << std::endl;
-
     PythonEnvironment::gil acquire ;
     //std::string file=filepath;
     //SP_CALL_FILEFUNC(const_cast<char*>("onReimpAFile"),
@@ -77,20 +75,21 @@ void PrefabFileEventListener::fileHasChanged(const std::string &filename)
     local["filename"] = filename;
     py::eval("onReimpAFile(filename)", py::globals(), local);
 
-    m_prefab->reinit();
+    m_prefab->clearLoggedMessages();
+    m_prefab->init();
 }
 
 void Prefab::reinit()
 {
+    clearLoggedMessages();
+
     /// remove everything in the node.
     execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
     doReInit();
 
     /// Beurk beurk beurk
     sofa::simulation::getSimulation()->initNode(this);
-    //sofa::simulation::getSimulation()->updateVisualContext(this);
-    //execute<VisualInitVisitor>(nullptr);
-    //sofa::simulation::getSimulation()->updateVisual(this);
+    execute<VisualInitVisitor>(nullptr);
 
     m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
 }
@@ -148,7 +147,12 @@ public:
 
 void Prefab_Trampoline::doReInit()
 {
-    PYBIND11_OVERLOAD(void, Prefab, doReInit, );
+    try{
+        PYBIND11_OVERLOAD(void, Prefab, doReInit, );
+    } catch (std::exception& e)
+    {
+        msg_error(this) << e.what();
+    }
 }
 
 void moduleAddPrefab(py::module &m) {

@@ -270,9 +270,7 @@ def PrefabBuilder(f):
                                                     value=kwargs.get(argnames[i+n], defaults[n]),
                                                     type=pyType2sofaType(defaults[n]), help="Undefined")
 
-                print("ICI")
                 selfnode.init()
-                print("ICI OO")
 
             except Exception as e:
                 if selfnode is not None:
