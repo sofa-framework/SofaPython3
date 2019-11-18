@@ -32,7 +32,8 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/PythonFactory.h>
-
+#include <SofaPython3/PythonEnvironment.h>
+using sofapython3::PythonEnvironment;
 
 PYBIND11_DECLARE_HOLDER_TYPE(Controller,
                              sofapython3::py_shared_ptr<Controller>, true)
@@ -76,11 +77,13 @@ namespace sofapython3
 
     void Controller_Trampoline::init()
     {
+        PythonEnvironment::gil acquire;
         PYBIND11_OVERLOAD(void, Controller, init, );
     }
 
     void Controller_Trampoline::reinit()
     {
+        PythonEnvironment::gil acquire;
         PYBIND11_OVERLOAD(void, Controller, reinit, );
     }
 
@@ -99,6 +102,7 @@ namespace sofapython3
 
     void Controller_Trampoline::handleEvent(Event* event)
     {
+        PythonEnvironment::gil acquire;
 
         py::object self = py::cast(this);
         std::string name = std::string("on")+event->getClassName();

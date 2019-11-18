@@ -38,6 +38,8 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <sofa/simulation/Node.h>
 #include <sofa/core/MechanicalParams.h>
 
+#include <SofaPython3/PythonEnvironment.h>
+using sofapython3::PythonEnvironment;
 
 PYBIND11_DECLARE_HOLDER_TYPE(TForceField,
                              sofapython3::py_shared_ptr<TForceField>, true)
@@ -64,6 +66,8 @@ namespace sofapython3
     {
         ForceField<TDOFType>::init();
 
+        PythonEnvironment::gil acquire;
+
         if (!mstate.get())
             mstate.set(dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState()));
 
@@ -77,6 +81,8 @@ namespace sofapython3
     template<class TDOFType>
     void ForceField_Trampoline<TDOFType>::addForce(const MechanicalParams* mparams,  DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
     {
+        PythonEnvironment::gil acquire;
+
         // pass bFactor, kFactor, energy
         py::dict mp = py::dict("time"_a=getContext()->getTime(),
                                "mFactor"_a=mparams->mFactor(),
@@ -90,6 +96,8 @@ namespace sofapython3
     template<class TDOFType>
     void ForceField_Trampoline<TDOFType>::addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx )
     {
+        PythonEnvironment::gil acquire;
+
         // pass bFactor, kFactor, energy
         py::dict mp = py::dict("time"_a=getContext()->getTime(),
                                "nFactor"_a=mparams->mFactor(),
@@ -104,6 +112,8 @@ namespace sofapython3
     template<class TDOFType>
     py::object ForceField_Trampoline<TDOFType>::_addKToMatrix(const MechanicalParams* mparams, int nIndices, int nDofs)
     {
+        PythonEnvironment::gil acquire;
+
         py::dict mp = py::dict("time"_a=getContext()->getTime(),
                                "mFactor"_a=mparams->mFactor(),
                                "bFactor"_a=mparams->bFactor(),

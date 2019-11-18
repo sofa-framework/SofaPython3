@@ -148,15 +148,17 @@ SOFAPYTHON3_API py::module PythonEnvironment::importFromFile(const std::string& 
     locals["module_name"] = py::cast(module); // have to cast the std::string first
     locals["path"]        = py::cast(path);
     msg_info("SofaPython3") << "Importing module: " << path ;
-//    py::eval<py::eval_statements>(            // tell eval we're passing multiple statements
-//                                              "import imp\n"
-//                                              "new_module = imp.load_module(module_name, open(path), path, ('py', 'U', imp.PY_SOURCE))\n",
-//                                              globals,
-//                                              locals);
-//    return py::cast<py::module>(locals["new_module"]);
-    py::module m = py::module::import(module.c_str());
+    py::eval<py::eval_statements>(            // tell eval we're passing multiple statements
+                                              "import imp\n"
+                                              "new_module = imp.load_module(module_name, open(path), path, ('py', 'U', imp.PY_SOURCE))\n",
+                                              globals,
+                                              locals);
+    py::module m =  py::cast<py::module>(locals["new_module"]);
     m.reload();
     return m;
+    //py::module m = py::module::import(module.c_str());
+    //m.reload();
+    //return m;
 }
 
 
@@ -193,8 +195,6 @@ void PythonEnvironment::Init()
     }
 
     PyEval_InitThreads();
-
-    // the first gil lock is here
     gil lock;
 
     // Required for sys.path, used in addPythonModulePath().
@@ -498,6 +498,22 @@ static PyGILState_STATE lock(const char* trace) {
 
     return PyGILState_Ensure();
 }
+
+PythonEnvironment::gil::gil(const char* trace)
+    : state(lock(trace)),
+      trace(trace) { }
+
+
+PythonEnvironment::gil::~gil() {
+
+    PyGILState_Release(state);
+
+    if(debug_gil && trace) {
+        std::clog << "<< " << trace << " released the gil" << std::endl;
+    }
+
+}
+
 
 
 PythonEnvironment::no_gil::no_gil(const char* trace)

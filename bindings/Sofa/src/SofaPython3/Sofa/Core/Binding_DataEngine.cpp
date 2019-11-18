@@ -30,6 +30,9 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/PythonFactory.h>
+#include <SofaPython3/PythonEnvironment.h>
+using sofapython3::PythonEnvironment;
+
 #include <pybind11/pybind11.h>
 
 PYBIND11_DECLARE_HOLDER_TYPE(PyDataEngine,
@@ -77,12 +80,13 @@ namespace sofapython3
 
     void DataEngine_Trampoline::init()
     {
-        std::cout << "DataEngine_Trampoline::init()" << std::endl;
+        PythonEnvironment::gil acquire;
         PYBIND11_OVERLOAD(void, PyDataEngine, init, );
     }
 
     void DataEngine_Trampoline::doUpdate()
     {
+        PythonEnvironment::gil acquire;
         py::object self = py::cast(this);
         if (py::hasattr(self, "update")) {
             py::object fct = self.attr("update");
