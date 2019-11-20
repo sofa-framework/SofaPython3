@@ -1,5 +1,6 @@
 # /!\ WARNING /!\
-### Due to the recent intensive income in contributions (with kind of poor reviews from our side...) the master branch is currently a bit buggy... sorry for the inconvenience :X
+### Due to the recent intensive income in contributions (with kind of poor reviews from our side...) the master branch is currently a bit buggy...
+### A tag called 'stable' has been created to easily checkout the latest working ref
 
 # plugin.SofaPython3
 
