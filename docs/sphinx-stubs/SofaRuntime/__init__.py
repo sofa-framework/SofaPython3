@@ -12,7 +12,7 @@
                 .. code-block:: python
 
                    import SofaRuntime
-                   SofaRuntime.importPlugin("MechanicalObject")
+                   SofaRuntime.importPlugin("SofaAllCommonComponents")
 
               """
 import SofaRuntime
@@ -32,5 +32,5 @@ def importPlugin(arg0: str) -> bool:
     """
 import a sofa plugin into the current environment
 """
-DataRepository = None # type: Sofa.Helper.System.FileRepository # value = <Sofa.Helper.System.FileRepository object at 0x7f7f39a2a228>
-PluginRepository = None # type: Sofa.Helper.System.FileRepository # value = <Sofa.Helper.System.FileRepository object at 0x7f7f39a2a298>
+DataRepository = None # type: Sofa.Helper.System.FileRepository # value = <Sofa.Helper.System.FileRepository object at 0x7f0d445c04c8>
+PluginRepository = None # type: Sofa.Helper.System.FileRepository # value = <Sofa.Helper.System.FileRepository object at 0x7f0d445c0538>
