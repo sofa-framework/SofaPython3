@@ -44,7 +44,7 @@ void moduleAddFileRepository(py::module &m) {
         py::init<const char *, const char *, const sofa::helper::system::FileRepository::fileKeysMap& >(),
         py::arg("envVar") = "SOFA_DATA_PATH",
         py::arg("relativePath") = (const char *) nullptr,
-        py::arg("fileKeyMaps") = (sofa::helper::system::FileRepository::fileKeysMap){},
+		py::arg("fileKeyMaps") = sofa::helper::system::FileRepository::fileKeysMap{},
         doc::FileRepository::ClassConstructor
     );
 
