@@ -16,8 +16,6 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-bindings-config"
     DESTINATION "etc/sofa/python.d"
     RENAME "plugin.SofaPython3.bindings")
 
-# Add a new custom target that will trigger the build of every python modules
-add_custom_target(ALL_BINDINGS)
 
 add_subdirectory(Sofa)
 add_subdirectory(SofaRuntime)

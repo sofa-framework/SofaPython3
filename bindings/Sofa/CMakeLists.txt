@@ -194,6 +194,13 @@ SP3_add_python_module(
 )
 
 
+add_custom_target(Sofa_Sub_Packages)
+add_dependencies(Sofa_Sub_Packages ${PROJECT_NAME}_Components)
+add_dependencies(Sofa_Sub_Packages ${PROJECT_NAME}_Types)
+add_dependencies(Sofa_Sub_Packages ${PROJECT_NAME}_Core)
+add_dependencies(Sofa_Sub_Packages ${PROJECT_NAME}_Simulation)
+add_dependencies(Sofa_Sub_Packages ${PROJECT_NAME}_Helper)
+
 if(SP3_BUILD_TEST)
     add_subdirectory(tests)
 endif()
