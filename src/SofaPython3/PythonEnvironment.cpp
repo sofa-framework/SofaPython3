@@ -192,6 +192,9 @@ void PythonEnvironment::Init()
     {
         msg_info("SofaPython3") << "Intializing python";
         py::initialize_interpreter();
+        // the first gil aquisition should happen right after the python interpreter
+        // is initialized.
+        static const PyThreadState* init = PyEval_SaveThread(); (void) init;
     }
 
     PyEval_InitThreads();
@@ -493,11 +496,6 @@ static PyGILState_STATE lock(const char* trace) {
     // gil: this way the last gil unlock lets python threads to run (otherwise
     // the main thread still holds the gil, preventing python threads to run
     // until the main thread exits).
-
-    // the first gil aquisition should happen right after the python interpreter
-    // is initialized.
-    static const PyThreadState* init = PyEval_SaveThread(); (void) init;
-
     return PyGILState_Ensure();
 }
 
@@ -517,23 +515,22 @@ PythonEnvironment::gil::~gil() {
 }
 
 
+//PythonEnvironment::no_gil::no_gil(const char* trace)
+//    : state(PyEval_SaveThread()),
+//      trace(trace) {
+//    if(debug_gil && trace) {
+//        std::clog << ">> " << trace << " temporarily released the gil" << std::endl;
+//    }
+//}
 
-PythonEnvironment::no_gil::no_gil(const char* trace)
-    : state(PyEval_SaveThread()),
-      trace(trace) {
-    if(debug_gil && trace) {
-        std::clog << ">> " << trace << " temporarily released the gil" << std::endl;
-    }
-}
+//PythonEnvironment::no_gil::~no_gil() {
 
-PythonEnvironment::no_gil::~no_gil() {
+//    if(debug_gil && trace) {
+//        std::clog << "<< " << trace << " wants to reacquire the gil" << std::endl;
+//    }
 
-    if(debug_gil && trace) {
-        std::clog << "<< " << trace << " wants to reacquire the gil" << std::endl;
-    }
-
-    PyEval_RestoreThread(state);
-}
+//    PyEval_RestoreThread(state);
+//}
 
 } // namespace sofapython
 

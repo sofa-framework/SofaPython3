@@ -140,7 +140,6 @@ public:
     /// in a scope. these should be surrounding any python code called from c++,
     /// i.e. in all the methods in PythonEnvironment and all the methods in
     /// PythonScriptController.
-    //using gil = pybind11::gil_scoped_acquire;
     class SOFAPYTHON3_API gil {
         const PyGILState_STATE state;
         const char* const trace;
@@ -149,13 +148,14 @@ public:
         ~gil();
     };
 
-    class SOFAPYTHON3_API no_gil {
-        PyThreadState* const state;
-        const char* const trace;
-    public:
-        no_gil(const char* trace = nullptr);
-        ~no_gil();
-    };
+// Not working in Sofapython3, need update.
+//    class SOFAPYTHON3_API no_gil {
+//        PyThreadState* const state;
+//        const char* const trace;
+//    public:
+//        no_gil(const char* trace = nullptr);
+//        ~no_gil();
+//    };
 
     struct system_exit : std::exception { };
 
