@@ -64,6 +64,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <sofa/simulation/SceneLoaderFactory.h>
 
 #include <pybind11/pybind11.h>
+#include <pybind11/eval.h>
 
 #include "config.h"
 

@@ -188,6 +188,8 @@ public:
     ~scoped_writeonly_access(){ data->endEditVoidPtr(); }
 };
 
+SOFAPYTHON3_API BaseData* addData(py::object py_self, const std::string& name, py::object value = py::object(), py::object defaultValue = py::object(), const std::string& help = "", const std::string& group = "Property", std::string type = "");
+
 }  // namespace sofapython3
 
 

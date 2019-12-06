@@ -32,15 +32,8 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <SofaSimulationGraph/DAGNode.h>
 
 #include <sofa/helper/system/FileMonitor.h>
+#include <SofaPython3/Prefab.h>
 
-namespace sofa::core::objectmodel
-{
-class BasePrefab : public sofa::simulation::graph::DAGNode
-{
-public:
-    SOFA_CLASS(BasePrefab, sofa::simulation::graph::DAGNode);
-};
-} /// namespace sofa::core::objectmodel
 
 template class pybind11::class_<sofa::core::objectmodel::BasePrefab,
                                 sofa::simulation::graph::DAGNode,
@@ -48,36 +41,6 @@ template class pybind11::class_<sofa::core::objectmodel::BasePrefab,
 
 namespace sofapython3
 {
-using sofa::simulation::graph::DAGNode;
-using sofa::core::objectmodel::BasePrefab;
-using sofa::core::objectmodel::DataCallback;
-
-class Prefab;
-class PrefabFileEventListener : public sofa::helper::system::FileEventListener
-{
-public:
-    Prefab* m_prefab;
-
-    void fileHasChanged(const std::string& filename) override;
-};
-
-class Prefab : public BasePrefab
-{
-public:
-    SOFA_CLASS(Prefab, BasePrefab);
-    void init();
-    void reinit();
-    virtual void doReInit() ;
-
-    void addPrefabParameter(const std::string& name, py::object value, const std::string& help, std::string type);
-    void setSourceTracking(const std::string& filename);
-
-    Prefab();
-    ~Prefab() override;
-
-    PrefabFileEventListener m_filelistener;
-    DataCallback m_datacallback;
-};
 
 void moduleAddPrefab(py::module &m);
 

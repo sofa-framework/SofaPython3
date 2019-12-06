@@ -29,6 +29,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/simulation/Node.h>
 
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/DataCache.h>
@@ -426,6 +427,174 @@ py::array getPythonArrayFor(BaseData* d)
         return a;
     }
     return memcache[d];
+}
+
+
+BaseData* deriveTypeFromParent(BaseData* parentData)
+{
+    BaseData* newData = parentData->getNewInstance();
+    newData->setParent(parentData);
+    newData->update();
+    return newData;
+}
+
+BaseData* deriveTypeFromParent(sofa::core::objectmodel::BaseContext* ctx, const std::string& link)
+{
+    if (!ctx)
+        return nullptr;
+
+    // if data is a link
+    if (link.empty() || link[0] != '@')
+        return nullptr;
+    Base* component = ctx->toBaseNode();
+
+    size_t pos = link.find_last_of('.');
+    std::string componentPath = link.substr(0, pos);
+    std::string parentDataName = link.substr(pos + 1);
+
+    component = component->toBaseContext()->get<Base>(componentPath.substr(1));
+
+    if (!component)
+        throw py::value_error("No datafield found with path " + link);
+    BaseData* parentData = component->findData(parentDataName);
+    if (!parentData)
+        throw py::value_error("No datafield found with path " + link);
+    return deriveTypeFromParent(parentData);
+}
+
+bool isProtectedKeyword(const std::string& name)
+{
+    if (name == "children" || name == "objects" || name == "parents" ||
+            name == "data" || name == "links")
+    {
+        return true;
+    }
+    return false;
+}
+
+void checkAmbiguousCreation(BaseNode* self, const std::string& name, const std::string& type)
+{
+    if (!self) return;
+
+    if (type != "link")
+        for (const auto& link : self->getLinks())
+            if (link->getName() == name)
+                msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getPathName() << ": Component alread has a link with such name";
+
+    if (type != "data")
+        for (const auto& datafield : self->getDataFields())
+            if (datafield->getName() == name)
+                msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getPathName() << ": Component alread has a data field with such name";
+
+    if (type != "object")
+        for (const auto& o : dynamic_cast<sofa::simulation::Node*>(self)->object)
+            if (o->getName() == name)
+                msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getPathName() << ": Component alread has an object with such name";
+
+    if (type != "child")
+        for (const auto& child : self->getChildren())
+            if (child->getName() == name)
+                msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getPathName() << ": Component alread has a child node with such name";
+
+}
+
+void checkAmbiguousCreation(BaseObject* self, const std::string& name, const std::string& type)
+{
+    if (!self) return;
+
+    if (type != "link")
+        for (const auto& link : self->getLinks())
+            if (link->getName() == name)
+                msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getPathName() << ": Component alread has a link with such name";
+
+    if (type != "data")
+        for (const auto& datafield : self->getDataFields())
+            if (datafield->getName() == name)
+                msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getPathName() << ": Component alread has a data field with such name";
+}
+
+void checkAmbiguousCreation(Base* self, const std::string& name, const std::string& type)
+{
+    checkAmbiguousCreation(dynamic_cast<BaseNode*>(self), name, type);
+    checkAmbiguousCreation(dynamic_cast<BaseObject*>(self), name, type);
+}
+
+void checkAmbiguousCreation(py::object& py_self, const std::string& name, const std::string& type)
+{
+    Base* self = py::cast<Base*>(py_self);
+    checkAmbiguousCreation(dynamic_cast<BaseNode*>(self), name, type);
+    checkAmbiguousCreation(dynamic_cast<BaseObject*>(self), name, type);
+
+    if (py_self.attr("__dict__").contains(name))
+        msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getName() << ": Component alread has a python attribute with such name in __dict__";
+}
+
+
+BaseData* addData(py::object py_self, const std::string& name, py::object value, py::object defaultValue, const std::string& help, const std::string& group, std::string type)
+{
+    Base* self = py::cast<Base*>(py_self);
+    if (isProtectedKeyword(name))
+        throw py::value_error("addData: Cannot call addData with name " + name + ": Protected keyword");
+    checkAmbiguousCreation(py_self, name, "data");
+    BaseData* data;
+
+    bool isSet = true;
+    if (value.is(py::none()))
+    {
+        value = defaultValue;
+        isSet = false;
+    }
+
+
+    // create the data from the link passed as a string to the object
+    if (py::isinstance<py::str>(value) &&
+            !py::cast<std::string>(value).empty() &&
+            (py::cast<std::string>(value))[0] == '@')
+    {
+        if (dynamic_cast<BaseNode*>(self))
+            data = deriveTypeFromParent(dynamic_cast<BaseNode*>(self)->getContext(),
+                                        py::cast<py::str>(value));
+        else
+            data = deriveTypeFromParent(dynamic_cast<BaseObject*>(self)->getContext(),
+                                        py::cast<py::str>(value));
+        if (!data)
+            throw py::type_error("Cannot deduce type from value");
+        self->addData(data, name);
+    }
+    // create the data from another data (use as parent)
+    else if (py::isinstance<BaseData>(value) || py::isinstance<BaseData*>(value))
+    {
+        data = deriveTypeFromParent(py::cast<BaseData*>(value));
+        if (!data)
+            throw py::type_error("Cannot deduce type from value");
+        self->addData(data, name);
+    }
+    // create the data from the type given in `type` and fill it up
+    else
+    {
+        data = PythonFactory::createInstance(type);
+        if (!data)
+        {
+            sofa::helper::vector<std::string> validTypes;
+            PythonFactory::uniqueKeys(std::back_inserter(validTypes));
+            std::string typesString = "[";
+            for (const auto& i : validTypes)
+                typesString += i + ", ";
+            typesString += "\b\b]";
+
+            throw py::type_error(std::string("Invalid Type string: available types are\n") + typesString);
+        }
+        self->addData(data, name);
+        PythonFactory::fromPython(data, value);
+    }
+    data->setName(name);
+    data->setGroup(group.c_str());
+    data->setHelp(help.c_str());
+    data->setDisplayed(true);
+    data->setPersistent(true);
+    if (!isSet)
+        data->unset();
+    return data;
 }
 
 
