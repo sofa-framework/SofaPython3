@@ -77,13 +77,13 @@ namespace sofapython3
 
     void Controller_Trampoline::init()
     {
-        PythonEnvironment::gil acquire;
+        PythonEnvironment::gil acquire {"Controller_init"};
         PYBIND11_OVERLOAD(void, Controller, init, );
     }
 
     void Controller_Trampoline::reinit()
     {
-        PythonEnvironment::gil acquire;
+        PythonEnvironment::gil acquire {"Controller_reinit"};
         PYBIND11_OVERLOAD(void, Controller, reinit, );
     }
 
@@ -102,7 +102,7 @@ namespace sofapython3
 
     void Controller_Trampoline::handleEvent(Event* event)
     {
-        PythonEnvironment::gil acquire;
+        PythonEnvironment::gil acquire {"Controller_handleEvent"};
 
         py::object self = py::cast(this);
         std::string name = std::string("on")+event->getClassName();
