@@ -52,6 +52,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 find_package(SofaFramework REQUIRED)
 find_package(SofaSimulation REQUIRED)
 find_package(SofaGeneral REQUIRED)
+find_package(SofaComponentGeneral REQUIRED)
 
 
 unset(PYTHON_EXECUTABLE)

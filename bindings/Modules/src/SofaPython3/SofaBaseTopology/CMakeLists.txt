@@ -25,5 +25,5 @@ SP3_add_python_module(
     DEPENDS
         SofaBaseTopology SofaPython3
     DESTINATION
-        ${SP3_PYTHON_PACKAGES_DIRECTORY}
+        ${SP3_PYTHON_PACKAGES_DIRECTORY}/Sofa
 )
