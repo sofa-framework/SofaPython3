@@ -486,30 +486,18 @@ void PythonEnvironment::excludeModuleFromReload( const std::string& moduleName )
     PyRun_SimpleString( std::string( "try: SofaRuntime.__SofaPythonEnvironment_modulesExcludedFromReload.append('" + moduleName + "')\nexcept:pass" ).c_str() );
 }
 
-static const bool debug_gil = true;
+static const bool debug_gil = false;
 static PyGILState_STATE lock(const char* trace) {
     if(debug_gil) {
-           auto tid = PyGILState_GetThisThreadState()->thread_id % 10000;
-           auto id = PyGILState_GetThisThreadState()->id;
+        auto tid = PyGILState_GetThisThreadState()->thread_id % 10000;
+        auto id = PyGILState_GetThisThreadState()->id;
 
-           if(trace)
-               std::clog << ">> ["<<id << "(" << tid  <<")]:: " << trace<< " wants the gil" << std::endl;
-           else
-               std::clog << ">> ["<<id << "(" << tid  <<")]:: wants the gil" << std::endl;
-       }
-
-       // this ensures that we start with no active thread before first locking the
-       // gil: this way the last gil unlock lets python threads to run (otherwise
-       // the main thread still holds the gil, preventing python threads to run
-       // until the main thread exits).
-
-       //TODO(dmarchal) This code should not be here...should be in the environment.
-       // the first gil aquisition should happen right after the python interpreter
-       // is initialized.
-       //static const PyThreadState* init = PyEval_SaveThread(); (void) init;
-
-
-   return PyGILState_Ensure();
+        if(trace)
+            std::clog << ">> ["<<id << "(" << tid  <<")]:: " << trace<< " wants the gil" << std::endl;
+        else
+            std::clog << ">> ["<<id << "(" << tid  <<")]:: wants the gil" << std::endl;
+    }
+    return PyGILState_Ensure();
 }
 
 PythonEnvironment::gil::gil(const char* trace)
@@ -520,21 +508,21 @@ PythonEnvironment::gil::gil(const char* trace)
 PythonEnvironment::gil::~gil() {
 
     auto tid = PyGILState_GetThisThreadState()->thread_id % 10000;
-        auto id = PyGILState_GetThisThreadState()->id;
-        if(debug_gil) {
-            if(trace)
-                std::clog << "<< ["<<id << "(" << tid  <<")]: " << trace << " prepare to released the gil" << std::endl;
-            else
-                std::clog << "<< ["<<id << "(" << tid  <<")]:: prepare to released the gil" << std::endl;
-        }
+    auto id = PyGILState_GetThisThreadState()->id;
+    if(debug_gil) {
+        if(trace)
+            std::clog << "<< ["<<id << "(" << tid  <<")]: " << trace << " prepare to released the gil" << std::endl;
+        else
+            std::clog << "<< ["<<id << "(" << tid  <<")]:: prepare to released the gil" << std::endl;
+    }
 
-        PyGILState_Release(state);
-        if(debug_gil) {
-            if(trace)
-                std::clog << "<< ["<<id << "(" << tid  <<")]: " << trace << " released the gil" << std::endl;
-            else
-                std::clog << "<< ["<<id << "(" << tid  <<")]: released the gil" << std::endl;
-        }
+    PyGILState_Release(state);
+    if(debug_gil) {
+        if(trace)
+            std::clog << "<< ["<<id << "(" << tid  <<")]: " << trace << " released the gil" << std::endl;
+        else
+            std::clog << "<< ["<<id << "(" << tid  <<")]: released the gil" << std::endl;
+    }
 
 }
 
