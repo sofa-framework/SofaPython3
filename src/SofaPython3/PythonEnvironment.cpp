@@ -154,11 +154,7 @@ SOFAPYTHON3_API py::module PythonEnvironment::importFromFile(const std::string& 
                                               globals,
                                               locals);
     py::module m =  py::cast<py::module>(locals["new_module"]);
-    m.reload();
     return m;
-    //py::module m = py::module::import(module.c_str());
-    //m.reload();
-    //return m;
 }
 
 
