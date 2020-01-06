@@ -8,6 +8,7 @@ Install from source
 
 Requirement Install
 ^^^^^^^^^^^^^^^^^^^
+- have an up to date version of the sofa source code from the master repository
 - pybind11 (minimal 2.2.4)
 - cmake (minimal 3.12)
 - developement package for python3.7 (python3.7-dev)
@@ -32,7 +33,7 @@ NB: This plugin cannot be build through in-build process when the old SofaPython
 Out-of-tree build
 ^^^^^^^^^^^^^^^^^^^
 
-This plugin should compile with out-of-tree builds
+This plugin should compile with out-of-tree builds. 
 
 
 
