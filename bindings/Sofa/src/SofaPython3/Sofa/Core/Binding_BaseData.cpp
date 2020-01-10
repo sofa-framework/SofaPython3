@@ -121,7 +121,7 @@ void __setattr__(py::object self, const std::string& s, py::object value)
 
     if(py::isinstance<DataContainer>(value))
     {
-        py::array a = getPythonArrayFor(selfdata);
+        py::array a = getPythonArrayFor(py::cast<DataContainer*>(value));
         BindingBase::SetDataFromArray(selfdata, a);
         return;
     }

@@ -157,6 +157,8 @@ def pyType2sofaType(v):
         return "int"
     if isinstance(v, float):
         return "double"
+    if isinstance(v, list) and len(v)==3:
+        return "Vec3d"
     return None
 
 
@@ -232,7 +234,6 @@ def PrefabBuilder(f):
                             kkwargs[name] = self.__data__[name].value
 
                         self.cb(**kkwargs)
-                        print("EXIT")
                     except Exception as e:
                         self.isValid = False
                         exc_type, exc_value, exc_tb = sys.exc_info()
