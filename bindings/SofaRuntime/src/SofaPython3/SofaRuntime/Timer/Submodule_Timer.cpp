@@ -51,7 +51,6 @@ py::dict getRecords(const std::string & id) {
     py::dict token, token_temp;
     tokens.push(token);
     ctime_t t0;
-    std::string name;
 
     for (const auto & r : records) {
         switch (r.type) {
@@ -59,26 +58,25 @@ py::dict getRecords(const std::string & id) {
                 break;
             case Record::RBEGIN: // Timer begins
                 token = tokens.top();
-                name = (std::string) AdvancedTimer::IdTimer(r.id);
-                if (token.contains(name.c_str())) {
-                    if (py::list::check_(token[name.c_str()])) {
+                if (token.contains(r.label.c_str())) {
+                    if (py::list::check_(token[r.label.c_str()])) {
                         token_temp = py::dict();
-                        py::list(token[name.c_str()]).append(token_temp);
+                        py::list(token[r.label.c_str()]).append(token_temp);
                         token = token_temp;
-                    } else if (py::dict::check_(token[name.c_str()])) {
-                        token_temp = token[name.c_str()];
-                        token[name.c_str()] = py::list();
-                        py::list(token[name.c_str()]).append(token_temp);
+                    } else if (py::dict::check_(token[r.label.c_str()])) {
+                        token_temp = token[r.label.c_str()];
+                        token[r.label.c_str()] = py::list();
+                        py::list(token[r.label.c_str()]).append(token_temp);
                         token_temp = py::dict();
-                        py::list(token[name.c_str()]).append(token_temp);
+                        py::list(token[r.label.c_str()]).append(token_temp);
                         token = token_temp;
                     } else {
                         msg_error("Timer::getRecords") << "Got an unexpected token of type '" << std::string(py::str(token.get_type())) << "'.";
                         break;
                     }
                 } else {
-                    token[name.c_str()] = py::dict();
-                    token = token[name.c_str()];
+                    token[r.label.c_str()] = py::dict();
+                    token = token[r.label.c_str()];
                 }
                 t0 = r.time;
                 token["start_time"] = getTime(r.time - t0);
@@ -92,26 +90,25 @@ py::dict getRecords(const std::string & id) {
                 break;
             case Record::RSTEP_BEGIN: // Step begins
                 token = tokens.top();
-                name = (std::string) AdvancedTimer::IdStep(r.id);
-                if (token.contains(name.c_str())) {
-                    if (py::list::check_(token[name.c_str()])) {
+                if (token.contains(r.label.c_str())) {
+                    if (py::list::check_(token[r.label.c_str()])) {
                         token_temp = py::dict();
-                        py::list(token[name.c_str()]).append(token_temp);
+                        py::list(token[r.label.c_str()]).append(token_temp);
                         token = token_temp;
-                    } else if (py::dict::check_(token[name.c_str()])) {
-                        token_temp = token[name.c_str()];
-                        token[name.c_str()] = py::list();
-                        py::list(token[name.c_str()]).append(token_temp);
+                    } else if (py::dict::check_(token[r.label.c_str()])) {
+                        token_temp = token[r.label.c_str()];
+                        token[r.label.c_str()] = py::list();
+                        py::list(token[r.label.c_str()]).append(token_temp);
                         token_temp = py::dict();
-                        py::list(token[name.c_str()]).append(token_temp);
+                        py::list(token[r.label.c_str()]).append(token_temp);
                         token = token_temp;
                     } else {
                         msg_error("Timer::getRecords") << "Got an unexpected token of type '" << std::string(py::str(token.get_type())) << "'.";
                         break;
                     }
                 } else {
-                    token[name.c_str()] = py::dict();
-                    token = token[name.c_str()];
+                    token[r.label.c_str()] = py::dict();
+                    token = token[r.label.c_str()];
                 }
                 token["start_time"] = getTime(r.time - t0);
                 tokens.push(token);
@@ -124,19 +121,16 @@ py::dict getRecords(const std::string & id) {
                 break;
             case Record::RVAL_SET: // Sets a value
                 token = tokens.top();
-                name = (std::string) AdvancedTimer::IdVal(r.id);
-                token[name.c_str()] = r.val;
+                token[r.label.c_str()] = r.val;
                 break;
             case Record::RVAL_ADD: // Sets a value
                 token = tokens.top();
-                name = (std::string) AdvancedTimer::IdVal(r.id);
-                token[name.c_str()] = r.val;
+                token[r.label.c_str()] = r.val;
                 break;
             default:
-                name = (std::string) AdvancedTimer::IdObj(r.id);
                 token = tokens.top();
-                token[name.c_str()] = py::list();
-                token = token[name.c_str()];
+                token[r.label.c_str()] = py::list();
+                token = token[r.label.c_str()];
                 token["start_time"] = r.time;
                 break;
         }
@@ -181,8 +175,8 @@ py::module addSubmoduleTimer(py::module &m)
     timer.def("clear", AdvancedTimer::clear, doc::Timer::clear);
     timer.def("isEnabled", [](const std::string & name) {AdvancedTimer::isEnabled(name);}, py::arg("id"), doc::Timer::isEnabled);
     timer.def("setEnabled", [](const std::string & n, bool e) {AdvancedTimer::setEnabled(n, e);}, py::arg("name"), py::arg("enabled"), doc::Timer::setEnabled);
-    timer.def("getInterval", &AdvancedTimer::getInterval, py::arg("id"), doc::Timer::getInterval);
-    timer.def("setInterval", &AdvancedTimer::setInterval, py::arg("id"), py::arg("interval"), doc::Timer::setInterval);
+    timer.def("getInterval", [](const std::string & name) {AdvancedTimer::getInterval(name);}, py::arg("id"), doc::Timer::getInterval);
+    timer.def("setInterval", [](const std::string & name, unsigned int interval) {AdvancedTimer::setInterval(name, interval);}, py::arg("id"), py::arg("interval"), doc::Timer::setInterval);
 
     timer.def("begin", [](const std::string& id){ AdvancedTimer::begin(id);}, py::arg("id"));
     timer.def("stepBegin", [](const std::string& id){ AdvancedTimer::stepBegin(id);}, py::arg("id"));
