@@ -39,7 +39,7 @@ public:
     void reinit();
     virtual void doReInit() ;
 
-    SOFAPYTHON3_API void addPrefabParameter(const std::string& name, pybind11::object value, const std::string& help, std::string type);
+    void addPrefabParameter(const std::string& name, pybind11::object value, const std::string& help, std::string type);
     void setSourceTracking(const std::string& filename);
     void breakPrefab();
 

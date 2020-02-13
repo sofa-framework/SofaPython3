@@ -189,6 +189,7 @@ public:
 };
 
 SOFAPYTHON3_API BaseData* addData(py::object py_self, const std::string& name, py::object value = py::object(), py::object defaultValue = py::object(), const std::string& help = "", const std::string& group = "Property", std::string type = "");
+SOFAPYTHON3_API bool isProtectedKeyword(const std::string& name);
 
 }  // namespace sofapython3
 
