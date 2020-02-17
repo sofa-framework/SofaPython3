@@ -79,6 +79,4 @@ public:
 
 void moduleAddBase(py::module& m);
 
-bool isProtectedKeyword(const std::string& name);
-
 } /// namespace sofapython3
