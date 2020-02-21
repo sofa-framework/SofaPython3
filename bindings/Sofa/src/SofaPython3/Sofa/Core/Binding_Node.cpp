@@ -54,6 +54,7 @@ using sofapython3::PythonFactory;
 
 #include "Binding_Node.h"
 #include "Binding_NodeIterator.h"
+#include "Binding_Context.h"
 
 using sofa::core::objectmodel::BaseObjectDescription;
 
@@ -444,14 +445,6 @@ void moduleAddNode(py::module &m) {
     py::class_<sofa::core::objectmodel::BaseNode,
             sofa::core::objectmodel::Base,
             sofa::core::objectmodel::BaseNode::SPtr>(m, "BaseNode");
-
-    py::class_<sofa::core::objectmodel::BaseContext,
-            sofa::core::objectmodel::Base,
-            sofa::core::objectmodel::BaseContext::SPtr>(m, "BaseContext");
-
-    py::class_<sofa::core::objectmodel::Context,
-            sofa::core::objectmodel::BaseContext,
-            sofa::core::objectmodel::Context::SPtr>(m,"Context");
 
     py::class_<Node, sofa::core::objectmodel::BaseNode,
             sofa::core::objectmodel::Context, Node::SPtr>
