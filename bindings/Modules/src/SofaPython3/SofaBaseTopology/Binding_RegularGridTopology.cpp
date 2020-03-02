@@ -30,18 +30,27 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include "Binding_RegularGridTopology_doc.h"
 
 #include <SofaBaseTopology/RegularGridTopology.h>
+#include <SofaPython3/PythonFactory.h>
 
 using sofa::component::topology::RegularGridTopology;
 using sofa::core::objectmodel::BaseObject;
+
+PYBIND11_DECLARE_HOLDER_TYPE(Base, sofa::core::sptr<Base>, true)
 
 namespace sofapython3 {
 
 namespace py { using namespace pybind11; }
 
 void moduleAddRegularGridTopology(pybind11::module& m) {
-    py::class_<RegularGridTopology> c(m, "RegularGridTopology", doc::SofaBaseTopology::regularGridTopologyClass);
+    py::class_<RegularGridTopology, sofa::core::objectmodel::BaseObject,sofa::core::sptr<RegularGridTopology>>
+    c (m, "RegularGridTopology", doc::SofaBaseTopology::regularGridTopologyClass);
 
     c.def("getPoint", &RegularGridTopology::getPoint, doc::SofaBaseTopology::getPoint);
+
+    /// register the binding in the downcasting subsystem
+    PythonFactory::registerType<RegularGridTopology>([](sofa::core::objectmodel::Base* object){
+        return py::cast(dynamic_cast<RegularGridTopology*>(object));
+    });
 }
 
 } // namespace sofapython3
