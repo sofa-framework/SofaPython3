@@ -55,6 +55,7 @@ using sofa::simulation::graph::DAGNode;
 #include <sofa/helper/ArgumentParser.h>
 #include <SofaPython3/PythonEnvironment.h>
 #include <SofaPython3/SceneLoaderPY3.h>
+#include <SofaPython3/PythonFactory.h>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/embed.h>
@@ -131,7 +132,7 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
         }
 
         py::object createScene = module.attr("createScene");
-        createScene( py::cast(root_out) );
+        createScene( PythonFactory::toPython(root_out.get()) );
     }catch(std::exception& e)
     {
         msg_error() << e.what();
