@@ -31,17 +31,20 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include "Binding_SparseGridTopology_doc.h"
 
 #include <SofaBaseTopology/SparseGridTopology.h>
+#include <SofaPython3/PythonFactory.h>
 
 using sofa::component::topology::SparseGridTopology;
 using sofa::core::objectmodel::BaseObject;
 
+PYBIND11_DECLARE_HOLDER_TYPE(Base, sofa::core::sptr<Base>, true)
 
 namespace sofapython3 {
 
 namespace py { using namespace pybind11; }
 
 void moduleAddSparseGridTopology(pybind11::module& m) {
-    py::class_<SparseGridTopology> c(m, "SparseGridTopology", doc::SofaBaseTopology::sparseGridTopologyClass);
+    py::class_<SparseGridTopology, sofa::core::objectmodel::BaseObject,sofa::core::sptr<SparseGridTopology>>
+    c(m, "SparseGridTopology", doc::SofaBaseTopology::sparseGridTopologyClass);
 
     // getRegularGrid ()
     c.def("getRegularGrid", [](SparseGridTopology & self){
@@ -151,6 +154,11 @@ void moduleAddSparseGridTopology(pybind11::module& m) {
         }
         return indices;
     }, doc::SofaBaseTopology::getRegularGridCubeIndex);
+
+    /// register the binding in the downcasting subsystem
+    PythonFactory::registerType<SparseGridTopology>([](sofa::core::objectmodel::Base* object){
+        return py::cast(dynamic_cast<SparseGridTopology*>(object));
+    });
 }
 
 } // namespace sofapython3
