@@ -6,6 +6,7 @@ project(PythonModule_SofaGui)
 ### Module dependencies
 ####################################################################################################
 find_package(SofaGui REQUIRED)
+find_package(Qt5 COMPONENTS Charts QUIET)
 
 if (NOT TARGET SofaPython3)
     find_package(SofaPython3 REQUIRED)
@@ -19,10 +20,12 @@ endif()
 ####################################################################################################
 set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaGui/Module_SofaGui.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaGui/Binding_BaseGui.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaGui/Binding_GUIManager.cpp
 )
 
 set(HEADER_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaGui/Binding_BaseGui.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaGui/Binding_GUIManager.h
 )
 
