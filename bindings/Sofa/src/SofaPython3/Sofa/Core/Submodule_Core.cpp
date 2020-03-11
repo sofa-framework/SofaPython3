@@ -32,11 +32,13 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <sofa/core/objectmodel/Context.h>
 
 #include "Binding_Base.h"
+#include "Binding_BaseContext.h"
 #include "Binding_BaseObject.h"
 #include "Binding_DataDict.h"
 #include "Binding_BaseData.h"
 #include "Binding_BaseCamera.h"
 #include "Binding_ForceField.h"
+#include "Binding_Context.h"
 #include "Binding_Controller.h"
 #include "Binding_DataEngine.h"
 #include "Binding_Node.h"
@@ -107,6 +109,7 @@ PYBIND11_MODULE(Core, core)
     moduleAddDataDict(core);
     moduleAddDataDictIterator(core);
     moduleAddBase(core);
+    moduleAddBaseContext(core);
     moduleAddBaseData(core);
     moduleAddDataContainerContext(core);
     moduleAddDataContainer(core);
@@ -114,6 +117,7 @@ PYBIND11_MODULE(Core, core)
     moduleAddDataVectorString(core);
     moduleAddBaseObject(core);
     moduleAddBaseCamera(core);
+    moduleAddContext(core);
     moduleAddController(core);
     moduleAddDataEngine(core);
     moduleAddForceField(core);

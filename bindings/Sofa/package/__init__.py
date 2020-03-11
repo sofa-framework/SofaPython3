@@ -34,6 +34,7 @@ import functools
 import traceback
 import Sofa.Helper
 import Sofa.Core
+import SofaTypes
 import importlib
 
 __all__=["animation"]
