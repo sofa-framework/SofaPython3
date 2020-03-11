@@ -98,7 +98,8 @@ function(SP3_add_python_module)
             target_compile_options(${A_TARGET} PRIVATE -Dregister=)
         endif()
 
-        target_link_libraries(${A_TARGET} PRIVATE ${A_DEPENDS} ${PYTHON_LIBRARIES} pybind11::module)
+        target_link_libraries(${A_TARGET} PUBLIC pybind11::module)
+        target_link_libraries(${A_TARGET} PUBLIC ${A_DEPENDS})
 
         set_target_properties(
                 ${A_TARGET}
