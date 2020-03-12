@@ -41,6 +41,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include "Binding_Context.h"
 #include "Binding_Controller.h"
 #include "Binding_DataEngine.h"
+#include "Binding_ObjectFactory.h"
 #include "Binding_Node.h"
 #include "Binding_NodeIterator.h"
 #include "Binding_Prefab.h"
@@ -121,6 +122,7 @@ PYBIND11_MODULE(Core, core)
     moduleAddController(core);
     moduleAddDataEngine(core);
     moduleAddForceField(core);
+    moduleAddObjectFactory(core);
 
     moduleAddNode(core);
     moduleAddNodeIterator(core);
