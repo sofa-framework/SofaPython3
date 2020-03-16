@@ -3,8 +3,11 @@
 import unittest
 import numpy
 import Sofa
+import Sofa.Types
+import SofaRuntime
+from Sofa.PyTypes import RGBAColor
 
-
+SofaRuntime.importPlugin('SofaComponentAll')
 
 class NpArrayTestController(Sofa.Core.Controller):
     def __init__(self, *args, **kwargs):
@@ -13,7 +16,7 @@ class NpArrayTestController(Sofa.Core.Controller):
         self.addData(name="vector_Vec3_1entry",
                      type="vector<Vec3d>", value=[[1, 2, 3]])
         self.addData(name="vector_Vec3_3entries", type="vector<Vec3d>", value=[
-                     [1, 2, 3], [4, 5, 6], [7, 8, 9]])
+            [1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
         self.addData(name="vector_int_1entry", type="vector<int>", value=[1])
         self.addData(name="vector_int_3entries",
@@ -74,16 +77,16 @@ class NpArrayTestController(Sofa.Core.Controller):
 
     def testValue(self, test):
         test.assertEqual(str(self.vector_Vec3_1entry.array()),
-                         str(np.array([[1.0, 2.0, 3.0]])))
+                         str(numpy.array([[1.0, 2.0, 3.0]])))
         test.assertEqual(str(self.vector_Vec3_3entries.array()),
-                         str(np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]])))
+                         str(numpy.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]])))
 
-        test.assertEqual(str(self.vector_int_1entry.array()), str(np.array([1])))
-        test.assertEqual(str(self.vector_int_3entries.array()), str(np.array([1, 2, 3])))
+        test.assertEqual(str(self.vector_int_1entry.array()), str(numpy.array([1])))
+        test.assertEqual(str(self.vector_int_3entries.array()), str(numpy.array([1, 2, 3])))
 
-        test.assertEqual(str(self.vector_scalar_1entry.array()), str(np.array([1.0])))
+        test.assertEqual(str(self.vector_scalar_1entry.array()), str(numpy.array([1.0])))
         test.assertEqual(str(self.vector_scalar_3entries.array()),
-                         str(np.array([1.0, 2.0, 3.0])))
+                         str(numpy.array([1.0, 2.0, 3.0])))
 
         test.assertEqual(repr(self.vector_text_1entry), repr(["v1"]))
         test.assertEqual(repr(self.vector_text_3entries),
@@ -108,7 +111,7 @@ class Test(unittest.TestCase):
     def test_typeName(self):
         root = Sofa.Core.Node("rootNode")
         c = root.addObject("MechanicalObject", name="t", position=[
-                           [0, 0, 0], [1, 1, 1], [2, 2, 2]])
+            [0, 0, 0], [1, 1, 1], [2, 2, 2]])
         self.assertEqual(c.position.typeName(), "vector<Vec3d>")
         self.assertEqual(c.showColor.typeName(), "Vec4f")
 
@@ -116,7 +119,7 @@ class Test(unittest.TestCase):
     def test_ValidDataAccess(self):
         root = Sofa.Core.Node("rootNode")
         c = root.addObject("MechanicalObject", name="t", position=[
-                           [0, 0, 0], [1, 1, 1], [2, 2, 2]])
+            [0, 0, 0], [1, 1, 1], [2, 2, 2]])
         self.assertTrue(c.position is not None)
 
     # @unittest.skip  # no reason needed
@@ -151,7 +154,7 @@ class Test(unittest.TestCase):
         c = root.addObject("MechanicalObject", name="t", position=v)
         c.position = [[1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4]]
         numpy.testing.assert_array_equal(c.position.array(), [[1.0, 1.0, 1.0], [
-                                         2.0, 2.0, 2.0], [3.0, 3.0, 3.0], [4.0, 4.0, 4.0]])
+            2.0, 2.0, 2.0], [3.0, 3.0, 3.0], [4.0, 4.0, 4.0]])
 
     # @unittest.skip  # no reason needed
     def test_DataArray2DResizeFromArray(self):
@@ -371,9 +374,9 @@ class Test(unittest.TestCase):
         data = root.getData("aField")
         dataParent = root.getData("aFieldParent")
         data.setParent(dataParent)
-        self.assertEqual(data.getLinkPath(), "@.aField")
-        self.assertEqual(dataParent.getLinkPath(),"@.aFieldParent")
-        self.assertEqual(data.getAsACreateObjectParameter(), "@.aFieldParent")
+        self.assertEqual(data.getLinkPath(), "@/.aField")
+        self.assertEqual(dataParent.getLinkPath(),"@/.aFieldParent")
+        self.assertEqual(data.getAsACreateObjectParameter(), "@[].aFieldParent")
         self.assertEqual(dataParent.getAsACreateObjectParameter(),"")
 
     def test_read(self):

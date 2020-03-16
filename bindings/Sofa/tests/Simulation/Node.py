@@ -141,8 +141,6 @@ class Test(unittest.TestCase):
             object2 = node2.addObject("MechanicalObject", name="object2")
 
             # All those are allowed syntaxes:
-            self.assertEqual(root[""].name, root.name)
-            self.assertEqual(root["."].name, root.name)
             self.assertEqual(root[".name"], root.name)
             self.assertEqual(root["name"], root.name)
 

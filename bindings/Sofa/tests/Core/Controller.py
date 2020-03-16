@@ -49,7 +49,7 @@ class Test(unittest.TestCase):
 
          def test_constructorOverriddenWithArgs(self):
              root = Sofa.Core.Node("rootNode")
-             root.addObject(MyController(name="controller", "pval1", "pval2", "pval3"))
+             root.addObject(MyController("controller", "pval1", "pval2", "pval3"))
 
          def test_constructorOverriddenWithKWArgs(self):
              root = Sofa.Core.Node("rootNode")

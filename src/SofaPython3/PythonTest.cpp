@@ -105,7 +105,7 @@ PythonTest::~PythonTest()
 // extract the test suite from a module
 py::object getTestSuite(py::module& unittest, py::module& module, const std::vector<std::string>& arguments)
 {
-    py::object testSuite;
+    py::object testSuite = py::list();
     py::module inspect = py::module::import("inspect");
 
     py::list classes = inspect.attr("getmembers")(module);
@@ -138,7 +138,7 @@ py::object getTestSuite(py::module& unittest, py::module& module, const std::vec
 
 bool runTests(py::module& unittest, py::object suite)
 {
-    py::dict kwargs = py::dict("verbosity"_a=1);
+    py::dict kwargs = py::dict("verbosity"_a=2);
     py::object testRunner = unittest.attr("TextTestRunner")(**kwargs);
 
     py::object testSuiteResults = testRunner.attr("run")(suite);
@@ -152,7 +152,7 @@ void PythonTest::run( const PythonTestData& data )
     PythonEnvironment::Init();
     {
         EXPECT_MSG_NOEMIT(Error);
-        simpleapi::importPlugin("SofaAllCommonComponents");
+        simpleapi::importPlugin("SofaComponentAll");
         sofa::simulation::setSimulation(simpleapi::createSimulation().get());
 
         try{
@@ -203,37 +203,40 @@ void PythonTestList::addTest( const std::string& filename,
 {
     PythonEnvironment::Init();
     PythonEnvironment::gil scoped_gil;
+    try {
+        py::module::import("Sofa");
+        py::module unittest = py::module::import("unittest");
+        py::object globals = py::module::import("__main__").attr("__dict__");
+        py::module module;
 
-    py::module::import("Sofa");
-    py::module unittest = py::module::import("unittest");
-    py::object globals = py::module::import("__main__").attr("__dict__");
-    py::module module;
+        const char* filenameC = filename.c_str();
+        std::string fullpath = (path+"/"+filename);
+        const char* pathC = fullpath.c_str();
 
-    const char* filenameC = filename.c_str();
-    std::string fullpath = (path+"/"+filename);
-    const char* pathC = fullpath.c_str();
-
-    SetDirectory localDir(pathC);
-    std::string basename = SetDirectory::GetFileNameWithoutExtension(SetDirectory::GetFileName(filenameC).c_str());
-    module = PythonEnvironment::importFromFile(basename, SetDirectory::GetFileName(filenameC),
-                                               globals);
-    std::list<std::string> testNames;
-    py::list testSuite = getTestSuite(unittest, module, arguments);
-    if(!testSuite.size())
-    {
-        list.emplace_back( PythonTestData( filepath(path,filename), testgroup, arguments) );
-        return;
-    }
-    for (const auto test : testSuite)
-        testNames.push_back(py::cast<std::string>(test.attr("id")()));
+        SetDirectory localDir(pathC);
+        std::string basename = SetDirectory::GetFileNameWithoutExtension(SetDirectory::GetFileName(filenameC).c_str());
+        module = PythonEnvironment::importFromFile(basename, SetDirectory::GetFileName(filenameC),
+                                                   globals);
+        std::list<std::string> testNames;
+        py::list testSuite = getTestSuite(unittest, module, arguments);
+        if(!testSuite.size())
+        {
+            throw std::runtime_error("No test suite found. Make sure there is at least one class in the script that inherits from TestCase.");
+        }
+        for (const auto test : testSuite)
+            testNames.push_back(py::cast<std::string>(test.attr("id")()));
 
 
-    for(const auto& test : testNames)
-    {
-        std::vector<std::string> cargs;
-        cargs.push_back(test.substr(test.find_last_of('.')+1));
-        cargs.insert(cargs.end(), arguments.begin(), arguments.end());
-        list.emplace_back( PythonTestData( filepath(path,filename), testgroup, cargs ) );
+        for(const auto& test : testNames)
+        {
+            std::vector<std::string> cargs;
+            cargs.push_back(test.substr(test.find_last_of('.')+1));
+            cargs.insert(cargs.end(), arguments.begin(), arguments.end());
+            list.emplace_back( PythonTestData( filepath(path,filename), testgroup, cargs ) );
+        }
+    } catch(const std::exception& e) {
+        msg_error("PythonTestList") << "File skipped: " << (path+"/"+filename) << msgendl
+                                    << e.what();
     }
 }
 
@@ -247,14 +250,7 @@ void PythonTestList::addTestDir(const std::string& dir, const std::string& testg
         if( sofa::helper::starts_with(prefix, file)
                 && (sofa::helper::ends_with(".py", file) || sofa::helper::ends_with(".py3", file)))
         {
-            try
-            {
-                addTest(file, dir, testgroup);
-            }catch(std::exception& e)
-            {
-                msg_error("PythonTestList") << "File skipped: " << file << msgendl
-                                            << e.what();
-            }
+            addTest(file, dir, testgroup);
         }
     }
 }

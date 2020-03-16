@@ -110,12 +110,10 @@ namespace sofapython3
         if( py::hasattr(self, name.c_str()) )
         {
             py::object fct = self.attr(name.c_str());
-            /// I didn't find any introspection tool in pybind11 to check
-            /// if an attr is a callable or not. Using try/catch instead
-            ///
-            /// Call the matching event in the funcVector & pass it the given event
-            callScriptMethod(self, event, name);
-            return;
+            if (PyCallable_Check(fct.ptr())) {
+                callScriptMethod(self, event, name);
+                return;
+            }
         }
 
         /// Is the fallback method available.
