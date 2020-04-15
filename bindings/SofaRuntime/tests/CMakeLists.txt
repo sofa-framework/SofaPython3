@@ -4,7 +4,7 @@ project(PythonModule_SofaRuntime_test)
 ####################################################################################################
 ### Module dependencies
 ####################################################################################################
-if (NOT TARGET SofaPython3)
+if (NOT TARGET SofaPython3::Plugin)
   find_package(SofaPython3 QUIET)
   if(NOT SofaPython3_FOUND)
     message("-- PythonModule_Sofa_test is disabled because 'SofaPython3' is missing or not activated.")
@@ -28,7 +28,7 @@ set(PYTHON_FILES
 find_package(SofaGTestMain REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaPython3 SofaPython3_Sofa_Core)
+target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaPython3::Plugin SofaPython3_Sofa_Core)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "PYTHON_TESTFILES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"")
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

@@ -4,7 +4,9 @@ SofaRuntime package
 
 """
 
-from .@MODULE_NAME@  import *
+from .SofaRuntime import *
+
+import Sofa
 
 import sys
 import os
@@ -126,9 +128,10 @@ def sofaExceptHandler(type, value, tb):
 
     if str(value) != '':
         h += ': ' + str(value)
+
+    s = "Traceback (most recent call last):\n"
+    s += ''.join(traceback.format_tb(tb))
     
-    s = ''.join(traceback.format_tb(tb))
-    
-    Sofa.msg_error(h + '\n' + s, "line", 7)
+    Sofa.msg_error("SofaRuntime", h + '\n' + s)
 
 sys.excepthook=sofaExceptHandler

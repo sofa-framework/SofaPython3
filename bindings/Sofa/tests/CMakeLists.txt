@@ -4,7 +4,7 @@ project(PythonModule_Sofa_test)
 ####################################################################################################
 ### Module dependencies
 ####################################################################################################
-if (NOT TARGET SofaPython3)
+if (NOT TARGET SofaPython3::Plugin)
   find_package(SofaPython3 QUIET)
   if(NOT SofaPython3_FOUND)
     message("-- PythonModule_Sofa_test is disabled because 'SofaPython3' is missing or not activated.")

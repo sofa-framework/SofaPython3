@@ -18,7 +18,7 @@ def createScene(rootNode):
 
         confignode = rootNode.addChild("Config")
         confignode.addObject('RequiredPlugin', name="SofaMiscCollision", printLog=False)
-        confignode.addObject('RequiredPlugin', name="SofaPython3", printLog=False)
+
         confignode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
 
 
