@@ -22,7 +22,7 @@ SP3_add_python_package(
         ${SP3_PYTHON_PACKAGES_DIRECTORY}/SofaRuntime
 )
 
-SP3_add_python_module_2(
+SP3_add_python_module(
         TARGET       ${PROJECT_NAME}
         PACKAGE_NAME SofaRuntime
         MODULE_NAME  SofaRuntime

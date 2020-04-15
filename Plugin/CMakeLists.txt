@@ -78,10 +78,26 @@ foreach(header ${HEADER_FILES})
     install(FILES "${header}" DESTINATION "include/${relative_directory}" COMPONENT headers)
 endforeach()
 
+configure_package_config_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/PluginConfig.cmake.in"
+        "${CMAKE_BINARY_DIR}/cmake/SofaPython3/PluginConfig.cmake"
+        INSTALL_DESTINATION
+            "${LIBRARY_OUTPUT_DIRECTORY}/cmake/SofaPython3"
+)
+
+install(FILES "${CMAKE_BINARY_DIR}/cmake/SofaPython3/PluginConfig.cmake" DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/cmake/SofaPython3")
+
 install(TARGETS ${PROJECT_NAME}
-    EXPORT SofaPython3Targets
-    RUNTIME DESTINATION "bin" COMPONENT applications
-    LIBRARY DESTINATION "lib" COMPONENT libraries
-    ARCHIVE DESTINATION "lib" COMPONENT libraries
+    EXPORT PluginTargets
+    RUNTIME DESTINATION "${RUNTIME_OUTPUT_DIRECTORY}" COMPONENT applications
+    LIBRARY DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}" COMPONENT libraries
+    ARCHIVE DESTINATION "${ARCHIVE_OUTPUT_DIRECTORY}" COMPONENT libraries
+)
+
+install(
+    EXPORT PluginTargets
+    NAMESPACE SofaPython3::
+    DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/cmake/SofaPython3"
+    COMPONENT headers
 )
 

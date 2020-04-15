@@ -1,4 +1,4 @@
-project(Bindings.Sofa.Helper VERSION 1.0)
+project(Bindings.Sofa.Helper)
 
 set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Helper.h
@@ -15,9 +15,8 @@ set(SOURCE_FILES
 )
 
 find_package(SofaFramework REQUIRED)
-find_package(SofaBase REQUIRED)
 
-SP3_add_python_module_2(
+SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
     PACKAGE_NAME Sofa
     MODULE_NAME  Helper

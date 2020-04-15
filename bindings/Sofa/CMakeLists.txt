@@ -13,12 +13,16 @@ SP3_add_python_package(
         ${SP3_PYTHON_PACKAGES_DIRECTORY}/Sofa
 )
 
-add_custom_target(${PROJECT_NAME}.ALL)
-add_dependencies(${PROJECT_NAME}.ALL ${PROJECT_NAME}.Core)
-add_dependencies(${PROJECT_NAME}.ALL ${PROJECT_NAME}.Components)
-add_dependencies(${PROJECT_NAME}.ALL ${PROJECT_NAME}.Helper)
-add_dependencies(${PROJECT_NAME}.ALL ${PROJECT_NAME}.Simulation)
-add_dependencies(${PROJECT_NAME}.ALL ${PROJECT_NAME}.Types)
+add_library(${PROJECT_NAME} INTERFACE)
+add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+
+target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.Core)
+target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.Components)
+target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.Helper)
+target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.Simulation)
+target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.Types)
+
+install(TARGETS ${PROJECT_NAME} EXPORT BindingsTargets)
 
 if(SP3_BUILD_TEST)
     add_subdirectory(tests)

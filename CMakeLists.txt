@@ -30,11 +30,16 @@ if (SP3_COMPILED_AS_SOFA_SUBPROJECT)
 endif()
 
 # OPTIONS
+include(CMakeDependentOption)
+
 if (SP3_COMPILED_AS_SOFA_SUBPROJECT)
     option(SP3_BUILD_TEST "Compile the automatic tests for SofaPython3, along with the gtest library." ${SOFA_BUILD_TESTS})
 else()
     option(SP3_BUILD_TEST "Compile the automatic tests for SofaPython3, along with the gtest library." ON)
 endif()
+
+find_package(SofaExporter QUIET)
+CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAEXPORTER "Bind the SOFA exporter component." ON "SofaExporter_FOUND" OFF)
 
 set(SP3_PYTHON_PACKAGES_DIRECTORY
     "lib/site-packages"
@@ -90,47 +95,24 @@ unset(PYTHON_INCLUDE_DIRS)
 unset(PYTHON_LIBRARIES)
 unset(PYTHON_LIBRARY)
 
-## When installing, copy the content of the example directory into module/SofaPython3
-#install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/examples DESTINATION modules/SofaPython3 COMPONENT resources)
-
-#set(EXAMPLES_FILES
-#        examples/example-forcefield.py
-#        examples/example-forcefield2.py
-#        examples/example-scriptcontroller.py
-#    )
-#
-#add_custom_target(Examples SOURCES ${EXAMPLES_FILES})
-
-#set(DOCUMENTATION_FILES
-#    README.md
-#    License.md
-#    docs/sphinx/source/index.rst
-#    docs/sphinx/source/menu/install.rst
-#    docs/sphinx/source/menu/Contributing.rst
-#    docs/sphinx/source/menu/SofaPlugin.rst
-#    docs/sphinx/source/menu/SofaModule.rst
-#    docs/sphinx/source/menu/CustomModule.rst
-#    )
-#
-#add_custom_target(Documentation SOURCES ${DOCUMENTATION_FILES})
-
 add_subdirectory(Plugin)
 add_subdirectory(bindings)
+add_subdirectory(examples)
+add_subdirectory(docs)
 
+SP3_add_python_package(
+        SOURCE_DIRECTORY
+            ${CMAKE_CURRENT_SOURCE_DIR}/splib
+        TARGET_DIRECTORY
+            ${SP3_PYTHON_PACKAGES_DIRECTORY}/splib
+)
 
-#SP3_add_python_package(
-#        SOURCE_DIRECTORY
-#            ${CMAKE_CURRENT_SOURCE_DIR}/splib
-#        TARGET_DIRECTORY
-#            ${SP3_PYTHON_PACKAGES_DIRECTORY}/splib
-#)
-#
-#SP3_add_python_package(
-#        SOURCE_DIRECTORY
-#            ${CMAKE_CURRENT_SOURCE_DIR}/constants
-#        TARGET_DIRECTORY
-#            ${SP3_PYTHON_PACKAGES_DIRECTORY}/Sofa/constants
-#)
+SP3_add_python_package(
+        SOURCE_DIRECTORY
+            ${CMAKE_CURRENT_SOURCE_DIR}/constants
+        TARGET_DIRECTORY
+            ${SP3_PYTHON_PACKAGES_DIRECTORY}/Sofa/constants
+)
 
 configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/SofaPython3Config.cmake.in"
@@ -144,12 +126,6 @@ write_basic_package_version_file(
     COMPATIBILITY AnyNewerVersion
 )
 
-install(
-    EXPORT SofaPython3Targets
-    NAMESPACE SofaPython3::
-    DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/cmake/SofaPython3"
-    COMPONENT headers
-)
 install(FILES
     "${CMAKE_BINARY_DIR}/cmake/SofaPython3/SofaPython3Config.cmake"
     "${CMAKE_BINARY_DIR}/cmake/SofaPython3/SofaPython3ConfigVersion.cmake"

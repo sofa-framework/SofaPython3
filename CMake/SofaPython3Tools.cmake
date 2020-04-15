@@ -50,7 +50,7 @@ endfunction()
 #  PYTHON_VERSION     - (input) python version, default to the highest version found
 #  DEPENDS            - (input) set of target the generated target will depends on.
 #  QUIET              - (input) if set, not information messages will be printed out.
-function(SP3_add_python_module_2)
+function(SP3_add_python_module)
     set(options QUIET)
     set(oneValueArgs TARGET PACKAGE_NAME MODULE_NAME DESTINATION PYTHON_VERSION )
     set(multiValueArgs SOURCES HEADERS DEPENDS)
@@ -133,7 +133,7 @@ function(SP3_add_python_module_2)
 
 
     install(TARGETS ${A_TARGET}
-        EXPORT SofaPython3Targets
+        EXPORT BindingsTargets
         RUNTIME DESTINATION "${DESTINATION}" COMPONENT applications
         LIBRARY DESTINATION "${DESTINATION}" COMPONENT libraries
         ARCHIVE DESTINATION "${DESTINATION}" COMPONENT libraries
