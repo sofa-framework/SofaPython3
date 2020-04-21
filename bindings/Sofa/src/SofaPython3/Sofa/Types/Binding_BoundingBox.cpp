@@ -75,8 +75,6 @@ void moduleAddBoundingBox(py::module& m)
         return list;
     }, "returns the center of the bbox");
 
-    std::cout << "Lets register BoundingBox" << std::endl;
-
     PythonFactory::registerType("BoundingBox", [](BaseData* data) -> py::object {
         return py::cast(reinterpret_cast<BoundingBoxData*>(data));
     });

@@ -1,5 +1,12 @@
 cmake_minimum_required(VERSION 3.11)
-project(SofaPython3 VERSION 1.0)
+
+project(SofaPython3)
+
+# Manually define VERSION
+set(SOFAPYTHON3_VERSION_MAJOR 1)
+set(SOFAPYTHON3_VERSION_MINOR 0)
+set(SOFAPYTHON3_VERSION_PATCH 0)
+set(SOFAPYTHON3_VERSION ${SOFAPYTHON3_VERSION_MAJOR}.${SOFAPYTHON3_VERSION_MINOR}.${SOFAPYTHON3_VERSION_PATCH})
 
 # Detect if SofaPython3 is a subproject of another project (eg. when compiled within Sofa)
 if (NOT "${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
@@ -23,11 +30,16 @@ if (SP3_COMPILED_AS_SOFA_SUBPROJECT)
 endif()
 
 # OPTIONS
+include(CMakeDependentOption)
+
 if (SP3_COMPILED_AS_SOFA_SUBPROJECT)
     option(SP3_BUILD_TEST "Compile the automatic tests for SofaPython3, along with the gtest library." ${SOFA_BUILD_TESTS})
 else()
     option(SP3_BUILD_TEST "Compile the automatic tests for SofaPython3, along with the gtest library." ON)
 endif()
+
+find_package(SofaExporter QUIET)
+CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAEXPORTER "Bind the SOFA exporter component." ON "SofaExporter_FOUND" OFF)
 
 set(SP3_PYTHON_PACKAGES_DIRECTORY
     "lib/site-packages"
@@ -40,19 +52,23 @@ if (NOT SP3_COMPILED_AS_SUBPROJECT)
     if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
         set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
     endif()
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+    set(ARCHIVE_OUTPUT_DIRECTORY lib)
+    set(RUNTIME_OUTPUT_DIRECTORY bin)
+
+    if(WIN32)
+        set(LIBRARY_OUTPUT_DIRECTORY ${RUNTIME_OUTPUT_DIRECTORY})
+    else()
+        set(LIBRARY_OUTPUT_DIRECTORY ${ARCHIVE_OUTPUT_DIRECTORY})
+    endif()
+
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY})
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY})
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTORY})
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-
-find_package(SofaFramework REQUIRED)
-find_package(SofaSimulation REQUIRED)
-find_package(SofaGeneral REQUIRED)
-find_package(SofaComponentGeneral REQUIRED)
 
 
 unset(PYTHON_EXECUTABLE)
@@ -61,7 +77,7 @@ set(PYTHON_INCLUDE_DIRS ${Python_INCLUDE_DIR})
 set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
 set(PYBIND11_PYTHON_VERSION ${Python_VERSION})
 find_package(pybind11 QUIET)
-if(NOT pybind11_FOUND)#
+if(NOT pybind11_FOUND)
   message("-- Cannot build the python module 'Sofa', missing the pybind software to generate the bindings.")
   return()
 endif()
@@ -79,107 +95,10 @@ unset(PYTHON_INCLUDE_DIRS)
 unset(PYTHON_LIBRARIES)
 unset(PYTHON_LIBRARY)
 
-set(HEADER_FILES
-    src/SofaPython3/config.h
-    src/SofaPython3/initModule.h
-    src/SofaPython3/PythonEnvironment.h
-    src/SofaPython3/SceneLoaderPY3.h
-
-    src/SofaPython3/DataCache.h
-    src/SofaPython3/DataHelper.h
-    src/SofaPython3/PythonFactory.h
-    src/SofaPython3/Prefab.h
-    )
-
-set(SOURCE_FILES
-    src/SofaPython3/initModule.cpp
-    src/SofaPython3/PythonEnvironment.cpp
-    src/SofaPython3/SceneLoaderPY3.cpp
-
-    src/SofaPython3/DataCache.cpp
-    src/SofaPython3/DataHelper.cpp
-    src/SofaPython3/PythonFactory.cpp
-    src/SofaPython3/Prefab.cpp
-)
-
-set(EXTRA_FILES
-    SofaPython3Config.cmake.in
-   )
-
-if(SP3_BUILD_TEST)
-    list(APPEND HEADER_FILES
-        src/SofaPython3/PythonTest.h
-    )
-    list(APPEND SOURCE_FILES
-        src/SofaPython3/PythonTest.cpp
-    )
-endif(SP3_BUILD_TEST)
-    
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAPYTHON3")
-target_compile_definitions(${PROJECT_NAME} PUBLIC "-DSOFA_HAVE_SOFAPYTHON3")
-
-if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
-    # Sized deallocaion is not enabled by default under clang after c++14
-    set(CMAKE_CXX_FLAGS "-fsized-deallocation")
-endif ()
-
-target_link_libraries(${PROJECT_NAME} PRIVATE SofaCore SofaSimulationCore SofaSimulationGraph SofaComponentGeneral)
-
-if(CMAKE_SYSTEM_NAME STREQUAL Linux)
-    # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)
-    target_link_libraries(${PROJECT_NAME} PRIVATE dl)
-endif()
-
-if (CMAKE_SYSTEM_NAME STREQUAL Windows )
-    target_include_directories(${PROJECT_NAME} PUBLIC "${pybind11_INCLUDE_DIR}")
-
-    # https://github.com/boostorg/system/issues/32
-    target_compile_definitions(${PROJECT_NAME} PUBLIC "-DHAVE_SNPRINTF")
-endif()
-
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-
-target_link_libraries(${PROJECT_NAME} PUBLIC  pybind11::module pybind11::embed)
-
-## When installing, copy the content of the example directory into module/SofaPython3
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/examples DESTINATION modules/SofaPython3 COMPONENT resources)
-
-## When installing, copy the target into module/SofaPython3
-install(TARGETS ${PROJECT_NAME} DESTINATION modules/SofaPython3)
-
-# The signature of sofa_create_package is
-#     sofa_create_package(package_name, version, the_targets, <include_subdir>)
-# This function assumes that there is a FooConfig.cmake.in file template in the source directory.
-# This function is an all in one replacement for install(TARGET), install(EXPORT), and also add
-# the example directory in the INSTALL set.
-sofa_create_package(${PROJECT_NAME} ${PROJECT_VERSION} SofaPython3 "SofaPython3")
-
-set(EXAMPLES_FILES
-        examples/example-forcefield.py
-        examples/example-forcefield2.py
-        examples/example-scriptcontroller.py
-    )
-
-add_custom_target(Examples SOURCES ${EXAMPLES_FILES})
-
-set(DOCUMENTATION_FILES
-    README.md
-    License.md
-    docs/sphinx/source/index.rst
-    docs/sphinx/source/menu/install.rst
-    docs/sphinx/source/menu/Contributing.rst
-    docs/sphinx/source/menu/SofaPlugin.rst
-    docs/sphinx/source/menu/SofaModule.rst
-    docs/sphinx/source/menu/CustomModule.rst
-    )
-
-add_custom_target(Documentation SOURCES ${DOCUMENTATION_FILES})
-
-### Python binding
+add_subdirectory(Plugin)
 add_subdirectory(bindings)
-
+add_subdirectory(examples)
+add_subdirectory(docs)
 
 SP3_add_python_package(
         SOURCE_DIRECTORY
@@ -195,3 +114,21 @@ SP3_add_python_package(
             ${SP3_PYTHON_PACKAGES_DIRECTORY}/Sofa/constants
 )
 
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/SofaPython3Config.cmake.in"
+    "${CMAKE_BINARY_DIR}/cmake/SofaPython3/SofaPython3Config.cmake"
+    INSTALL_DESTINATION
+    "${LIBRARY_OUTPUT_DIRECTORY}/cmake/SofaPython3"
+)
+write_basic_package_version_file(
+    ${CMAKE_BINARY_DIR}/cmake/SofaPython3/SofaPython3ConfigVersion.cmake
+    VERSION ${SOFAPYTHON3_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+
+install(FILES
+    "${CMAKE_BINARY_DIR}/cmake/SofaPython3/SofaPython3Config.cmake"
+    "${CMAKE_BINARY_DIR}/cmake/SofaPython3/SofaPython3ConfigVersion.cmake"
+    DESTINATION
+    "${LIBRARY_OUTPUT_DIRECTORY}/cmake/SofaPython3"
+)

@@ -30,8 +30,6 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 #include <pybind11/numpy.h>
 
-#include <sofa/core/topology/Topology.h>
-
 #include <sofa/core/objectmodel/BaseData.h>
 using sofa::core::objectmodel::BaseData;
 

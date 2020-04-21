@@ -28,9 +28,6 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <pybind11/eval.h>
 namespace py = pybind11;
 
-#include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
-
 #include <SofaExporter/Binding_STLExporter.h>
 
 namespace sofapython3

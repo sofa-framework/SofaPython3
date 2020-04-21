@@ -1,29 +1,25 @@
-cmake_minimum_required(VERSION 3.1)
-project(PythonModule_SofaBaseTopology)
+project(Bindings.Modules.SofaBaseTopology)
 
 set(SOURCE_FILES
-    Binding_RegularGridTopology.cpp
-    Binding_SparseGridTopology.cpp
-    Module_SofaBaseTopology.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_RegularGridTopology.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_SparseGridTopology.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Module_SofaBaseTopology.cpp
 )
 
 set(HEADER_FILES
-    Binding_RegularGridTopology.h
-    Binding_RegularGridTopology_doc.h
-    Binding_SparseGridTopology.h
-    Binding_SparseGridTopology_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_RegularGridTopology.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_RegularGridTopology_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_SparseGridTopology.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_SparseGridTopology_doc.h
 )
 
+find_package(SofaBase REQUIRED)
+
 SP3_add_python_module(
-    TARGET
-        ${PROJECT_NAME}
-    MODULE_NAME
-        BaseTopology
-    SOURCES
-        ${SOURCE_FILES}
-        ${HEADER_FILES}
-    DEPENDS
-        SofaBaseTopology SofaPython3
-    DESTINATION
-        ${SP3_PYTHON_PACKAGES_DIRECTORY}/Sofa
+    TARGET       ${PROJECT_NAME}
+    PACKAGE_NAME Sofa
+    MODULE_NAME  BaseTopology
+    SOURCES      ${SOURCE_FILES}
+    HEADERS      ${HEADER_FILES}
+    DEPENDS      SofaBaseTopology SofaPython3::Plugin
 )

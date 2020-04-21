@@ -1,0 +1,34 @@
+# CMake package configuration file for the @PROJECT_NAME@ module
+@PACKAGE_INIT@
+
+# Required by all targets
+find_package(pybind11 CONFIG REQUIRED)
+
+# Required by Modules.SofaBaseTopology, Sofa.Components, Sofa.Core, Sofa.Helper, Sofa.Types, SofaExporter, SofaGui, SofaRuntime, SofaTypes
+find_package(SofaPython3 COMPONENTS Plugin)
+
+# Required by the bindings Modules.SofaBaseTopology, Sofa.Components, Sofa.Core, Sofa.Simulation
+find_package(SofaBase REQUIRED)
+
+# Required by the bindings Sofa.Components, Sofa.Core, Sofa.Helper, Sofa.Simulation, Sofa.Types, SofaGui
+find_package(SofaFramework REQUIRED)
+
+# Required by the bindings Sofa.Core, Sofa.Simulation
+find_package(SofaSimulation REQUIRED)
+
+# Required by the bindings SofaGui
+find_package(SofaGui REQUIRED)
+
+#  Required by the bindings SofaExporter
+if(SP3_WITH_SOFAEXPORTER)
+    find_package(SofaExporter REQUIRED)
+endif()
+
+# If we are importing this config file and the target is not yet there this is indicating that
+# target is an imported one. So we include it
+if(NOT TARGET @PROJECT_NAME@)
+    include("${CMAKE_CURRENT_LIST_DIR}/BindingsTargets.cmake")
+endif()
+
+# Check that the component/target is there.
+check_required_components(@PROJECT_NAME@)
