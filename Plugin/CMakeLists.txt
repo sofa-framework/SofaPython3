@@ -36,7 +36,6 @@ find_package(pybind11 CONFIG REQUIRED)
 find_package(SofaFramework REQUIRED)
 find_package(SofaSimulation REQUIRED)
 find_package(SofaGeneral REQUIRED)
-find_package(SofaComponentGeneral REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
@@ -47,7 +46,7 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC "-DSOFA_HAVE_SOFAPYTHON3")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore SofaSimulationGraph SofaComponentGeneral SofaHelper)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore SofaSimulationGraph SofaHelper)
 target_link_libraries(${PROJECT_NAME} PUBLIC  pybind11::module pybind11::embed)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME SofaPython3)
