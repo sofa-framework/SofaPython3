@@ -33,7 +33,7 @@ def show(scene, camera):
         def draw(display, t):
                 print("DRAW "+str(time)+ " camera> " + camera.getPathName()+" pos " + str(camera.position.array()) )
                 Sofa.Simulation.glewInit()
-                
+                Sofa.Simulation.initVisual(scene)
                 glMatrixMode(GL_PROJECTION);
                 glLoadIdentity();    
                 gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
