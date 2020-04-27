@@ -61,12 +61,12 @@ std::string __str__(const ObjectFactory::ClassEntry & entry) {
     std::set<std::string> locations;
     std::string default_template = entry.defaultTemplate;
     for (const auto & creator : entry.creatorMap) {
-        if (not creator.first.empty())
+        if (! creator.first.empty())
             templates.emplace(creator.first);
         if (creator.second) {
-            if (not std::string(creator.second->getTarget()).empty())
+            if (! std::string(creator.second->getTarget()).empty())
                 targets.emplace(creator.second->getTarget());
-            if (not std::string(creator.second->getHeaderFileLocation()).empty())
+            if (! std::string(creator.second->getHeaderFileLocation()).empty())
                 locations.emplace(creator.second->getHeaderFileLocation());
         }
     }
@@ -103,7 +103,7 @@ std::set<std::string> getTargets(ObjectFactory& f) {
     f.getAllEntries(entries);
     for (const auto & entry : entries) {
         for (const auto & creator : entry->creatorMap) {
-            if (not std::string(creator.second->getTarget()).empty())
+            if (! std::string(creator.second->getTarget()).empty())
                 targets.emplace(creator.second->getTarget());
         }
     }
@@ -113,7 +113,7 @@ std::set<std::string> getTargets(ObjectFactory& f) {
 std::set<std::string> getTemplates(const ObjectFactory::ClassEntry &entry) {
     std::set<std::string> templates;
     for (const auto & creator : entry.creatorMap) {
-        if (not creator.first.empty())
+        if (! creator.first.empty())
             templates.emplace(creator.first);
     }
     return templates;
@@ -122,8 +122,8 @@ std::set<std::string> getTemplates(const ObjectFactory::ClassEntry &entry) {
 std::set<std::string> getTargetsOfEntry(const ObjectFactory::ClassEntry &entry) {
     std::set<std::string> targets;
     for (const auto & creator : entry.creatorMap) {
-        if (not creator.first.empty())
-            if (creator.second and not std::string(creator.second->getTarget()).empty()) {
+        if (! creator.first.empty())
+            if (creator.second && ! std::string(creator.second->getTarget()).empty()) {
                 targets.emplace(creator.second->getTarget());
             }
     }
@@ -133,8 +133,8 @@ std::set<std::string> getTargetsOfEntry(const ObjectFactory::ClassEntry &entry) 
 std::set<std::string> getLocationsOfEntry(const ObjectFactory::ClassEntry &entry) {
     std::set<std::string> locations;
     for (const auto & creator : entry.creatorMap) {
-        if (not creator.first.empty())
-            if (creator.second and not std::string(creator.second->getHeaderFileLocation()).empty()) {
+        if (! creator.first.empty())
+            if (creator.second && ! std::string(creator.second->getHeaderFileLocation()).empty()) {
                 locations.emplace(creator.second->getHeaderFileLocation());
             }
     }

@@ -95,6 +95,10 @@ unset(PYTHON_INCLUDE_DIRS)
 unset(PYTHON_LIBRARIES)
 unset(PYTHON_LIBRARY)
 
+if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang") # Sized deallocaion is not enabled by default under clang after c++14 
+	set(CMAKE_CXX_FLAGS "-fsized-deallocation") 
+endif ()
+
 add_subdirectory(Plugin)
 add_subdirectory(bindings)
 add_subdirectory(examples)
@@ -132,3 +136,4 @@ install(FILES
     DESTINATION
     "${LIBRARY_OUTPUT_DIRECTORY}/cmake/SofaPython3"
 )
+
