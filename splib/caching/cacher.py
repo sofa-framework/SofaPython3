@@ -31,7 +31,7 @@ def cacher(InputFilePath, OutputDir, OutputFileExtension, kwargsdict, OutputFile
     This is a first, simple version of a cashing system that takes a file and a list of arguments (through the kwargs) and:
         - generates a hash from the file content, the target file extension and the arguments used generate the target file
         - checks in the target directory if an output has been already generated from the inputs using the hash
-        - returns a name under which the calling function can store or retrieve the generated data (that will be managed by the casher in future calls)
+        - returns a filename under which the calling function can store or retrieve the generated data (that will be managed by the casher in future calls)
     It has two types of behavior:
         - OneShot --> When an output filename is provided, the old file is replaced by the new one, the filename is 'human-readable'. This is a cache of size 1.
         - Persistent --> Previous files are not overwritten, the files are named with the hash string. In this way the all the generated files with different parameters are 'cached'.
