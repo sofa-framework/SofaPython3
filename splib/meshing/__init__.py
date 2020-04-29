@@ -8,11 +8,10 @@ Submodules:
     :toctree: _autosummary
 
     splib.meshing.gmsh_sofa
-
+    splib.meshing.cgal_sofa
 
 
 
 """
-__all__=["gmsh_sofa"] #, "CGAL"]
-
+__all__=["gmsh_sofa", "cgal_sofa"] 
 

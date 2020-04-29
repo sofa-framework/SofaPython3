@@ -81,7 +81,7 @@ def meshFromParametricGeometry(filepath, outputdir='autogen/', meshtype='Surface
             
     
             if Refresh:
-                print('Beginning meshing ...')
+                print('Beginning meshing ' + str(filepath) + '...')
                 gmsh.initialize()
                 gmsh.open(filepath)
                 if meshtype == 'Surface':
@@ -128,7 +128,7 @@ def createScene(rootNode):
                                       Mesh_CharacteristicLengthMin=0.1, 
                                       View_GeneralizedRaiseZ='v0')
                                       
-        rootNode.addObject("MeshVTKLoader", name="loader", filename=filename)
+        rootNode.addObject("MeshVTKLoader", name="loader", filename='/home/stefan/Repos/Code/sofa/plugins/SofaPython3/splib/meshing/data/meshes/autogen/pygalmesh.vtk')
         rootNode.addObject("TetrahedronSetTopologyContainer", name="container", src="@loader")
 
         rootNode.addObject("MechanicalObject", name="dofs", position="@loader.position")
