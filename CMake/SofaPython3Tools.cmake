@@ -64,8 +64,9 @@ function(SP3_add_python_module)
     endif ()
 
     # Fetch the current path relative to /bindings/*/src
+    # Must test if the result is nested into the CMAKE_CURRENT_SOURCE_DIR (case where src exists outside the plugin directory)
     string(REGEX MATCH "(.*)/src" path_to_src "${CMAKE_CURRENT_SOURCE_DIR}")
-    if (NOT path_to_src AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src")
+    if ( ( NOT path_to_src OR "${path_to_src}" STRLESS "${CMAKE_CURRENT_SOURCE_DIR}" ) AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src" )
         set(path_to_src "${CMAKE_CURRENT_SOURCE_DIR}/src")
     endif()
 
