@@ -109,7 +109,7 @@ def createScene(rootNode):
         SofaRuntime.importPlugin("SoftRobots")
         SofaRuntime.importPlugin("SoftRobots.Inverse")
         
-        rootNode.addObject('VisualStyle', displayFlags='hideWireframe hideVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels showForceFields showInteractionForceFields')
+        rootNode.addObject('VisualStyle', displayFlags='showForceFields showInteractionForceFields')
 
         rootNode.gravity = [0, 0, -9180]
         rootNode.dt = 1
