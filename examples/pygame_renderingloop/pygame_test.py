@@ -26,17 +26,18 @@ def createScene(root):
         root.addObject("RequiredPlugin", name="SofaOpenglVisual")
         root.addObject("DefaultAnimationLoop")
         root.addObject("DefaultVisualManagerLoop")
-        #root.addObject("MeshObjLoader", name="loader", filename="mesh/Armadillo_simplified.obj")
-        root.addObject("MechanicalObject", name="dofs", template="Rigid3", 
-                       position=[[0.0,1.0,0.0,1.0,1.0,0.0,1.0]], 
-                       showObject=True, showObjectScale=20)
-        
-        #root.addObject("OglModel", name="visual", src=root.loader.getLink())
-        #root.addObject("RigidMapping", name="mapping", input=root.dofs.getLink(), output=root.visual.getLink())
+
         root.addObject("LightManager")
-        root.addObject("SpotLight", position=[-7.0,0.3,20])
-        root.addObject("InteractiveCamera", name="camera", position=[-10.43,33,19], orientation=[-0.25,0.43, 0.84, 0.177], 
-                        lookAt=[0.15,2.4,1.31], distance=37, fieldOfView=45, zNear=0.63, zFar=55.69)
+        root.addObject("SpotLight", position=[0,0,10], direction=[0,0,-1])
+        root.addObject("InteractiveCamera", name="camera", position=[0,0,10], 
+                        lookAt=[0,0,0], distance=37, fieldOfView=45, zNear=0.63, zFar=55.69)
+
+        root.addObject("MechanicalObject", name="dofs", template="Rigid3", 
+                       position=[[0.0, 0.0, 0.0,  0.0, 0.0, 0.0, 1.0]], 
+                       showObject=True, showObjectScale=1)
+        
+        root.addObject("MeshObjLoader", name="loader", filename="mesh/Armadillo_simplified.obj", scale3d="0.1 0.1 0.1")
+        root.addObject("OglModel", name="visual", src="@loader", color="1 0 0 0.2")
         
         root.addObject(MyC(target=root.camera))
         return root
