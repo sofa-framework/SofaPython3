@@ -94,27 +94,43 @@ def meshFromParametricGeometry(filepath, outputdir='autogen/', meshtype='Surface
             gmsh.finalize()
             return OutputFilePath
 
-def createScene(root):
+def createScene(rootNode):
         """
         Example scene in SOFA, where the parametric mesh generator is used generate a volumetric mesh from a STEP-file while passing some options to Gmsh.          
         """ 
-        from stlib.scene import Scene
+        import Sofa.Core
+        import Sofa.Simulation
+        import SofaRuntime
+        import os
+        
+        MeshesPath = os.path.dirname(os.path.abspath(__file__))+'/data/meshes/'
+        
+        SofaRuntime.importPlugin("SofaPython3")
+        SofaRuntime.importPlugin("SoftRobots")
+        SofaRuntime.importPlugin("SoftRobots.Inverse")
+        
+        rootNode.addObject('VisualStyle', displayFlags='hideWireframe hideVisualModels hideBehaviorModels showCollisionModels hideBoundingCollisionModels showForceFields showInteractionForceFields')
 
-        Scene(root)
-        root.VisualStyle.displayFlags="showForceFields"
+        rootNode.gravity = [0, 0, -9180]
+        rootNode.dt = 1
+
+        rootNode.addObject('LCPConstraintSolver')
+        rootNode.addObject('FreeMotionAnimationLoop')
+        rootNode.addObject('BackgroundSetting', color='0 0.168627 0.211765')
+        rootNode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
 
         # The list of mesh (e.g. Mesh_CharacteristicLengthFactor), geometry, view, etc. options can be found here: http://gmsh.info/doc/texinfo/gmsh.html, Appendix B
-        filename = meshFromParametricGeometry(filepath='data/meshes/parametric_mesh_example.step', 
-                                      outputdir='data/meshes/autogen/',
+        filename = meshFromParametricGeometry(filepath=MeshesPath+'parametric_mesh_example.step', 
+                                      outputdir=MeshesPath+'autogen/',
                                       meshtype='Volumetric',
                                       Mesh_CharacteristicLengthFactor=1, 
                                       Mesh_CharacteristicLengthMax=3, 
                                       Mesh_CharacteristicLengthMin=0.1, 
                                       View_GeneralizedRaiseZ='v0')
                                       
-        root.createObject("MeshVTKLoader", name="loader", filename=filename)
-        root.createObject("TetrahedronSetTopologyContainer", name="container", src="@loader")
+        rootNode.addObject("MeshVTKLoader", name="loader", filename=filename)
+        rootNode.addObject("TetrahedronSetTopologyContainer", name="container", src="@loader")
 
-        root.createObject("MechanicalObject", name="dofs", position="@loader.position")
-        root.createObject("TetrahedronFEMForceField", name="forcefield")                              
+        rootNode.addObject("MechanicalObject", name="dofs", position="@loader.position")
+        rootNode.addObject("TetrahedronFEMForceField", name="forcefield")                              
 

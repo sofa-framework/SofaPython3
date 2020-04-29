@@ -15,5 +15,4 @@ Submodules:
 """
 __all__=["gmsh_sofa"] #, "CGAL"]
 
-from .gmsh_sofa import meshFromParametricGeometry
 
