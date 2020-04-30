@@ -66,7 +66,7 @@ namespace sofapython3
         template<class T>
         static void registerType(componentDowncastingFunction fct)
         {
-            registerType(T::GetClass()->className, fct);
+            registerType(T::GetClass()->typeName, fct);
         }
 
         template<class T>
