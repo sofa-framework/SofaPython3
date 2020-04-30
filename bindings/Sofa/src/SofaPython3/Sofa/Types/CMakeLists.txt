@@ -18,5 +18,5 @@ SP3_add_python_module(
         MODULE_NAME  Types
         SOURCES      ${SOURCE_FILES}
         HEADERS      ${HEADER_FILES}
-        DEPENDS      SofaCore SofaPython3::Plugin
+        DEPENDS      SofaCore SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
 )

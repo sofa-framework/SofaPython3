@@ -52,7 +52,7 @@ namespace sofapython3
 
 void moduleAddDataContainer(py::module& m)
 {
-    py::class_<DataContainer, BaseData, raw_ptr<DataContainer>> p(m, "DataContainer",
+    py::class_<DataContainer, BaseData, std::unique_ptr<DataContainer, py::nodelete>> p(m, "DataContainer",
                                                                   py::buffer_protocol(), sofapython3::doc::datacontainer::Class);
 
     PythonFactory::registerType("DataContainer", [](BaseData* data) -> py::object {

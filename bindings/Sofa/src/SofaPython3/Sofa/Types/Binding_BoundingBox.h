@@ -28,18 +28,6 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include <pybind11/pybind11.h>
-
-#include <SofaPython3/DataHelper.h>
-#include <sofa/defaulttype/BoundingBox.h>
-#include <sofa/core/objectmodel/Data.h>
-using sofa::defaulttype::BoundingBox;
-
-
-class BoundingBoxData : public sofa::Data<BoundingBox> {};
-PYBIND11_DECLARE_HOLDER_TYPE(BoundingBoxData, sofapython3::raw_ptr<BoundingBoxData>)
-
-template class pybind11::class_<BoundingBoxData, sofapython3::raw_ptr<BoundingBoxData>>;
-
 namespace sofapython3 {
 
 namespace py { using namespace pybind11; }
