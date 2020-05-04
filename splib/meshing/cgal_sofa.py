@@ -69,7 +69,7 @@ def meshVolumetricFromSurface(filepath, outputdir='autogen/',
             Refresh, OutputFilePath = cch.cacher(InputFilePath=filepath, OutputDir=outputdir, OutputFileExtension='.vtk', kwargsdict=kwargs, OutputFileName=FileNameNoExt)
         
             if Refresh:
-                logging.info('Beginning meshing with CGAL' + str(filepath) + '...')
+                logging.info(' Beginning volumetric meshing with CGAL: ' + str(filepath) + ' ...')
 #                pygalmesh.
                 mesh = pygalmesh.generate_volume_mesh_from_surface_mesh(filepath,
                                                                         lloyd=Lloyd,
@@ -84,7 +84,7 @@ def meshVolumetricFromSurface(filepath, outputdir='autogen/',
                                                                         verbose=True)
                 
                 meshio.write(OutputFilePath, mesh)
-                logging.info('Finished meshing.')   
+                logging.info(' Finished meshing.')   
     
             return OutputFilePath
 

@@ -83,7 +83,7 @@ def meshFromParametricGeometry(filepath, outputdir='autogen/', meshtype='Surface
             
     
             if Refresh:
-                logging.info('Beginning meshing ' + str(filepath) + '...')
+                logging.info(' Beginning meshing ' + str(filepath) + ' ...')
                 gmsh.initialize()
                 gmsh.open(filepath)
                 if meshtype == 'Surface':
@@ -91,7 +91,7 @@ def meshFromParametricGeometry(filepath, outputdir='autogen/', meshtype='Surface
                 elif meshtype == 'Volumetric':
                     gmsh.model.mesh.generate(3)    
                 gmsh.write(OutputFilePath)
-                logging.info('Finished meshing.')   
+                logging.info(' Finished meshing.')   
     
             gmsh.finalize()
             return OutputFilePath
