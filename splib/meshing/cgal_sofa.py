@@ -32,6 +32,10 @@ class LocaleManager:
         locale.setlocale(locale.LC_ALL, self.orig)
  
 def meshVolumetricFromSurface(filepath, outputdir='autogen/',
+                              Lloyd=False,
+                              ODT=False,
+                              Perturb=True,
+                              Exude=True,
                               Edge_Size=0.0, 
                               Facet_Angle=25, 
                               Facet_Size=15, 
@@ -50,9 +54,10 @@ def meshVolumetricFromSurface(filepath, outputdir='autogen/',
         #locale.setlocale(locale.LC_ALL, "C")
         
         with LocaleManager('C'):       
-            # Set options from kwargs           
-            OptionStrings = ['Edge_Size', 'Facet_Angle', 'Facet_Size', 'Facet_Distance', 'Cell_Radius_Edge_Ratio', 'Cell_Size'] # These are all the possible arguments, we just hash all of their values
-            Values = [Edge_Size, Facet_Angle, Facet_Size, Facet_Distance, Cell_Radius_Edge_Ratio, Cell_Size]
+            # Set options from kwargs     
+            
+            OptionStrings = ['Lloyd', 'ODT', 'Perturb', 'Exude', 'Edge_Size', 'Facet_Angle', 'Facet_Size', 'Facet_Distance', 'Cell_Radius_Edge_Ratio', 'Cell_Size'] # These are all the possible arguments, we just hash all of their values
+            Values = [Lloyd, ODT, Perturb, Exude, Edge_Size, Facet_Angle, Facet_Size, Facet_Distance, Cell_Radius_Edge_Ratio, Cell_Size]
             
             kwargs = dict(zip(OptionStrings,Values)) 
                 
@@ -67,6 +72,10 @@ def meshVolumetricFromSurface(filepath, outputdir='autogen/',
                 logging.info('Beginning meshing with CGAL' + str(filepath) + '...')
 #                pygalmesh.
                 mesh = pygalmesh.generate_volume_mesh_from_surface_mesh(filepath,
+                                                                        lloyd=Lloyd,
+                                                                        odt=ODT,
+                                                                        perturb=Perturb,
+                                                                        exude=Exude,
                                                                         facet_angle=Facet_Angle,
                                                                         facet_size=Facet_Size,
                                                                         facet_distance=Facet_Distance,
