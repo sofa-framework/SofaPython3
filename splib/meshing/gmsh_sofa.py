@@ -18,6 +18,8 @@ splib.geometric.gmsh.createScene
 """
 
 import locale
+import logging
+
 class LocaleManager:    
     def __init__(self, localename):
         self.name = localename
@@ -81,7 +83,7 @@ def meshFromParametricGeometry(filepath, outputdir='autogen/', meshtype='Surface
             
     
             if Refresh:
-                print('Beginning meshing ' + str(filepath) + '...')
+                logging.info('Beginning meshing ' + str(filepath) + '...')
                 gmsh.initialize()
                 gmsh.open(filepath)
                 if meshtype == 'Surface':
@@ -89,7 +91,7 @@ def meshFromParametricGeometry(filepath, outputdir='autogen/', meshtype='Surface
                 elif meshtype == 'Volumetric':
                     gmsh.model.mesh.generate(3)    
                 gmsh.write(OutputFilePath)
-                print('Finished meshing.')   
+                logging.info('Finished meshing.')   
     
             gmsh.finalize()
             return OutputFilePath
@@ -103,6 +105,7 @@ def createScene(rootNode):
         import SofaRuntime
         import os
         
+        logging.basicConfig(level=logging.INFO)
         MeshesPath = os.path.dirname(os.path.abspath(__file__))+'/data/meshes/'
         
         SofaRuntime.importPlugin("SofaPython3")

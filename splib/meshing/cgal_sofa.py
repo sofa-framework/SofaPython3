@@ -20,6 +20,8 @@ splib.geometric.gmsh.createScene
 
 
 import locale
+import logging
+
 class LocaleManager:    
     def __init__(self, localename):
         self.name = localename
@@ -62,7 +64,7 @@ def meshVolumetricFromSurface(filepath, outputdir='autogen/',
             Refresh, OutputFilePath = cch.cacher(InputFilePath=filepath, OutputDir=outputdir, OutputFileExtension='.vtk', kwargsdict=kwargs, OutputFileName=FileNameNoExt)
         
             if Refresh:
-                print('Beginning meshing with CGAL' + str(filepath) + '...')
+                logging.info('Beginning meshing with CGAL' + str(filepath) + '...')
 #                pygalmesh.
                 mesh = pygalmesh.generate_volume_mesh_from_surface_mesh(filepath,
                                                                         facet_angle=Facet_Angle,
@@ -73,7 +75,7 @@ def meshVolumetricFromSurface(filepath, outputdir='autogen/',
                                                                         verbose=True)
                 
                 meshio.write(OutputFilePath, mesh)
-                print('Finished meshing.')   
+                logging.info('Finished meshing.')   
     
             return OutputFilePath
 
@@ -85,6 +87,8 @@ def createScene(rootNode):
         import Sofa.Simulation
         import SofaRuntime
         import os
+        
+        logging.basicConfig(level=logging.INFO)
         
         MeshesPath = os.path.dirname(os.path.abspath(__file__))+'/data/meshes/'
         
