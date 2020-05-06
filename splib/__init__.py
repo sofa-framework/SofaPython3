@@ -8,7 +8,8 @@ Splib library
     :toctree: _autosummary
 
     splib.animation
-
+    splib.caching
+    splib.meshing
 
 """
 import Sofa
@@ -16,7 +17,7 @@ import Sofa.Core
 import inspect
 import functools
 import inspect
-__all__=["animation"]
+__all__=["animation", "caching", "meshing"]
 
 def pyType2sofaType(v):
     if isinstance(v, str):
