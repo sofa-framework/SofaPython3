@@ -40,7 +40,9 @@ using namespace pybind11::literals;
 using sofa::simulation::Simulation;
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/visual/DrawToolGL.h>
+#ifndef SOFA_NO_OPENGL
+#    include <sofa/core/visual/DrawToolGL.h>
+#endif
 #include "Submodule_Simulation_doc.h"
 
 namespace sofapython3
@@ -67,6 +69,8 @@ PYBIND11_MODULE(Simulation, simulation)
 
 
     simulation.def("updateVisual", [](Node* n){ sofa::simulation::getSimulation()->updateVisual(n); });
+
+#ifndef SOFA_NO_OPENGL
     simulation.def("draw", [](Node* n){
         auto* vparam = sofa::core::visual::VisualParams::defaultInstance();
         vparam->drawTool() = new sofa::core::visual::DrawToolGL();
@@ -74,14 +78,15 @@ PYBIND11_MODULE(Simulation, simulation)
         sofa::simulation::getSimulation()->draw(vparam, n);
     });
 
-    simulation.def("initTextures", [](Node* n)
-    {
-        sofa::simulation::getSimulation()->initTextures(n);
-    });
-
     simulation.def("glewInit", []()
     {
         glewInit();
+    });
+#endif
+
+    simulation.def("initTextures", [](Node* n)
+    {
+        sofa::simulation::getSimulation()->initTextures(n);
     });
 }
 
