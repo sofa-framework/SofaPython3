@@ -180,7 +180,7 @@ py::object getOwner(BaseData& self)
 void moduleAddBaseData(py::module& m)
 {
     /// Register the BaseData binding into the pybind11 system.
-    py::class_<BaseData, raw_ptr<BaseData>> data(m, "Data", sofapython3::doc::baseData::BaseDataClass);
+    py::class_<BaseData, std::unique_ptr<sofa::core::objectmodel::BaseData, pybind11::nodelete>> data(m, "Data", sofapython3::doc::baseData::BaseDataClass);
     data.def("getName", [](BaseData& b){ return b.getName(); }, sofapython3::doc::baseData::getName);
     data.def("setName", [](BaseData& b, const std::string& s){ b.setName(s); }, sofapython3::doc::baseData::setName);
     data.def("getCounter", [](BaseData& self) { return self.getCounter(); }, sofapython3::doc::baseData::getCounter);

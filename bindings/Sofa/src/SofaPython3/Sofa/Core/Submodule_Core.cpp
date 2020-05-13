@@ -45,7 +45,6 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include "Binding_Node.h"
 #include "Binding_NodeIterator.h"
 #include "Binding_Prefab.h"
-#include "Binding_Simulation.h"
 #include "Binding_BaseLink.h"
 #include "Binding_PythonScriptEvent.h"
 

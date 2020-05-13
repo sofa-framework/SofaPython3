@@ -27,16 +27,20 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 #include "Binding_BoundingBox.h"
 
+#include <SofaPython3/Sofa/Core/Binding_BaseData.h>
+
 #include <sofa/core/objectmodel/Data.h>
-#include <SofaPython3/DataHelper.h>
+#include <sofa/defaulttype/BoundingBox.h>
 #include <SofaPython3/PythonFactory.h>
+
+using sofa::defaulttype::BoundingBox;
 
 namespace sofapython3 {
 
 void moduleAddBoundingBox(py::module& m)
 {
-    py::class_<BoundingBoxData, BaseData,
-            raw_ptr<BoundingBoxData> > bbox(m, "BoundingBox");
+    py::class_<sofa::Data<BoundingBox>, sofa::core::objectmodel::BaseData,
+        std::unique_ptr<sofa::Data<BoundingBox>, pybind11::nodelete> > bbox(m, "BoundingBox");
     bbox.def("getMin", [](sofa::Data<BoundingBox>& bbox) {
         py::list list;
         list.append(bbox.getValue().minBBox()[0]);
@@ -76,7 +80,7 @@ void moduleAddBoundingBox(py::module& m)
     }, "returns the center of the bbox");
 
     PythonFactory::registerType("BoundingBox", [](BaseData* data) -> py::object {
-        return py::cast(reinterpret_cast<BoundingBoxData*>(data));
+        return py::cast(dynamic_cast<sofa::Data<BoundingBox>*>(data));
     });
 
 }

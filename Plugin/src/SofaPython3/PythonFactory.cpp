@@ -94,8 +94,10 @@ void PythonFactory::registerType(const std::string& typeName, dataCreatorFunctio
 
 std::map<std::string, componentDowncastingFunction>::iterator PythonFactory::searchLowestCastAvailable(const sofa::core::objectmodel::BaseClass* metaclass)
 {
+    std::string type_name = metaclass->typeName;
+
     /// If there is a match with current metaclass we returns it
-    auto kv = s_componentDowncastingFct.find(metaclass->className);
+    auto kv = s_componentDowncastingFct.find(type_name);
     if( kv != s_componentDowncastingFct.end())
     {
         return kv;
@@ -112,7 +114,18 @@ std::map<std::string, componentDowncastingFunction>::iterator PythonFactory::sea
         }
     }
 
-    throw std::runtime_error("Unable to find a python binding for an object in-heriting from Base.");
+    return s_componentDowncastingFct.end();
+}
+
+std::string get_class_hierarchy_as_string (const sofa::core::objectmodel::BaseClass* metaclass, int level = 0) {
+    std::stringstream ss;
+    std::string class_name = metaclass->className;
+    std::string type_name = metaclass->typeName;
+    ss << std::string( level*4, '-' ) << class_name << " (" << type_name << ")\n";
+    for(auto p : metaclass->parents) {
+        ss << get_class_hierarchy_as_string(p, level+1);
+    }
+    return ss.str();
 }
 
 py::object PythonFactory::toPython(sofa::core::objectmodel::Base* object)
@@ -120,7 +133,8 @@ py::object PythonFactory::toPython(sofa::core::objectmodel::Base* object)
     auto metaclass = object->getClass();
 
     /// Let's first search if there is a casting function for the give type.
-    auto kv = s_componentDowncastingFct.find(metaclass->className);
+    std::string type_name = metaclass->typeName;
+    auto kv = s_componentDowncastingFct.find(type_name);
     if( kv != s_componentDowncastingFct.end())
     {
         return kv->second(object);
@@ -131,7 +145,13 @@ py::object PythonFactory::toPython(sofa::core::objectmodel::Base* object)
     /// at first match.
     kv = searchLowestCastAvailable(metaclass);
 
-    s_componentDowncastingFct[metaclass->className] = kv->second;
+    if (kv == s_componentDowncastingFct.end()) {
+        msg_error("PythonFactory") << "Unable to find a python binding for an object in-heriting from Base.\n"
+                                   << "Tried with:\n" << get_class_hierarchy_as_string(metaclass);
+        throw std::runtime_error("Unable to find a python binding for an object in-heriting from Base.");
+    }
+
+    s_componentDowncastingFct[type_name] = kv->second;
     return kv->second(object);
 }
 
@@ -273,12 +293,34 @@ void PythonFactory::fromPython(BaseData* d, const py::object& o)
     if(!nfo.Container())
     {
         scoped_writeonly_access guard(d);
-        if(nfo.Integer())
+        if(nfo.Integer()) {
             nfo.setIntegerValue(guard.ptr, 0, py::cast<int>(o));
-        else if(nfo.Text())
+        } else if(nfo.Text()) {
             nfo.setTextValue(guard.ptr, 0, py::cast<py::str>(o));
-        else if(nfo.Scalar())
+        } else if(nfo.Scalar()) {
             nfo.setScalarValue(guard.ptr, 0, py::cast<double>(o));
+        } else {
+            // Custom datatype that has no DataTypeInfo. Let's see if we can convert it to a string
+            if (py::isinstance<py::str>(o)) {
+                d->read(py::cast<std::string>(o));
+            } else if (py::isinstance<py::int_>(o)) {
+                d->read(std::to_string(py::cast<int>(o)));
+            } else if (py::isinstance<py::float_>(o)) {
+                d->read(std::to_string(py::cast<float>(o)));
+            } else if (py::isinstance<py::list>(o)) {
+                const auto list = py::cast<py::list>(o);
+                const std::string l = std::accumulate(list.begin(), list.end(), std::string(), [](const std::string & s, const py::handle m){
+                    return s + " " + py::cast<std::string>(py::str(m));
+                });
+                d->read(l);
+            } else {
+                std::stringstream s;
+                s<< "Trying to set the value of the data "
+                 << d->getName() << ", but the later hasn't register it's DataTypeInfo (see sofa/defaulttype/DataTypeInfo.h for more details)";
+                throw std::runtime_error(s.str());
+            }
+        }
+
         return ;
     }
 

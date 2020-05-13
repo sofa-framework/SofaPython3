@@ -60,7 +60,6 @@ using sofapython3::SceneLoaderPY3;
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_Node.h>
-#include <SofaPython3/Sofa/Core/Binding_Simulation.h>
 
 #include "Timer/Submodule_Timer.h"
 #include "Input/Submodule_Input.h"
