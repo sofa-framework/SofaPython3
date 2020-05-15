@@ -25,7 +25,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - thierry.gaugry@inria.fr
 ********************************************************************/
 
-#include "Submodule_Simulation.h"
+#include <pybind11/pybind11.h>
 
 #include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation;
@@ -40,10 +40,9 @@ using namespace pybind11::literals;
 using sofa::simulation::Simulation;
 
 #include <sofa/core/visual/VisualParams.h>
-#ifndef SOFA_NO_OPENGL
-#    include <sofa/core/visual/DrawToolGL.h>
-#endif
 #include "Submodule_Simulation_doc.h"
+
+namespace py = pybind11;
 
 namespace sofapython3
 {
@@ -65,25 +64,7 @@ PYBIND11_MODULE(Simulation, simulation)
         return node ? py::cast(node.get()) : py::none();
     }, sofapython3::doc::simulation::load);
     simulation.def("unload", [](Node* n){ sofa::simulation::getSimulation()->unload(n); }, sofapython3::doc::simulation::unload);
-
-
-
     simulation.def("updateVisual", [](Node* n){ sofa::simulation::getSimulation()->updateVisual(n); });
-
-#ifndef SOFA_NO_OPENGL
-    simulation.def("draw", [](Node* n){
-        auto* vparam = sofa::core::visual::VisualParams::defaultInstance();
-        vparam->drawTool() = new sofa::core::visual::DrawToolGL();
-        vparam->setSupported(sofa::core::visual::API_OpenGL);
-        sofa::simulation::getSimulation()->draw(vparam, n);
-    });
-
-    simulation.def("glewInit", []()
-    {
-        glewInit();
-    });
-#endif
-
     simulation.def("initTextures", [](Node* n)
     {
         sofa::simulation::getSimulation()->initTextures(n);
