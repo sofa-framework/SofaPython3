@@ -1,7 +1,6 @@
 project(Bindings.Sofa.Simulation)
 
 set(HEADER_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Simulation.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Simulation_doc.h
 )
 
