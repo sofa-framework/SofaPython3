@@ -52,6 +52,12 @@ target_link_libraries(${PROJECT_NAME} PUBLIC  pybind11::module pybind11::embed)
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME SofaPython3)
 set_target_properties(${target} PROPERTIES VERSION "${SOFAPYTHON3_VERSION}")
 
+set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES
+        INSTALL_RPATH_USE_LINK_PATH TRUE
+)
+
 if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
     # Sized deallocaion is not enabled by default under clang after c++14
     set(CMAKE_CXX_FLAGS "-fsized-deallocation")

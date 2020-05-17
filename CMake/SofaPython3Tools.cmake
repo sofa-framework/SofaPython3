@@ -1,20 +1,22 @@
-# Copy files from source directory to destination directory, substituting any
-# variables.  Create destination directory if it does not exist.
+# - Get the path to the Python's user site packages directory (for example, $HOME/.local/lib/pythonX.Y/site-packages
+# PYTHON_USER_SITE - (output) The path to Python's site packages directory, or FALSE if not found
+macro(SP3_get_python_user_site)
+    execute_process(
+            COMMAND "${PYTHON_EXECUTABLE}" "-m" "site" "--user-site"
+            RESULT_VARIABLE _SITE_PACKAGE_SUCCESS
+            OUTPUT_VARIABLE PYTHON_USER_SITE
+    )
 
-macro(configure_package srcDir destDir)
-    file(GLOB_RECURSE files RELATIVE ${srcDir} ${srcDir}/*)
-    foreach(file_relative_path ${files})
-        set(file_absolute_path ${srcDir}/${file_relative_path})
-        configure_file(
-            ${file_absolute_path}
-            ${CMAKE_BINARY_DIR}/${destDir}/${file_relative_path}
-            @ONLY
-        )
-        get_filename_component(relative_directory ${file_relative_path} DIRECTORY)
-        install(FILES "${CMAKE_BINARY_DIR}/${destDir}/${file_relative_path}" DESTINATION "${destDir}/${relative_directory}")
-    endforeach()
-endmacro(configure_package)
+    if(_SITE_PACKAGE_SUCCESS MATCHES 0)
+        string(REGEX REPLACE "\n" "" PYTHON_USER_SITE ${PYTHON_USER_SITE})
+        set(PYTHON_USER_SITE "${PYTHON_USER_SITE}")
 
+        # Create the user-site if it does not yet exists
+        file(MAKE_DIRECTORY "${PYTHON_USER_SITE}")
+    else()
+        set(PYTHON_USER_SITE FALSE)
+    endif()
+endmacro()
 
 # - Create a python package by copying the source directory to the destination directory. Every files within the
 #   source directory will be configured with the current cmake variables available (see CMake configure_file documentation)
@@ -22,8 +24,7 @@ endmacro(configure_package)
 # SP3_add_python_package(PACKAGE_NAME SOURCE_DIRECTORY TARGET_DIRECTORY)
 #  SOURCE_DIRECTORY   - (input) the source path of the directory to be configured and copied to the target directory.
 #  TARGET_DIRECTORY   - (input) the target path of the directory that will contain the configured files.
-#                               For the build tree, it is ${CMAKE_BINARY_DIR}/${TARGET_DIRECTORY}.
-#                               For the install tree, it is ${CMAKE_INSTALL_PREFIX}/${TARGET_DIRECTORY}.
+#                               Files will be at LIBRARY_OUTPUT_DIRECTORY/SP3_PYTHON_PACKAGES_DIRECTORY/TARGET_DIRECTORY.
 function(SP3_add_python_package)
     set(options)
     set(oneValueArgs PACKAGE_NAME SOURCE_DIRECTORY TARGET_DIRECTORY )
@@ -31,8 +32,22 @@ function(SP3_add_python_package)
 
     cmake_parse_arguments(A "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    configure_package("${A_SOURCE_DIRECTORY}" "${A_TARGET_DIRECTORY}")
-    message(STATUS "Python package ${A_SOURCE_DIRECTORY} added to directory ${CMAKE_BINARY_DIR}/${A_TARGET_DIRECTORY}")
+    file(GLOB_RECURSE files RELATIVE ${A_SOURCE_DIRECTORY} ${A_SOURCE_DIRECTORY}/*)
+    foreach(file_relative_path ${files})
+        set(file_absolute_path ${A_SOURCE_DIRECTORY}/${file_relative_path})
+        configure_file(
+            ${file_absolute_path}
+            ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}/${file_relative_path}
+            @ONLY
+        )
+        get_filename_component(relative_directory ${file_relative_path} DIRECTORY)
+        install(
+            FILES "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}/${file_relative_path}"
+            DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}/${relative_directory}"
+        )
+    endforeach()
+
+    message(STATUS "Python package ${A_SOURCE_DIRECTORY} added to directory ${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}")
 endfunction()
 
 # - Create a target for a python module binding code with pybind11 support.
@@ -42,12 +57,11 @@ endfunction()
 #  PACKAGE_NAME       - (input) The name of the package that will contain this module.
 #  MODULE_NAME        - (input) The name of the module.
 #  DESTINATION        - (input) The output directory that will contain the compiled module.
-#                               For the build tree, it is ${CMAKE_BINARY_DIR}/${DESTINATION}.
-#                               For the install tree, it is ${CMAKE_INSTALL_PREFIX}/${DESTINATION}.
-#                               The default is ${SP3_PYTHON_PACKAGES_DIRECTORY}/${PACKAGE}
+#                               For the build tree, it will be ${SP3_PYTHON_PACKAGES_BUILD_DIRECTORY}/${DESTINATION}.
+#                               For the install tree, it will be ${SP3_PYTHON_PACKAGES_INSTALL_DIRECTORY}/${DESTINATION}.
+#                               The default is ${PACKAGE_NAME}
 #  SOURCES            - (input) list of source files that will be compiled with pybind11 support.
 #  HEADERS            - (input) list of header files that will be installed after the build.
-#  PYTHON_VERSION     - (input) python version, default to the highest version found
 #  DEPENDS            - (input) set of target the generated target will depends on.
 #  QUIET              - (input) if set, not information messages will be printed out.
 function(SP3_add_python_module)
@@ -57,10 +71,8 @@ function(SP3_add_python_module)
 
     cmake_parse_arguments(A "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    if (A_DESTINATION)
-        set(DESTINATION "${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_DESTINATION}")
-    else()
-        set(DESTINATION "${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_PACKAGE_NAME}")
+    if (NOT A_DESTINATION)
+        set(DESTINATION "${A_PACKAGE_NAME}")
     endif ()
 
     # Fetch the current path relative to /bindings/*/src
@@ -85,13 +97,9 @@ function(SP3_add_python_module)
         set(A_TARGET ${MODULE_NAME})
     endif()
 
-    if (A_PYTHON_VERSION)
-        set(PYBIND11_PYTHON_VERSION ${A_PYTHON_VERSION})
-    endif()
-
     set(PYBIND11_CPP_STANDARD -std=c++17)
 
-    find_package(pybind11 CONFIG REQUIRED)
+    find_package(pybind11 CONFIG QUIET REQUIRED)
 
     pybind11_add_module(${A_TARGET} SHARED "${A_SOURCES}")
     add_library(SofaPython3::${A_TARGET} ALIAS ${A_TARGET})
@@ -116,7 +124,15 @@ function(SP3_add_python_module)
         ${A_TARGET}
         PROPERTIES
             OUTPUT_NAME ${MODULE_NAME}
-            LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${DESTINATION}"
+            LIBRARY_OUTPUT_DIRECTORY "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
+    )
+
+    # Note: This should be disabled if/when we will want to create packages
+    set_target_properties(
+        ${A_TARGET}
+        PROPERTIES
+            INSTALL_RPATH_USE_LINK_PATH TRUE
+            INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${LIBRARY_OUTPUT_DIRECTORY}"
     )
 
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
@@ -124,20 +140,20 @@ function(SP3_add_python_module)
             ${A_TARGET}
             PROPERTIES
                 # https://cmake.org/cmake/help/latest/prop_tgt/LIBRARY_OUTPUT_DIRECTORY_CONFIG.html#prop_tgt:LIBRARY_OUTPUT_DIRECTORY_<CONFIG>
-                RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${DESTINATION}"
-                RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/${DESTINATION}"
-                RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/${DESTINATION}"
-                RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/${DESTINATION}"
-                RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${CMAKE_BINARY_DIR}/${DESTINATION}"
+                RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
+                RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
+                RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
+                RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
+                RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${CMAKE_BINARY_DIR}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
         )
     endif()
 
 
     install(TARGETS ${A_TARGET}
         EXPORT BindingsTargets
-        RUNTIME DESTINATION "${DESTINATION}" COMPONENT applications
-        LIBRARY DESTINATION "${DESTINATION}" COMPONENT libraries
-        ARCHIVE DESTINATION "${DESTINATION}" COMPONENT libraries
+        RUNTIME DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT applications
+        LIBRARY DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
+        ARCHIVE DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
     )
 
     foreach(header ${A_HEADERS})
@@ -155,7 +171,7 @@ function(SP3_add_python_module)
 
 
     if (NOT A_QUIET)
-        message(STATUS "Python module '${MODULE_NAME}' added to ${DESTINATION} (python version ${PYTHON_VERSION_STRING}, pybind11 version ${pybind11_VERSION})")
+        message(STATUS "Python module '${MODULE_NAME}' added to ${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}")
     endif ()
 
 endfunction()

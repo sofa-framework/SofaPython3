@@ -41,12 +41,6 @@ endif()
 find_package(SofaExporter QUIET)
 CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAEXPORTER "Bind the SOFA exporter component." ON "SofaExporter_FOUND" OFF)
 
-set(SP3_PYTHON_PACKAGES_DIRECTORY
-    "lib/site-packages"
-    CACHE PATH
-    "Path to the directory containing the python packages defined in the binding projects. (default to lib/site-packages)"
-    )
-
 # BUILD OPTIONS
 if (NOT SP3_COMPILED_AS_SUBPROJECT)
     if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -70,34 +64,39 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Set the minimum python version to 3.7
+set(PYBIND11_PYTHON_VERSION 3.7)
 
-unset(PYTHON_EXECUTABLE)
-find_package(Python 3.7 COMPONENTS Interpreter Development REQUIRED)
-set(PYTHON_INCLUDE_DIRS ${Python_INCLUDE_DIR})
-set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
-set(PYBIND11_PYTHON_VERSION ${Python_VERSION})
-find_package(pybind11 QUIET)
-if(NOT pybind11_FOUND)
-  message("-- Cannot build the python module 'Sofa', missing the pybind software to generate the bindings.")
-  return()
-endif()
+# Set the minimum pybind11 version to 2.3 (before that the pybind11::embed target did not exist)
+find_package(pybind11 2.3 CONFIG QUIET REQUIRED)
 
+set(SP3_PYTHON_PACKAGES_DIRECTORY
+    "site-packages"
+    CACHE PATH
+    "Path to the directory where the python packages will be built and installed. (default to site-packages)"
+)
+
+# Get the Python's user site packages directory, or FASLE if not found
+SP3_get_python_user_site()
+CMAKE_DEPENDENT_OPTION(
+    SP3_LINK_TO_USER_SITE
+    "Install python packages to python's user site directory. The directory path can be changed by setting SP3_PYTHON_PACKAGES_LINK_DIRECTORY."
+    ON "PYTHON_USER_SITE" OFF)
+
+set(SP3_PYTHON_PACKAGES_LINK_DIRECTORY
+    "${PYTHON_USER_SITE}"
+    CACHE PATH
+    "Path to the directory where the python packages will be installed (with symbolic links).
+    (default to $(python3 -m site --user-site))"
+)
+
+message("-- Python version: ${PYTHON_VERSION_STRING}")
 message("-- Python executable: ${PYTHON_EXECUTABLE}")
-message("-- Python version: ${PYBIND11_PYTHON_VERSION}")
 message("-- Python include dirs: ${PYTHON_INCLUDE_DIRS}")
 message("-- Python libraries: ${PYTHON_LIBRARIES}")
-message("-- Python library: ${PYTHON_LIBRARY}")
-
-# Unset the following variables to not confuse the user between the variables used by find_package(Python) and
-# those used by find_package(pybind11). The later only uses the output of find_package(Python).
-unset(PYTHON_EXECUTABLE)
-unset(PYTHON_INCLUDE_DIRS)
-unset(PYTHON_LIBRARIES)
-unset(PYTHON_LIBRARY)
-
-if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang") # Sized deallocaion is not enabled by default under clang after c++14 
-	set(CMAKE_CXX_FLAGS "-fsized-deallocation") 
-endif ()
+message("-- Python user site: ${PYTHON_USER_SITE}")
+message("-- pybind11 version: ${pybind11_VERSION}")
+message("-- pybind11 config: ${pybind11_CONFIG}")
 
 add_subdirectory(Plugin)
 add_subdirectory(bindings)
@@ -105,17 +104,17 @@ add_subdirectory(examples)
 add_subdirectory(docs)
 
 SP3_add_python_package(
-        SOURCE_DIRECTORY
-            ${CMAKE_CURRENT_SOURCE_DIR}/splib
-        TARGET_DIRECTORY
-            ${SP3_PYTHON_PACKAGES_DIRECTORY}/splib
+    SOURCE_DIRECTORY
+        ${CMAKE_CURRENT_SOURCE_DIR}/splib
+    TARGET_DIRECTORY
+        splib
 )
 
 SP3_add_python_package(
-        SOURCE_DIRECTORY
-            ${CMAKE_CURRENT_SOURCE_DIR}/constants
-        TARGET_DIRECTORY
-            ${SP3_PYTHON_PACKAGES_DIRECTORY}/Sofa/constants
+    SOURCE_DIRECTORY
+        ${CMAKE_CURRENT_SOURCE_DIR}/constants
+    TARGET_DIRECTORY
+        Sofa/constants
 )
 
 configure_package_config_file(
@@ -137,3 +136,17 @@ install(FILES
     "${LIBRARY_OUTPUT_DIRECTORY}/cmake/SofaPython3"
 )
 
+if (SP3_LINK_TO_USER_SITE)
+    file(GLOB directories RELATIVE "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}" "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/*")
+    foreach(directory ${directories})
+        if(IS_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
+            install(CODE "\
+                execute_process( \
+                    COMMAND ${CMAKE_COMMAND} -E create_symlink \
+                    ${CMAKE_INSTALL_PREFIX}/${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory}/ \
+                    ${SP3_PYTHON_PACKAGES_LINK_DIRECTORY}/${directory}   \
+                )"
+            )
+        endif()
+    endforeach()
+endif()
