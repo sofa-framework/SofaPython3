@@ -5,8 +5,8 @@ This project is composed of a Sofa plugin to embed a python interpreter into a S
 ## Installation 
 
 ### Requirement Install
-- pybind11 (minimal 2.2.4)
-- cmake (minimal 3.14)
+- pybind11 (minimal 2.3)
+- cmake (minimal 3.11)
 - developement package for python3 (python3-dev)
 
 ### In-tree build
@@ -28,6 +28,42 @@ To change the python version used for the compilation, you can either:
 
 To see all the hints that can be provided to CMake, see the official CMake documentation on Python :
 https://cmake.org/cmake/help/latest/module/FindPython.html
+
+### Installing the python 3 bindings
+In order to use SofaPython3 bindings directly into a python3 interpreter, Python needs to find the bindings libraries. 
+This can be done automatically by going into the build directory of SofaPython3, and starting the cmake installation 
+command:
+
+```
+plugin.SofaPython3/build $ cmake --install . 
+```
+
+This will first install the SofaPython3 plugin and bindings into the `install` directory, and then create symbolic links
+to the installed bindings into the python's user site-package directory (the directory returned by 
+```python3 -m site --user-site```). After that, you should be able to import the SofaPython3 bindings directly into
+python:
+
+```python
+$ python3
+>>> import SofaRuntime
+>>> import Sofa
+>>> root = Sofa.Core.Node("root")
+```
+
+You can change the directory where the links are created by setting the cmake variable 
+```SP3_PYTHON_PACKAGES_LINK_DIRECTORY```. For example, the following will create symbolic links into the 
+```/usr/lib/python3.8/dist-packages```, hence making the SofaPython3 bindings available to python3 for all the system
+users.
+
+```
+plugin.SofaPython3/build $ cmake -DSP3_PYTHON_PACKAGES_LINK_DIRECTORY=/usr/lib/python3.8/dist-packages .
+plugin.SofaPython3/build $ cmake --install . 
+```
+
+Finally, you can disable the automatic link creation with the cmake option ```SP3_LINK_TO_USER_SITE```:
+```
+plugin.SofaPython3/build $ cmake -DSP3_LINK_TO_USER_SITE=OFF .
+```
 
 ## Features
 
