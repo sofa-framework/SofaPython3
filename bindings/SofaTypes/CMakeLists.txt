@@ -17,7 +17,7 @@ SP3_add_python_package(
     SOURCE_DIRECTORY
         ${CMAKE_CURRENT_SOURCE_DIR}/package
     TARGET_DIRECTORY
-        ${SP3_PYTHON_PACKAGES_DIRECTORY}/SofaTypes
+        SofaTypes
 )
 
 find_package(SofaFramework REQUIRED)
