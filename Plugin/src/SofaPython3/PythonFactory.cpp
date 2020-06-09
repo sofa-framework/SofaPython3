@@ -162,10 +162,10 @@ py::object PythonFactory::toPython(const sofa::core::objectmodel::BaseData* data
 
 py::object PythonFactory::toPython(sofa::core::objectmodel::BaseData* data)
 {
-    auto metaclass = data->getClass();
+    auto type = data->getValueTypeInfo()->name();
 
     /// Let's first search if there is a casting function for the given type.
-    auto kv = s_dataDowncastingFct.find(metaclass->templateName);
+    auto kv = s_dataDowncastingFct.find(type);
     if( kv != s_dataDowncastingFct.end())
     {
         return kv->second(data);
@@ -173,21 +173,20 @@ py::object PythonFactory::toPython(sofa::core::objectmodel::BaseData* data)
 
     const sofa::defaulttype::AbstractTypeInfo& nfo { *(data->getValueTypeInfo()) };
 
-
     if(nfo.Container() && nfo.SimpleLayout())
     {
-        s_dataDowncastingFct[metaclass->templateName] = s_dataDowncastingFct["DataContainer"];
-        return s_dataDowncastingFct[metaclass->templateName](data);
+        s_dataDowncastingFct[type] = s_dataDowncastingFct["DataContainer"];
+        return s_dataDowncastingFct[type](data);
     }
     if(nfo.Container() && nfo.Text())
     {
-        s_dataDowncastingFct[metaclass->templateName] = s_dataDowncastingFct["DataVectorString"];
-        return s_dataDowncastingFct[metaclass->templateName](data);
+        s_dataDowncastingFct[type] = s_dataDowncastingFct["DataVectorString"];
+        return s_dataDowncastingFct[type](data);
     }
     if(nfo.Text())
     {
-        s_dataDowncastingFct[metaclass->templateName] = s_dataDowncastingFct["DataString"];
-        return s_dataDowncastingFct[metaclass->templateName](data);
+        s_dataDowncastingFct[type] = s_dataDowncastingFct["DataString"];
+        return s_dataDowncastingFct[type](data);
     }
     return py::cast(data);
 }
