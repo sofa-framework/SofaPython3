@@ -408,3 +408,9 @@ class Test(unittest.TestCase):
         self.assertFalse(data.isReadOnly())
         data.setReadOnly(True)
         self.assertTrue(data.isReadOnly())
+
+    def test_DownCast(self):
+        root = Sofa.Core.Node('root')
+        self.assertEqual(type(root.name), Sofa.Core.DataString)
+        self.assertEqual(type(root.gravity), Sofa.Core.DataContainer)
+        self.assertEqual(type(root.dt), Sofa.Core.Data)
