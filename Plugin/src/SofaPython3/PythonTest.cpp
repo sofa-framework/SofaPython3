@@ -167,7 +167,7 @@ void PythonTest::run( const PythonTestData& data )
             SetDirectory localDir(filename);
             std::string basename = SetDirectory::GetFileNameWithoutExtension(SetDirectory::GetFileName(filename).c_str());
             module = PythonEnvironment::importFromFile(basename, SetDirectory::GetFileName(filename),
-                                                       globals);
+                                                       &globals);
 
             py::object testSuite = getTestSuite(unittest, module, data.arguments);
             py::list testSuiteList = py::cast<py::list>(testSuite);
@@ -216,7 +216,7 @@ void PythonTestList::addTest( const std::string& filename,
         SetDirectory localDir(pathC);
         std::string basename = SetDirectory::GetFileNameWithoutExtension(SetDirectory::GetFileName(filenameC).c_str());
         module = PythonEnvironment::importFromFile(basename, SetDirectory::GetFileName(filenameC),
-                                                   globals);
+                                                   &globals);
         std::list<std::string> testNames;
         py::list testSuite = getTestSuite(unittest, module, arguments);
         if(!testSuite.size())

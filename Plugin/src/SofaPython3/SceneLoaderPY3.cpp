@@ -123,7 +123,7 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
 
         SetDirectory localDir(filename);
         std::string basename = SetDirectory::GetFileNameWithoutExtension(SetDirectory::GetFileName(filename).c_str());
-        module = PythonEnvironment::importFromFile(basename, SetDirectory::GetFileName(filename), globals);
+        module = PythonEnvironment::importFromFile(basename, SetDirectory::GetFileName(filename), &globals);
 
         if(!py::hasattr(module, "createScene"))
         {
