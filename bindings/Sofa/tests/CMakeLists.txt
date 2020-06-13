@@ -33,9 +33,14 @@ set(PYTHON_FILES
 
 find_package(SofaGTestMain REQUIRED)
 
+enable_testing()
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaPython3::Plugin SofaPython3::Bindings.Sofa SofaPython3::Bindings.SofaTypes SofaPython3::Bindings.SofaRuntime)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "PYTHON_TESTFILES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\"")
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 
+install(
+    TARGETS ${PROJECT_NAME}
+    EXPORT BindingsTargets
+)
