@@ -17,6 +17,7 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v2
         with:
+          repository:  jnbrunet/plugin.SofaPython3
           ref: install_tests
 
       - name: Set up Python 3.7
