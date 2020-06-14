@@ -62,7 +62,6 @@ using sofapython3::SceneLoaderPY3;
 #include <SofaPython3/Sofa/Core/Binding_Node.h>
 
 #include "Timer/Submodule_Timer.h"
-#include "Input/Submodule_Input.h"
 
 #include <SofaPython3/DataHelper.h>
 
@@ -134,7 +133,6 @@ PYBIND11_MODULE(SofaRuntime, m) {
     m.add_object("DataRepository", py::cast(&sofa::helper::system::DataRepository));
     m.add_object("PluginRepository", py::cast(&sofa::helper::system::PluginRepository));
 
-    addSubmoduleInput(m);
     addSubmoduleTimer(m);
 }
 
