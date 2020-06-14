@@ -84,7 +84,7 @@ public:
 
     static py::module importFromFile(const std::string& module,
                                      const std::string& path,
-                                     py::object& globals);
+                                     py::object* globals = nullptr);
 
     /// Add a path to sys.path, the list of search path for Python modules.
     static void addPythonModulePath(const std::string& path);
