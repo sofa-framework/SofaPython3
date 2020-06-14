@@ -54,6 +54,8 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 
 #include <SofaPython3/PythonTest.h>
+#include <sofa/helper/Utils.h>
+
 using sofapython3::PythonTest ;
 using sofapython3::PythonTestList ;
 using sofapython3::PrintTo ;
@@ -81,11 +83,12 @@ static struct PythonModule_Sofa_tests : public PythonTestList
 {
     PythonModule_Sofa_tests()
     {
-        addTestDir(std::string(PYTHON_TESTFILES_DIR)+"/Components", "Sofa_Components_");
-        addTestDir(std::string(PYTHON_TESTFILES_DIR)+"/Core", "Sofa_Core_");       
-        addTestDir(std::string(PYTHON_TESTFILES_DIR)+"/Helper", "Sofa_Helper_");
-        addTestDir(std::string(PYTHON_TESTFILES_DIR)+"/Simulation", "Sofa_Simulation_");
-        addTestDir(std::string(PYTHON_TESTFILES_DIR)+"/Types", "Sofa_Types_");
+        const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
+        addTestDir(executable_directory+"/Components", "Sofa_Components_");
+        addTestDir(executable_directory+"/Core", "Sofa_Core_");
+        addTestDir(executable_directory+"/Helper", "Sofa_Helper_");
+        addTestDir(executable_directory+"/Simulation", "Sofa_Simulation_");
+        addTestDir(executable_directory+"/Types", "Sofa_Types_");
     }
 } python_tests;
 

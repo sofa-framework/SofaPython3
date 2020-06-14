@@ -1,3 +1,17 @@
+# - Recursively configure files inside a directory. Takes the same argument as configure_file, but here the input
+#   parameter is a path to a directory.
+function(SP3_configure_directory input_folder output_folder)
+    file(GLOB_RECURSE files RELATIVE ${input_folder} ${input_folder}/*)
+    foreach(file_relative_path ${files})
+        set(file_absolute_path ${input_folder}/${file_relative_path})
+        configure_file(
+            ${file_absolute_path}
+            ${output_folder}/${file_relative_path}
+            ${ARGN}
+        )
+    endforeach()
+endfunction()
+
 # - Get the path to the Python's user site packages directory (for example, $HOME/.local/lib/pythonX.Y/site-packages
 # PYTHON_USER_SITE - (output) The path to Python's site packages directory, or FALSE if not found
 macro(SP3_get_python_user_site)
