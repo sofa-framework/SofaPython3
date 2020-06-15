@@ -107,19 +107,6 @@ jobs:
           name: sp3-${{ matrix.os }}
           path: install
 
-      - name: Binding.Sofa.Tests
-        run: LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SOFA_ROOT/plugins/SofaValidation/lib:$SOFA_ROOT/plugins/SofaNonUniformFem/lib:$SOFA_ROOT/plugins/SofaDenseSolver/lib
-          ./bin/Bindings.Sofa.Tests
-        continue-on-error: true
-      - name: Bindings.SofaRuntime.Tests
-        run: LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SOFA_ROOT/plugins/SofaValidation/lib:$SOFA_ROOT/plugins/SofaNonUniformFem/lib:$SOFA_ROOT/plugins/SofaDenseSolver/lib
-          ./bin/Bindings.SofaRuntime.Tests
-        continue-on-error: true
-      - name: Bindings.SofaTypes.Tests
-        run: LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SOFA_ROOT/plugins/SofaValidation/lib:$SOFA_ROOT/plugins/SofaNonUniformFem/lib:$SOFA_ROOT/plugins/SofaDenseSolver/lib
-          ./bin/Bindings.SofaTypes.Tests
-        continue-on-error: true
-
   tests:
     name: Testing on ${{ matrix.os }}
     needs: [build]
@@ -174,6 +161,7 @@ jobs:
         run: |
           export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$SOFA_ROOT/plugins/SofaValidation/lib:$SOFA_ROOT/plugins/SofaNonUniformFem/lib:$SOFA_ROOT/plugins/SofaDenseSolver/lib:$LD_LIBRARY_PATH
           export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/site-packages:$PYTHONPATH
+          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins/SofaSparseSolver/lib
           chmod +x SofaPython3/bin/Bindings.Sofa.Tests
           ./SofaPython3/bin/Bindings.Sofa.Tests
       - name: Bindings.SofaRuntime.Tests
@@ -181,6 +169,7 @@ jobs:
         run: |
           export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$SOFA_ROOT/plugins/SofaValidation/lib:$SOFA_ROOT/plugins/SofaNonUniformFem/lib:$SOFA_ROOT/plugins/SofaDenseSolver/lib:$LD_LIBRARY_PATH
           export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/site-packages:$PYTHONPATH
+          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins/SofaSparseSolver/lib
           chmod +x SofaPython3/bin/Bindings.SofaRuntime.Tests
           ./SofaPython3/bin/Bindings.SofaRuntime.Tests
       - name: Bindings.SofaTypes.Tests
@@ -188,6 +177,7 @@ jobs:
         run: |
           export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$SOFA_ROOT/plugins/SofaValidation/lib:$SOFA_ROOT/plugins/SofaNonUniformFem/lib:$SOFA_ROOT/plugins/SofaDenseSolver/lib:$LD_LIBRARY_PATH
           export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/site-packages:$PYTHONPATH
+          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins/SofaSparseSolver/lib
           chmod +x SofaPython3/bin/Bindings.SofaTypes.Tests
           ./SofaPython3/bin/Bindings.SofaTypes.Tests
 
