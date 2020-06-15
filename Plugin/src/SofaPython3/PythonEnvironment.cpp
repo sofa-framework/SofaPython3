@@ -427,18 +427,14 @@ std::string PythonEnvironment::getPythonCallingPointString()
 sofa::helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAsFileInfo()
 {
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaRuntime"));
-    PyObject* pFunc = PyDict_GetItemString(pDict, "getPythonCallingPoint");
-    if (pFunc && PyCallable_Check(pFunc))
-    {
-        PyObject* res = PyObject_CallFunction(pFunc, nullptr);
-        if(res && PySequence_Check(res) ){
-            PyObject* filename = PySequence_GetItem(res, 0) ;
-            PyObject* number = PySequence_GetItem(res, 1) ;
-            std::string tmp=PyBytes_AsString(filename);
-            auto lineno = PyLong_AsLong(number);
-            Py_DECREF(res) ;
-            return SOFA_FILE_INFO_COPIED_FROM(tmp, lineno);
-        }
+    PyObject* res = PyDict_GetItemString(pDict, "getPythonCallingPoint");
+    if(res && PySequence_Check(res) ){
+        PyObject* filename = PySequence_GetItem(res, 0) ;
+        PyObject* number = PySequence_GetItem(res, 1) ;
+        std::string tmp=PyBytes_AsString(filename);
+        auto lineno = PyLong_AsLong(number);
+        Py_DECREF(res) ;
+        return SOFA_FILE_INFO_COPIED_FROM(tmp, lineno);
     }
     return SOFA_FILE_INFO_COPIED_FROM("undefined", -1);
 }
