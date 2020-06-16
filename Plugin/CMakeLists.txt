@@ -59,8 +59,7 @@ set_target_properties(
 )
 
 if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
-    # Sized deallocaion is not enabled by default under clang after c++14
-    set(CMAKE_CXX_FLAGS "-fsized-deallocation")
+    target_compile_options(${PROJECT_NAME} PUBLIC "-fsized-deallocation")
 endif ()
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
