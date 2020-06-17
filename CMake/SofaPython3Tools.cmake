@@ -110,7 +110,7 @@ function(SP3_add_python_module)
     )
 
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-        target_compile_options(${A_TARGET} PRIVATE -fsized-deallocation)
+        target_compile_options(${A_TARGET} PUBLIC -fsized-deallocation)
     endif()
 
     if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
