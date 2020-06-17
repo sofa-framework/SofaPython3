@@ -109,6 +109,10 @@ function(SP3_add_python_module)
         PUBLIC $<INSTALL_INTERFACE:include>
     )
 
+    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        target_compile_options(${A_TARGET} PRIVATE -fsized-deallocation)
+    endif()
+
     if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         target_compile_options(${A_TARGET} PRIVATE -Dregister=)
     endif()
