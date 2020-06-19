@@ -1,12 +1,14 @@
 # plugin.SofaPython3
 
+[![Join the chat at https://gitter.im/sofa-framework/plugin.SofaPython3](https://badges.gitter.im/sofa-framework/plugin.SofaPython3.svg)](https://gitter.im/sofa-framework/plugin.SofaPython3?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This project is composed of a Sofa plugin to embed a python interpreter into a Sofa based simulation as well as several python modules that exposes the different c++ components used in Sofa. The binding is designed to be idiomatic python3 API with tight integration for numpy. This project is in a WIP state, please use it only if you are willing to help in the developement. 
 
 ## Installation 
 
 ### Requirement Install
-- pybind11 (minimal 2.2.4)
-- cmake (minimal 3.12)
+- pybind11 (minimal 2.3)
+- cmake (minimal 3.11)
 - developement package for python3 (python3-dev)
 
 ### In-tree build
@@ -15,7 +17,55 @@ Add this directory path in `CMAKE_EXTERNAL_DIRECTORIES`.
 NB: This plugin cannot be build through in-build process when the old SofaPython plugin is activated. To have both SofaPython3 and SofaPython you need to use out-of-tree build. 
 
 ### Out-of-tree build
-This plugin should compile with out-of-tree builds
+This plugin should compile with out-of-tree builds.
+You might need to add the Sofa's installation path to the CMake prefix path. If you compiled Sofa in directory _$SOFA_ROOT/build_, consider doing an install step (make install, ninja install, etc.) and adding this installation path (example `cmake -DCMAKE_PREFIX_PATH=$SOFA_ROOT/build/install ..`).
+
+### Changing the python path
+The compilation of SofaPython3 plugin and bindings are tied to the python core library found during the CMake stage.
+To change the python version used for the compilation, you can either:
+1. Provide the python executable path with `Python_EXECUTABLE`
+ ```cmake -DPython_EXECUTABLE=/usr/local/bin/python3 ..```
+2. Provide the python root path with `Python_ROOT_DIR`
+ ```cmake -DPython_ROOT_DIR=/usr/local ..```
+
+To see all the hints that can be provided to CMake, see the official CMake documentation on Python :
+https://cmake.org/cmake/help/latest/module/FindPython.html
+
+### Installing the python 3 bindings
+In order to use SofaPython3 bindings directly into a python3 interpreter, Python needs to find the bindings libraries. 
+This can be done automatically by going into the build directory of SofaPython3, and starting the cmake installation 
+command:
+
+```
+plugin.SofaPython3/build $ cmake --install . 
+```
+
+This will first install the SofaPython3 plugin and bindings into the `install` directory, and then create symbolic links
+to the installed bindings into the python's user site-package directory (the directory returned by 
+```python3 -m site --user-site```). After that, you should be able to import the SofaPython3 bindings directly into
+python:
+
+```python
+$ python3
+>>> import SofaRuntime
+>>> import Sofa
+>>> root = Sofa.Core.Node("root")
+```
+
+You can change the directory where the links are created by setting the cmake variable 
+```SP3_PYTHON_PACKAGES_LINK_DIRECTORY```. For example, the following will create symbolic links into the 
+```/usr/lib/python3.8/dist-packages```, hence making the SofaPython3 bindings available to python3 for all the system
+users.
+
+```
+plugin.SofaPython3/build $ cmake -DSP3_PYTHON_PACKAGES_LINK_DIRECTORY=/usr/lib/python3.8/dist-packages .
+plugin.SofaPython3/build $ cmake --install . 
+```
+
+Finally, you can disable the automatic link creation with the cmake option ```SP3_LINK_TO_USER_SITE```:
+```
+plugin.SofaPython3/build $ cmake -DSP3_LINK_TO_USER_SITE=OFF .
+```
 
 ## Features
 
