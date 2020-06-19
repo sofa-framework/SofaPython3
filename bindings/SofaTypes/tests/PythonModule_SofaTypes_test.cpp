@@ -54,6 +54,8 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 
 #include <SofaPython3/PythonTest.h>
+#include <sofa/helper/Utils.h>
+
 using sofapython3::PythonTest ;
 using sofapython3::PythonTestList ;
 using sofapython3::PrintTo ;
@@ -67,7 +69,8 @@ namespace
   public:
     PythonModule_SofaTypes_test()
     {
-      addTestDir(std::string(PYTHON_TESTFILES_DIR));
+        const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
+        addTestDir(executable_directory+"/pyfiles", "SofaTypes_");
     }
   } python_tests;
 

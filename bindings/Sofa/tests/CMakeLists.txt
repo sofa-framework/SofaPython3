@@ -32,10 +32,38 @@ set(PYTHON_FILES
   )
 
 find_package(SofaGTestMain REQUIRED)
+find_package(SofaFramework REQUIRED)
 
+enable_testing()
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaPython3::Plugin SofaPython3::Bindings.Sofa SofaPython3::Bindings.SofaTypes SofaPython3::Bindings.SofaRuntime)
+target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaHelper SofaPython3::Plugin SofaPython3::Bindings.Sofa SofaPython3::Bindings.SofaTypes SofaPython3::Bindings.SofaRuntime)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "PYTHON_TESTFILES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\"")
+
+set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES
+        INSTALL_RPATH_USE_LINK_PATH TRUE
+        INSTALL_RPATH "$ORIGIN/../lib"
+)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 
+SP3_configure_directory(${CMAKE_CURRENT_SOURCE_DIR}/Components ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Components)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Components DESTINATION ${RUNTIME_OUTPUT_DIRECTORY})
+
+SP3_configure_directory(${CMAKE_CURRENT_SOURCE_DIR}/Core ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Core)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Core DESTINATION ${RUNTIME_OUTPUT_DIRECTORY})
+
+SP3_configure_directory(${CMAKE_CURRENT_SOURCE_DIR}/Helper ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Helper)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Helper DESTINATION ${RUNTIME_OUTPUT_DIRECTORY})
+
+SP3_configure_directory(${CMAKE_CURRENT_SOURCE_DIR}/Simulation ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Simulation)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Simulation DESTINATION ${RUNTIME_OUTPUT_DIRECTORY})
+
+SP3_configure_directory(${CMAKE_CURRENT_SOURCE_DIR}/Types ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Types)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Types DESTINATION ${RUNTIME_OUTPUT_DIRECTORY})
+
+install(
+    TARGETS ${PROJECT_NAME}
+    EXPORT BindingsTargets
+)
