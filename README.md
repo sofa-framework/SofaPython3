@@ -1,5 +1,7 @@
 # plugin.SofaPython3
 
+[![Join the chat at https://gitter.im/sofa-framework/plugin.SofaPython3](https://badges.gitter.im/sofa-framework/plugin.SofaPython3.svg)](https://gitter.im/sofa-framework/plugin.SofaPython3?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This project is composed of a Sofa plugin to embed a python interpreter into a Sofa based simulation as well as several python modules that exposes the different c++ components used in Sofa. The binding is designed to be idiomatic python3 API with tight integration for numpy. This project is in a WIP state, please use it only if you are willing to help in the developement. 
 
 ## Installation 
