@@ -76,6 +76,23 @@ static auto getDataFields =
         :return: A vector containing the data fields
         )";
 
+static auto getLoggedMessagesAsString =
+        R"(
+        Returns a single string with all the messages logged in the internal buffer of a sofa object.
+        Return empty string if there is no messages.
+        )";
+
+static auto countLoggedMessages =
+        R"(
+        Returns the number of messages in the object's logs.
+        )";
+
+static auto clearLoggedMessages =
+        R"(
+        Remove all logged messages in the object's logs.
+        )";
+
+
 static auto findLink =
         R"(
         Find a link given its name.

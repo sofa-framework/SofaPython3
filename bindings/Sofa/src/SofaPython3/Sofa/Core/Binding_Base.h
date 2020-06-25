@@ -74,6 +74,10 @@ public:
     static py::object __getattr__(py::object self, const std::string& s);
     static void __setattr__(py::object self, const std::string& s, py::object value);
     static py::object getData(Base& self, const std::string&);
+
+    static py::object getLoggedMessagesAsString(Base& self);
+    static py::object countLoggedMessages(Base& self);
+    static py::object clearLoggedMessages(Base& self);
 };
 
 

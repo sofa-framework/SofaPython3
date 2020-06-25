@@ -369,6 +369,22 @@ void BindingBase::__setattr__(py::object self, const std::string& s, py::object 
     BindingBase::SetAttr(self,s,value);
 }
 
+py::object BindingBase::getLoggedMessagesAsString(Base& self)
+{
+    return py::str(self.getLoggedMessagesAsString());
+}
+
+py::object BindingBase::countLoggedMessages(Base& self)
+{
+    return py::int_(self.countLoggedMessages());
+}
+
+py::object BindingBase::clearLoggedMessages(Base& self)
+{
+    self.clearLoggedMessages();
+    return py::none();
+}
+
 py::object BindingBase::getData(Base& self, const std::string& s)
 {
     BaseData* d = self.findData(s);
@@ -409,6 +425,9 @@ void moduleAddBase(py::module &m)
     base.def("getData", &BindingBase::getData, sofapython3::doc::base::getData);
     base.def("findData", &Base::findData, pybind11::return_value_policy::reference, sofapython3::doc::base::findData);
     base.def("__dir__", &BindingBase::__dir__);
+    base.def("getLoggedMessagesAsString", &BindingBase::getLoggedMessagesAsString, sofapython3::doc::base::getLoggedMessagesAsString);
+    base.def("countLoggedMessages", &BindingBase::countLoggedMessages, sofapython3::doc::base::countLoggedMessages);
+    base.def("clearLoggedMessages", &BindingBase::clearLoggedMessages, sofapython3::doc::base::clearLoggedMessages);
 }
 
 } /// namespace sofapython3
