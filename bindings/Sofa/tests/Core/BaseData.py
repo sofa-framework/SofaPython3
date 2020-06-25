@@ -138,16 +138,6 @@ class Test(unittest.TestCase):
         self.assertSequenceEqual(list(c.position.value[2]), v[2])
 
     # @unittest.skip  # no reason needed
-    def test_DataArray2DOperationInPlace(self):
-        root = Sofa.Core.Node("rootNode")
-        v = numpy.array([[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]])
-        c = root.addObject("MechanicalObject", name="t", position=v.tolist())
-        c.position.value *= 2.0
-        numpy.testing.assert_array_equal(c.position.array(), v*2.0)
-        c.position.value += 3.0
-        numpy.testing.assert_array_equal(c.position.array(), (v*2.0)+3.0)
-
-    # @unittest.skip  # no reason needed
     def test_DataArray2DSetFromList(self):
         v = [[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]]
         root = Sofa.Core.Node("rootNode")
