@@ -44,8 +44,17 @@ jobs:
 
       - name: Get SOFA nightly build link
         id: sofa_nightly_link
-        run: echo "::set-output name=link::$(curl -s 'https://api.github.com/repos/jnbrunet/sofa/actions/artifacts' | python3 -c "import sys,json,re;print(sorted(filter(lambda a:re.search('${{ matrix.os }}', a['name'], re.I),json.load(sys.stdin)['artifacts']), reverse=False, key=lambda a:a['created_at'])[-1]['archive_download_url'])")"
-        shell: bash
+        shell: python
+        run: |
+          import urllib.request, json, sys, re
+          url = 'https://api.github.com/repos/jnbrunet/sofa/actions/artifacts'
+          req = urllib.request.Request(url)
+          req.add_header('authorization', 'Bearer ${{ secrets.GITHUB_TOKEN }}')
+          r = urllib.request.urlopen(req).read()
+          artifacts = json.loads(r.decode('utf-8'))['artifacts']
+          os_artifacts = filter(lambda a:re.search('${{ matrix.os }}', a['name'], re.I), artifacts)
+          last_artifact_url = sorted(os_artifacts, reverse=False, key=lambda a:a['created_at'])[-1]['archive_download_url']
+          print(f"::set-output name=link::{last_artifact_url}")
 
       - name: Cache SOFA
         uses: actions/cache@v2
@@ -56,8 +65,10 @@ jobs:
 
       - name: Download SOFA nightly build
         if: steps.sofa_cache.outputs.cache-hit != 'true'
-        run:  curl --output sofa.zip
-          -u jnbrunet:$TOKEN  -L -o sofa.zip /
+        run:  |
+          curl --output sofa.zip \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          -u jnbrunet:$TOKEN -L -o sofa.zip / \
           ${{ steps.sofa_nightly_link.outputs.link }}
 
       - name: Install SOFA nightly build
@@ -125,10 +136,20 @@ jobs:
       - name: Install requirements
         run: |
           python3 -m pip install numpy
+
       - name: Get SOFA nightly build link
         id: sofa_nightly_link
-        run: echo "::set-output name=link::$(curl -s 'https://api.github.com/repos/jnbrunet/sofa/actions/artifacts' | python3 -c "import sys,json,re;print(sorted(filter(lambda a:re.search('ubuntu-18\.04', a['name'], re.I),json.load(sys.stdin)['artifacts']), reverse=False, key=lambda a:a['created_at'])[-1]['archive_download_url'])")"
-        shell: bash
+        shell: python
+        run: |
+          import urllib.request, json, sys, re
+          url = 'https://api.github.com/repos/jnbrunet/sofa/actions/artifacts'
+          req = urllib.request.Request(url)
+          req.add_header('authorization', 'Bearer ${{ secrets.GITHUB_TOKEN }}')
+          r = urllib.request.urlopen(req).read()
+          artifacts = json.loads(r.decode('utf-8'))['artifacts']
+          os_artifacts = filter(lambda a:re.search('${{ matrix.os }}', a['name'], re.I), artifacts)
+          last_artifact_url = sorted(os_artifacts, reverse=False, key=lambda a:a['created_at'])[-1]['archive_download_url']
+          print(f"::set-output name=link::{last_artifact_url}")
 
       - name: Cache SOFA
         uses: actions/cache@v2
@@ -139,8 +160,10 @@ jobs:
 
       - name: Download SOFA nightly build
         if: steps.sofa_cache.outputs.cache-hit != 'true'
-        run:  curl --output sofa.zip
-          -u jnbrunet:$TOKEN  -L -o sofa.zip /
+        run:  |
+          curl --output sofa.zip \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          -u jnbrunet:$TOKEN -L -o sofa.zip / \
           ${{ steps.sofa_nightly_link.outputs.link }}
 
       - name: Install SOFA nightly build
