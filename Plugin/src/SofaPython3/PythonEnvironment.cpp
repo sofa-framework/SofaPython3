@@ -52,26 +52,27 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <dlfcn.h>
 #endif
 
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager;
+using sofa::helper::system::Plugin;
+
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem;
 
 #include <sofa/helper/Utils.h>
+using sofa::helper::Utils;
+
 #include <sofa/helper/StringUtils.h>
 using sofa::helper::getAStringCopy ;
-
-using sofa::helper::system::FileSystem;
-using sofa::helper::Utils;
 
 #include <SofaPython3/PythonEnvironment.h>
 
 #include <sofa/helper/logging/Messaging.h>
-MSG_REGISTER_CLASS(sofapython3::PythonEnvironment, "SofaPython3::PythonEnvironment")
 
 #include <sofa/simulation/SceneLoaderFactory.h>
 using sofa::simulation::SceneLoaderFactory;
-
-//#include "Python.h"
 
 #include <pybind11/embed.h>
 #include <pybind11/eval.h>
@@ -79,6 +80,8 @@ namespace py = pybind11;
 
 #include "SceneLoaderPY3.h"
 using sofapython3::SceneLoaderPY3;
+
+MSG_REGISTER_CLASS(sofapython3::PythonEnvironment, "SofaPython3::PythonEnvironment")
 
 namespace sofapython3
 {
@@ -248,6 +251,8 @@ void PythonEnvironment::Init()
         }
     }
 
+    addPythonModulePathsForPluginsByName("SofaPython3");
+
     getStaticData()->m_sofamodule = py::module::import("Sofa");
 
 
@@ -318,22 +323,63 @@ void PythonEnvironment::addPythonModulePathsFromConfigFile(const std::string& pa
 
 void PythonEnvironment::addPythonModulePathsForPlugins(const std::string& pluginsDirectory)
 {
+    bool added = false;
+
+    std::vector<std::string> pythonDirs = {
+        pluginsDirectory,
+        pluginsDirectory + "/lib",
+        pluginsDirectory + "/python3"
+    };
+
+    /// Iterate in the pluginsDirectory and add each sub directory with a 'python' name
+    /// this is mostly for in-tree builds.
     std::vector<std::string> files;
     FileSystem::listDirectory(pluginsDirectory, files);
-
     for (std::vector<std::string>::iterator i = files.begin(); i != files.end(); ++i)
     {
-        const std::string pluginPath = pluginsDirectory + "/" + *i;
-        if (FileSystem::exists(pluginPath) && FileSystem::isDirectory(pluginPath))
+        const std::string pluginSubdir = pluginsDirectory + "/" + *i;
+        if (FileSystem::exists(pluginSubdir) && FileSystem::isDirectory(pluginSubdir))
         {
-            const std::string pythonDir = pluginPath + "/python";
-            if (FileSystem::exists(pythonDir) && FileSystem::isDirectory(pythonDir))
-            {
-                addPythonModulePath(pythonDir);
-            }
+            pythonDirs.push_back(pluginSubdir + "/python3");
         }
     }
+
+    /// For each of the directories in pythonDirs, search for a site-packages entry
+    for(std::string pythonDir : pythonDirs)
+    {
+        // Search for a subdir "site-packages"
+        if (FileSystem::exists(pythonDir+"/site-packages") && FileSystem::isDirectory(pythonDir+"/site-packages"))
+        {
+            addPythonModulePath(pythonDir+"/site-packages");
+            added = true;
+        }
+    }
+
+    if(!added)
+    {
+        msg_warning("PythonEnvironment") << "No python dir found in " << pluginsDirectory;
+    }
 }
+
+void PythonEnvironment::addPythonModulePathsForPluginsByName(const std::string& pluginName)
+{
+    std::map<std::string, Plugin>& map = PluginManager::getInstance().getPluginMap();
+    for( const auto& elem : map)
+    {
+        Plugin p = elem.second;
+        if ( p.getModuleName() == pluginName )
+        {
+            std::string pluginLibraryPath = elem.first;
+            // moduleRoot should be 2 levels above the library (plugin_name/lib/plugin_name.so)
+            std::string moduleRoot = FileSystem::getParentDirectory(FileSystem::getParentDirectory(pluginLibraryPath));
+
+            addPythonModulePathsForPlugins(moduleRoot);
+            return;
+        }
+    }
+    msg_warning("PythonEnvironment") << pluginName << " not found in PluginManager's map.";
+}
+
 
 // some basic RAII stuff to handle init/termination cleanly
 namespace
