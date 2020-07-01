@@ -108,7 +108,7 @@ def main():
     # can be executed from terminal directly:
 
     # Register all the common component in the factory.
-    SofaRuntime.importPlugin("SofaAllCommonComponents")
+    SofaRuntime.importPlugin("SofaComponentAll")
     SofaRuntime.importPlugin("SofaOpenglVisual")
     global _runAsPythonScript
     _runAsPythonScript = True

@@ -39,7 +39,7 @@ static auto baseCameraClass =
 
             import Sofa.Core
             import SofaRuntime
-            SofaRuntime.importPlugin("SofaAllCommonComponents")
+            SofaRuntime.importPlugin("SofaComponentAll")
 
             root = Sofa.Core.Node("root")
             root.addObject("Camera", name="c")

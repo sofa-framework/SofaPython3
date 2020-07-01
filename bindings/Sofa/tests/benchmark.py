@@ -9,7 +9,7 @@ sys.path.append("./SofaRuntime/package")
 import Sofa.Core
 import SofaRuntime
 
-SofaRuntime.importPlugin("SofaAllCommonComponents")
+SofaRuntime.importPlugin("SofaComponentAll")
 
 import numpy
 rawcpy = numpy.zeros((1000000,3), dtype=numpy.float64)
