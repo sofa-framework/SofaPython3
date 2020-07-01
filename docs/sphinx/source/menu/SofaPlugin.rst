@@ -32,10 +32,10 @@ The following code should cover most basic SOFA elements:
 .. code-block:: python
 
         # to be able to create sofa objects you need to first load the plugins that implement them.
-        # For simplicity you can load the plugin "SofaAllCommonComponents" that will load all most
+        # For simplicity you can load the plugin "SofaComponentAll" that will load all most
         # common sofa objects.
         import SofaRuntime
-        SofaRuntime.importPlugin("SofaAllCommonComponents")
+        SofaRuntime.importPlugin("SofaComponentAll")
 
         # to create elements like Node or objects
 	import Sofa.Core

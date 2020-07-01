@@ -9,7 +9,7 @@ sys.path.append("./Sofa/package")
 import Sofa
 
 ## Register all the common component in the factory. 
-#SofaRuntime.importPlugin("SofaAllCommonComponents")
+#SofaRuntime.importPlugin("SofaComponentAll")
 
 ## Init the simulation singleton. 
 

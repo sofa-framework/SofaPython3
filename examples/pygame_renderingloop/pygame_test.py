@@ -22,7 +22,7 @@ class MyC(Sofa.Core.Controller):
                         #print("SIMULATION: " + " "+ str(self.target) +"  " + str(cameraMVM))
                 
 def createScene(root):
-        root.addObject("RequiredPlugin", name="SofaAllCommonComponents")
+        root.addObject("RequiredPlugin", name="SofaComponentAll")
         root.addObject("RequiredPlugin", name="SofaOpenglVisual")
         root.addObject("DefaultAnimationLoop")
         root.addObject("DefaultVisualManagerLoop")
@@ -46,7 +46,7 @@ if __name__ == "__main__":
         import threading
         from backend_pygame import show
 
-        SofaRuntime.importPlugin("SofaAllCommonComponents")
+        SofaRuntime.importPlugin("SofaComponentAll")
         
         scene = createScene(Sofa.Core.Node("root"))
 

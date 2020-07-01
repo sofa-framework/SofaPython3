@@ -12,7 +12,7 @@
                 .. code-block:: python
 
                    import SofaRuntime
-                   SofaRuntime.importPlugin("SofaAllCommonComponents")
+                   SofaRuntime.importPlugin("SofaComponentAll")
 
               """
 import SofaRuntime

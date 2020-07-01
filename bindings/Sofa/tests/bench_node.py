@@ -10,7 +10,7 @@ sys.path.append("./SofaRuntime/package")
 import Sofa.Core
 import SofaRuntime
 
-SofaRuntime.importPlugin("SofaAllCommonComponents")
+SofaRuntime.importPlugin("SofaComponentAll")
 
 it=1000
 
