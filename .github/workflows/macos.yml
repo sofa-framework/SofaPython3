@@ -1,0 +1,191 @@
+name: CI
+
+on: pull_request
+
+jobs:
+  build:
+    name: Building on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-10.15]
+    env:
+      TOKEN: ${{ secrets.SOFA_REPO_READ_TOKEN }}
+      SOFA_ROOT: /opt/sofa
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+
+      - name: Install requirements
+        run: |
+          brew install ccache ninja boost eigen pybind11
+          python3 -m pip install numpy
+
+      - name: Get SOFA nightly build link
+        id: sofa_nightly_link
+        shell: python
+        run: |
+          import urllib.request, json, sys, re
+          url = 'https://api.github.com/repos/jnbrunet/sofa/actions/artifacts'
+          req = urllib.request.Request(url)
+          req.add_header('authorization', 'Bearer ${{ secrets.GITHUB_TOKEN }}')
+          r = urllib.request.urlopen(req).read()
+          artifacts = json.loads(r.decode('utf-8'))['artifacts']
+          os_artifacts = filter(lambda a:re.search('${{ matrix.os }}', a['name'], re.I), artifacts)
+          last_artifact_url = sorted(os_artifacts, reverse=False, key=lambda a:a['created_at'])[-1]['archive_download_url']
+          print(f"::set-output name=link::{last_artifact_url}")
+
+      - name: Cache SOFA
+        uses: actions/cache@v2
+        id: sofa_cache
+        with:
+          path: /opt/sofa
+          key: ${{ steps.sofa_nightly_link.outputs.link }}
+
+      - name: Download SOFA nightly build
+        if: steps.sofa_cache.outputs.cache-hit != 'true'
+        run:  |
+          curl --output sofa.zip \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          -u jnbrunet:$TOKEN -L -o sofa.zip / \
+          ${{ steps.sofa_nightly_link.outputs.link }}
+
+      - name: Install SOFA nightly build
+        if: steps.sofa_cache.outputs.cache-hit != 'true'
+        run: sudo unzip sofa.zip -d $SOFA_ROOT
+
+      - name: Get Time
+        id: time
+        uses: nanzm/get-time-action@v1.0
+        with:
+          timeZone: 8
+          format: 'YYYY-MM-DD-HH-mm-ss'
+
+      - name: ccache cache files
+        uses: actions/cache@v2
+        with:
+          path: .ccache
+          key: ${{ matrix.os }}-ccache-${{ steps.time.outputs.time }}
+          restore-keys: |
+            ${{ matrix.os }}-ccache-
+
+      - name: Build
+        env:
+          CCACHE_COMPRESS: true
+          CCACHE_COMPRESSLEVEL: 6
+          CCACHE_MAXSIZE: "500M"
+        run:
+          export CCACHE_BASEDIR=$GITHUB_WORKSPACE &&
+          export CCACHE_DIR=$GITHUB_WORKSPACE/.ccache &&
+          ccache -z &&
+          cmake
+          -GNinja
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          -DCMAKE_PREFIX_PATH=$SOFA_ROOT/lib/cmake
+          .
+          && ninja && ninja install
+          && echo ${CCACHE_BASEDIR}
+          && ccache -s
+
+      - name: Archive production
+        uses: actions/upload-artifact@v2
+        with:
+          name: sp3-${{ matrix.os }}
+          path: install
+
+  tests:
+    name: Testing on ${{ matrix.os }}
+    needs: [build]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-10.15]
+    env:
+      TOKEN: ${{ secrets.SOFA_REPO_READ_TOKEN }}
+      SOFA_ROOT: /opt/sofa
+
+    steps:
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+
+      - name: Install requirements
+        run: |
+          brew install boost
+          python3 -m pip install numpy
+          
+          
+          
+      - name: Get SOFA nightly build link
+        id: sofa_nightly_link
+        shell: python
+        run: |
+          import urllib.request, json, sys, re
+          url = 'https://api.github.com/repos/jnbrunet/sofa/actions/artifacts'
+          req = urllib.request.Request(url)
+          req.add_header('authorization', 'Bearer ${{ secrets.GITHUB_TOKEN }}')
+          r = urllib.request.urlopen(req).read()
+          artifacts = json.loads(r.decode('utf-8'))['artifacts']
+          os_artifacts = filter(lambda a:re.search('${{ matrix.os }}', a['name'], re.I), artifacts)
+          last_artifact_url = sorted(os_artifacts, reverse=False, key=lambda a:a['created_at'])[-1]['archive_download_url']
+          print(f"::set-output name=link::{last_artifact_url}")
+
+      - name: Cache SOFA
+        uses: actions/cache@v2
+        id: sofa_cache
+        with:
+          path: /opt/sofa
+          key: ${{ steps.sofa_nightly_link.outputs.link }}
+
+      - name: Download SOFA nightly build
+        if: steps.sofa_cache.outputs.cache-hit != 'true'
+        run:  |
+          curl --output sofa.zip \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          -u jnbrunet:$TOKEN  -L -o sofa.zip / \
+          ${{ steps.sofa_nightly_link.outputs.link }}
+
+      - name: Install SOFA nightly build
+        if: steps.sofa_cache.outputs.cache-hit != 'true'
+        run: sudo unzip sofa.zip -d $SOFA_ROOT && rm sofa.zip
+
+      - name: Install SP3
+        uses: actions/download-artifact@v2
+        with:
+          name: sp3-${{ matrix.os }}
+          path: SofaPython3
+
+      - name: Binding.Sofa.Tests
+        if: ${{ always() }}
+        run: |
+          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$SOFA_ROOT/plugins/SofaValidation/lib:$SOFA_ROOT/plugins/SofaNonUniformFem/lib:$SOFA_ROOT/plugins/SofaDenseSolver/lib:$LD_LIBRARY_PATH
+          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/site-packages:$PYTHONPATH
+          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins/SofaSparseSolver/lib
+          chmod +x SofaPython3/bin/Bindings.Sofa.Tests
+          ./SofaPython3/bin/Bindings.Sofa.Tests
+      - name: Bindings.SofaRuntime.Tests
+        if: ${{ always() }}
+        run: |
+          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$SOFA_ROOT/plugins/SofaValidation/lib:$SOFA_ROOT/plugins/SofaNonUniformFem/lib:$SOFA_ROOT/plugins/SofaDenseSolver/lib:$LD_LIBRARY_PATH
+          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/site-packages:$PYTHONPATH
+          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins/SofaSparseSolver/lib
+          chmod +x SofaPython3/bin/Bindings.SofaRuntime.Tests
+          ./SofaPython3/bin/Bindings.SofaRuntime.Tests
+      - name: Bindings.SofaTypes.Tests
+        if: ${{ always() }}
+        run: |
+          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$SOFA_ROOT/plugins/SofaValidation/lib:$SOFA_ROOT/plugins/SofaNonUniformFem/lib:$SOFA_ROOT/plugins/SofaDenseSolver/lib:$LD_LIBRARY_PATH
+          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/site-packages:$PYTHONPATH
+          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins/SofaSparseSolver/lib
+          chmod +x SofaPython3/bin/Bindings.SofaTypes.Tests
+          ./SofaPython3/bin/Bindings.SofaTypes.Tests
+
