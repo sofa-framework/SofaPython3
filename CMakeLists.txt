@@ -72,8 +72,9 @@ find_package(pybind11 2.3 CONFIG QUIET REQUIRED)
 
 set(SP3_PYTHON_PACKAGES_DIRECTORY
     "site-packages"
-    CACHE PATH
-    "Path to the directory where the python packages will be built and installed. (default to site-packages)"
+    CACHE STRING
+    "Directory name where the python packages will be built and installed.
+    This will be prepend to LIBRARY_OUTPUT_DIRECTORY (default to site-packages)"
 )
 
 # Get the Python's user site packages directory, or FASLE if not found
