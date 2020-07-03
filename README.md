@@ -5,6 +5,7 @@
 This project is composed of a Sofa plugin to embed a python interpreter into a Sofa based simulation as well as several python modules that exposes the different c++ components used in Sofa. The binding is designed to be idiomatic python3 API with tight integration for numpy. This project is in a WIP state, please use it only if you are willing to help in the developement. 
 
 ## Installation 
+*Special note for Mac users:* Some users reported issue when compiling SOFA with SP3 on mac, using `boost < 1.70`. It would seem that boost uses the deprecated STL smart pointer `auto_ptr` which has been removed entirely from the standard library on some of the latest versions of MacOS. To fix this, install a more recent version of boost (>1.70 should do) 
 
 ### Requirement Install
 - pybind11 (minimal 2.3)
