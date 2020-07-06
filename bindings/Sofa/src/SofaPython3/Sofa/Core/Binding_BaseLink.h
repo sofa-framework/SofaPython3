@@ -28,11 +28,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include <sofa/core/objectmodel/BaseLink.h>
-#include "Binding_Base.h"
-using sofa::core::objectmodel::BaseLink;
-#include <pybind11/pybind11.h>
-
-namespace py { using namespace pybind11; }
+#include <SofaPython3/DataHelper.h>
 
 namespace sofapython3
 {
