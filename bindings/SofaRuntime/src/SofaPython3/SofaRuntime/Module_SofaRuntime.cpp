@@ -65,6 +65,13 @@ using sofapython3::SceneLoaderPY3;
 
 #include <SofaPython3/DataHelper.h>
 
+#include <sofa/helper/logging/MessageDispatcher.h>
+#include <sofa/helper/logging/ConsoleMessageHandler.h>
+#include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
+using sofa::helper::logging::MessageDispatcher;
+using sofa::helper::logging::MainPerComponentLoggingMessageHandler;
+using sofa::helper::logging::MainConsoleMessageHandler;
+
 namespace sofapython3
 {
 
@@ -129,6 +136,12 @@ PYBIND11_MODULE(SofaRuntime, m) {
     {
         return simpleapi::importPlugin(name);
     }, "import a sofa plugin into the current environment");
+
+    m.def("init", []() {
+        MessageDispatcher::clearHandlers();
+        MessageDispatcher::addHandler(&MainConsoleMessageHandler::getInstance());
+        MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance());
+    });
 
     m.add_object("DataRepository", py::cast(&sofa::helper::system::DataRepository));
     m.add_object("PluginRepository", py::cast(&sofa::helper::system::PluginRepository));

@@ -29,11 +29,6 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message;
 
-#include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
-using sofa::helper::logging::MessageDispatcher;
-using sofa::helper::logging::MainPerComponentLoggingMessageHandler;
-
-
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/BaseForceField.h>
@@ -113,8 +108,6 @@ PYBIND11_MODULE(Core, core)
                #Sofa.Core.WriteAccessor
        )doc";
 
-    MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
-
     moduleAddPythonScriptEvent();
     moduleAddDataDict(core);
     moduleAddDataDictIterator(core);
@@ -132,12 +125,10 @@ PYBIND11_MODULE(Core, core)
     moduleAddDataEngine(core);
     moduleAddForceField(core);
     moduleAddObjectFactory(core);
-
     moduleAddNode(core);
     moduleAddNodeIterator(core);
     moduleAddPrefab(core);
     moduleAddBaseLink(core);
-
 }
 
 } ///namespace sofapython3

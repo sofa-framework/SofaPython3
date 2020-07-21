@@ -41,8 +41,10 @@ using sofa::simulation::Simulation;
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/logging/MessageDispatcher.h>
-using sofa::helper::logging::MessageDispatcher;
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
+#include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
+using sofa::helper::logging::MessageDispatcher;
+using sofa::helper::logging::MainPerComponentLoggingMessageHandler;
 #include "Submodule_Simulation_doc.h"
 
 namespace py = pybind11;
@@ -59,11 +61,7 @@ PYBIND11_MODULE(Simulation, simulation)
 
     simulation.def("print", [](Node* n){ sofa::simulation::getSimulation()->print(n); }, sofapython3::doc::simulation::print);
     simulation.def("animate", [](Node* n, SReal dt=0.0){ sofa::simulation::getSimulation()->animate(n, dt); },sofapython3::doc::simulation::animate);
-    simulation.def("init", [](Node* n){
-	sofa::simulation::getSimulation()->init(n);
-	MessageDispatcher::clearHandlers();
-	MessageDispatcher::addHandler(new sofa::helper::logging::ConsoleMessageHandler());
-      }, sofapython3::doc::simulation::init);
+    simulation.def("init", [](Node* n) { sofa::simulation::getSimulation()->init(n); }, sofapython3::doc::simulation::init);
     simulation.def("initVisual", [](Node* n){ n->getVisualLoop()->initStep(sofa::core::visual::VisualParams::defaultInstance()); });
     simulation.def("reset", [](Node* n){ sofa::simulation::getSimulation()->reset(n); }, sofapython3::doc::simulation::reset);
     simulation.def("load", [](const std::string & name) {
