@@ -122,13 +122,11 @@ namespace sofapython3
         f.def("process", &PyMessageHandler::process);
         f.def("__enter__", [](PyMessageHandler* self) -> PyMessageHandler*
         {
-            PythonEnvironment::gil acquire {"MessageHandler"};
             sofa::helper::logging::MessageDispatcher::addHandler(self);
             return self;
         });
         f.def("__exit__", [](PyMessageHandler* self, py::object /*exc_type*/, py::object /*exc_value*/, py::object /*traceback*/)
         {
-            PythonEnvironment::gil acquire {"MessageHandler"};
             sofa::helper::logging::MessageDispatcher::rmHandler(self);
         });
     }
