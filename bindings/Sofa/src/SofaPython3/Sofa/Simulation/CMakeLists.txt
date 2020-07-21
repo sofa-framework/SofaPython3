@@ -18,5 +18,5 @@ SP3_add_python_module(
         MODULE_NAME  Simulation
         SOURCES      ${SOURCE_FILES}
         HEADERS      ${HEADER_FILES}
-        DEPENDS      SofaCore SofaSimulationCore SofaSimulationGraph SofaBaseVisual
+        DEPENDS      SofaHelper SofaCore SofaSimulationCore SofaSimulationGraph SofaBaseVisual
 )

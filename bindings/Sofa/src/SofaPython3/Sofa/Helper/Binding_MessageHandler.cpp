@@ -87,22 +87,21 @@ namespace sofapython3
                     default:
                     return "Other";
                 }
-            };
+            }();
 
-            auto component = [&m]() {
+            Base* component = [&m]() -> Base* {
                 sofa::helper::logging::SofaComponentInfo* nfo = dynamic_cast<sofa::helper::logging::SofaComponentInfo*>(m.componentInfo().get());
                 if( nfo != nullptr )
-                    return py::cast(nfo->m_component);
-                return py::object();
-            };
+                    return const_cast<Base*>(nfo->m_component);
+                return nullptr;
+            }();
 
-            py::dict msg("type"_a=typeStr,
-                         "isEmpty"_a=m.empty(),
-                         "sender"_a=m.sender(),
-                         "message"_a=m.messageAsString(),
-                         "component"_a=component
-                    );
-
+            py::dict msg;
+            msg["type"] = py::str(typeStr);
+            msg["isEmpty"]=py::cast(m.empty());
+            msg["sender"]=py::str(m.sender());
+            msg["message"]=py::str(m.messageAsString());
+            msg["component"]=component ? PythonFactory::toPython(component) : py::none();
             py::object fct = self.attr("process")(msg);
         }
     }
@@ -121,11 +120,14 @@ namespace sofapython3
         }));
 
         f.def("process", &PyMessageHandler::process);
-        f.def("__enter__", [](PyMessageHandler* self){
+        f.def("__enter__", [](PyMessageHandler* self) -> PyMessageHandler*
+        {
             PythonEnvironment::gil acquire {"MessageHandler"};
             sofa::helper::logging::MessageDispatcher::addHandler(self);
+            return self;
         });
-        f.def("__exit__", [](PyMessageHandler* self){
+        f.def("__exit__", [](PyMessageHandler* self, py::object /*exc_type*/, py::object /*exc_value*/, py::object /*traceback*/)
+        {
             PythonEnvironment::gil acquire {"MessageHandler"};
             sofa::helper::logging::MessageDispatcher::rmHandler(self);
         });

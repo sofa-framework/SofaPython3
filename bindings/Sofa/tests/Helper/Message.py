@@ -8,17 +8,11 @@ class MsgHandler(Sofa.Helper.MessageHandler):
     def __init__(self):
         Sofa.Helper.MessageHandler.__init__(self)
 
-    def process(msg):
-        print ("GOT MESSAGE!")
-        print("type: ")
-        print(msg.type)
-        print("sender: ")
-        print(msg.sender)
-        print("component: ")
-        print(msg.component.typeName())
-        print(msg.component.getName())
-        print("message:")
-        print(msg.message)
+    def process(self, msg):
+        self.type = msg["type"]
+        self.sender = msg["sender"]
+        self.component = msg["component"]
+        self.message = msg["message"]
 
 
 class Test(unittest.TestCase):
@@ -35,9 +29,17 @@ class Test(unittest.TestCase):
 
 
     def test_messageHandler(self):
-        with MsgHandler():
+        with MsgHandler() as handler:
             Sofa.Helper.msg_info("plop")
-            Sofa.Helper.msg_error("pouet")
-        Sofa.Helper.msg_warning("coucou")
+            self.assertEqual(handler.type, "Info")
+            self.assertEqual(handler.sender, "PythonScript")
+            self.assertEqual(handler.component, None)
+            self.assertEqual(handler.message, "plop")
+
+            Sofa.Helper.msg_warning("coucou")
+            self.assertEqual(handler.type, "Warning")
+            self.assertEqual(handler.sender, "PythonScript")
+            self.assertEqual(handler.component, None)
+            self.assertEqual(handler.message, "coucou")
 
 

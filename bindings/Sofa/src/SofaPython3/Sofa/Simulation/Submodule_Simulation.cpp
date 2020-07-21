@@ -41,6 +41,7 @@ using sofa::simulation::Simulation;
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/logging/MessageDispatcher.h>
+using sofa::helper::logging::MessageDispatcher;
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 #include "Submodule_Simulation_doc.h"
 
