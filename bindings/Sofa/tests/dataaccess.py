@@ -8,7 +8,7 @@ import timeit
 import Sofa.Core
 import SofaRuntime
 
-SofaRuntime.importPlugin("SofaAllCommonComponents")
+SofaRuntime.importPlugin("SofaComponentAll")
                         
 def oldSofa(obj):
         ol = obj.position.tolist()

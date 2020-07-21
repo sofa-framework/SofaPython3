@@ -25,8 +25,21 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - thierry.gaugry@inria.fr
 ********************************************************************/
 
+
+#include <sofa/core/objectmodel/BaseLink.h>
+using sofa::core::objectmodel::BaseLink;
+
+#include <sofa/core/objectmodel/BaseObject.h>
+using  sofa::core::objectmodel::BaseObject;
+
+#include <sofa/core/objectmodel/BaseNode.h>
+using  sofa::core::objectmodel::BaseNode;
+
+#include "Binding_Base.h"
 #include "Binding_BaseLink.h"
 #include "Binding_BaseLink_doc.h"
+#include <SofaPython3/DataHelper.h>
+#include <SofaPython3/PythonFactory.h>
 
 namespace sofapython3
 {
@@ -40,9 +53,21 @@ void setHelp(BaseLink* self, const std::string value)
     self->setHelp(S);
 }
 
+py::object getLinkedBase(BaseLink& self, unsigned index = 0)
+{
+    if (self.getLinkedBase(index))
+        return PythonFactory::toPython(self.getLinkedBase(index));
+    return py::none();
+}
+
+py::object getOwnerBase(BaseLink& self)
+{
+    return PythonFactory::toPython(self.getOwnerBase());
+}
+
 void moduleAddBaseLink(py::module& m)
 {
-    py::class_<BaseLink> link(m, "Link", sofapython3::doc::baseLink::baseLinkClass);
+    py::class_<BaseLink, std::unique_ptr<sofa::core::objectmodel::BaseLink, pybind11::nodelete>> link(m, "Link", sofapython3::doc::baseLink::baseLinkClass);
     link.def("getName", &BaseLink::getName, sofapython3::doc::baseLink::getName);
     link.def("setName", &BaseLink::setName, sofapython3::doc::baseLink::setName);
     link.def("isMultiLink", &BaseLink::isMultiLink, sofapython3::doc::baseLink::isMultiLink);
@@ -58,12 +83,12 @@ void moduleAddBaseLink(py::module& m)
     link.def("setHelp", setHelp, sofapython3::doc::baseLink::setHelp);
 
     link.def("getOwnerData", &BaseLink::getOwnerData, sofapython3::doc::baseLink::getOwnerData);
-    link.def("getOwnerBase", &BaseLink::getOwnerBase, sofapython3::doc::baseLink::getOwnerBase);
+    link.def("getOwnerBase", getOwnerBase, sofapython3::doc::baseLink::getOwnerBase);
 
     link.def("getLinkedData", &BaseLink::getLinkedData, sofapython3::doc::baseLink::getLinkedData);
-    link.def("getLinkedBase", &BaseLink::getLinkedBase, sofapython3::doc::baseLink::getLinkedBase);
+    link.def("getLinkedBase", getLinkedBase, "index"_a = 0, sofapython3::doc::baseLink::getLinkedBase);
 
-    link.def("getLinkedPath", &BaseLink::getLinkedPath, sofapython3::doc::baseLink::getLinkedPath);
+    link.def("getLinkedPath", &BaseLink::getLinkedPath, "index"_a = 0, sofapython3::doc::baseLink::getLinkedPath);
     link.def("read", &BaseLink::read, sofapython3::doc::baseLink::read);
 
 }

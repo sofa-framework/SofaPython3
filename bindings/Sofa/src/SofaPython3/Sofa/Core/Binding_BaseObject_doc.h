@@ -44,7 +44,7 @@ static auto Class =
 
             import Sofa.Core
             import SofaRuntime
-            SofaRuntime.importPlugin("SofaAllCommonComponents")
+            SofaRuntime.importPlugin("SofaComponentAll")
 
             root = Sofa.Core.Node("root")
             root.addObject("MechanicalObject", name="obj") # Add a common Sofa object

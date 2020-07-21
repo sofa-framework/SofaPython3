@@ -43,7 +43,7 @@ static auto Class =
 
              import Sofa.Core
              import SofaRuntime
-             SofaRuntime.importPlugin("SofaAllCommonComponents")
+             SofaRuntime.importPlugin("SofaComponentAll")
 
              n = Sofa.Core.Node("MyNode")
              Sofa.Simulation.init(n)

@@ -8,7 +8,7 @@ import Sofa.Core
 import SofaRuntime
 
 ## Register all the common component in the factory. 
-SofaRuntime.importPlugin("SofaAllCommonComponents")
+SofaRuntime.importPlugin("SofaComponentAll")
 
 def createScene(rootNode):
         rootNode.addObject("OglGrid", nbSubdiv=10, size=1000)

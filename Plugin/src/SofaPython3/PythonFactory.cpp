@@ -198,7 +198,12 @@ py::object PythonFactory::valueToPython_ro(sofa::core::objectmodel::BaseData* da
     /// we can expose the field as a numpy.array (no copy)
     if(nfo.Container() && nfo.SimpleLayout())
     {
-        return getPythonArrayFor(data);
+        auto capsule = py::capsule(new Base::SPtr(data->getOwner()));
+        py::buffer_info ninfo = toBufferInfo(*data);
+        py::array a(pybind11::dtype(ninfo), ninfo.shape,
+                    ninfo.strides, ninfo.ptr, capsule);
+        a.attr("flags").attr("writeable") = false;
+        return std::move(a);
     }
 
     /// If this is not the case we return the converted datas (copy)

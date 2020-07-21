@@ -72,8 +72,9 @@ find_package(pybind11 2.3 CONFIG QUIET REQUIRED)
 
 set(SP3_PYTHON_PACKAGES_DIRECTORY
     "site-packages"
-    CACHE PATH
-    "Path to the directory where the python packages will be built and installed. (default to site-packages)"
+    CACHE STRING
+    "Directory name where the python packages will be built and installed.
+    This will be prepend to LIBRARY_OUTPUT_DIRECTORY (default to site-packages)"
 )
 
 # Get the Python's user site packages directory, or FASLE if not found
@@ -97,6 +98,22 @@ message("-- Python libraries: ${PYTHON_LIBRARIES}")
 message("-- Python user site: ${PYTHON_USER_SITE}")
 message("-- pybind11 version: ${pybind11_VERSION}")
 message("-- pybind11 config: ${pybind11_CONFIG}")
+
+# When using python3 from XCode on MacOS, the RPath is wrongly set to XCode frameworks directory:
+#   LC_LOAD_DYLIB   @rpath/Python3.framework/Versions/3.7/Python3
+#   LC_RPATH        /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.7/lib
+# Hence LC_RPATH/LC_LOAD_DYLIB does not exists.
+# Until this is fixed (not sure if it comes from pybind11, cmake or XCode), we can add another path to RPATH:
+#   LC_LOAD_DYLIB   @rpath/Python3.framework/Versions/3.7/Python3
+#   LC_RPATH        /Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.7/lib
+#                   /Applications/Xcode.app/Contents/Developer/Library/Frameworks  <----- ADDED
+# And now one combination of  LC_RPATH/LC_LOAD_DYLIB will be valid.
+# This should't change anything for those that use other python libs than XCode (homebrew for example) since the
+# LC_LOAD_DYLIB from XCode is quite unique.
+if (APPLE)
+    set(CMAKE_INSTALL_RPATH "/Applications/Xcode.app/Contents/Developer/Library/Frameworks")
+    set(CMAKE_BUILD_RPATH "/Applications/Xcode.app/Contents/Developer/Library/Frameworks")
+endif()
 
 add_subdirectory(Plugin)
 add_subdirectory(bindings)

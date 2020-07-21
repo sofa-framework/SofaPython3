@@ -16,6 +16,15 @@ class Test(unittest.TestCase):
         self.assertFalse(hasattr(c.__data__, "invalidEntry"))
         self.assertTrue(isinstance(c.__data__, Sofa.Core.DataDict))
 
+    def test_loggedMessagesBinding(self):
+        node = Sofa.Core.Node("a_node")
+        self.assertEqual(node.getLoggedMessagesAsString(), "")
+        Sofa.msg_info(node, "This is a new message")
+        self.assertTrue("This is a new message" in node.getLoggedMessagesAsString())
+        self.assertEqual(node.countLoggedMessages(), 1)
+        node.clearLoggedMessages()
+        self.assertEqual(node.countLoggedMessages(), 0)
+
     def test_addNewData_with_type(self):
         node = Sofa.Core.Node("a_node")
         obj = node.addObject("MechanicalObject", name="an_object", position=[

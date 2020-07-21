@@ -141,17 +141,49 @@ std::set<std::string> getLocationsOfEntry(const ObjectFactory::ClassEntry &entry
     return locations;
 }
 
+std::string className(const ObjectFactory::ClassEntry &e) { return e.className; }
+
+py::list aliases(const ObjectFactory::ClassEntry &self)
+{
+    py::list list;
+    for (auto alias : self.aliases)
+        list.append(alias);
+    return list;
+}
+
+std::string description(const ObjectFactory::ClassEntry &e) { return e.description; }
+
+std::string authors(const ObjectFactory::ClassEntry &e) { return e.authors; }
+
+std::string license(const ObjectFactory::ClassEntry &e) { return e.license; }
+
+std::string defaultTemplate(const ObjectFactory::ClassEntry &e) { return e.defaultTemplate; }
+
+py::dict dataAlias(const ObjectFactory::ClassEntry &self)
+{
+    py::dict dict;
+    for (auto alias : self.m_dataAlias)
+    {
+        py::list aliases;
+        for (auto a : alias.second)
+            aliases.append(a);
+        dict[alias.first.c_str()] = aliases;
+    }
+    return dict;
+}
+
+
 void moduleAddObjectFactory(py::module &m) {
     py::class_<ObjectFactory> factory (m, "ObjectFactory", sofapython3::doc::objectmodel::ObjectFactoryClass);
 
     py::class_<ObjectFactory::ClassEntry> entry(m, sofapython3::doc::objectmodel::ClassEntryClass);
-    entry.def_readonly("className", &ObjectFactory::ClassEntry::className);
-    entry.def_readonly("aliases", &ObjectFactory::ClassEntry::aliases);
-    entry.def_readonly("description", &ObjectFactory::ClassEntry::description);
-    entry.def_readonly("authors", &ObjectFactory::ClassEntry::authors);
-    entry.def_readonly("license", &ObjectFactory::ClassEntry::license);
-    entry.def_readonly("defaultTemplate", &ObjectFactory::ClassEntry::defaultTemplate);
-    entry.def_readonly("dataAlias", &ObjectFactory::ClassEntry::m_dataAlias);
+    entry.def_property_readonly("className", &className);
+    entry.def_property_readonly("aliases", &aliases);
+    entry.def_property_readonly("description", &description);
+    entry.def_property_readonly("authors", &authors);
+    entry.def_property_readonly("license", &license);
+    entry.def_property_readonly("defaultTemplate", &defaultTemplate);
+    entry.def_property_readonly("dataAlias", &dataAlias);
     entry.def_property_readonly("templates", &getTemplates);
     entry.def_property_readonly("targets", &getTargetsOfEntry);
     entry.def_property_readonly("locations", &getLocationsOfEntry);

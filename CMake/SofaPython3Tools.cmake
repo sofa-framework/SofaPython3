@@ -141,13 +141,56 @@ function(SP3_add_python_module)
             LIBRARY_OUTPUT_DIRECTORY "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
     )
 
-    # Note: This should be disabled if/when we will want to create packages
+    # Compute the installation RPATHs from the target's SP3 dependencies since they are not installed in a same directory
+    # and are not automatically added from the cmake option INSTALL_RPATH_USE_LINK_PATH.
+    # 1. Get all dependencies that are
+    #    (a) a target in this project, and
+    #    (b) built in  CMAKE_LIBRARY_OUTPUT_DIRECTORY
+    # 2. Here we are sure that the dependency is a SP3 target and not an imported target from an external dependency.
+    #    We compute its path relative to this target output file
+    #    Ex: ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/site-packages/Sofa  --> $ORIGIN/../Sofa
+    # 3. Add the relative path computed in 2 to the list of RPATHS
+    set(${A_TARGET}_DEPENDECIES_RPATH "${CMAKE_INSTALL_PREFIX}/${LIBRARY_OUTPUT_DIRECTORY}")
+    foreach(DEPENDENCY ${A_DEPENDS})
+        if (TARGET ${DEPENDENCY})
+            get_target_property(DEPENDENCY_LIBRARY_OUTPUT_DIRECTORY "${DEPENDENCY}" LIBRARY_OUTPUT_DIRECTORY)
+            if (DEPENDENCY_LIBRARY_OUTPUT_DIRECTORY)
+                file(RELATIVE_PATH dependency_path_from_packages "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}" "${DEPENDENCY_LIBRARY_OUTPUT_DIRECTORY}")
+                if (NOT "${dependency_path_from_packages}" STREQUAL "" AND NOT "${dependency_path_from_packages}" STREQUAL "../")
+                    list(APPEND ${A_TARGET}_DEPENDECIES_RPATH "$ORIGIN/../${dependency_path_from_packages}")
+                endif()
+            endif()
+        endif()
+    endforeach()
+
+    if (APPLE)
+        # In MacOS, the target dependency name is RPATH/site-packages/PackageName, so we need to add
+        # an RPATH to the directory that contains "site-paclages"
+        list(APPEND ${A_TARGET}_DEPENDECIES_RPATH "$ORIGIN/../..")
+    endif()
+        
     set_target_properties(
         ${A_TARGET}
         PROPERTIES
+
+            # This option only works for target that are not defined by the SP3 project
+            # see https://stackoverflow.com/a/30400628 for details
             INSTALL_RPATH_USE_LINK_PATH TRUE
-            INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${LIBRARY_OUTPUT_DIRECTORY}"
+
+            # This will set the remaining RPATHs from our Bindings targets dependencies (install/lib/site-packages/*)
+            INSTALL_RPATH "${${A_TARGET}_DEPENDECIES_RPATH}"
+
+            # Don't use the installation RPATH for built files
+            BUILD_WITH_INSTALL_RPATH FALSE
     )
+
+    if (APPLE)
+        set_target_properties(
+            ${PROJECT_NAME}
+            PROPERTIES
+            INSTALL_NAME_DIR "@rpath/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
+        )
+    endif()
 
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         set_target_properties(
