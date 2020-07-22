@@ -25,6 +25,7 @@ set(PYTHON_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Types/Vec3.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Types/BoundingBox.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Simulation/Node.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/Simulation/Simulation.py
     ${CMAKE_CURRENT_SOURCE_DIR}/bench_datacontainer.py
     ${CMAKE_CURRENT_SOURCE_DIR}/bench_node.py
     ${CMAKE_CURRENT_SOURCE_DIR}/benchmark.py
