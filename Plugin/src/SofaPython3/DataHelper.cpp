@@ -35,6 +35,8 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <SofaPython3/DataCache.h>
 #include <SofaPython3/PythonFactory.h>
 
+using sofa::core::objectmodel::BaseLink;
+
 namespace sofapython3
 {
 
@@ -597,5 +599,30 @@ BaseData* addData(py::object py_self, const std::string& name, py::object value,
     return data;
 }
 
+BaseLink* addLink(py::object py_self, const std::string& name, py::object value, const std::string& help)
+{
+    Base* self = py::cast<Base*>(py_self);
+    if (isProtectedKeyword(name))
+        throw py::value_error("addLink: Cannot call addLink with name " + name + ": Protected keyword");
 
+    checkAmbiguousCreation(py_self, name, "link");
+
+    BaseLink::InitLink<Base> initlink(self, name, help);
+
+    BaseLink* link = new sofa::core::objectmodel::SingleLink<Base, Base, BaseLink::FLAG_MULTILINK>(initlink);
+    if (py::isinstance<std::string>(value))
+    {
+        auto linkpath = py::cast<std::string>(value);
+        if (linkpath[0] != '@')
+            linkpath = "@" + linkpath;
+        if (!link->read(linkpath))
+            throw py::value_error("addLink: Cannot read link path " + linkpath + ": is link valid?");
+    }
+    else
+        link->setLinkedBase(py::cast<Base*>(value));
+
+//    self->addLink(link);
+    return link;
 }
+
+}  // namespace sofapython3

@@ -311,6 +311,11 @@ BaseData* BindingBase::addData(py::object py_self, const std::string& name, py::
     return sofapython3::addData(py_self, name, value, defaultValue, help, group, type);
 }
 
+BaseLink* BindingBase::addLink(py::object py_self, const std::string& name, py::object value, const std::string& help)
+{
+    return sofapython3::addLink(py_self, name, value, help);
+}
+
 BaseData* BindingBase::addDataFromData(Base* self, py::object d)
 {
     BaseData* data = py::cast<BaseData*>(d);
@@ -420,6 +425,7 @@ void moduleAddBase(py::module &m)
     base.def("getLinks", &BindingBase::getLinks, pybind11::return_value_policy::reference, sofapython3::doc::base::getLinks);
     base.def("addData", &BindingBase::addData, "name"_a, "value"_a = py::none(), "default"_a = py::none(), "help"_a = "", "group"_a = "", "type"_a = "", sofapython3::doc::base::addData);
     base.def("addData", &BindingBase::addDataFromData, sofapython3::doc::base::addDataInitialized);
+    base.def("addLink", &BindingBase::addLink, "name"_a, "value"_a, "help"_a = "", sofapython3::doc::base::addLink);
     base.def("__getattr__", &BindingBase::__getattr__);
     base.def("__setattr__", &BindingBase::__setattr__);
     base.def("getData", &BindingBase::getData, sofapython3::doc::base::getData);

@@ -87,6 +87,8 @@ void moduleAddBaseLink(py::module& m)
 
     link.def("getLinkedData", &BaseLink::getLinkedData, sofapython3::doc::baseLink::getLinkedData);
     link.def("getLinkedBase", getLinkedBase, "index"_a = 0, sofapython3::doc::baseLink::getLinkedBase);
+    link.def("setLinkedBase", &BaseLink::setLinkedBase, sofapython3::doc::baseLink::getLinkedBase);
+
 
     link.def("getLinkedPath", &BaseLink::getLinkedPath, "index"_a = 0, sofapython3::doc::baseLink::getLinkedPath);
     link.def("read", &BaseLink::read, sofapython3::doc::baseLink::read);
