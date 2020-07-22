@@ -70,6 +70,10 @@ static auto findData =
         :type name: string
         :return: the data field
         )";
+static auto setDataValues =
+        R"(
+        Set values for a the given data field, multiple pairs of args are allowed.
+        )";
 static auto getDataFields =
         R"(
         Accessor to the vector containing all the fields of this object

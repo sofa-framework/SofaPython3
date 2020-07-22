@@ -25,7 +25,6 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - thierry.gaugry@inria.fr
 ********************************************************************/
 
-
 #include <pybind11/pybind11.h>
 
 #include <pybind11/numpy.h>
@@ -395,6 +394,19 @@ py::object BindingBase::getData(Base& self, const std::string& s)
     return py::none();
 }
 
+py::object BindingBase::setDataValues(Base& self, py::kwargs kwargs)
+{
+    for(auto key : kwargs)
+    {
+        BaseData* d = self.findData(py::cast<std::string>(key.first));
+        if(d!=nullptr)
+            PythonFactory::fromPython(d, py::cast<py::object>(key.second));
+        else
+            throw py::attribute_error("There is no data field named: "+py::cast<std::string>(key.first));
+    }
+    return py::none();
+}
+
 void moduleAddBase(py::module &m)
 {
     py::class_<Base, Base::SPtr> base(m, "Base", py::dynamic_attr(), doc::base::BaseClass);
@@ -428,6 +440,7 @@ void moduleAddBase(py::module &m)
     base.def("getLoggedMessagesAsString", &BindingBase::getLoggedMessagesAsString, sofapython3::doc::base::getLoggedMessagesAsString);
     base.def("countLoggedMessages", &BindingBase::countLoggedMessages, sofapython3::doc::base::countLoggedMessages);
     base.def("clearLoggedMessages", &BindingBase::clearLoggedMessages, sofapython3::doc::base::clearLoggedMessages);
+    base.def("setDataValues", &BindingBase::setDataValues, sofapython3::doc::base::setDataValues);
 }
 
 } /// namespace sofapython3
