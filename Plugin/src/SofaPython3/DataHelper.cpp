@@ -618,7 +618,7 @@ BaseLink* addLink(py::object py_self, const std::string& name, py::object value,
         if (!link->read(linkpath))
             throw py::value_error("addLink: Cannot read link path " + linkpath + ": is link valid?");
     }
-    else
+    else if (py::isinstance<Base*>(value))
         link->setLinkedBase(py::cast<Base*>(value));
 
 //    self->addLink(link);

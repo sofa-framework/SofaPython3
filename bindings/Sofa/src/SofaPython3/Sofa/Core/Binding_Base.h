@@ -80,6 +80,7 @@ public:
     static py::object getLoggedMessagesAsString(Base& self);
     static py::object countLoggedMessages(Base& self);
     static py::object clearLoggedMessages(Base& self);
+    static std::string getPathName(Base& self);
 };
 
 
