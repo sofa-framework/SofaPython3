@@ -65,6 +65,7 @@ public:
     /// Set the data field value from the array.
     static void SetDataFromArray(BaseData* data, const py::array& value);
     static bool SetData(BaseData* data, pybind11::object value);
+    static py::object setDataValues(Base& self, py::kwargs kwargs);
 
     static py::list getDataFields(Base& self);
     static py::list getLinks(Base& self);
