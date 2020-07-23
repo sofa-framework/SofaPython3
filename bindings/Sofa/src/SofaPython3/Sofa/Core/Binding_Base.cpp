@@ -25,7 +25,6 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - thierry.gaugry@inria.fr
 ********************************************************************/
 
-
 #include <pybind11/pybind11.h>
 
 #include <pybind11/numpy.h>
@@ -405,6 +404,19 @@ std::string BindingBase::getPathName(Base& self)
 {
     return self.toBaseNode() ? self.toBaseNode()->getPathName() : self.toBaseObject()->getPathName();
 }
+    
+py::object BindingBase::setDataValues(Base& self, py::kwargs kwargs)
+{
+    for(auto key : kwargs)
+    {
+        BaseData* d = self.findData(py::cast<std::string>(key.first));
+        if(d!=nullptr)
+            PythonFactory::fromPython(d, py::cast<py::object>(key.second));
+        else
+            throw py::attribute_error("There is no data field named: "+py::cast<std::string>(key.first));
+    }
+    return py::none();
+}
 
 void moduleAddBase(py::module &m)
 {
@@ -441,6 +453,7 @@ void moduleAddBase(py::module &m)
     base.def("countLoggedMessages", &BindingBase::countLoggedMessages, sofapython3::doc::base::countLoggedMessages);
     base.def("clearLoggedMessages", &BindingBase::clearLoggedMessages, sofapython3::doc::base::clearLoggedMessages);
     base.def("getPathName", &BindingBase::getPathName);
+    base.def("setDataValues", &BindingBase::setDataValues, sofapython3::doc::base::setDataValues);
 }
 
 } /// namespace sofapython3
