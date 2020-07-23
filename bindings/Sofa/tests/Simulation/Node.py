@@ -157,7 +157,7 @@ class Test(unittest.TestCase):
 
             self.assertEqual(root["node1.node2.object2.name"], root.node1.node2.object2.name)
 
-	def test_getRoot(self):
+        def test_getRoot(self):
             root = Sofa.Core.Node("root")
             node = root.addChild("node")
             self.assertEqual(node.getRoot(), root)

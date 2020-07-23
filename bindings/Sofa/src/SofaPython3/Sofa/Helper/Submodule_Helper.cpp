@@ -31,6 +31,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <sofa/core/objectmodel/Base.h>
 #include "System/Submodule_System.h"
 #include "Submodule_Helper.h"
+#include "Binding_MessageHandler.h"
 #include "Binding_Vector.h"
 
 namespace sofapython3
@@ -151,6 +152,7 @@ PYBIND11_MODULE(Helper, helper)
     helper.def("msg_fatal", [](py::args args) { MESSAGE_DISPATCH(msg_fatal); },
     R"(Emit a fatal error message from python.)");
 
+    moduleAddMessageHandler(helper);
     moduleAddVector(helper);
     moduleAddSystem(helper);
 }
