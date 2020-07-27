@@ -78,10 +78,9 @@ Prefab::~Prefab()
 }
 
 
-void Prefab::addPrefabParameter(const std::string& name, py::object value, const std::string& help, std::string type)
+void Prefab::addDataParameter(const std::string& name, py::object value, const std::string& help, std::string type)
 {
-    sofa::core::objectmodel::BaseData* data = findData(name);
-    if(data == nullptr)
+    if(!findData(name) && !findLink(name))
     {
         sofa::core::objectmodel::BaseData* data = sofapython3::addData(py::cast(this), name, value, py::object(), help, "Prefab's properties", type);
         m_datacallback.addInputs({data});
@@ -89,6 +88,22 @@ void Prefab::addPrefabParameter(const std::string& name, py::object value, const
     }
     //PythonFactory::fromPython(data, value);
 }
+
+void Prefab::addLinkParameter(const std::string& name, py::object value, const std::string& help)
+{
+    if(!findData(name) && !findLink(name))
+    {
+        sofa::core::objectmodel::BaseLink* link = sofapython3::addLink(py::cast(this), name, value, help);
+
+        // can't set the link into the "Prefab" group because links have no setGroup function
+        // link->setGroup("Prefab's properties");
+        // can't add the link to the datacallback's inputs, since links aren't DDGNodes...
+        // m_datacallback.addInputs({link});
+        return;
+    }
+    //PythonFactory::fromPython(data, value);
+}
+
 
 void Prefab::setSourceTracking(const std::string& filename)
 {
