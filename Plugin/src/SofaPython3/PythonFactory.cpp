@@ -437,6 +437,9 @@ bool PythonFactory::registerDefaultTypes()
     // helper vector style containers
     std::string containers[] = {"vector"};
 
+    // PrefabLink
+    PythonFactory::registerType<sofa::core::objectmodel::PrefabLink>("PrefabLink");
+
     // Scalars
     PythonFactory::registerType<std::string>("string");
     PythonFactory::registerType<float>("float");

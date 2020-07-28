@@ -89,18 +89,16 @@ void Prefab::addDataParameter(const std::string& name, py::object value, const s
     //PythonFactory::fromPython(data, value);
 }
 
-void Prefab::addLinkParameter(const std::string& name, py::object value, const std::string& help)
+void Prefab::addLinkParameter(const std::string& name, const std::string& help)
 {
     if(!findData(name) && !findLink(name))
     {
-        sofa::core::objectmodel::BaseLink* link = sofapython3::addLink(py::cast(this), name, value, help);
-
-        // can't set the link into the "Prefab" group because links have no setGroup function
-        // link->setGroup("Prefab's properties");
-        // can't add the link to the datacallback's inputs, since links aren't DDGNodes...
-        // m_datacallback.addInputs({link});
+        sofa::core::objectmodel::BaseData* data = sofapython3::addData(py::cast(this), name, py::none(), py::none(), help, "Prefab's properties", "PrefabLink");
+        std::cout << data->getName() << " Successfully created!" << std::endl;
+        m_datacallback.addInputs({data});
         return;
     }
+    std::cout << name << " Already exist in " << this->getName() << "!!!" << std::endl;
     //PythonFactory::fromPython(data, value);
 }
 

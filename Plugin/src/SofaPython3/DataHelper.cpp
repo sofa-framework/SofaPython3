@@ -541,12 +541,11 @@ BaseData* addData(py::object py_self, const std::string& name, py::object value,
     BaseData* data;
 
     bool isSet = true;
-    if (value.is(py::none()))
+    if (value.is_none() && !defaultValue.is_none())
     {
         value = defaultValue;
         isSet = false;
     }
-
 
     // create the data from the link passed as a string to the object
     if (py::isinstance<py::str>(value) &&
@@ -564,7 +563,7 @@ BaseData* addData(py::object py_self, const std::string& name, py::object value,
         self->addData(data, name);
     }
     // create the data from another data (use as parent)
-    else if (py::isinstance<BaseData>(value) || py::isinstance<BaseData*>(value))
+    else if (!value.is_none() && (py::isinstance<BaseData>(value) || py::isinstance<BaseData*>(value)))
     {
         data = deriveTypeFromParent(py::cast<BaseData*>(value));
         if (!data)
@@ -587,7 +586,8 @@ BaseData* addData(py::object py_self, const std::string& name, py::object value,
             throw py::type_error(std::string("Invalid Type string: available types are\n") + typesString);
         }
         self->addData(data, name);
-        PythonFactory::fromPython(data, value);
+        if (!value.is_none())
+            PythonFactory::fromPython(data, value);
     }
     data->setName(name);
     data->setGroup(group.c_str());

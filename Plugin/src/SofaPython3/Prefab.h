@@ -39,7 +39,8 @@ public:
     void reinit();
     virtual void doReInit() ;
 
-    void addPrefabParameter(const std::string& name, pybind11::object value, const std::string& help, std::string type);
+    void addDataParameter(const std::string& name, pybind11::object value, const std::string& help, std::string type);
+    void addLinkParameter(const std::string& name, const std::string& help);
     void setSourceTracking(const std::string& filename);
     void breakPrefab();
 

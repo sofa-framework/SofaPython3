@@ -116,8 +116,10 @@ void moduleAddPrefab(py::module &m) {
           ));
 
     f.def("setSourceTracking", &Prefab::setSourceTracking);
-    f.def("addPrefabParameter", &Prefab::addPrefabParameter,
+    f.def("addDataParameter", &Prefab::addDataParameter,
           "name"_a, "value"_a, "help"_a, "type"_a);
+    f.def("addLinkParameter", &Prefab::addLinkParameter,
+          "name"_a, "help"_a);
     f.def("init", &Prefab::init);
     f.def("reinit", &Prefab::reinit);
 }
