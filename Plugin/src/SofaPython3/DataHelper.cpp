@@ -541,7 +541,7 @@ BaseData* addData(py::object py_self, const std::string& name, py::object value,
     BaseData* data;
 
     bool isSet = true;
-    if (value.is_none() && !defaultValue.is_none())
+    if (value.is_none())
     {
         value = defaultValue;
         isSet = false;
