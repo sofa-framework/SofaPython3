@@ -439,6 +439,7 @@ bool PythonFactory::registerDefaultTypes()
 
     // PrefabLink
     PythonFactory::registerType<sofa::core::objectmodel::PrefabLink>("PrefabLink");
+    PythonFactory::registerType<sofa::core::objectmodel::PrefabLink>("Link");
 
     // Scalars
     PythonFactory::registerType<std::string>("string");

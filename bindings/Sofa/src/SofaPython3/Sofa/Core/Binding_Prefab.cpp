@@ -98,8 +98,6 @@ void moduleAddPrefab(py::module &m) {
                   std::string key = py::cast<std::string>(kv.first);
                   py::object value = py::reinterpret_borrow<py::object>(kv.second);
 
-                  std::cout << "PREFAB ARE BROKEN " << key << std::endl;
-
                   if( key == "name")
                       c->setName(py::cast<std::string>(kv.second));
                   try {
@@ -116,10 +114,8 @@ void moduleAddPrefab(py::module &m) {
           ));
 
     f.def("setSourceTracking", &Prefab::setSourceTracking);
-    f.def("addDataParameter", &Prefab::addDataParameter,
-          "name"_a, "value"_a, "help"_a, "type"_a);
-    f.def("addLinkParameter", &Prefab::addLinkParameter,
-          "name"_a, "help"_a);
+    f.def("addPrefabParameter", &Prefab::addPrefabParameter,
+          "name"_a, "help"_a, "type"_a, "default"_a = py::none());
     f.def("init", &Prefab::init);
     f.def("reinit", &Prefab::reinit);
 }

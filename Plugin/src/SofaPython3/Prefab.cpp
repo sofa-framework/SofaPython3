@@ -78,30 +78,14 @@ Prefab::~Prefab()
 }
 
 
-void Prefab::addDataParameter(const std::string& name, py::object value, const std::string& help, std::string type)
+void Prefab::addPrefabParameter(const std::string& name, const std::string& help, const std::string& type, py::object defaultValue)
 {
     if(!findData(name) && !findLink(name))
     {
-        sofa::core::objectmodel::BaseData* data = sofapython3::addData(py::cast(this), name, value, py::object(), help, "Prefab's properties", type);
+        sofa::core::objectmodel::BaseData* data = sofapython3::addData(py::cast(this), name, py::none(), defaultValue, help, "Prefab's properties", type);
         m_datacallback.addInputs({data});
-        return;
     }
-    //PythonFactory::fromPython(data, value);
 }
-
-void Prefab::addLinkParameter(const std::string& name, const std::string& help)
-{
-    if(!findData(name) && !findLink(name))
-    {
-        sofa::core::objectmodel::BaseData* data = sofapython3::addData(py::cast(this), name, py::none(), py::none(), help, "Prefab's properties", "PrefabLink");
-        std::cout << data->getName() << " Successfully created!" << std::endl;
-        m_datacallback.addInputs({data});
-        return;
-    }
-    std::cout << name << " Already exist in " << this->getName() << "!!!" << std::endl;
-    //PythonFactory::fromPython(data, value);
-}
-
 
 void Prefab::setSourceTracking(const std::string& filename)
 {
