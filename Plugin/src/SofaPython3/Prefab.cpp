@@ -58,7 +58,7 @@ void Prefab::reinit()
     std::cout << "VisualInitVisitor" << std::endl;
     execute<VisualInitVisitor>(nullptr);
 
-    m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 void Prefab::doReInit()
