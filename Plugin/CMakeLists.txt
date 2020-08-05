@@ -40,6 +40,7 @@ find_package(SofaGeneral REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAPYTHON3")
 target_compile_definitions(${PROJECT_NAME} PUBLIC "-DSOFA_HAVE_SOFAPYTHON3")
 
