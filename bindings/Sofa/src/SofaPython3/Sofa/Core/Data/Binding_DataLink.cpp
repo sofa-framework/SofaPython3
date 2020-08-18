@@ -48,6 +48,11 @@ py::object DataLink::getTargetBase()
     return sofapython3::getTargetBase(reinterpret_cast<sofa::core::objectmodel::DataLink*>(this)->getValue());
 }
 
+void DataLink::setTargetPath(const std::string& targetPath)
+{
+    reinterpret_cast<sofa::core::objectmodel::DataLink*>(this)->read(targetPath);
+}
+
 
 void moduleAddDataLink(py::module &m)
 {
@@ -68,6 +73,7 @@ void moduleAddDataLink(py::module &m)
     d.def("__str__", &DataLink::__str__);
     d.def("getTargetBase", &DataLink::getTargetBase);
     d.def("getTargetPath", &DataLink::getTargetPath);
+    d.def("setTargetPath", &DataLink::setTargetPath);
 }
 
 }  // namespace sofapython3

@@ -18,6 +18,7 @@ public:
     py::str __repr__();
     py::str getTargetPath();
     py::object getTargetBase();
+    void setTargetPath(const std::string& targetPath);
 };
 
 }  // namespace sofapython3
