@@ -39,7 +39,7 @@ public:
     void reinit();
     virtual void doReInit() ;
 
-    void addPrefabParameter(const std::string& name, pybind11::object value, const std::string& help, std::string type);
+    void addPrefabParameter(const std::string& name, const std::string& help, const std::string& type, pybind11::object defaultValue = py::none());
     void setSourceTracking(const std::string& filename);
     void breakPrefab();
 
@@ -48,5 +48,6 @@ public:
 
     PrefabFileEventListener m_filelistener;
     DataCallback m_datacallback;
+    bool m_is_initialized {false};
 };
 }  // namespace sofapython3

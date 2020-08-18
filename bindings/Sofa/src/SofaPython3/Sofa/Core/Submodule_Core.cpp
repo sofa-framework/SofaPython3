@@ -52,6 +52,7 @@ using sofa::helper::logging::Message;
 #include "Binding_PythonScriptEvent.h"
 
 #include "Data/Binding_DataString.h"
+#include "Data/Binding_DataLink.h"
 #include "Data/Binding_DataVectorString.h"
 #include "Data/Binding_DataContainer.h"
 
@@ -117,6 +118,7 @@ PYBIND11_MODULE(Core, core)
     moduleAddDataContainerContext(core);
     moduleAddDataContainer(core);
     moduleAddDataString(core);
+    moduleAddDataLink(core);
     moduleAddDataVectorString(core);
     moduleAddBaseObject(core);
     moduleAddBaseCamera(core);

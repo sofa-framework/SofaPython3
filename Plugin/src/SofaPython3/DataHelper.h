@@ -34,6 +34,9 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <sofa/core/sptr.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 
 #include "config.h"
 
@@ -44,10 +47,112 @@ namespace sofa {
     }
     namespace core {
         namespace objectmodel {
-            class Base;
             class BaseData;
-            class BaseNode;
-            class BaseObject;
+
+
+            class SOFAPYTHON3_API PrefabLink
+            {
+            public:
+                PrefabLink() {}
+                PrefabLink(const Base::SPtr& targetBase) { m_targetBase = targetBase; }
+                PrefabLink(BaseLink* targetLink) { m_targetBase = targetLink->getLinkedBase(); }
+                PrefabLink(const std::string& targetPath) { m_targetPath = targetPath; }
+
+                const Base::SPtr& getTargetBase() const { return m_targetBase; }
+                void setTargetBase(const Base::SPtr& targetBase) { m_targetBase = targetBase; }
+
+                const std::string& getTargetPath() const { return m_targetPath; }
+                void setTargetPath(const std::string& targetPath) { m_targetPath = targetPath; }
+
+                friend std::ostream& operator << ( std::ostream& out, const PrefabLink& l)
+                {
+                    if (l.getTargetBase())
+                    {
+                        auto bn = l.getTargetBase()->toBaseNode();
+                        auto bo = l.getTargetBase()->toBaseObject();
+                        out << "@" + (bn ? bn->getPathName() : bo->getPathName());
+                    }
+                    out << l.getTargetPath();
+                    return out;
+                }
+
+                friend std::istream& operator >> ( std::istream& in, PrefabLink& l)
+                {
+                    std::string s;
+                    in >> s;
+                    l.setTargetPath(s);
+                    return in;
+                }
+
+            private:
+                Base::SPtr m_targetBase { nullptr };
+                std::string m_targetPath {""};
+            };
+
+            class SOFAPYTHON3_API DataLink : public Data<PrefabLink>
+            {
+                typedef Data<PrefabLink> Inherit;
+
+                DataLink( const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
+                    : Inherit(helpMsg, isDisplayed, isReadOnly)
+                {
+                }
+
+                DataLink( const std::string& value, const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
+                    : Inherit(value, helpMsg, isDisplayed, isReadOnly)
+                {
+                }
+
+                explicit DataLink(const BaseData::BaseInitData& init)
+                    : Inherit(init)
+                {
+                }
+
+                const PrefabLink& getValue() const
+                {
+                    updateIfDirty();
+                    if (m_value.getValue().getTargetBase()) return m_value.getValue();
+
+                    auto self = const_cast<DataLink*>(this);
+
+                    Base* dst = nullptr;
+                    this->getOwner()->findLinkDest(dst, self->m_value.getValue().getTargetPath(), nullptr);
+                    if (dst) {
+                        auto edit = self->m_value.beginEdit();
+                        edit->setTargetBase(dst);
+                        edit->setTargetPath("");
+                        self->m_value.endEdit();
+                    }
+                    return m_value.getValue();
+                }
+
+                std::string getValueString() const
+                {
+                    const auto& ptr = getValue();
+                    if (ptr.getTargetBase())
+                    {
+                        auto bn = ptr.getTargetBase()->toBaseNode();
+                        auto bo = ptr.getTargetBase()->toBaseObject();
+                        return "@" + (bn ? bn->getPathName() : bo->getPathName());
+                    }
+                    return ptr.getTargetPath();
+                }
+
+
+                bool read(const std::string& value)
+                {
+                    Base* dst;
+                    auto data = m_value.beginEdit();
+                    if (this->getOwner()->findLinkDest(dst, value, nullptr) && dst != nullptr)
+                       data->setTargetBase(dst);
+                    else {
+                        data->setTargetBase(nullptr);
+                        data->setTargetPath(value);
+                    }
+                    return true;
+                }
+            };
+
         }
     }
 }
@@ -189,7 +294,7 @@ public:
     ~scoped_writeonly_access(){ data->endEditVoidPtr(); }
 };
 
-SOFAPYTHON3_API BaseData* addData(py::object py_self, const std::string& name, py::object value = py::object(), py::object defaultValue = py::object(), const std::string& help = "", const std::string& group = "Property", std::string type = "");
+SOFAPYTHON3_API BaseData* addData(py::object py_self, const std::string& name, py::object value = py::none(), py::object defaultValue = py::none(), const std::string& help = "", const std::string& group = "Property", std::string type = "");
 SOFAPYTHON3_API BaseLink* addLink(py::object py_self, const std::string& name, py::object value, const std::string& help);
 SOFAPYTHON3_API bool isProtectedKeyword(const std::string& name);
 

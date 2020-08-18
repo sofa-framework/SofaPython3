@@ -21,9 +21,9 @@ using sofa::core::objectmodel::Event;
 
 void Prefab::init()
 {
-    std::cout << "prefab::init" << std::endl;
     reinit();
     Inherit1::init(sofa::core::ExecParams::defaultInstance());
+    m_is_initialized = true;
 }
 
 void PrefabFileEventListener::fileHasChanged(const std::string &filename)
@@ -44,18 +44,15 @@ void PrefabFileEventListener::fileHasChanged(const std::string &filename)
 
 void Prefab::reinit()
 {
-    std::cout << "prefab::reinit" << std::endl;
     clearLoggedMessages();
 
     /// remove everything in the node.
     execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
-    std::cout << "prefab::doReInit" << std::endl;
+
     doReInit();
 
-    std::cout << "simulation->initNode" << std::endl;
     /// Beurk beurk beurk
     sofa::simulation::getSimulation()->initNode(this);
-    std::cout << "VisualInitVisitor" << std::endl;
     execute<VisualInitVisitor>(nullptr);
 
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
@@ -78,27 +75,23 @@ Prefab::~Prefab()
 }
 
 
-void Prefab::addPrefabParameter(const std::string& name, py::object value, const std::string& help, std::string type)
+void Prefab::addPrefabParameter(const std::string& name, const std::string& help, const std::string& type, py::object defaultValue)
 {
-    sofa::core::objectmodel::BaseData* data = findData(name);
-    if(data == nullptr)
+    if(!findData(name) && !findLink(name))
     {
-        sofa::core::objectmodel::BaseData* data = sofapython3::addData(py::cast(this), name, value, py::object(), help, "Prefab's properties", type);
+        sofa::core::objectmodel::BaseData* data = sofapython3::addData(py::cast(this), name, py::none(), defaultValue, help, "Prefab's properties", type);
+        data->setRequired(true);
         m_datacallback.addInputs({data});
-        return;
     }
-    //PythonFactory::fromPython(data, value);
 }
 
 void Prefab::setSourceTracking(const std::string& filename)
 {
-    std::cout << "Activating source tracking to " << filename << std::endl;
     FileMonitor::addFile(filename, &m_filelistener);
 }
 
 void Prefab::breakPrefab()
 {
-    std::cout << "Breaking prefab" << std::endl;
     FileMonitor::removeListener(&m_filelistener);
     for (auto& data : this->getDataFields())
         if (data->getGroup() == "Prefab's properties")

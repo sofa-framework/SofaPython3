@@ -68,10 +68,17 @@ public:
 
 void Prefab_Trampoline::doReInit()
 {
+    if (!m_is_initialized) {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
+        msg_warning(this) << "Prefab instantiated. Check for required prefab parameters to fully populate";
+        return;
+    }
     try{
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
         PYBIND11_OVERLOAD(void, Prefab, doReInit, );
     } catch (std::exception& e)
     {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         msg_error(this) << e.what();
     }
 }
@@ -98,8 +105,6 @@ void moduleAddPrefab(py::module &m) {
                   std::string key = py::cast<std::string>(kv.first);
                   py::object value = py::reinterpret_borrow<py::object>(kv.second);
 
-                  std::cout << "PREFAB ARE BROKEN " << key << std::endl;
-
                   if( key == "name")
                       c->setName(py::cast<std::string>(kv.second));
                   try {
@@ -117,7 +122,7 @@ void moduleAddPrefab(py::module &m) {
 
     f.def("setSourceTracking", &Prefab::setSourceTracking);
     f.def("addPrefabParameter", &Prefab::addPrefabParameter,
-          "name"_a, "value"_a, "help"_a, "type"_a);
+          "name"_a, "help"_a, "type"_a, "default"_a = py::none());
     f.def("init", &Prefab::init);
     f.def("reinit", &Prefab::reinit);
 }

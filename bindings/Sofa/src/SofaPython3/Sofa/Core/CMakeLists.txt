@@ -29,6 +29,7 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataContainer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataContainer_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataString.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataLink.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataString_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataVectorString.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataVectorString_doc.h
@@ -52,6 +53,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataEngine.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataContainer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataString.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataLink.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataVectorString.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Visitor.cpp
