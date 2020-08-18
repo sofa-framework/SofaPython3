@@ -59,6 +59,7 @@ namespace py { using namespace pybind11; }
 
 using sofa::core::objectmodel::Base;
 using sofa::core::objectmodel::BaseData;
+using sofa::core::objectmodel::BaseLink;
 using sofa::core::objectmodel::BaseNode;
 using sofa::core::objectmodel::BaseObject;
 using sofa::defaulttype::AbstractTypeInfo;
@@ -189,6 +190,7 @@ public:
 };
 
 SOFAPYTHON3_API BaseData* addData(py::object py_self, const std::string& name, py::object value = py::object(), py::object defaultValue = py::object(), const std::string& help = "", const std::string& group = "Property", std::string type = "");
+SOFAPYTHON3_API BaseLink* addLink(py::object py_self, const std::string& name, py::object value, const std::string& help);
 SOFAPYTHON3_API bool isProtectedKeyword(const std::string& name);
 
 }  // namespace sofapython3

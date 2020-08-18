@@ -93,7 +93,7 @@ py::object BindingBase::GetAttr(Base* self, const std::string& s, bool doThrowEx
     /// Search if there is a link with the given name.
     /// If this is the case returns the corresponding python type.
     if(BaseLink* l = self->findLink(s))
-        return py::cast(l->getLinkedBase());
+        return py::cast(l);
 
     /// Search if we are quering for a 'magic' and private __data__ property
     /// this one allows to traverse all the data in the object
@@ -310,6 +310,11 @@ BaseData* BindingBase::addData(py::object py_self, const std::string& name, py::
     return sofapython3::addData(py_self, name, value, defaultValue, help, group, type);
 }
 
+BaseLink* BindingBase::addLink(py::object py_self, const std::string& name, py::object value, const std::string& help)
+{
+    return sofapython3::addLink(py_self, name, value, help);
+}
+
 BaseData* BindingBase::addDataFromData(Base* self, py::object d)
 {
     BaseData* data = py::cast<BaseData*>(d);
@@ -394,6 +399,12 @@ py::object BindingBase::getData(Base& self, const std::string& s)
     return py::none();
 }
 
+
+std::string BindingBase::getPathName(Base& self)
+{
+    return self.toBaseNode() ? self.toBaseNode()->getPathName() : self.toBaseObject()->getPathName();
+}
+    
 py::object BindingBase::setDataValues(Base& self, py::kwargs kwargs)
 {
     for(auto key : kwargs)
@@ -432,6 +443,7 @@ void moduleAddBase(py::module &m)
     base.def("getLinks", &BindingBase::getLinks, pybind11::return_value_policy::reference, sofapython3::doc::base::getLinks);
     base.def("addData", &BindingBase::addData, "name"_a, "value"_a = py::none(), "default"_a = py::none(), "help"_a = "", "group"_a = "", "type"_a = "", sofapython3::doc::base::addData);
     base.def("addData", &BindingBase::addDataFromData, sofapython3::doc::base::addDataInitialized);
+    base.def("addLink", &BindingBase::addLink, "name"_a, "value"_a = py::none(), "help"_a = "", sofapython3::doc::base::addLink);
     base.def("__getattr__", &BindingBase::__getattr__);
     base.def("__setattr__", &BindingBase::__setattr__);
     base.def("getData", &BindingBase::getData, sofapython3::doc::base::getData);
@@ -440,6 +452,7 @@ void moduleAddBase(py::module &m)
     base.def("getLoggedMessagesAsString", &BindingBase::getLoggedMessagesAsString, sofapython3::doc::base::getLoggedMessagesAsString);
     base.def("countLoggedMessages", &BindingBase::countLoggedMessages, sofapython3::doc::base::countLoggedMessages);
     base.def("clearLoggedMessages", &BindingBase::clearLoggedMessages, sofapython3::doc::base::clearLoggedMessages);
+    base.def("getPathName", &BindingBase::getPathName);
     base.def("setDataValues", &BindingBase::setDataValues, sofapython3::doc::base::setDataValues);
 }
 

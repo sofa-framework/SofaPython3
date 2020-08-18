@@ -65,6 +65,13 @@ py::object getOwnerBase(BaseLink& self)
     return PythonFactory::toPython(self.getOwnerBase());
 }
 
+std::string getPathName(BaseLink& self)
+{
+    auto n = self.getOwnerBase()->toBaseNode();
+    auto o = self.getOwnerBase()->toBaseObject();
+    return (n ? n->getPathName() : o->getPathName()) + "." + self.getName();
+}
+
 void moduleAddBaseLink(py::module& m)
 {
     py::class_<BaseLink, std::unique_ptr<sofa::core::objectmodel::BaseLink, pybind11::nodelete>> link(m, "Link", sofapython3::doc::baseLink::baseLinkClass);
@@ -87,8 +94,11 @@ void moduleAddBaseLink(py::module& m)
 
     link.def("getLinkedData", &BaseLink::getLinkedData, sofapython3::doc::baseLink::getLinkedData);
     link.def("getLinkedBase", getLinkedBase, "index"_a = 0, sofapython3::doc::baseLink::getLinkedBase);
+    link.def("setLinkedBase", &BaseLink::setLinkedBase, sofapython3::doc::baseLink::getLinkedBase);
+
 
     link.def("getLinkedPath", &BaseLink::getLinkedPath, "index"_a = 0, sofapython3::doc::baseLink::getLinkedPath);
+    link.def("getPathName", getPathName, sofapython3::doc::baseLink::getLinkedPath);
     link.def("read", &BaseLink::read, sofapython3::doc::baseLink::read);
 
 }

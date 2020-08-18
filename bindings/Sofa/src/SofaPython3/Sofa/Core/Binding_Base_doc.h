@@ -127,8 +127,22 @@ static auto addData =
         :type name: string
         :type value: object
         :type help: string
-        :type groupe: string
+        :type group: string
         :type type: string
+        )";
+
+static auto addLink =
+        R"(
+        Create a Link to a SOFA component and adds it to the base.
+        Note that this method should only be called if the field was not initialized with the initLink method
+        :param self: the base itself
+        :param name: the name of the link to be added
+        :param value: the value from which the data can be created (either a pathname or a SofaBase)
+        :param help: help message that describes the link to be created
+        :type self: object
+        :type name: string
+        :type value: object
+        :type help: string
         )";
 
 static auto addDataInitialized =

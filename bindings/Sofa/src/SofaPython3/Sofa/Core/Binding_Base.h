@@ -51,6 +51,7 @@ namespace py {
 using namespace pybind11::literals;
 using sofa::core::objectmodel::Base;
 using sofa::core::objectmodel::BaseData;
+using sofa::core::objectmodel::BaseLink;
 using sofa::core::sptr;
 
 class BindingBase
@@ -71,6 +72,7 @@ public:
     static py::list getLinks(Base& self);
     static BaseData* addData(py::object py_self, const std::string& name, py::object value = py::object(), py::object defaultValue = py::object(), const std::string& help = "", const std::string& group = "Property", std::string type = "");
     static BaseData* addDataFromData(Base* self, py::object d);
+    static BaseLink* addLink(py::object py_self, const std::string& name, py::object value, const std::string& help);
     static py::list __dir__(Base* self);
     static py::object __getattr__(py::object self, const std::string& s);
     static void __setattr__(py::object self, const std::string& s, py::object value);
@@ -79,6 +81,7 @@ public:
     static py::object getLoggedMessagesAsString(Base& self);
     static py::object countLoggedMessages(Base& self);
     static py::object clearLoggedMessages(Base& self);
+    static std::string getPathName(Base& self);
 };
 
 
