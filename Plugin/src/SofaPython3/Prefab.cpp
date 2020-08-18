@@ -54,6 +54,8 @@ void Prefab::reinit()
     /// Beurk beurk beurk
     sofa::simulation::getSimulation()->initNode(this);
     execute<VisualInitVisitor>(nullptr);
+
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 void Prefab::doReInit()
