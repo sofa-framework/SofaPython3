@@ -16,6 +16,8 @@ class DataLink : public BaseData
 public:
     py::str __str__();
     py::str __repr__();
+    py::str getTargetPath();
+    py::object getTargetBase();
 };
 
 }  // namespace sofapython3

@@ -91,6 +91,7 @@ namespace sofa {
 
             class SOFAPYTHON3_API DataLink : public Data<PrefabLink>
             {
+            public:
                 typedef Data<PrefabLink> Inherit;
 
                 DataLink( const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
@@ -154,6 +155,15 @@ namespace sofa {
             };
 
         }
+    }
+    namespace defaulttype
+    {
+        template <>
+        struct DataTypeName<core::objectmodel::PrefabLink>
+        {
+            static const char* name() { return "PrefabLink"; }
+        };
+
     }
 }
 
