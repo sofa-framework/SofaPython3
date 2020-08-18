@@ -48,6 +48,5 @@ public:
 
     PrefabFileEventListener m_filelistener;
     DataCallback m_datacallback;
-    bool m_is_initialized {false};
 };
 }  // namespace sofapython3

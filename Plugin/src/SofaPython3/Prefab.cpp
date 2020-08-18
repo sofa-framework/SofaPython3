@@ -23,7 +23,6 @@ void Prefab::init()
 {
     reinit();
     Inherit1::init(sofa::core::ExecParams::defaultInstance());
-    m_is_initialized = true;
 }
 
 void PrefabFileEventListener::fileHasChanged(const std::string &filename)
