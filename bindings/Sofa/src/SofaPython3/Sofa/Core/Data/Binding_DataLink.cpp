@@ -11,12 +11,12 @@ using sofa::core::objectmodel::PrefabLink;
 namespace sofapython3
 {
 
-py::str getTargetPath(PrefabLink& link)
+py::str getTargetPath(const PrefabLink& link)
 {
     return link.getTargetPath();
 }
 
-py::object getTargetBase(PrefabLink& link)
+py::object getTargetBase(const PrefabLink& link)
 {
     auto base = link.getTargetBase().get();
     if (base)
@@ -38,6 +38,17 @@ py::str DataLink::__repr__()
     return py::repr(convertToPython(this));
 }
 
+py::str DataLink::getTargetPath()
+{
+    return sofapython3::getTargetPath(reinterpret_cast<sofa::core::objectmodel::DataLink*>(this)->getValue());
+}
+
+py::object DataLink::getTargetBase()
+{
+    return sofapython3::getTargetBase(reinterpret_cast<sofa::core::objectmodel::DataLink*>(this)->getValue());
+}
+
+
 void moduleAddDataLink(py::module &m)
 {
     py::class_<PrefabLink, std::unique_ptr<PrefabLink, py::nodelete>> l(m, "PrefabLink");
@@ -49,12 +60,14 @@ void moduleAddDataLink(py::module &m)
 
     py::class_<DataLink, BaseData, std::unique_ptr<DataLink, py::nodelete>> d(m, "DataLink");
 
-    PythonFactory::registerType("DataLink", [](BaseData* data) -> py::object {
+    PythonFactory::registerType("PrefabLink", [](BaseData* data) -> py::object {
         return py::cast(reinterpret_cast<DataLink*>(data));
     });
 
     d.def("__repr__",&DataLink::__repr__);
     d.def("__str__", &DataLink::__str__);
+    d.def("getTargetBase", &DataLink::getTargetBase);
+    d.def("getTargetPath", &DataLink::getTargetPath);
 }
 
 }  // namespace sofapython3
