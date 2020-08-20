@@ -10,6 +10,8 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/DataHelper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonFactory.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Prefab.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PrefabParameter/DataLink.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PrefabParameter/DataAlias.h
 )
 
 set(SOURCE_FILES
@@ -21,6 +23,8 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/DataHelper.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonFactory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Prefab.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PrefabParameter/DataLink.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PrefabParameter/DataAlias.cpp
 )
 
 if(SP3_BUILD_TEST)

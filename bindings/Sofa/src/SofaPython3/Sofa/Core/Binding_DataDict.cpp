@@ -62,6 +62,9 @@ void moduleAddDataDict(py::module& m)
     ////////////////////////////////////////////////////////////////////////////////////////////////
     d.def("__setitem__",[](DataDict& d, const std::string& s, py::object v)
     {
+        SOFA_UNUSED(d);
+        SOFA_UNUSED(s);
+        SOFA_UNUSED(v);
         return 0.0;
     });
 

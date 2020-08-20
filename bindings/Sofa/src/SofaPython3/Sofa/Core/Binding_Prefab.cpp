@@ -68,16 +68,12 @@ public:
 
 void Prefab_Trampoline::doReInit()
 {
-    if (!m_is_initialized) {
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
-        msg_warning(this) << "Prefab instantiated. Check for required prefab parameters to fully populate";
-        return;
-    }
-    try{
+    try {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
         PYBIND11_OVERLOAD(void, Prefab, doReInit, );
-    } catch (std::exception& e)
-    {
+        std::cout << "Prefab_Trampoline::doReInit() success" << std::endl;
+
+    } catch (std::exception& e) {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         msg_error(this) << e.what();
     }
