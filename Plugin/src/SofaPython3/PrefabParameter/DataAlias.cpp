@@ -62,7 +62,6 @@ bool DataAlias::isCounterValid() const
 
 std::string DataAlias::getLinkPath() const
 {
-    std::cout << "m_link->getLinkPath(): " << m_link->getLinkPath() << std::endl;
     return m_link->getOwner()->getPathName() + "." + m_link->getName() + "." + getName();
 }
 
