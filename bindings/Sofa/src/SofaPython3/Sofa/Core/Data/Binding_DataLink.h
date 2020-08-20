@@ -11,11 +11,4 @@ using sofa::core::objectmodel::BaseData;
 
 void moduleAddDataLink(py::module& m);
 
-class DataLink : public BaseData
-{
-public:
-    py::str __str__();
-    py::str __repr__();
-};
-
 }  // namespace sofapython3

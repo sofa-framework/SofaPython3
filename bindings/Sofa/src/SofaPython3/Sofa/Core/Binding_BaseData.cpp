@@ -117,6 +117,7 @@ py::object writeableArray(BaseData* self)
 
 void __setattr__(py::object self, const std::string& s, py::object value)
 {
+    SOFA_UNUSED(s);
     BaseData* selfdata = py::cast<BaseData*>(self);
 
     if(py::isinstance<DataContainer>(value))

@@ -89,6 +89,7 @@ namespace sofa {
                 std::string m_targetPath {""};
             };
 
+<<<<<<< HEAD
             class SOFAPYTHON3_API DataLink : public Data<PrefabLink>
             {
                 typedef Data<PrefabLink> Inherit;
@@ -152,6 +153,8 @@ namespace sofa {
                     return true;
                 }
             };
+=======
+>>>>>>> d3c6464... :sparkles: Introduce DataLinks to Prefabs
 
         }
     }
@@ -219,7 +222,7 @@ std::string SOFAPYTHON3_API toSofaParsableString(const py::handle& p);
 //py::object SOFAPYTHON3_API dataToPython(BaseData* d);
 
 /// RVO optimized function. Don't care about copy on the return code.
-void SOFAPYTHON3_API fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc,
+py::list SOFAPYTHON3_API fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc,
                                const py::dict& dict);
 
 template<typename T>
