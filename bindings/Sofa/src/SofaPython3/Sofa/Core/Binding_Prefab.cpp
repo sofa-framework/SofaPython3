@@ -71,8 +71,6 @@ void Prefab_Trampoline::doReInit()
     try {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
         PYBIND11_OVERLOAD(void, Prefab, doReInit, );
-        std::cout << "Prefab_Trampoline::doReInit() success" << std::endl;
-
     } catch (std::exception& e) {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         msg_error(this) << e.what();
