@@ -5,7 +5,7 @@
 namespace sofa::core::objectmodel
 {
 
-class DataAlias;
+class DataSymlink;
 class SOFAPYTHON3_API DataLink : public Data<PrefabLink>
 {
 public:
@@ -25,13 +25,13 @@ public:
 
     bool read(const std::string& value);
 
-    BaseData* createDataAlias(const std::string& dataName);
-    BaseData* findDataAlias(const std::string& dataName);
+    BaseData* createDataSymlink(const std::string& dataName);
+    BaseData* findDataSymlink(const std::string& dataName);
 
 private:
     sofa::core::DataTrackerCallback m_callback;
 
-    std::map<std::string, DataAlias*> m_dataAliases;
+    std::map<std::string, DataSymlink*> m_dataSymlinks;
 
 };
 
