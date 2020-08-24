@@ -58,9 +58,9 @@ py::object __getattr__(DataLink& self, const std::string& s)
     if (s == "value")
         return py::cast<PrefabLink>(self.getValue());
 
-    auto dataAlias = self.findDataAlias(s);
-    if (dataAlias)
-        return PythonFactory::toPython(dataAlias);
+    auto dataSymlink = self.findDataSymlink(s);
+    if (dataSymlink)
+        return PythonFactory::toPython(dataSymlink);
     return py::object();
 }
 

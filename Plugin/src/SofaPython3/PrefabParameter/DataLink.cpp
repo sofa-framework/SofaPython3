@@ -1,5 +1,5 @@
 #include "DataLink.h"
-#include "DataAlias.h"
+#include "DataSymlink.h"
 
 namespace sofa {
 namespace core {
@@ -22,9 +22,9 @@ DataLink::DataLink(const BaseData::BaseInitData &init)
 
 DataLink::~DataLink()
 {
-    for (auto [k,v] : m_dataAliases)
+    for (auto [k,v] : m_dataSymlinks)
         delete v;
-    m_dataAliases.clear();
+    m_dataSymlinks.clear();
 }
 
 const PrefabLink& DataLink::getValue() const
@@ -61,9 +61,9 @@ bool DataLink::read(const std::string &value)
 {
     Base* dst;
     auto data = beginEdit();
-    for (auto [k, v] : m_dataAliases)
+    for (auto [k, v] : m_dataSymlinks)
         delete v;
-    m_dataAliases.clear();
+    m_dataSymlinks.clear();
     if (this->getOwner()->findLinkDest(dst, value, nullptr) && dst != nullptr)
     {
         data->setTargetBase(dst);
@@ -78,7 +78,7 @@ bool DataLink::read(const std::string &value)
     return true;
 }
 
-BaseData* DataLink::createDataAlias(const std::string &dataName)
+BaseData* DataLink::createDataSymlink(const std::string &dataName)
 {
     auto base = getValue().getTargetBase().get();
     BaseData* data;
@@ -88,24 +88,24 @@ BaseData* DataLink::createDataAlias(const std::string &dataName)
     }
     if (base && (data = base->findData(dataName)) != nullptr)
     {
-        DataAlias* alias = new DataAlias(data, this);
-        m_dataAliases[dataName] = alias;
+        DataSymlink* alias = new DataSymlink(data, this);
+        m_dataSymlinks[dataName] = alias;
         return alias;
     }
     return nullptr;
 }
 
 
-BaseData* DataLink::findDataAlias(const std::string &dataName)
+BaseData* DataLink::findDataSymlink(const std::string &dataName)
 {
-    auto it = m_dataAliases.find(dataName);
-    if (it != m_dataAliases.end())
+    auto it = m_dataSymlinks.find(dataName);
+    if (it != m_dataSymlinks.end())
     {
         return it->second;
     }
     else
     {
-       return createDataAlias(dataName);
+       return createDataSymlink(dataName);
     }
 }
 

@@ -6,10 +6,10 @@ namespace sofa::core::objectmodel {
 
 
 // "Fake" data, used in DataLink to provide an interface to the target's datafields
-class SOFAPYTHON3_API DataAlias : public BaseData
+class SOFAPYTHON3_API DataSymlink : public BaseData
 {
 public:
-    DataAlias(BaseData* parent, BaseData* link);
+    DataSymlink(BaseData* parent, BaseData* link);
 
     bool read(const std::string& value) override;
 
