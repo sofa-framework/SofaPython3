@@ -14,13 +14,12 @@ sys.path.append(os.path.abspath("./bindings/SofaTypes/package"))
 import Sofa
 import SofaRuntime
 
-## Register all the common component in the factory. 
-SofaRuntime.importPlugin("SofaAllCommonComponents")
+## Register all the common component in the factory. 
+SofaRuntime.importPlugin("SofaComponentAll")
 
 class MyController(Sofa.Controller):
         def __init__(self, *args, **kwargs):
                 Sofa.Controller.__init__(self,*args, **kwargs)
-                print("INITED")
                 
         def onEvent(self, event):
                 print("Event: "+event)

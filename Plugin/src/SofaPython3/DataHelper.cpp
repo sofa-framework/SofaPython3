@@ -67,12 +67,11 @@ py::list fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescriptio
     py::list dataParents;
     for(auto kv : dict)
     {
-        try {
-            kv.second.cast<BaseData*>();
+        auto t = py::detail::get_type_handle(typeid(BaseData), false);
+        if (t && py::isinstance(kv.second, t))
             dataParents.append(kv.first);
-        } catch (pybind11::cast_error&) {
+        else
             desc.setAttribute(py::str(kv.first), toSofaParsableString(kv.second));
-        }
     }
     return dataParents;
 }
