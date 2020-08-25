@@ -88,72 +88,6 @@ namespace sofa {
                 Base::SPtr m_targetBase { nullptr };
                 std::string m_targetPath {""};
             };
-
-            class SOFAPYTHON3_API DataLink : public Data<PrefabLink>
-            {
-            public:
-                typedef Data<PrefabLink> Inherit;
-
-                DataLink( const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
-                    : Inherit(helpMsg, isDisplayed, isReadOnly)
-                {
-                }
-
-                DataLink( const std::string& value, const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
-                    : Inherit(value, helpMsg, isDisplayed, isReadOnly)
-                {
-                }
-
-                explicit DataLink(const BaseData::BaseInitData& init)
-                    : Inherit(init)
-                {
-                }
-
-                const PrefabLink& getValue() const
-                {
-                    updateIfDirty();
-                    if (m_value.getValue().getTargetBase()) return m_value.getValue();
-
-                    auto self = const_cast<DataLink*>(this);
-
-                    Base* dst = nullptr;
-                    this->getOwner()->findLinkDest(dst, self->m_value.getValue().getTargetPath(), nullptr);
-                    if (dst) {
-                        auto edit = self->m_value.beginEdit();
-                        edit->setTargetBase(dst);
-                        edit->setTargetPath("");
-                        self->m_value.endEdit();
-                    }
-                    return m_value.getValue();
-                }
-
-                std::string getValueString() const
-                {
-                    const auto& ptr = getValue();
-                    if (ptr.getTargetBase())
-                    {
-                        auto bn = ptr.getTargetBase()->toBaseNode();
-                        auto bo = ptr.getTargetBase()->toBaseObject();
-                        return "@" + (bn ? bn->getPathName() : bo->getPathName());
-                    }
-                    return ptr.getTargetPath();
-                }
-
-
-                bool read(const std::string& value)
-                {
-                    Base* dst;
-                    auto data = m_value.beginEdit();
-                    if (this->getOwner()->findLinkDest(dst, value, nullptr) && dst != nullptr)
-                       data->setTargetBase(dst);
-                    else {
-                        data->setTargetBase(nullptr);
-                        data->setTargetPath(value);
-                    }
-                    return true;
-                }
-            };
-
         }
     }
     namespace defaulttype
@@ -229,7 +163,7 @@ std::string SOFAPYTHON3_API toSofaParsableString(const py::handle& p);
 //py::object SOFAPYTHON3_API dataToPython(BaseData* d);
 
 /// RVO optimized function. Don't care about copy on the return code.
-void SOFAPYTHON3_API fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc,
+py::list SOFAPYTHON3_API fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc,
                                const py::dict& dict);
 
 template<typename T>

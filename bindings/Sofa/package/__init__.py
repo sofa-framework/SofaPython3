@@ -168,6 +168,7 @@ def pyType2sofaType(v):
 
 
 class Prefab(Sofa.Core.RawPrefab):
+
     def __init__(self, *args, **kwargs):
         Sofa.Core.RawPrefab.__init__(self, *args, **kwargs)
         frame = inspect.currentframe().f_back
@@ -188,6 +189,12 @@ class Prefab(Sofa.Core.RawPrefab):
         self.setName(str(self.__class__.__name__))
         self.addData("prefabname", value=type(self).__name__, type="string", group="Infos", help="Name of the prefab")
         self.addData("docstring", value=self.__doc__, type="string", group="Infos", help="Name of the prefab")
+        # args[0] should be the parent node. it has to be added NOW (before creating prefabParams) so that the links can be resolved before calling doReInit()
+        if issubclass(type(args[0]), Sofa.Core.Node):
+            args[0].addChild(self)
+        # Prefab parameters must be created in a dedicated function so that it can be called HERE (after the context is set, and before calls to doReInit()
+        if hasattr(self, "createParams"):
+            self.createParams(*args, **kwargs)
         self.init()
 
 def msg_error(target, message):

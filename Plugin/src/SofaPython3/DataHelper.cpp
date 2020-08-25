@@ -45,25 +45,35 @@ std::string toSofaParsableString(const py::handle& p)
     if(py::isinstance<py::list>(p) || py::isinstance<py::tuple>(p))
     {
         std::stringstream tmp;
-        for(auto pa : p){
+        for(auto pa : p)
+        {
             tmp << toSofaParsableString(pa) << " ";
         }
         return tmp.str();
     }
     //TODO(dmarchal) This conversion to string is so bad.
     if(py::isinstance<py::str>(p))
+    {
         return py::str(p);
+    }
+
     return py::repr(p);
 }
 
 /// RVO optimized function. Don't care about copy on the return code.
-void fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc,
+py::list fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc,
                                const py::dict& dict)
 {
+    py::list dataParents;
     for(auto kv : dict)
     {
-        desc.setAttribute(py::str(kv.first), toSofaParsableString(kv.second));
+        auto t = py::detail::get_type_handle(typeid(BaseData), false);
+        if (t && py::isinstance(kv.second, t))
+            dataParents.append(kv.first);
+        else
+            desc.setAttribute(py::str(kv.first), toSofaParsableString(kv.second));
     }
+    return dataParents;
 }
 
 PythonTrampoline::~PythonTrampoline(){}
@@ -76,6 +86,7 @@ void PythonTrampoline::setInstance(py::object s)
 
     pyobject = std::shared_ptr<PyObject>( s.ptr(), [](PyObject* ob)
     {
+            SOFA_UNUSED(ob);
             // runSofa Sofa/tests/pyfiles/ScriptController.py => CRASH
             // Py_DECREF(ob);
 });
@@ -550,7 +561,7 @@ BaseData* addData(py::object py_self, const std::string& name, py::object value,
     // create the data from the link passed as a string to the object
     if (py::isinstance<py::str>(value) &&
             !py::cast<std::string>(value).empty() &&
-            (py::cast<std::string>(value))[0] == '@')
+            (py::cast<std::string>(value))[0] == '@' && type != "Link")
     {
         if (dynamic_cast<BaseNode*>(self))
             data = deriveTypeFromParent(dynamic_cast<BaseNode*>(self)->getContext(),

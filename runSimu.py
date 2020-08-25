@@ -14,8 +14,8 @@ sys.path.append(os.path.abspath("./bindings/SofaTypes/package"))
 import Sofa
 import SofaRuntime
 
-## Register all the common component in the factory. 
-SofaRuntime.importPlugin("SofaAllCommonComponents")
+## Register all the common component in the factory. 
+SofaRuntime.importPlugin("SofaComponentAll")
 
 if len(sys.argv) != 2:
         print("USAGE: python3 runSimu.py scene.py")

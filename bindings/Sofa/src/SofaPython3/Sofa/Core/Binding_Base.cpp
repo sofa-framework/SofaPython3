@@ -111,8 +111,6 @@ bool BindingBase::SetData(BaseData* d, py::object value)
     if(d==nullptr)
         return false;
 
-    const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
-
     PythonFactory::fromPython(d, value);
     return true;
 }
