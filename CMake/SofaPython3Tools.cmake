@@ -1,3 +1,5 @@
+include_guard(GLOBAL)
+
 # - Recursively configure files inside a directory. Takes the same argument as configure_file, but here the input
 #   parameter is a path to a directory.
 function(SP3_configure_directory input_folder output_folder)
