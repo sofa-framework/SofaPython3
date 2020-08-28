@@ -71,7 +71,7 @@ set(PYBIND11_PYTHON_VERSION 3.7)
 find_package(pybind11 2.3 CONFIG QUIET REQUIRED)
 
 set(SP3_PYTHON_PACKAGES_DIRECTORY
-    "site-packages"
+    "python3/site-packages"
     CACHE STRING
     "Directory name where the python packages will be built and installed.
     This will be prepend to LIBRARY_OUTPUT_DIRECTORY (default to site-packages)"

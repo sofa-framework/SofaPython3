@@ -1,4 +1,5 @@
 # CMake package configuration file for the @PROJECT_NAME@ module
+@PACKAGE_GUARD@
 @PACKAGE_INIT@
 
 find_package(pybind11 CONFIG REQUIRED)
