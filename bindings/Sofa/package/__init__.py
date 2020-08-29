@@ -164,6 +164,10 @@ def pyType2sofaType(v):
         return "double"
     if isinstance(v, list) and len(v)==3:
         return "Vec3d"
+    if isinstance(v, list):
+        return "vector<double>"
+    if isinstance(v, Sofa.PyTypes.DataType):
+        return v.sofaTypeName
     return None
 
 
@@ -190,8 +194,9 @@ class Prefab(Sofa.Core.RawPrefab):
         self.addData("prefabname", value=type(self).__name__, type="string", group="Infos", help="Name of the prefab")
         self.addData("docstring", value=self.__doc__, type="string", group="Infos", help="Documentation of the prefab")
         # args[0] should be the parent node. it has to be added NOW (before creating prefabParams) so that the links can be resolved before calling doReInit()
-        if issubclass(type(args[0]), Sofa.Core.Node):
-            args[0].addChild(self)
+        #if issubclass(type(args[0]), Sofa.Core.Node):
+        #    args[0].addChild(self)
+
         # Prefab parameters must be created in a dedicated function so that it can be called HERE (after the context is set, and before calls to doReInit()
         if hasattr(self, "properties"):
             docstring = ""
@@ -223,16 +228,6 @@ def PrefabBuilder(f):
         definedloc = (frameinfo.filename, frameinfo.lineno)
 
         def SofaPrefabF(*args, **kwargs):
-            class NodeHook(object):
-                    def __init__(self, node):
-                        self.node = node
-
-                    def addChild(self, name):
-                        return selfnode
-
-                    def __getattr__(self, name):
-                        return getattr(self.node, name)
-
             class InnerSofaPrefab(Sofa.Core.RawPrefab):
                 def __init__(self, *args, **kwargs):
                     Sofa.Core.RawPrefab.__init__(self, *args, **kwargs)
@@ -245,9 +240,10 @@ def PrefabBuilder(f):
                         argnames = inspect.getfullargspec(f).args
 
                         kkwargs = {}
-                        kkwargs[argnames[0]] = self
-                        for name in argnames[1:]:
-                            kkwargs[name] = self.__data__[name].value
+                        kkwargs["self"] = self
+                        for name in argnames[:]:
+                            if name != "self":
+                                kkwargs[name] = self.__data__[name].value
 
                         self.cb(**kkwargs)
                     except Exception as e:
@@ -271,7 +267,6 @@ def PrefabBuilder(f):
                 ## Now we retrieve all params passed to the prefab and add them as datafields:
                 argnames = inspect.getfullargspec(f).args
                 defaults = inspect.getfullargspec(f).defaults
-                print("ICA ")
 
                 if argnames is None:
                     argnames = []
@@ -283,10 +278,12 @@ def PrefabBuilder(f):
                 i = len(argnames) - len(defaults)
                 for n in range(0, len(defaults)):
                     if argnames[i+n] not in selfnode.__data__:
-                        selfnode.addPrefabParameter(name=argnames[i+n],
-                                                    value=kwargs.get(argnames[i+n], defaults[n]),
+                        if pyType2sofaType(defaults[n]) != None:
+                            selfnode.addPrefabParameter(name=argnames[i+n],
+                                                    default=kwargs.get(argnames[i+n], defaults[n]),
                                                     type=pyType2sofaType(defaults[n]), help="Undefined")
-
+                        else:
+                            Sofa.Helper.msg_error("Missing type for parameters: ", argnames[i+n])
                 selfnode.init()
 
             except Exception as e:
