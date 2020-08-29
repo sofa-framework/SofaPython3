@@ -60,20 +60,33 @@ std::string toSofaParsableString(const py::handle& p)
     return py::repr(p);
 }
 
-/// RVO optimized function. Don't care about copy on the return code.
-py::list fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc,
-                               const py::dict& dict)
+void fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc,
+                                const py::dict& dict)
+ {
+     for(auto kv : dict)
+     {
+        desc.setAttribute(py::str(kv.first), toSofaParsableString(kv.second));
+     }
+
+     return;
+ }
+
+void processKwargsForObjectCreation(const py::dict dict,
+                               py::list& parametersToLink,
+                               py::list& parametersToCopy,
+                               sofa::core::objectmodel::BaseObjectDescription& parametersAsString)
 {
-    py::list dataParents;
+    auto t = py::detail::get_type_handle(typeid(BaseData), false);
     for(auto kv : dict)
     {
-        auto t = py::detail::get_type_handle(typeid(BaseData), false);
-        if (t && py::isinstance(kv.second, t))
-            dataParents.append(kv.first);
+        if (py::isinstance(kv.second, t))
+            parametersToLink.append(kv.first);
+        else if (py::isinstance<py::str>(kv.second))
+            parametersAsString.setAttribute(py::str(kv.first), py::cast<std::string>(kv.second));
         else
-            desc.setAttribute(py::str(kv.first), toSofaParsableString(kv.second));
+            parametersToCopy.append(kv.first);
     }
-    return dataParents;
+    return;
 }
 
 PythonTrampoline::~PythonTrampoline(){}

@@ -166,7 +166,9 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
     /// Prepare the description to hold the different python attributes as data field's
     /// arguments then create the object.
     BaseObjectDescription desc {type.c_str(), type.c_str()};
-    auto dataParents = fillBaseObjectdescription(desc, kwargs);
+    py::list parametersToCopy;
+    py::list parametersToLink;
+    processKwargsForObjectCreation(kwargs, parametersToLink, parametersToCopy, desc);
     auto object = ObjectFactory::getInstance()->createObject(self, &desc);
 
     /// After calling createObject the returned value can be either a nullptr
@@ -196,8 +198,10 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         BaseData* d = object->findData(py::cast<std::string>(a.first));
         if(d)
         {
-            if (dataParents.contains(a.first))
+            if (parametersToLink.contains(a.first))
                 d->setParent(a.second.cast<BaseData*>());
+            else if(parametersToCopy.contains(a.first))
+                PythonFactory::fromPython(d, py::cast<py::object>(a.second));
             d->setPersistent(true);
         }
     }
@@ -262,7 +266,10 @@ py::object addChildKwargs(Node* self, const std::string& name, const py::kwargs&
     if (sofapython3::isProtectedKeyword(name))
         throw py::value_error("addChild: Cannot call addChild with name " + name + ": Protected keyword");
     BaseObjectDescription desc (name.c_str());
-    auto dataParents = fillBaseObjectdescription(desc,kwargs);
+    py::list parametersToCopy;
+    py::list parametersToLink;
+    processKwargsForObjectCreation(kwargs, parametersToLink, parametersToCopy, desc);
+
     auto node=simpleapi::createChild(self, desc);
     checkParamUsage(desc);
 
@@ -271,8 +278,10 @@ py::object addChildKwargs(Node* self, const std::string& name, const py::kwargs&
         BaseData* d = node->findData(py::cast<std::string>(a.first));
         if(d)
         {
-            if (dataParents.contains(a.first))
+            if (parametersToLink.contains(a.first))
                 d->setParent(a.second.cast<BaseData*>());
+            else if(parametersToCopy.contains(a.first))
+                PythonFactory::fromPython(d, py::cast<py::object>(a.second));
             d->setPersistent(true);
         }
     }
