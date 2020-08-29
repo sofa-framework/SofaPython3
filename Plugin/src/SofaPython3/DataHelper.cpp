@@ -45,25 +45,48 @@ std::string toSofaParsableString(const py::handle& p)
     if(py::isinstance<py::list>(p) || py::isinstance<py::tuple>(p))
     {
         std::stringstream tmp;
-        for(auto pa : p){
+        for(auto pa : p)
+        {
             tmp << toSofaParsableString(pa) << " ";
         }
         return tmp.str();
     }
     //TODO(dmarchal) This conversion to string is so bad.
     if(py::isinstance<py::str>(p))
+    {
         return py::str(p);
+    }
+
     return py::repr(p);
 }
 
-/// RVO optimized function. Don't care about copy on the return code.
 void fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc,
-                               const py::dict& dict)
+                                const py::dict& dict)
+ {
+     for(auto kv : dict)
+     {
+        desc.setAttribute(py::str(kv.first), toSofaParsableString(kv.second));
+     }
+
+     return;
+ }
+
+void processKwargsForObjectCreation(const py::dict dict,
+                               py::list& parametersToLink,
+                               py::list& parametersToCopy,
+                               sofa::core::objectmodel::BaseObjectDescription& parametersAsString)
 {
+    auto t = py::detail::get_type_handle(typeid(BaseData), false);
     for(auto kv : dict)
     {
-        desc.setAttribute(py::str(kv.first), toSofaParsableString(kv.second));
+        if (py::isinstance(kv.second, t))
+            parametersToLink.append(kv.first);
+        else if (py::isinstance<py::str>(kv.second))
+            parametersAsString.setAttribute(py::str(kv.first), py::cast<std::string>(kv.second));
+        else
+            parametersToCopy.append(kv.first);
     }
+    return;
 }
 
 PythonTrampoline::~PythonTrampoline(){}
@@ -76,6 +99,7 @@ void PythonTrampoline::setInstance(py::object s)
 
     pyobject = std::shared_ptr<PyObject>( s.ptr(), [](PyObject* ob)
     {
+            SOFA_UNUSED(ob);
             // runSofa Sofa/tests/pyfiles/ScriptController.py => CRASH
             // Py_DECREF(ob);
 });

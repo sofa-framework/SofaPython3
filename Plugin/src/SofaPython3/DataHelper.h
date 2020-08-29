@@ -42,119 +42,63 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 ////////////////////////// FORWARD DECLARATION ///////////////////////////
 namespace sofa {
-    namespace defaulttype {
-        class AbstractTypeInfo;
-    }
-    namespace core {
-        namespace objectmodel {
-            class BaseData;
+namespace defaulttype {
+class AbstractTypeInfo;
+}
+namespace core {
+namespace objectmodel {
+class BaseData;
 
 
-            class SOFAPYTHON3_API PrefabLink
-            {
-            public:
-                PrefabLink() {}
-                PrefabLink(const Base::SPtr& targetBase) { m_targetBase = targetBase; }
-                PrefabLink(BaseLink* targetLink) { m_targetBase = targetLink->getLinkedBase(); }
-                PrefabLink(const std::string& targetPath) { m_targetPath = targetPath; }
+class SOFAPYTHON3_API PrefabLink
+{
+public:
+    PrefabLink() {}
+    PrefabLink(const Base::SPtr& targetBase) { m_targetBase = targetBase; }
+    PrefabLink(BaseLink* targetLink) { m_targetBase = targetLink->getLinkedBase(); }
+    PrefabLink(const std::string& targetPath) { m_targetPath = targetPath; }
 
-                const Base::SPtr& getTargetBase() const { return m_targetBase; }
-                void setTargetBase(const Base::SPtr& targetBase) { m_targetBase = targetBase; }
+    const Base::SPtr& getTargetBase() const { return m_targetBase; }
+    void setTargetBase(const Base::SPtr& targetBase) { m_targetBase = targetBase; }
 
-                const std::string& getTargetPath() const { return m_targetPath; }
-                void setTargetPath(const std::string& targetPath) { m_targetPath = targetPath; }
+    const std::string& getTargetPath() const { return m_targetPath; }
+    void setTargetPath(const std::string& targetPath) { m_targetPath = targetPath; }
 
-                friend std::ostream& operator << ( std::ostream& out, const PrefabLink& l)
-                {
-                    if (l.getTargetBase())
-                    {
-                        auto bn = l.getTargetBase()->toBaseNode();
-                        auto bo = l.getTargetBase()->toBaseObject();
-                        out << "@" + (bn ? bn->getPathName() : bo->getPathName());
-                    }
-                    out << l.getTargetPath();
-                    return out;
-                }
-
-                friend std::istream& operator >> ( std::istream& in, PrefabLink& l)
-                {
-                    std::string s;
-                    in >> s;
-                    l.setTargetPath(s);
-                    return in;
-                }
-
-            private:
-                Base::SPtr m_targetBase { nullptr };
-                std::string m_targetPath {""};
-            };
-
-            class SOFAPYTHON3_API DataLink : public Data<PrefabLink>
-            {
-                typedef Data<PrefabLink> Inherit;
-
-                DataLink( const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
-                    : Inherit(helpMsg, isDisplayed, isReadOnly)
-                {
-                }
-
-                DataLink( const std::string& value, const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
-                    : Inherit(value, helpMsg, isDisplayed, isReadOnly)
-                {
-                }
-
-                explicit DataLink(const BaseData::BaseInitData& init)
-                    : Inherit(init)
-                {
-                }
-
-                const PrefabLink& getValue() const
-                {
-                    updateIfDirty();
-                    if (m_value.getValue().getTargetBase()) return m_value.getValue();
-
-                    auto self = const_cast<DataLink*>(this);
-
-                    Base* dst = nullptr;
-                    this->getOwner()->findLinkDest(dst, self->m_value.getValue().getTargetPath(), nullptr);
-                    if (dst) {
-                        auto edit = self->m_value.beginEdit();
-                        edit->setTargetBase(dst);
-                        edit->setTargetPath("");
-                        self->m_value.endEdit();
-                    }
-                    return m_value.getValue();
-                }
-
-                std::string getValueString() const
-                {
-                    const auto& ptr = getValue();
-                    if (ptr.getTargetBase())
-                    {
-                        auto bn = ptr.getTargetBase()->toBaseNode();
-                        auto bo = ptr.getTargetBase()->toBaseObject();
-                        return "@" + (bn ? bn->getPathName() : bo->getPathName());
-                    }
-                    return ptr.getTargetPath();
-                }
-
-
-                bool read(const std::string& value)
-                {
-                    Base* dst;
-                    auto data = m_value.beginEdit();
-                    if (this->getOwner()->findLinkDest(dst, value, nullptr) && dst != nullptr)
-                       data->setTargetBase(dst);
-                    else {
-                        data->setTargetBase(nullptr);
-                        data->setTargetPath(value);
-                    }
-                    return true;
-                }
-            };
-
+    friend std::ostream& operator << ( std::ostream& out, const PrefabLink& l)
+    {
+        if (l.getTargetBase())
+        {
+            auto bn = l.getTargetBase()->toBaseNode();
+            auto bo = l.getTargetBase()->toBaseObject();
+            out << "@" + (bn ? bn->getPathName() : bo->getPathName());
         }
+        out << l.getTargetPath();
+        return out;
     }
+
+    friend std::istream& operator >> ( std::istream& in, PrefabLink& l)
+    {
+        std::string s;
+        in >> s;
+        l.setTargetPath(s);
+        return in;
+    }
+
+private:
+    Base::SPtr m_targetBase { nullptr };
+    std::string m_targetPath {""};
+};
+}
+}
+namespace defaulttype
+{
+template <>
+struct DataTypeName<core::objectmodel::PrefabLink>
+{
+    static const char* name() { return "PrefabLink"; }
+};
+
+}
 }
 
 /////////////////////////////// DECLARATION //////////////////////////////
@@ -192,7 +136,7 @@ public:
 
 SOFAPYTHON3_API void setItem2D(py::array a, py::slice slice, py::object o);
 SOFAPYTHON3_API void setItem2D(py::array a, const py::slice& slice,
-               const py::slice& slice1, py::object o);
+                               const py::slice& slice1, py::object o);
 SOFAPYTHON3_API void setItem1D(py::array a, py::slice slice, py::object o);
 SOFAPYTHON3_API void setItem(py::array a, py::slice slice, py::object value);
 
@@ -216,11 +160,16 @@ void SOFAPYTHON3_API copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo
 
 std::string SOFAPYTHON3_API toSofaParsableString(const py::handle& p);
 
-//py::object SOFAPYTHON3_API dataToPython(BaseData* d);
-
 /// RVO optimized function. Don't care about copy on the return code.
 void SOFAPYTHON3_API fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc,
-                               const py::dict& dict);
+                                               const py::dict& dict);
+
+/// Split the content of the dictionnary 'dict' in three set.
+/// On containing the data to parent, one containing the data to copy and on containing the data to parse in the BaseObjectDescription
+void SOFAPYTHON3_API processKwargsForObjectCreation(const py::dict dict,
+                                                    py::list& parametersToLink,
+                                                    py::list& parametersToCopy,
+                                                    sofa::core::objectmodel::BaseObjectDescription& parametersAsString);
 
 template<typename T>
 void copyScalar(BaseData* a, const AbstractTypeInfo& nfo, py::array_t<T, py::array::c_style> src)
