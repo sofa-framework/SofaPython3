@@ -192,9 +192,6 @@ class Prefab(Sofa.Core.RawPrefab):
         self.setName(str(self.__class__.__name__))
         self.addData("prefabname", value=type(self).__name__, type="string", group="Infos", help="Name of the prefab")
         self.addData("docstring", value=self.__doc__, type="string", group="Infos", help="Documentation of the prefab")
-        #args[0] should be the parent node. it has to be added NOW (before creating prefabParams) so that the links can be resolved before calling doReInit()
-        #if issubclass(type(args[0]), Sofa.Core.Node):
-        #    args[0].addChild(self)
 
         # Prefab parameters must be created in a dedicated function so that it can be called HERE (after the context is set, and before calls to doReInit()
         if hasattr(self, "properties"):
@@ -203,7 +200,7 @@ class Prefab(Sofa.Core.RawPrefab):
                 self.addPrefabParameter(name=p['name'], type=p['type'], help=p['help'], default=kwargs.get(p['name'], p['default']))
                 if self.__doc__ == None:
                     self.__doc__ = ""
-                self.__doc__ = self.__doc__ + "\n:param " + p['name'] + ": " + p['help'] + ", defaults to " + p['default'] + '\n:type ' + p['name'] + ": " + p['type'] + "\n\n"
+                self.__doc__ = self.__doc__ + "\n:param " + p['name'] + ": " + p['help'] + ", defaults to " + str(p['default']) + '\n:type ' + p['name'] + ": " + str(p['type']) + "\n\n"
                 self.docstring.value = self.__doc__
         self.init()
 
