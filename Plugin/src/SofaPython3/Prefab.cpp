@@ -28,11 +28,6 @@ void Prefab::init()
 void PrefabFileEventListener::fileHasChanged(const std::string &filename)
 {
     PythonEnvironment::gil acquire ;
-    //std::string file=filepath;
-    //SP_CALL_FILEFUNC(const_cast<char*>("onReimpAFile"),
-    //                 const_cast<char*>("s"),
-    //                 const_cast<char*>(file.data()));
-
     py::dict local;
     local["filename"] = filename;
     py::eval("onReimpAFile(filename)", py::globals(), local);
@@ -53,12 +48,11 @@ void Prefab::reinit()
     /// Beurk beurk beurk
     sofa::simulation::getSimulation()->initNode(this);
     execute<VisualInitVisitor>(nullptr);
-
-    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 void Prefab::doReInit()
 {
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 Prefab::Prefab()
