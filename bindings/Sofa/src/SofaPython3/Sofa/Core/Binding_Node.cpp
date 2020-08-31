@@ -157,17 +157,20 @@ py::object addObject(Node& self, BaseObject* object)
 /// Implement the addObject function.
 py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
+    /// Check that the name of the component is not one of the protected keywords (like: children, nodes,and others...)
     if (kwargs.contains("name"))
     {
         std::string name = py::str(kwargs["name"]);
         if (sofapython3::isProtectedKeyword(name))
             throw py::value_error("addObject: Cannot call addObject with name " + name + ": Protected keyword");
     }
+
     /// Prepare the description to hold the different python attributes as data field's
     /// arguments then create the object.
     BaseObjectDescription desc {type.c_str(), type.c_str()};
     py::list parametersToCopy;
     py::list parametersToLink;
+
     processKwargsForObjectCreation(kwargs, parametersToLink, parametersToCopy, desc);
     auto object = ObjectFactory::getInstance()->createObject(self, &desc);
 
@@ -203,18 +206,20 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
             else if(parametersToCopy.contains(a.first))
                 PythonFactory::fromPython(d, py::cast<py::object>(a.second));
             d->setPersistent(true);
+        }else
+        {
+            throw py::type_error("Unknown Attribute: '"+py::cast<std::string>(a.first)+"'");
         }
     }
     return PythonFactory::toPython(object.get());
 }
 
-/// Implement the addObject function.
+/// Implement the add(callable, xxx) function.
 py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& kwargs)
 {
     if(py::isinstance<BaseObject*>(callable))
     {
         BaseObject* obj = py::cast<BaseObject*>(callable);
-
         self->addObject(obj);    
         return py::cast(obj);
     }
