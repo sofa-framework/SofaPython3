@@ -12,6 +12,17 @@ function(SP3_configure_directory input_folder output_folder)
     endforeach()
 endfunction()
 
+# - Recursively configure files inside a directory. Takes the same argument as configure_file, but here the input
+#   parameter is a path to a directory.
+function(SP3_make_link target_folder symbolic_link_folder)
+    get_filename_component(relative_directory ${symbolic_link_folder} DIRECTORY)
+    make_directory("${relative_directory}")
+    message(" -- Link: ${target_folder} ${symbolic_link_folder}")
+    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${target_folder} ${symbolic_link_folder})
+endfunction()
+
+
+
 # - Get the path to the Python's user site packages directory (for example, $HOME/.local/lib/pythonX.Y/site-packages
 # PYTHON_USER_SITE - (output) The path to Python's site packages directory, or FALSE if not found
 macro(SP3_get_python_user_site)
@@ -38,7 +49,8 @@ endmacro()
 # SP3_add_python_package(PACKAGE_NAME SOURCE_DIRECTORY TARGET_DIRECTORY)
 #  SOURCE_DIRECTORY   - (input) the source path of the directory to be configured and copied to the target directory.
 #  TARGET_DIRECTORY   - (input) the target path of the directory that will contain the configured files.
-#                               Files will be at LIBRARY_OUTPUT_DIRECTORY/SP3_PYTHON_PACKAGES_DIRECTORY/TARGET_DIRECTORY.
+#
+# Files will be at LIBRARY_OUTPUT_DIRECTORY/SP3_PYTHON_PACKAGES_DIRECTORY/TARGET_DIRECTORY.
 function(SP3_add_python_package)
     set(options)
     set(oneValueArgs PACKAGE_NAME SOURCE_DIRECTORY TARGET_DIRECTORY )
@@ -47,20 +59,37 @@ function(SP3_add_python_package)
     cmake_parse_arguments(A "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     file(GLOB_RECURSE files RELATIVE ${A_SOURCE_DIRECTORY} ${A_SOURCE_DIRECTORY}/*)
+    set(abs_files "")
+
+    file(MAKE_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY})
+    message("Creating directory: ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}" )
+
+    set(python3_dist_package ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/python3/dist-packages/ )
+    set(python3_site_package ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/ )
+
     foreach(file_relative_path ${files})
+        if(${file_relative_path} MATCHES "\.pyc$")
+            continue()
+        endif()
         set(file_absolute_path ${A_SOURCE_DIRECTORY}/${file_relative_path})
-        configure_file(
-            ${file_absolute_path}
-            ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}/${file_relative_path}
-            @ONLY
-        )
+        list(APPEND abs_files ${file_absolute_path})
         get_filename_component(relative_directory ${file_relative_path} DIRECTORY)
+
+        file(MAKE_DIRECTORY "${python3_site_package}/${A_TARGET_DIRECTORY}/${relative_directory}")
+        file(MAKE_DIRECTORY "${python3_dist_package}/${A_TARGET_DIRECTORY}/${relative_directory}")
+
+        SP3_make_link(${file_absolute_path} "${python3_site_package}/${A_TARGET_DIRECTORY}/${file_relative_path}")
+
+        #message(" -- copy ${file_absolute_path} to ${python3_dist_package}/${A_TARGET_DIRECTORY}/${file_relative_path}")
+        file(COPY ${file_absolute_path} DESTINATION ${python3_dist_package}/${A_TARGET_DIRECTORY}/${relative_directory})
+
         install(
-            FILES "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}/${file_relative_path}"
+            FILES "${python3_dist_package}${A_TARGET_DIRECTORY}/${file_relative_path}"
             DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}/${relative_directory}"
         )
     endforeach()
-
+    string(REPLACE "/" "." OUTDIR ${A_TARGET_DIRECTORY})
+    add_custom_target(PythonPackage_${OUTDIR} SOURCES ${abs_files})
     message(STATUS "Python package ${A_SOURCE_DIRECTORY} added to directory ${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}")
 endfunction()
 

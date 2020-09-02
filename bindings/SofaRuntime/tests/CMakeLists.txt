@@ -5,7 +5,7 @@ set(SOURCE_FILES
 )
 
 set(PYTHON_FILES
-      ${CMAKE_CURRENT_SOURCE_DIR}/tests/Base.py
+      ${CMAKE_CURRENT_SOURCE_DIR}/test-files/Base.py
 )
 
 find_package(SofaGTestMain REQUIRED)
@@ -14,7 +14,6 @@ find_package(SofaFramework REQUIRED)
 enable_testing()
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaHelper SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core)
-target_compile_definitions(${PROJECT_NAME} PRIVATE "PYTHON_TESTFILES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"")
 
 set(RPATH "$ORIGIN/../lib")
 if (APPLE)
@@ -30,8 +29,8 @@ set_target_properties(
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 
-SP3_configure_directory(${CMAKE_CURRENT_SOURCE_DIR}/tests ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/tests)
-install(DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/tests DESTINATION ${RUNTIME_OUTPUT_DIRECTORY})
+SP3_make_link(${CMAKE_CURRENT_SOURCE_DIR}/test-files ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/tests/SofaRuntime)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test-files DESTINATION ${RUNTIME_OUTPUT_DIRECTORY}/tests/SofaRuntime)
 
 install(
     TARGETS ${PROJECT_NAME}

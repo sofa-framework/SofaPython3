@@ -84,7 +84,7 @@ static struct PythonModule_SofaExporter_tests : public PythonTestList
     PythonModule_SofaExporter_tests()
     {
         const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
-        addTestDir(executable_directory+"/tests", "SofaExporter_");
+        addTestDir(executable_directory+"/tests/SofaExporter", "SofaExporter_");
     }
 } python_tests;
 
