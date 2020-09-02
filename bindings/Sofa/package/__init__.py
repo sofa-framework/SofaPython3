@@ -41,7 +41,9 @@ import Sofa.Types
 import Sofa.Components
 import SofaTypes
 
-__all__=["animation"]
+from .prefab import *
+
+__all__=["animation", "prefab"]
 
 # Keep a list of the modules always imported in the Sofa-PythonEnvironment
 try:
@@ -169,44 +171,6 @@ def pyType2sofaType(v):
     if isinstance(v, Sofa.PyTypes.DataType):
         return v.sofaTypeName
     return None
-
-
-class Prefab(Sofa.Core.RawPrefab):
-
-    def __init__(self, *args, **kwargs):
-        Sofa.Core.RawPrefab.__init__(self, *args, **kwargs)
-        frame = inspect.currentframe().f_back
-        frameinfo = inspect.getframeinfo(frame)
-        definedloc = (frameinfo.filename, frameinfo.lineno)
-
-        self.setDefinitionSourceFileName(definedloc[0])
-        self.setDefinitionSourceFilePos(definedloc[1])
-        self.setSourceTracking(definedloc[0])
-
-        frame = frame.f_back
-        if frame is not None:
-            frameinfo = inspect.getframeinfo(frame)
-            definedloc = (frameinfo.filename, frameinfo.lineno)
-            self.setInstanciationSourceFileName(definedloc[0])
-            self.setInstanciationSourceFilePos(definedloc[1])
-
-        self.setName(str(self.__class__.__name__))
-        self.addData("prefabname", value=type(self).__name__, type="string", group="Infos", help="Name of the prefab")
-        self.addData("docstring", value=self.__doc__, type="string", group="Infos", help="Documentation of the prefab")
-        #args[0] should be the parent node. it has to be added NOW (before creating prefabParams) so that the links can be resolved before calling doReInit()
-        #if issubclass(type(args[0]), Sofa.Core.Node):
-        #    args[0].addChild(self)
-
-        # Prefab parameters must be created in a dedicated function so that it can be called HERE (after the context is set, and before calls to doReInit()
-        if hasattr(self, "properties"):
-            docstring = ""
-            for p in self.properties:
-                self.addPrefabParameter(name=p['name'], type=p['type'], help=p['help'], default=kwargs.get(p['name'], p['default']))
-                if self.__doc__ == None:
-                    self.__doc__ = ""
-                self.__doc__ = self.__doc__ + "\n:param " + p['name'] + ": " + p['help'] + ", defaults to " + p['default'] + '\n:type ' + p['name'] + ": " + p['type'] + "\n\n"
-                self.docstring.value = self.__doc__
-        self.init()
 
 def msg_error(target, message):
     frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
