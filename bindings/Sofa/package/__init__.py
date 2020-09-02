@@ -41,7 +41,9 @@ import Sofa.Types
 import Sofa.Components
 import SofaTypes
 
-__all__=["animation"]
+from .prefab import *
+
+__all__=["animation", "prefab"]
 
 # Keep a list of the modules always imported in the Sofa-PythonEnvironment
 try:
@@ -170,59 +172,6 @@ def pyType2sofaType(v):
         return v.sofaTypeName
     return None
 
-
-class Prefab(Sofa.Core.RawPrefab):
-    def __init__(self, *args, **kwargs):
-        Sofa.Core.RawPrefab.__init__(self, *args, **kwargs)
-        frame = inspect.currentframe().f_back
-        frameinfo = inspect.getframeinfo(frame)
-        definedloc = (frameinfo.filename, frameinfo.lineno)
-
-        self.setDefinitionSourceFileName(definedloc[0])
-        self.setDefinitionSourceFilePos(definedloc[1])
-        self.setSourceTracking(definedloc[0])
-
-        frame = frame.f_back
-        if frame is not None:
-            frameinfo = inspect.getframeinfo(frame)
-            definedloc = (frameinfo.filename, frameinfo.lineno)
-            self.setInstanciationSourceFileName(definedloc[0])
-            self.setInstanciationSourceFilePos(definedloc[1])
-
-        self.setName(str(self.__class__.__name__))
-        self.addData("prefabname", value=type(self).__name__, type="string", group="Infos", help="Name of the prefab")
-
-        # A prefab should be added to its parent explicitely by calling parent.addChild() with this prefab.
-        # However if for some reason you need to pass a context to your prefab, use the "parents" keyword argument to pass its context
-        if kwargs.has_key("parent") and not kwargs.has_key("parents"):
-            if isinstance(kwargs['parent'], Sofa.Core.Node):
-                kwargs['parent'].addChild(self)
-            else:
-                Sofa.Helper.msg_error(self, "'parent' is a protected keyword on Sofa.Core.Prefab and should only be used to provide the Prefab's context node - if needed for its instantation")
-        elif kwargs.has_key("parents")  and not kwargs.has_key("parent"):
-            if isinstance(kwargs["parents"], list):
-                for parent in kwargs['parents']:
-                    if isinstance(parent, Sofa.Core.Node):
-                        parent.addChild(self)
-                    else:
-                        Sofa.Helper.msg_error(self, "'parents' is an optional protected keyword on Sofa.Core.Prefab and must contain the list of parents of the prefab - if needed for its instantiation")
-            else:
-                Sofa.Helper.msg_error(self, "'parents' is a protected keyword on Sofa.Core.Prefab and should contain the list of parents for the prefab - if needed for its instantiation.")
-        else:
-            if kwargs.has_key("parents")  and not kwargs.has_key("parent"):
-                Sofa.Helper.msg_error(self, "Cannot use both 'parent' and 'parents' keywords on a prefab. Use 'parent' to set the context of your prefab, 'parents' in the case of a multi-parent prefab")
-        
-        # Prefab parameters are defined in a list of dictionaries named "properties".
-        # The dictionaries has 3 required fields (name, type, help) and an additional optional field "default"
-        docstring = ""
-        if hasattr(self, "properties"):
-            docstring += ""
-            for p in self.properties:
-                self.addPrefabParameter(name=p['name'], type=p['type'], help=p['help'], default=kwargs.get(p['name'], p.get('default', '')))
-                docstring += "\n:param " + p['name'] + ": " + p['help'] + ", defaults to " + str(p.get('default', '')) + '\n:type ' + p['name'] + ": " + p['type'] + "\n\n"
-
-        self.addData("docstring", value=self.__doc__ + docstring, type="string", group="Infos", help="Documentation of the prefab")
-        self.init()
 
 def msg_error(target, message):
     frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
