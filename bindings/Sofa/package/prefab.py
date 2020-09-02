@@ -76,7 +76,7 @@ class Prefab(Sofa.Core.RawPrefab):
         if hasattr(self, "properties"):
             docstring += ""
             for p in self.properties:
-                self.addPrefabParameter(name=p['name'], type=p['type'], help=p['help'], default=kwargs.get(p['name'], p.get('default', '')))
+                self.addPrefabParameter(name=p['name'], type=p['type'], help=p['help'], default=kwargs.get(p['name'], p.get('default', None)))
                 docstring += "\n:param " + p['name'] + ": " + p['help'] + ", defaults to " + str(p.get('default', '')) + '\n:type ' + p['name'] + ": " + p['type'] + "\n\n"
 
         self.addData("docstring", value=('' if self.__doc__ is None else self.__doc__) + docstring, type="string", group="Infos", help="Documentation of the prefab")
