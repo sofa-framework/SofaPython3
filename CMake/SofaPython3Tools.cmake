@@ -1,4 +1,4 @@
-include_guard(GLOBAL)
+include_guard()
 
 # - Recursively configure files inside a directory. Takes the same argument as configure_file, but here the input
 #   parameter is a path to a directory.
