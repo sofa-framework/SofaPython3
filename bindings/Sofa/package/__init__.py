@@ -193,14 +193,21 @@ class Prefab(Sofa.Core.RawPrefab):
         self.addData("prefabname", value=type(self).__name__, type="string", group="Infos", help="Name of the prefab")
         self.addData("docstring", value=self.__doc__, type="string", group="Infos", help="Documentation of the prefab")
 
-        # Prefab parameters must be created in a dedicated function so that it can be called HERE (after the context is set, and before calls to doReInit()
+        # A prefab should be added to its parent explicitely by calling parent.addChild() with this prefab.
+        # However if for some reason you need to pass a context to your prefab, use the "parents" keyword argument to pass its context 
+        if kwargs.has_key("parents") and isinstance(kwargs["parents"], list):
+            for parent in kwargs['parents']:
+                parent.addChild(self)
+            
+        # Prefab parameters are defined in a list of dictionaries named "properties".
+        # The dictionaries must contain 3 fields (name, type, help) and an additional optional field "default"
         if hasattr(self, "properties"):
             docstring = ""
             for p in self.properties:
-                self.addPrefabParameter(name=p['name'], type=p['type'], help=p['help'], default=kwargs.get(p['name'], p['default']))
+                self.addPrefabParameter(name=p['name'], type=p['type'], help=p['help'], default=kwargs.get(p['name'], str(p['default'])))
                 if self.__doc__ == None:
                     self.__doc__ = ""
-                self.__doc__ = self.__doc__ + "\n:param " + p['name'] + ": " + p['help'] + ", defaults to " + str(p['default']) + '\n:type ' + p['name'] + ": " + str(p['type']) + "\n\n"
+                self.__doc__ = self.__doc__ + "\n:param " + p['name'] + ": " + p['help'] + ", defaults to " + str(p['default']) + '\n:type ' + p['name'] + ": " + p['type'] + "\n\n"
                 self.docstring.value = self.__doc__
         self.init()
 
