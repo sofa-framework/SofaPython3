@@ -47,7 +47,8 @@ class Prefab(Sofa.Core.RawPrefab):
             self.setInstanciationSourceFileName(definedloc[0])
             self.setInstanciationSourceFilePos(definedloc[1])
 
-        self.setName(str(self.__class__.__name__))
+        if "name" not in kwargs:
+            self.setName(str(self.__class__.__name__))
         self.addData("prefabname", value=type(self).__name__, type="string", group="Infos", help="Name of the prefab")
 
         # A prefab should be added to its parent explicitely by calling parent.addChild() with this prefab.
