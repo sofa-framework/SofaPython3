@@ -50,6 +50,9 @@ public:
     void init() override;
     void doUpdate() override;
 
+    py::list inputs();
+    py::list outputs();
+
     PyDataEngine();
     ~PyDataEngine() override;
 
