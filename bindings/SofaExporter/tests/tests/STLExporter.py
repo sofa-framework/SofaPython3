@@ -7,5 +7,5 @@ import numpy
 
 class Test(unittest.TestCase):
     def test_STLExporter(self):
-        import SofaExporter
+        import Exporter
         Sofa.Helper.msg_error("Not implemented yet")
