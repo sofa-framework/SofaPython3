@@ -34,7 +34,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     std::string(std::string("Vec") + std::to_string(N) + typeid(T).name())
 
 namespace pyVec {
-template <int N, class T> std::string __str__(const Vec<N, T> &v, bool repr)
+template <size_t N, class T> std::string __str__(const Vec<N, T> &v, bool repr)
 {
     std::stringstream s ;
     s.imbue(std::locale("C"));
@@ -88,7 +88,7 @@ void setFromPartialSequence(const VecClass& s, py::list t)
     for(unsigned int i=0;i<N;i++) { t[i] = s[i]; }
 }
 
-template <int N, class T>
+template <size_t N, class T>
 py::class_<Vec<N,T>> addVec(py::module &m)
 {
     typedef Vec<N, T> VecClass;
