@@ -89,21 +89,21 @@ namespace sofa {
                 std::string m_targetPath {""};
             };
 
-            class SOFAPYTHON3_API DataLink : public Data<PrefabLink>
+            class SOFAPYTHON3_API DataPrefabLink : public Data<PrefabLink>
             {
                 typedef Data<PrefabLink> Inherit;
 
-                DataLink( const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
+                DataPrefabLink( const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
                     : Inherit(helpMsg, isDisplayed, isReadOnly)
                 {
                 }
 
-                DataLink( const std::string& value, const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
+                DataPrefabLink( const std::string& value, const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
                     : Inherit(value, helpMsg, isDisplayed, isReadOnly)
                 {
                 }
 
-                explicit DataLink(const BaseData::BaseInitData& init)
+                explicit DataPrefabLink(const BaseData::BaseInitData& init)
                     : Inherit(init)
                 {
                 }
@@ -113,7 +113,7 @@ namespace sofa {
                     updateIfDirty();
                     if (m_value.getValue().getTargetBase()) return m_value.getValue();
 
-                    auto self = const_cast<DataLink*>(this);
+                    auto self = const_cast<DataPrefabLink*>(this);
 
                     Base* dst = nullptr;
                     this->getOwner()->findLinkDest(dst, self->m_value.getValue().getTargetPath(), nullptr);

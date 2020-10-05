@@ -35,7 +35,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 using namespace sofa::defaulttype;
 
 namespace pyMat {
-template <int R, int C>
+template <size_t R, size_t C>
 std::string __str__(const Mat<R, C, double> &self, bool repr) {
     std::string s = (repr) ? (BINDING_MAT_MAKE_NAME(R, C) + "(") : ("(");
     s += pyVec::__str__(self[0]);
@@ -46,10 +46,10 @@ std::string __str__(const Mat<R, C, double> &self, bool repr) {
 }
 } // namespace pyMat
 
-template <int R, int C>
+template <size_t R, size_t C>
 static void bindSquaredMat(py::class_<Mat<R, C, double>> & /*p*/) {}
 
-template <int S> static void bindSquaredMat(py::class_<Mat<S, S, double>> &p) {
+template <size_t S> static void bindSquaredMat(py::class_<Mat<S, S, double>> &p) {
     typedef Mat<S, S, double> MatClass;
     p.def("identity", &MatClass::identity);
     p.def("Identity", &MatClass::Identity);
@@ -58,7 +58,7 @@ template <int S> static void bindSquaredMat(py::class_<Mat<S, S, double>> &p) {
     p.def("invert", &MatClass::invert);
 }
 
-template <int R, int C>
+template <size_t R, size_t C>
 static void addMat(py::module & /*m*/, py::class_<Mat<R, C, double>> &p) {
     typedef Mat<R, C, double> MatClass;
     typedef Mat<C, R, double> TMat;
@@ -171,7 +171,7 @@ static void addMat(py::module & /*m*/, py::class_<Mat<R, C, double>> &p) {
 }
 
 // Generic bindings for Matrices
-template <int R, int C> struct MATRIX {
+template <size_t R, size_t C> struct MATRIX {
     static void addMat(py::module &m) {
         typedef Mat<R, C, double> MatClass;
         py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(R, C).c_str());
@@ -180,10 +180,10 @@ template <int R, int C> struct MATRIX {
 };
 
 // Prevent bindings with L | C == 0
-template <int C> struct MATRIX<0, C> {
+template <size_t C> struct MATRIX<0, C> {
     static void addMat(py::module & /*m*/) {}
 };
-template <int R> struct MATRIX<R, 0> {
+template <size_t R> struct MATRIX<R, 0> {
     static void addMat(py::module & /*m*/) {}
 };
 
