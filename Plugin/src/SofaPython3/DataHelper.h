@@ -84,6 +84,29 @@ namespace sofa {
                     return in;
                 }
 
+                inline bool operator ==(const PrefabLink& value) const
+                {
+                    if (getTargetBase())
+                    {
+                        if (value.getTargetBase())
+                            return getTargetBase() == value.getTargetBase();
+                        else
+                            return getTargetBase()->getPathName() == value.getTargetPath();
+                    }
+                    else
+                    {
+                        if (value.getTargetBase())
+                            return getTargetPath() == value.getTargetBase()->getPathName();
+                        else
+                            return getTargetPath() == value.getTargetPath();
+                    }
+                }
+
+                inline bool operator !=(const PrefabLink& value) const
+                {
+                    return !(*this == value);
+                }
+
             private:
                 Base::SPtr m_targetBase { nullptr };
                 std::string m_targetPath {""};
