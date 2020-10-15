@@ -17,7 +17,7 @@ import Sofa.Core
 import inspect
 import functools
 import inspect
-__all__=["animation", "caching", "meshing"]
+__all__=["animation", "caching", "meshing", "TypeConversionEngine"]
 
 def pyType2sofaType(v):
     if isinstance(v, str):
@@ -83,8 +83,8 @@ def FunctionToPrefab(f):
 class TypeConversionEngine(Sofa.Core.DataEngine):
     def __init__(self, *args, **kwargs):
         Sofa.Core.DataEngine.__init__(self, *args, **kwargs)
-        print(kwargs.get("dstType"))
         self.addData(name="dst", type=kwargs.get("dstType"))
+        self.addData(name="dstType", type="string", value=kwargs.get("dstType"))
         self.addOutput(self.dst)
 
     def update(self):
@@ -95,3 +95,4 @@ class TypeConversionEngine(Sofa.Core.DataEngine):
         data = self.addData(name=d.getOwner().getName() + "_" + d.getName(), value=d)
         self.addInput(data)
         self.__setattr__(data.getName() + "_func", f)
+        ## TODO: needs a way to serialize the input after saving the scene. this engine is currently useless because once saved and reloaded the link is broken.

@@ -1,0 +1,38 @@
+diff --git a/bindings/Sofa/src/SofaPython3/Sofa/Core/Binding_Base.cpp b/bindings/Sofa/src/SofaPython3/Sofa/Core/Binding_Base.cpp
+index 804ff63..a7a43c9 100644
+--- a/bindings/Sofa/src/SofaPython3/Sofa/Core/Binding_Base.cpp
++++ b/bindings/Sofa/src/SofaPython3/Sofa/Core/Binding_Base.cpp
+@@ -371,9 +371,9 @@ void BindingBase::__setattr__(py::object self, const std::string& s, py::object
+     BindingBase::SetAttr(self,s,value);
+ }
+ 
+-py::object BindingBase::getLoggedMessagesAsString(Base& self)
++py::object BindingBase::getLoggedMessagesAsString(Base& self, int type)
+ {
+-    return py::str(self.getLoggedMessagesAsString());
++    return py::str(self.getLoggedMessagesAsString({sofa::helper::logging::Message::Type(type)}));
+ }
+ 
+ py::object BindingBase::countLoggedMessages(Base& self)
+@@ -447,7 +447,7 @@ void moduleAddBase(py::module &m)
+     base.def("getData", &BindingBase::getData, sofapython3::doc::base::getData);
+     base.def("findData", &Base::findData, pybind11::return_value_policy::reference, sofapython3::doc::base::findData);
+     base.def("__dir__", &BindingBase::__dir__);
+-    base.def("getLoggedMessagesAsString", &BindingBase::getLoggedMessagesAsString, sofapython3::doc::base::getLoggedMessagesAsString);
++    base.def("getLoggedMessagesAsString", &BindingBase::getLoggedMessagesAsString, "type"_a = 7, sofapython3::doc::base::getLoggedMessagesAsString);
+     base.def("countLoggedMessages", &BindingBase::countLoggedMessages, sofapython3::doc::base::countLoggedMessages);
+     base.def("clearLoggedMessages", &BindingBase::clearLoggedMessages, sofapython3::doc::base::clearLoggedMessages);
+     base.def("getPathName", &BindingBase::getPathName);
+diff --git a/bindings/Sofa/src/SofaPython3/Sofa/Core/Binding_Base.h b/bindings/Sofa/src/SofaPython3/Sofa/Core/Binding_Base.h
+index 37cf7ed..d312761 100644
+--- a/bindings/Sofa/src/SofaPython3/Sofa/Core/Binding_Base.h
++++ b/bindings/Sofa/src/SofaPython3/Sofa/Core/Binding_Base.h
+@@ -78,7 +78,7 @@ public:
+     static void __setattr__(py::object self, const std::string& s, py::object value);
+     static py::object getData(Base& self, const std::string&);
+ 
+-    static py::object getLoggedMessagesAsString(Base& self);
++    static py::object getLoggedMessagesAsString(Base& self, int type = 7);
+     static py::object countLoggedMessages(Base& self);
+     static py::object clearLoggedMessages(Base& self);
+     static std::string getPathName(Base& self);

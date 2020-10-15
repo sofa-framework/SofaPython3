@@ -47,6 +47,7 @@ static auto ClassEntryClass =
 static auto ObjectFactory_getEntry =
     R"(
     Get an entry given a class name (or alias)
+    TODO @damienmarchal: careful! it seems this function doesn't do what we expect, and adds an entry, with className=entryName in the ObjectFactory. Thus this function always returns a valid entry. Not what we want I think!
     )";
 
 static auto ObjectFactory_shortName =
