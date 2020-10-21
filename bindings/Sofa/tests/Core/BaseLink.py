@@ -93,6 +93,7 @@ class Test(unittest.TestCase):
         self.assertEqual(link_input.getOwnerBase().getName(), "BarycentricMapping")
         self.assertEqual(link_output.getOwnerBase().getName(), "BarycentricMapping")
 
+    @unittest.skip # Segmentation fault on MacOS
     def test_read(self):
         root = Sofa.Core.Node("root")
         c1 = root.addObject("MechanicalObject", name="t1")

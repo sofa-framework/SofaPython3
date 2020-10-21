@@ -1,30 +1,3 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
-
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
 *                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
@@ -55,9 +28,10 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 #include <SofaPython3/PythonTest.h>
 #include <sofa/helper/Utils.h>
+#include <SofaPython3/PythonTestExtractor.h>
 
 using sofapython3::PythonTest ;
-using sofapython3::PythonTestList ;
+using sofapython3::PythonTestExtractor ;
 using sofapython3::PrintTo ;
 using std::string;
 
@@ -79,12 +53,12 @@ static int _inited_=init();
 class Sofa : public PythonTest {};
 
 /// static build of the test list
-static struct PythonModule_Sofa_tests : public PythonTestList
+static struct PythonModule_Sofa_tests : public PythonTestExtractor
 {
     PythonModule_Sofa_tests()
     {
         const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
-        addTestDir(executable_directory+"/tests", "SofaRuntime_");
+        addTestDirectory(executable_directory+"/tests", "SofaRuntime_");
     }
 } python_tests;
 
@@ -92,7 +66,7 @@ static struct PythonModule_Sofa_tests : public PythonTestList
 /// this allows to do gtest_filter=*FileName*
 INSTANTIATE_TEST_CASE_P(SofaPython3,
                         Sofa,
-                        ::testing::ValuesIn(python_tests.list),
+                        ::testing::ValuesIn(python_tests.extract()),
                         Sofa::getTestName);
 
 TEST_P(Sofa, all_tests) { run(GetParam()); }

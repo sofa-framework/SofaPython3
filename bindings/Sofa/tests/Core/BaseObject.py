@@ -23,7 +23,7 @@ class Test(unittest.TestCase):
     def test_createObjectWithInvalidParamValue(self):
         # This one should raise an error because of 'position=xx' should rise a type error.
         root = Sofa.Core.Node("rootNode")
-        root.addObject("MechanicalObject", name="tt", position="xmoi")
+        self.assertRaises(TypeError, root.addObject, "MechanicalObject", name="tt", position="xmoi")
 
     def test_data_property(self):
         root = Sofa.Core.Node("rootNode")
@@ -95,6 +95,5 @@ class Test(unittest.TestCase):
         root = Sofa.Core.Node("rootNode")
         c = root.addObject("Binding_BaseObject_MockComponent", name="t")
         for name in t:
-            print(name)
             getattr(c, name)()
             self.assertEqual(c.test.value, name)
