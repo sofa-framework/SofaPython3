@@ -21,7 +21,12 @@
 ******************************************************************************/
 /******************************************************************************
  * Contributors:                                                              *
- *    - damien.marchal@univ-lille1.fr                                         *
+ *   - damien.marchal@univ-lille.fr                                           *
+ *   - bruno.josue.marques@inria.fr                                           *
+ *   - eve.le-guillou@centrale.centralelille.fr                               *
+ *   - jean-nicolas.brunet@inria.fr                                           *
+ *   - thierry.gaugry@inria.fr                                                *
+ *   - damien.marchal@univ-lille1.fr                                          *
  *****************************************************************************/
 
 #include <vector>
