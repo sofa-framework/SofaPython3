@@ -60,6 +60,15 @@ if (NOT SP3_COMPILED_AS_SUBPROJECT)
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTORY})
 endif()
 
+if(MSVC)
+    # define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
+    add_definitions(-DBOOST_ALL_DYN_LINK)
+
+    # With C++17 (/std:c++17), to get MSVC to behave, you need /permissive-
+    # see https://github.com/pybind/pybind11/issues/1616
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive-")
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
