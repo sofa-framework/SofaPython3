@@ -34,7 +34,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     std::string(std::string("Vec") + std::to_string(N) + typeid(T).name())
 
 namespace pyVec {
-template <size_t N, class T> std::string __str__(const Vec<N, T> &v, bool repr)
+template <sofa::Size N, class T> std::string __str__(const Vec<N, T> &v, bool repr)
 {
     std::stringstream s ;
     s.imbue(std::locale("C"));
@@ -88,7 +88,7 @@ void setFromPartialSequence(const VecClass& s, py::list t)
     for(unsigned int i=0;i<N;i++) { t[i] = s[i]; }
 }
 
-template <size_t N, class T>
+template <sofa::Size N, class T>
 py::class_<Vec<N,T>> addVec(py::module &m)
 {
     typedef Vec<N, T> VecClass;
@@ -114,13 +114,13 @@ py::class_<Vec<N,T>> addVec(py::module &m)
         setFromSequence(v, l);
     });
 
-    p.def("__getitem__", [](const VecClass &v, size_t i) {
+    p.def("__getitem__", [](const VecClass &v, sofa::Index i) {
         if (i >= v.size())
             throw py::index_error();
         return v[i];
     });
 
-    p.def("__setitem__", [](VecClass &v, size_t i, T d) {
+    p.def("__setitem__", [](VecClass &v, sofa::Index i, T d) {
         if (i >= v.size())
             throw py::index_error();
         T &val = v[i];
@@ -129,7 +129,7 @@ py::class_<Vec<N,T>> addVec(py::module &m)
     });
 
     /// Iterator protocol
-    static size_t value = 0;
+    static sofa::Index value = 0;
     p.def("__iter__", [](VecClass &v) {
         value = 0;
         return v;
