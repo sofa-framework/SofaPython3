@@ -120,10 +120,11 @@ if(MSVC)
     add_definitions(-DBOOST_ALL_DYN_LINK)
 endif()
 
-add_subdirectory(Plugin)
-add_subdirectory(bindings)
-add_subdirectory(examples)
-add_subdirectory(docs)
+find_package(SofaFramework REQUIRED)
+sofa_add_plugin(Plugin SofaPython3 ON)
+sofa_add_plugin(bindings SofaPython3_Bindings ON)
+sofa_add_plugin(examples SofaPython3_Examples ON)
+sofa_add_plugin(docs SofaPython3_Docs ON)
 
 SP3_add_python_package(
     SOURCE_DIRECTORY
