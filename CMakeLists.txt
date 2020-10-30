@@ -115,6 +115,11 @@ if (APPLE)
     set(CMAKE_BUILD_RPATH "/Applications/Xcode.app/Contents/Developer/Library/Frameworks")
 endif()
 
+if(MSVC)
+    #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
+    add_definitions(-DBOOST_ALL_DYN_LINK)
+endif()
+
 add_subdirectory(Plugin)
 add_subdirectory(bindings)
 add_subdirectory(examples)
