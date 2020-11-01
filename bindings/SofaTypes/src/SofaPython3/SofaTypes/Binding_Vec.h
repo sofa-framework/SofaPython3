@@ -34,7 +34,7 @@ using namespace pybind11::literals;
 using sofa::defaulttype::Vec;
 
 namespace pyVec {
-template <size_t N, class T>
+template <sofa::Size N, class T>
 std::string __str__(const Vec<N, T> &self, bool repr = false);
 } // namespace pyVec
 
