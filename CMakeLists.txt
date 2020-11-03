@@ -61,9 +61,6 @@ if (NOT SP3_COMPILED_AS_SUBPROJECT)
 endif()
 
 if(MSVC)
-    # define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
-    add_definitions(-DBOOST_ALL_DYN_LINK)
-
     # With C++17 (/std:c++17), to get MSVC to behave, you need /permissive-
     # see https://github.com/pybind/pybind11/issues/1616
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive-")
