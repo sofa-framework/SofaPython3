@@ -47,7 +47,6 @@ namespace sofapython3
     using sofa::core::objectmodel::DDGNode;
 
     void PyDataEngine::init() {
-        std::cout << "PyDataEngine::init()" << std::endl;
     }
 
     void PyDataEngine::doUpdate() {

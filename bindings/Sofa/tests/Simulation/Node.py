@@ -12,13 +12,11 @@ class MyController(Sofa.Core.Controller):
         def __init__(self, *args, **kwargs):
             ## These are needed (and the normal way to override from a python class)
             Sofa.Core.Controller.__init__(self, *args, **kwargs)
-            print(" Python::__init__::"+str(self.name))
             self.event_name = ""
             self.userData = ""
             self.sender = ""
 
         def onPythonScriptEvent(self, kwargs):
-            print(" Handling event PythonScriptEvent " + str(kwargs))
             self.event_name = kwargs.get("event_name")
             self.userData = kwargs.get("userData")
             self.sender = kwargs.get("sender")
@@ -62,11 +60,6 @@ class Test(unittest.TestCase):
 
                 self.assertRaises(ValueError, d1)
                 root.init()
-
-        def test_createChild(self):                
-                root = Sofa.Core.Node("rootNode")
-                root.createChild("child1")
-                self.assertTrue(hasattr(root,"child1"))
                 
         def test_addChild(self):                
                 root = Sofa.Core.Node("rootNode")
@@ -90,7 +83,7 @@ class Test(unittest.TestCase):
 
         def test_createObjectWithParam(self):
                 root = Sofa.Core.Node("rootNode")
-                root.createObject("MechanicalObject", name="mechanical", position=[[0,0,0],[1,1,1],[2,2,2]])
+                root.addObject("MechanicalObject", name="mechanical", position=[[0,0,0],[1,1,1],[2,2,2]])
                         
         def test_children_property(self):                
                 root = Sofa.Core.Node("rootNode")
@@ -119,10 +112,10 @@ class Test(unittest.TestCase):
 
         def test_objects_property(self):
                 root = Sofa.Core.Node("rootNode")
-                root.createObject("MechanicalObject", name="name1")
-                root.createObject("MechanicalObject", name="name2")
+                root.addObject("MechanicalObject", name="name1")
+                root.addObject("MechanicalObject", name="name2")
                 self.assertEqual(len(root.objects), 2)
-                root.createObject("MechanicalObject", name="name2")
+                root.addObject("MechanicalObject", name="name2")
                 self.assertEqual(len(root.objects), 3)
 
         def test_data_property(self):

@@ -26,9 +26,11 @@ set(SOURCE_FILES
 if(SP3_BUILD_TEST)
     list(APPEND HEADER_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonTest.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonTestExtractor.h
     )
     list(APPEND SOURCE_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonTest.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonTestExtractor.cpp
     )
 endif(SP3_BUILD_TEST)
 

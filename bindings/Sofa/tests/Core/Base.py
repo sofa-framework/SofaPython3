@@ -7,7 +7,7 @@ import unittest
 class Test(unittest.TestCase):
     def test_data_property(self):
         root = Sofa.Core.Node("rootNode")
-        c = root.createObject("MechanicalObject", name="t", position=[
+        c = root.addObject("MechanicalObject", name="t", position=[
                               [0, 0, 0], [1, 1, 1], [2, 2, 2]])
         self.assertTrue(hasattr(c, "__data__"))
         self.assertGreater(len(c.__data__), 0)
@@ -119,21 +119,13 @@ class Test(unittest.TestCase):
         c = root.addObject("MechanicalObject", name="t")
         self.assertEqual(c.getTemplateName(),"Vec3d")
 
-    def test_getDataFields(self):
-        root = Sofa.Core.Node("root")
-        c = root.addObject("MechanicalObject", name="t")
-        fields = c.getDataFields()
-
-        for data in fields:
-            print (data)
-
 
 
     def test_addExistingDataAsParentOfNewData(self):
         # TODO(@marques-bruno)
         # do a test like this:
-        # obj1 = root.createObject('AComposant', aDataField="pouet")
-        # obj2 = root.createobject('AnotherComposant')
+        # obj1 = root.addObject('AComposant', aDataField="pouet")
+        # obj2 = root.addObject('AnotherComposant')
         # obj2.addData(obj1.aDataField)
         # self.assertTrue(hasattr(obj2, "aDataField"))
         # self.assertEqual(obj2.an_objectName.getParent(), obj1.aDataField)
@@ -141,7 +133,7 @@ class Test(unittest.TestCase):
 
         # And another one like this:
         # aData = createAnOrphanData(name="MyData", value="pouet", type="str")
-        # obj1 = root.createObject('AComposant', aDataField="pouet")
+        # obj1 = root.addObject('AComposant', aDataField="pouet")
         # obj1.addData(aData)
         # self.assertTrue(hasattr(obj1, "aData"))
         # self.assertEqual(obj2.aData.getOwner(), obj1)
