@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.12)
 
 project(SofaPython3)
 
@@ -58,6 +58,12 @@ if (NOT SP3_COMPILED_AS_SUBPROJECT)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY})
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY})
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTORY})
+endif()
+
+if(MSVC)
+    # With C++17 (/std:c++17), to get MSVC to behave, you need /permissive-
+    # see https://github.com/pybind/pybind11/issues/1616
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive-")
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
