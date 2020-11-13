@@ -27,27 +27,12 @@ jobs:
           brew install ccache ninja boost eigen pybind11
           python3 -m pip install numpy
 
-      - name: Get Date
-        id: get-date
-        run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
-        shell: bash
-
-      - name: Cache SOFA
-        uses: actions/cache@v2
-        id: sofa_cache
-        with:
-          path: /opt/sofa
-          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}
-
       - name: Download SOFA nightly build
-        if: steps.sofa_cache.outputs.cache-hit != 'true'
         run:  |
           curl --output sofa.zip -L \
           https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/lastStableBuild/CI_SCOPE=binaries_minimal/artifact/MacOS/*zip*/MacOS.zip
 
       - name: Install SOFA nightly build
-        if: steps.sofa_cache.outputs.cache-hit != 'true'
         run: |
           sudo unzip sofa.zip -d temp
           sudo unzip temp/MacOS/`ls temp/MacOS/` -d temp
@@ -117,28 +102,13 @@ jobs:
         run: |
           brew install boost
           python3 -m pip install numpy
-          
-      - name: Get Date
-        id: get-date
-        run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
-        shell: bash
-
-      - name: Cache SOFA
-        uses: actions/cache@v2
-        id: sofa_cache
-        with:
-          path: /opt/sofa
-          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}
 
       - name: Download SOFA nightly build
-        if: steps.sofa_cache.outputs.cache-hit != 'true'
         run:  |
           curl --output sofa.zip -L \
           https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/lastStableBuild/CI_SCOPE=binaries_minimal/artifact/MacOS/*zip*/MacOS.zip
 
       - name: Install SOFA nightly build
-        if: steps.sofa_cache.outputs.cache-hit != 'true'
         run: |
           sudo unzip sofa.zip -d temp
           sudo unzip temp/MacOS/`ls temp/MacOS/` -d temp
@@ -155,21 +125,23 @@ jobs:
       - name: Binding.Sofa.Tests
         if: ${{ always() }}
         run: |
-          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$LD_LIBRARY_PATH
+          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH
           export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
+          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins
           chmod +x SofaPython3/bin/Bindings.Sofa.Tests
           ./SofaPython3/bin/Bindings.Sofa.Tests
       - name: Bindings.SofaRuntime.Tests
         if: ${{ always() }}
         run: |
-          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH
+          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH
           export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
+          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins
           chmod +x SofaPython3/bin/Bindings.SofaRuntime.Tests
           ./SofaPython3/bin/Bindings.SofaRuntime.Tests
       - name: Bindings.SofaTypes.Tests
         if: ${{ always() }}
         run: |
-          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH
+          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH
           export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
           chmod +x SofaPython3/bin/Bindings.SofaTypes.Tests
           ./SofaPython3/bin/Bindings.SofaTypes.Tests

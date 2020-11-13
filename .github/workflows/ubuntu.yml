@@ -42,27 +42,12 @@ jobs:
       - name: Install pybind11
         run: cd /tmp/pybind11  && sudo make install
 
-      - name: Get Date
-        id: get-date
-        run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
-        shell: bash
-
-      - name: Cache SOFA
-        uses: actions/cache@v2
-        id: sofa_cache
-        with:
-          path: /opt/sofa
-          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}
-
       - name: Download SOFA nightly build
-        if: steps.sofa_cache.outputs.cache-hit != 'true'
         run:  |
           curl --output sofa.zip -L \
           https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/lastStableBuild/CI_SCOPE=binaries_minimal/artifact/Linux/*zip*/Linux.zip
 
       - name: Install SOFA nightly build
-        if: steps.sofa_cache.outputs.cache-hit != 'true'
         run:  |
           sudo unzip sofa.zip -d temp
           sudo unzip temp/Linux/`ls temp/Linux/` -d temp
@@ -134,33 +119,18 @@ jobs:
           sudo apt install -qq libboost-all-dev
           python3 -m pip install numpy
 
-      - name: Get Date
-        id: get-date
-        run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
-        shell: bash
-
-      - name: Cache SOFA
-        uses: actions/cache@v2
-        id: sofa_cache
-        with:
-          path: /opt/sofa
-          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}
-
       - name: Download SOFA nightly build
-        if: steps.sofa_cache.outputs.cache-hit != 'true'
         run:  |
           curl --output sofa.zip -L \
           https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/lastStableBuild/CI_SCOPE=binaries_minimal/artifact/Linux/*zip*/Linux.zip
 
       - name: Install SOFA nightly build
-        if: steps.sofa_cache.outputs.cache-hit != 'true'
         run: |
           sudo unzip sofa.zip -d temp
           sudo unzip temp/Linux/`ls temp/Linux/` -d temp
           sudo rm -rf temp/Linux
-          mv temp/`ls temp` $SOFA_ROOT
-          rm -rf temp
+          sudo mv temp/`ls temp` $SOFA_ROOT
+          sudo rm -rf temp
 
       - name: Install SP3
         uses: actions/download-artifact@v2
@@ -173,7 +143,7 @@ jobs:
         run: |
           export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH
           export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
-          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins/SofaSparseSolver/lib
+          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins
           chmod +x SofaPython3/bin/Bindings.Sofa.Tests
           ./SofaPython3/bin/Bindings.Sofa.Tests
       - name: Bindings.SofaRuntime.Tests
@@ -181,6 +151,7 @@ jobs:
         run: |
           export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH
           export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
+          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins
           chmod +x SofaPython3/bin/Bindings.SofaRuntime.Tests
           ./SofaPython3/bin/Bindings.SofaRuntime.Tests
       - name: Bindings.SofaTypes.Tests
@@ -188,6 +159,7 @@ jobs:
         run: |
           export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH
           export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
+          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins
           chmod +x SofaPython3/bin/Bindings.SofaTypes.Tests
           ./SofaPython3/bin/Bindings.SofaTypes.Tests
 
