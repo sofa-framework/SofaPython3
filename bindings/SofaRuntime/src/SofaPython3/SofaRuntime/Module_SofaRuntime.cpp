@@ -113,7 +113,7 @@ PYBIND11_MODULE(SofaRuntime, m) {
                 .. code-block:: python
 
                    import SofaRuntime
-                   SofaRuntime.importPlugin("SofaComponentAll")
+                   SofaRuntime.importPlugin("SofaSparseSolver")
 
               )doc";
 

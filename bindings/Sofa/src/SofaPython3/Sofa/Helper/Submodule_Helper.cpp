@@ -25,12 +25,11 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - thierry.gaugry@inria.fr
 ********************************************************************/
 
-
+#include <sofa/core/init.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <SofaPython3/PythonEnvironment.h>
 #include <sofa/core/objectmodel/Base.h>
 #include "System/Submodule_System.h"
-#include "Submodule_Helper.h"
 #include "Binding_MessageHandler.h"
 #include "Binding_Vector.h"
 
@@ -111,6 +110,9 @@ static void parse_emitter_message_then(py::args args, const Action& action) {
 /// The first parameter must be named the same as the module file to load.
 PYBIND11_MODULE(Helper, helper)
 {
+    // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
+    sofa::core::init();
+
     helper.doc() = R"doc(
            Utility functions
            -----------------------

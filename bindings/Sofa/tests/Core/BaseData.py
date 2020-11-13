@@ -7,7 +7,6 @@ import Sofa.Types
 import SofaRuntime
 from Sofa.PyTypes import RGBAColor
 
-SofaRuntime.importPlugin('SofaComponentAll')
 
 class NpArrayTestController(Sofa.Core.Controller):
     def __init__(self, *args, **kwargs):

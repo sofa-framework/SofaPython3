@@ -72,6 +72,7 @@ endif()
 
 find_package(SofaFramework REQUIRED)
 find_package(SofaBase REQUIRED)
+find_package(SofaCommon REQUIRED)
 find_package(SofaSimulation REQUIRED)
 
 SP3_add_python_module(
@@ -80,5 +81,5 @@ SP3_add_python_module(
     MODULE_NAME  Core
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
-    DEPENDS      SofaCore SofaSimulationCore SofaSimulationGraph SofaBaseVisual SofaPython3::Plugin
+    DEPENDS      SofaBase SofaCore SofaSimulation SofaCommon SofaPython3::Plugin
 )
