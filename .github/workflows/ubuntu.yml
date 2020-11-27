@@ -45,7 +45,7 @@ jobs:
       - name: Download SOFA nightly build
         run:  |
           curl --output sofa.zip -L \
-          https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/lastStableBuild/CI_SCOPE=binaries_minimal/artifact/Linux/*zip*/Linux.zip
+          https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries-v20.12/lastSuccessfulBuild/CI_SCOPE=binaries_minimal/artifact/Linux/*zip*/Linux.zip
 
       - name: Install SOFA nightly build
         run:  |
@@ -122,7 +122,7 @@ jobs:
       - name: Download SOFA nightly build
         run:  |
           curl --output sofa.zip -L \
-          https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/lastStableBuild/CI_SCOPE=binaries_minimal/artifact/Linux/*zip*/Linux.zip
+          https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries-v20.12/lastSuccessfulBuild/CI_SCOPE=binaries_minimal/artifact/Linux/*zip*/Linux.zip
 
       - name: Install SOFA nightly build
         run: |

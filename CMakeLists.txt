@@ -122,6 +122,12 @@ if (APPLE)
 endif()
 
 find_package(SofaFramework REQUIRED)
+
+if (NOT SP3_COMPILED_AS_SUBPROJECT)
+    get_filename_component(SOFA_ROOT_DIR "${SofaFramework_DIR}/../../.." ABSOLUTE)
+    message(STATUS "SOFA Framework:\n\tVersion: ${SofaFramework_VERSION}\n\tLocation: ${SOFA_ROOT_DIR}")
+endif()
+
 sofa_add_plugin(Plugin SofaPython3 ON)
 sofa_add_plugin(bindings SofaPython3_Bindings ON)
 sofa_add_plugin(examples SofaPython3_Examples ON)

@@ -3,6 +3,7 @@ import Sofa
 import unittest
 import Sofa.Types
 import Sofa.Simulation
+import SofaRuntime
 
 class MyController(Sofa.Core.Controller):
         """This is my custom controller
@@ -221,6 +222,7 @@ class Test(unittest.TestCase):
             self.assertEqual(m,root.getMass())
 
         def test_getForceField(self):
+            SofaRuntime.importPlugin('SofaBoundaryCondition')
             root = Sofa.Core.Node("root")
             root.addObject("MechanicalObject")
             ff = root.addObject('ConstantForceField', template="Vec3d", name="cff2")
