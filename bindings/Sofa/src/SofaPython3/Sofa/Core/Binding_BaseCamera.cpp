@@ -96,6 +96,45 @@ void moduleAddBaseCamera(py::module &m)
         vec = sofa::defaulttype::Quat(py::cast<double>(p[0]),py::cast<double>(p[1]),py::cast<double>(p[2]),py::cast<double>(p[3]));
         self->rotate(vec);
     });
+
+    c.def("rotateCameraAroundPoint", [](BaseCamera *self, py::list p1, py::list p2) {
+         sofa::defaulttype::Quat vec1;
+         sofa::defaulttype::Vec3 vec2;
+         vec1 = sofa::defaulttype::Quat(py::cast<double>(p1[0]),py::cast<double>(p1[1]),py::cast<double>(p1[2]),py::cast<double>(p1[3]));
+         vec2 = sofa::defaulttype::Vec3(py::cast<double>(p2[0]),py::cast<double>(p2[1]),py::cast<double>(p2[2]));
+         self->rotateCameraAroundPoint(vec1, vec2);
+    });
+
+    c.def("getOrientationFromLookAt", [](BaseCamera *self, py::list p1, py::list p2) {
+         sofa::defaulttype::Vec3 vec1;
+         sofa::defaulttype::Vec3 vec2;
+         vec1 = sofa::defaulttype::Vec3(py::cast<double>(p1[0]),py::cast<double>(p1[1]),py::cast<double>(p1[2]));
+         vec2 = sofa::defaulttype::Vec3(py::cast<double>(p2[0]),py::cast<double>(p2[1]),py::cast<double>(p2[2]));
+         return (self->getOrientationFromLookAt(vec1, vec2));
+    });
+
+    c.def("getPositionFromOrientation", [](BaseCamera *self, py::list p1, py::float_ p2, py::list p3) {
+         sofa::defaulttype::Vec3 vec1;
+         double vec2;
+         sofa::defaulttype::Quat vec3;
+         vec1 = sofa::defaulttype::Vec3(py::cast<double>(p1[0]),py::cast<double>(p1[1]),py::cast<double>(p1[2]));
+         vec2 = py::cast<double>(p2);
+         vec3 = sofa::defaulttype::Quat(py::cast<double>(p3[0]),py::cast<double>(p3[1]),py::cast<double>(p3[2]),py::cast<double>(p3[3]));
+         return(self->getPositionFromOrientation(vec1, vec2, vec3));
+    });
+
+    c.def("setCameraType", [](BaseCamera *self, int p1) {
+         self->setCameraType(p1);
+    });
+
+    c.def("Orthographic", [](BaseCamera *self) {
+         self->setCameraType(1);
+    });
+
+    c.def("Perspective", [](BaseCamera *self) {
+         self->setCameraType(0);
+    });
+
 }
 
 } /// namespace sofapython3
