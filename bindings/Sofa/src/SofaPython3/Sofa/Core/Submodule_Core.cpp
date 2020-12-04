@@ -29,11 +29,6 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message;
 
-#include <sofa/core/objectmodel/BaseNode.h>
-#include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/behavior/BaseForceField.h>
-#include <sofa/core/objectmodel/Context.h>
-
 #include "Binding_Base.h"
 #include "Binding_BaseContext.h"
 #include "Binding_BaseObject.h"
@@ -58,7 +53,10 @@ using sofa::helper::logging::Message;
 
 #include "Submodule_Core.h"
 
-
+#include <sofa/core/init.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaCommon/initSofaCommon.h>
+#include <SofaSimulation/initSofaSimulation.h>
 
 namespace sofapython3
 {
@@ -66,6 +64,12 @@ namespace sofapython3
 /// The first parameter must be named the same as the module file to load.
 PYBIND11_MODULE(Core, core)
 {
+    // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
+    sofa::core::init();
+    sofa::component::initSofaBase();
+    sofa::component::initSofaCommon();
+    sofa::initSofaSimulation();
+
     core.doc() = R"doc(
            Scene components
            -----------------------

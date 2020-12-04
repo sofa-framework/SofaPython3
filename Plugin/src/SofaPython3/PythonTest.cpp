@@ -181,7 +181,6 @@ void PythonTest::SetUpTestCase ()
     // The following will be executed once before the first python test file
     PythonEnvironment::Init();
     test_gil = new PythonEnvironment::gil;
-    simpleapi::importPlugin("SofaComponentAll");
     py::module::import("SofaRuntime");
     py::module::import("Sofa");
 }

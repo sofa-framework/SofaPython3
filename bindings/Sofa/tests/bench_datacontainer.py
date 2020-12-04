@@ -6,8 +6,6 @@ import timeit
 import Sofa.Core
 import SofaRuntime
 
-SofaRuntime.importPlugin("SofaComponentAll")
-
 rawcpy = numpy.zeros((1000000,3), dtype=numpy.float64)
 
 root = Sofa.Core.Node("root")

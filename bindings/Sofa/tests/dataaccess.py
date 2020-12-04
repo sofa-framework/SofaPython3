@@ -8,8 +8,6 @@ import timeit
 import Sofa.Core
 import SofaRuntime
 
-SofaRuntime.importPlugin("SofaComponentAll")
-                        
 def oldSofa(obj):
         ol = obj.position.tolist()
         for i in range(len(ol)):

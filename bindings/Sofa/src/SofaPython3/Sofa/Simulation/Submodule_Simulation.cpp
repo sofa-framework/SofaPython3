@@ -42,6 +42,11 @@ using sofa::simulation::Simulation;
 #include <sofa/core/visual/VisualParams.h>
 #include "Submodule_Simulation_doc.h"
 
+#include <sofa/core/init.h>
+#include <sofa/simulation/init.h>
+#include <SofaSimulationGraph/init.h>
+#include <SofaBaseVisual/initBaseVisual.h>
+
 namespace py = pybind11;
 
 namespace sofapython3
@@ -49,6 +54,12 @@ namespace sofapython3
 
 PYBIND11_MODULE(Simulation, simulation)
 {
+    // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
+    sofa::core::init();
+    sofa::simulation::core::init();
+    sofa::simulation::graph::init();
+    sofa::component::initBaseVisual();
+
     if(!sofa::simulation::getSimulation())
         sofa::simulation::setSimulation(new DAGSimulation());
 
