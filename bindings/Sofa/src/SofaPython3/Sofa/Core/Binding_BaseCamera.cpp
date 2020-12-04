@@ -127,6 +127,14 @@ void moduleAddBaseCamera(py::module &m)
     self->setCameraType(p1);
     });
 
+    c.def("Orthographic", [](BaseCamera *self){
+    self->setCameraType(1);
+    });
+
+    c.def("Perspective", [](BaseCamera *self){
+    self->setCameraType(0);
+    });
+
 }
 
 } /// namespace sofapython3
