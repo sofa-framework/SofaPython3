@@ -7,4 +7,4 @@ class Test(unittest.TestCase):
     def test_moduleImport(self):
         import SofaRuntime
 
-        SofaRuntime.importPlugin('SofaComponentAll')
+        SofaRuntime.importPlugin('SofaSparseSolver')

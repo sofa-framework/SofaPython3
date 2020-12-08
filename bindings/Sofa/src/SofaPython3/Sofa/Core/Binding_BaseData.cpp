@@ -154,12 +154,7 @@ void setParent(BaseData* self, BaseData* parent)
 
 bool hasParent(BaseData *self)
 {
-    return !self->getLinkPath().empty();
-}
-
-py::str getAsACreateObjectParameter(BaseData *self)
-{
-    return self->getLinkPath();
+    return (self->getParent() != nullptr);
 }
 
 void updateIfDirty(BaseData* self)
@@ -207,7 +202,6 @@ void moduleAddBaseData(py::module& m)
     data.def("setPersistent", &BaseData::setPersistent, sofapython3::doc::baseData::setPersistent);
     data.def("setParent", setParent, sofapython3::doc::baseData::setParent);
     data.def("hasParent", hasParent, sofapython3::doc::baseData::hasParent);
-    data.def("getAsACreateObjectParameter", getAsACreateObjectParameter, sofapython3::doc::baseData::getAsACreateObjectParameter);
     data.def("read", &BaseData::read, sofapython3::doc::baseData::read);
     data.def("updateIfDirty", updateIfDirty, sofapython3::doc::baseData::updateIfDirty);
     data.def("isDirty", isDirty, sofapython3::doc::baseData::isDirty);

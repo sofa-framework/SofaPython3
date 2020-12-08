@@ -84,26 +84,49 @@ namespace sofa {
                     return in;
                 }
 
+                inline bool operator ==(const PrefabLink& value) const
+                {
+                    if (getTargetBase())
+                    {
+                        if (value.getTargetBase())
+                            return getTargetBase() == value.getTargetBase();
+                        else
+                            return getTargetBase()->getPathName() == value.getTargetPath();
+                    }
+                    else
+                    {
+                        if (value.getTargetBase())
+                            return getTargetPath() == value.getTargetBase()->getPathName();
+                        else
+                            return getTargetPath() == value.getTargetPath();
+                    }
+                }
+
+                inline bool operator !=(const PrefabLink& value) const
+                {
+                    return !(*this == value);
+                }
+
             private:
                 Base::SPtr m_targetBase { nullptr };
                 std::string m_targetPath {""};
             };
 
-            class SOFAPYTHON3_API DataLink : public Data<PrefabLink>
+            class SOFAPYTHON3_API DataPrefabLink : public Data<PrefabLink>
             {
                 typedef Data<PrefabLink> Inherit;
 
-                DataLink( const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
+                DataPrefabLink( const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
                     : Inherit(helpMsg, isDisplayed, isReadOnly)
                 {
                 }
 
-                DataLink( const std::string& value, const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
+                DataPrefabLink( const std::string& value, const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
                     : Inherit(value, helpMsg, isDisplayed, isReadOnly)
                 {
                 }
 
-                explicit DataLink(const BaseData::BaseInitData& init)
+                explicit DataPrefabLink(const BaseData::BaseInitData& init)
                     : Inherit(init)
                 {
                 }
@@ -113,7 +136,7 @@ namespace sofa {
                     updateIfDirty();
                     if (m_value.getValue().getTargetBase()) return m_value.getValue();
 
-                    auto self = const_cast<DataLink*>(this);
+                    auto self = const_cast<DataPrefabLink*>(this);
 
                     Base* dst = nullptr;
                     this->getOwner()->findLinkDest(dst, self->m_value.getValue().getTargetPath(), nullptr);

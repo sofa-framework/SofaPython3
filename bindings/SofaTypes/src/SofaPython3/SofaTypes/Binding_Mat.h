@@ -37,7 +37,7 @@ using sofa::defaulttype::Mat;
 #include "Binding_Vec.h"
 
 namespace pyMat {
-template <int R, int C>
+template <sofa::Size R, sofa::Size C>
 std::string __str__(const Mat<R, C, double> &self, bool repr = false);
 } // namespace pyMat
 

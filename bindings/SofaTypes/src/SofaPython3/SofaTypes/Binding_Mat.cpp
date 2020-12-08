@@ -35,7 +35,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 using namespace sofa::defaulttype;
 
 namespace pyMat {
-template <int R, int C>
+template <sofa::Size R, sofa::Size C>
 std::string __str__(const Mat<R, C, double> &self, bool repr) {
     std::string s = (repr) ? (BINDING_MAT_MAKE_NAME(R, C) + "(") : ("(");
     s += pyVec::__str__(self[0]);
@@ -46,10 +46,10 @@ std::string __str__(const Mat<R, C, double> &self, bool repr) {
 }
 } // namespace pyMat
 
-template <int R, int C>
+template <sofa::Size R, sofa::Size C>
 static void bindSquaredMat(py::class_<Mat<R, C, double>> & /*p*/) {}
 
-template <int S> static void bindSquaredMat(py::class_<Mat<S, S, double>> &p) {
+template <sofa::Size S> static void bindSquaredMat(py::class_<Mat<S, S, double>> &p) {
     typedef Mat<S, S, double> MatClass;
     p.def("identity", &MatClass::identity);
     p.def("Identity", &MatClass::Identity);
@@ -58,7 +58,7 @@ template <int S> static void bindSquaredMat(py::class_<Mat<S, S, double>> &p) {
     p.def("invert", &MatClass::invert);
 }
 
-template <int R, int C>
+template <sofa::Size R, sofa::Size C>
 static void addMat(py::module & /*m*/, py::class_<Mat<R, C, double>> &p) {
     typedef Mat<R, C, double> MatClass;
     typedef Mat<C, R, double> TMat;
@@ -77,12 +77,12 @@ static void addMat(py::module & /*m*/, py::class_<Mat<R, C, double>> &p) {
 
     // Line bracket accessor
     p.def("__getitem__",
-          [](const MatClass &mat, size_t i) {
+          [](const MatClass &mat, sofa::Index i) {
         if (i >= mat.size())
             throw py::index_error();
         return mat[i];
     });
-    p.def("__setitem__", [](MatClass &mat, size_t i, Row value) {
+    p.def("__setitem__", [](MatClass &mat, sofa::Index i, Row value) {
         if (i >= mat.size())
             throw py::index_error();
         Row &val = mat[i];
@@ -92,12 +92,12 @@ static void addMat(py::module & /*m*/, py::class_<Mat<R, C, double>> &p) {
 
     // cell bracket accessor
     p.def("__getitem__",
-          [](const MatClass &mat, size_t i, size_t j) {
+          [](const MatClass &mat, sofa::Index i, sofa::Index j) {
         if (i >= mat.size())
             throw py::index_error();
         return mat(i, j);
     });
-    p.def("__setitem__", [](MatClass &mat, size_t i, size_t j, double value) {
+    p.def("__setitem__", [](MatClass &mat, sofa::Index i, sofa::Index j, double value) {
         if (i >= mat.size())
             throw py::index_error();
         double &val = mat(i, j);
@@ -106,7 +106,7 @@ static void addMat(py::module & /*m*/, py::class_<Mat<R, C, double>> &p) {
     });
 
     /// Iterator protocol - for line in mat:
-    static size_t value = 0;
+    static sofa::Index value = 0;
     p.def("__iter__", [](MatClass &mat) {
         value = 0;
         return mat;
@@ -171,7 +171,7 @@ static void addMat(py::module & /*m*/, py::class_<Mat<R, C, double>> &p) {
 }
 
 // Generic bindings for Matrices
-template <int R, int C> struct MATRIX {
+template <sofa::Size R, sofa::Size C> struct MATRIX {
     static void addMat(py::module &m) {
         typedef Mat<R, C, double> MatClass;
         py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(R, C).c_str());
@@ -180,10 +180,10 @@ template <int R, int C> struct MATRIX {
 };
 
 // Prevent bindings with L | C == 0
-template <int C> struct MATRIX<0, C> {
+template <sofa::Size C> struct MATRIX<0, C> {
     static void addMat(py::module & /*m*/) {}
 };
-template <int R> struct MATRIX<R, 0> {
+template <sofa::Size R> struct MATRIX<R, 0> {
     static void addMat(py::module & /*m*/) {}
 };
 
@@ -198,15 +198,15 @@ template <> struct MATRIX<1, 1> {
                   MatClass *mat = new MatClass(NOINIT);
                   if (py::isinstance<py::list>(l[0])) // 2D array
                   {
-                      for (size_t i = 0; i < MatClass::nbLines; ++i) {
+                      for (sofa::Size i = 0; i < MatClass::nbLines; ++i) {
                           py::list r = l[i];
-                          for (size_t j = 0; j < MatClass::nbCols; ++j) {
+                          for (sofa::Size j = 0; j < MatClass::nbCols; ++j) {
                               (*mat)[i][j] = double(r[j].cast<py::float_>());
                           }
                       }
                   } else // process list as 1D ptr
                   {
-                      for (size_t i = 0; i < MatClass::N; ++i)
+                      for (sofa::Size i = 0; i < MatClass::N; ++i)
                       mat->ptr()[i] = double(l[i].cast<py::float_>());
                   }
                   return std::unique_ptr<MatClass>(mat);
@@ -227,15 +227,15 @@ template <> struct MATRIX<2, 2> {
                   MatClass *mat = new MatClass(NOINIT);
                   if (py::isinstance<py::list>(l[0])) // 2D array
                   {
-                      for (size_t i = 0; i < MatClass::nbLines; ++i) {
+                      for (sofa::Size i = 0; i < MatClass::nbLines; ++i) {
                           py::list r = l[i];
-                          for (size_t j = 0; j < MatClass::nbCols; ++j) {
+                          for (sofa::Size j = 0; j < MatClass::nbCols; ++j) {
                               (*mat)[i][j] = double(r[j].cast<py::float_>());
                           }
                       }
                   } else // process list as 1D ptr
                   {
-                      for (size_t i = 0; i < MatClass::N; ++i)
+                      for (sofa::Size i = 0; i < MatClass::N; ++i)
                       mat->ptr()[i] = double(l[i].cast<py::float_>());
                   }
                   return std::unique_ptr<MatClass>(mat);
@@ -256,15 +256,15 @@ template <> struct MATRIX<3, 3> {
                   MatClass *mat = new MatClass(NOINIT);
                   if (py::isinstance<py::list>(l[0])) // 2D array
                   {
-                      for (size_t i = 0; i < MatClass::nbLines; ++i) {
+                      for (sofa::Size i = 0; i < MatClass::nbLines; ++i) {
                           py::list r = l[i];
-                          for (size_t j = 0; j < MatClass::nbCols; ++j) {
+                          for (sofa::Size j = 0; j < MatClass::nbCols; ++j) {
                               (*mat)[i][j] = double(r[j].cast<py::float_>());
                           }
                       }
                   } else // process list as 1D ptr
                   {
-                      for (size_t i = 0; i < MatClass::N; ++i)
+                      for (sofa::Size i = 0; i < MatClass::N; ++i)
                       mat->ptr()[i] = double(l[i].cast<py::float_>());
                   }
                   return std::unique_ptr<MatClass>(mat);
@@ -285,15 +285,15 @@ template <> struct MATRIX<4, 4> {
                   MatClass *mat = new MatClass(NOINIT);
                   if (py::isinstance<py::list>(l[0])) // 2D array
                   {
-                      for (size_t i = 0; i < MatClass::nbLines; ++i) {
+                      for (sofa::Size i = 0; i < MatClass::nbLines; ++i) {
                           py::list r = l[i];
-                          for (size_t j = 0; j < MatClass::nbCols; ++j) {
+                          for (sofa::Size j = 0; j < MatClass::nbCols; ++j) {
                               (*mat)[i][j] = double(r[j].cast<py::float_>());
                           }
                       }
                   } else // process list as 1D ptr
                   {
-                      for (size_t i = 0; i < MatClass::N; ++i)
+                      for (sofa::Size i = 0; i < MatClass::N; ++i)
                       mat->ptr()[i] = double(l[i].cast<py::float_>());
                   }
                   return std::unique_ptr<MatClass>(mat);
@@ -314,15 +314,15 @@ template <> struct MATRIX<3, 4> {
                   MatClass *mat = new MatClass(NOINIT);
                   if (py::isinstance<py::list>(l[0])) // 2D array
                   {
-                      for (size_t i = 0; i < MatClass::nbLines; ++i) {
+                      for (sofa::Size i = 0; i < MatClass::nbLines; ++i) {
                           py::list r = l[i];
-                          for (size_t j = 0; j < MatClass::nbCols; ++j) {
+                          for (sofa::Size j = 0; j < MatClass::nbCols; ++j) {
                               (*mat)[i][j] = double(r[j].cast<py::float_>());
                           }
                       }
                   } else // process list as 1D ptr
                   {
-                      for (size_t i = 0; i < MatClass::N; ++i)
+                      for (sofa::Size i = 0; i < MatClass::N; ++i)
                       mat->ptr()[i] = double(l[i].cast<py::float_>());
                   }
                   return std::unique_ptr<MatClass>(mat);

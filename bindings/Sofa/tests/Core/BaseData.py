@@ -7,7 +7,6 @@ import Sofa.Types
 import SofaRuntime
 from Sofa.PyTypes import RGBAColor
 
-SofaRuntime.importPlugin('SofaComponentAll')
 
 class NpArrayTestController(Sofa.Core.Controller):
     def __init__(self, *args, **kwargs):
@@ -113,7 +112,7 @@ class Test(unittest.TestCase):
         c = root.addObject("MechanicalObject", name="t", position=[
             [0, 0, 0], [1, 1, 1], [2, 2, 2]])
         self.assertEqual(c.position.typeName(), "vector<Vec3d>")
-        self.assertEqual(c.showColor.typeName(), "Vec4f")
+        self.assertEqual(c.showColor.typeName(), "RGBAColor")
 
     # @unittest.skip  # no reason needed
     def test_ValidDataAccess(self):
@@ -192,11 +191,6 @@ class Test(unittest.TestCase):
         c = root.addObject("MechanicalObject", name="t", position=v)
         c.position.value *= c.position.value
 
-    def test_DataArrayCreateFromNumpy(self):
-        root = Sofa.Core.Node("rootNode")
-        v = numpy.array([[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]])
-        c = root.addObject("MechanicalObject", name="t", position=v)
-
     def test_UnknowAttribute(self):
         """ Access a non-existing attribute of a data field so this should trigger AttributeError"""
         root = Sofa.Core.Node("root")  # < Create a new node
@@ -253,14 +247,8 @@ class Test(unittest.TestCase):
     def test_DataAsContainerNumpyArray_(self):
         root = Sofa.Core.Node("rootNode")
         v = numpy.array([[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]])
-        v2 = numpy.array([0, 1, 2, 3, 4, 5])
         c = root.addObject("MechanicalObject", name="t", position=v.tolist())
-        c2 = root.addObject("BoxROI", name="c2", indices=[0, 1, 2, 3, 4, 5])
-
-        print("indices are")
-        print (c2.indices.value)
-        numpy.testing.assert_array_equal(c2.indices.array(), v2)
-        numpy.testing.assert_array_equal(c2.indices.value, [0, 1, 2, 3, 4, 5])
+        Sofa.Simulation.init(root)
 
         with c.position.writeableArray() as wa:
             self.assertEqual(wa.shape, (4, 3))
@@ -366,8 +354,6 @@ class Test(unittest.TestCase):
         data.setParent(dataParent)
         self.assertEqual(data.getLinkPath(), "@/.aField")
         self.assertEqual(dataParent.getLinkPath(),"@/.aFieldParent")
-        self.assertEqual(data.getAsACreateObjectParameter(), "@[].aFieldParent")
-        self.assertEqual(dataParent.getAsACreateObjectParameter(),"")
 
     def test_read(self):
         root = Sofa.Core.Node("root")

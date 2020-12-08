@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.12)
 
 project(SofaPython3)
 
@@ -60,6 +60,12 @@ if (NOT SP3_COMPILED_AS_SUBPROJECT)
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTORY})
 endif()
 
+if(MSVC)
+    # With C++17 (/std:c++17), to get MSVC to behave, you need /permissive-
+    # see https://github.com/pybind/pybind11/issues/1616
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive-")
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -115,10 +121,17 @@ if (APPLE)
     set(CMAKE_BUILD_RPATH "/Applications/Xcode.app/Contents/Developer/Library/Frameworks")
 endif()
 
-add_subdirectory(Plugin)
-add_subdirectory(bindings)
-add_subdirectory(examples)
-add_subdirectory(docs)
+find_package(SofaFramework REQUIRED)
+
+if (NOT SP3_COMPILED_AS_SUBPROJECT)
+    get_filename_component(SOFA_ROOT_DIR "${SofaFramework_DIR}/../../.." ABSOLUTE)
+    message(STATUS "SOFA Framework:\n\tVersion: ${SofaFramework_VERSION}\n\tLocation: ${SOFA_ROOT_DIR}")
+endif()
+
+sofa_add_plugin(Plugin SofaPython3 ON)
+sofa_add_plugin(bindings SofaPython3_Bindings ON)
+sofa_add_plugin(examples SofaPython3_Examples ON)
+sofa_add_plugin(docs SofaPython3_Docs ON)
 
 SP3_add_python_package(
     SOURCE_DIRECTORY

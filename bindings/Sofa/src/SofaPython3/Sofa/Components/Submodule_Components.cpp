@@ -29,6 +29,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <pybind11/embed.h>
 
+#include <sofa/core/init.h>
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::objectmodel::BaseObjectDescription;
 using sofa::core::ObjectFactory;
@@ -59,6 +60,9 @@ public:
 
 PYBIND11_MODULE(Components, m)
 {
+    // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
+    sofa::core::init();
+
     py::class_<FCreator> mm(m, "Creator");
     mm.def("__call__", [](FCreator& s, const py::args& args, const py::kwargs& kwargs){
         if(args.size() != 1)

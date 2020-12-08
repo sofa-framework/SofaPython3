@@ -25,6 +25,8 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - thierry.gaugry@inria.fr
 ********************************************************************/
 
+#include <sofa/core/init.h>
+
 #include "Submodule_Types.h"
 #include "Binding_BoundingBox.h"
 
@@ -33,6 +35,9 @@ namespace sofapython3
 /// The first parameter must be named the same as the module file to load.
 PYBIND11_MODULE(Types, types)
 {
+    // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
+    sofa::core::init();
+
     types.doc() = R"doc(
            Default data types
            -------------------------------

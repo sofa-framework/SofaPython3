@@ -18,7 +18,7 @@ find_package(SofaBase REQUIRED)
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
     PACKAGE_NAME Sofa
-    MODULE_NAME  BaseTopology
+    MODULE_NAME  SofaBaseTopology
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
     DEPENDS      SofaBaseTopology SofaPython3::Plugin

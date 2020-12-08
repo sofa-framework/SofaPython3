@@ -33,7 +33,6 @@ def createParticle(node, node_name, use_implicit_scheme, use_iterative_solver):
     dofs = p.addObject('MechanicalObject', name="MO", position=[0, 0, 0])
     p.addObject('UniformMass', totalMass=1.0)
 
-    print ("dofs.rest_position " + str(dofs.rest_position.value))
     myRSSFF = NaiveRestShapeSpringsForcefield(name="Springs",
                                            stiffness=50,
                                            mstate=dofs, rest_pos=dofs.rest_position)
@@ -41,7 +40,6 @@ def createParticle(node, node_name, use_implicit_scheme, use_iterative_solver):
 
 
 def rssffScene(use_implicit_scheme=True, use_iterative_solver=True):
-    SofaRuntime.importPlugin("SofaComponentAll")
     SofaRuntime.importPlugin("SofaSparseSolver")
     node = Sofa.Core.Node("root")
     node.gravity = [0, -10, 0]
@@ -59,7 +57,6 @@ class Test(unittest.TestCase):
 
         for i in range(0, 100):
             Sofa.Simulation.animate(root, root.dt.value)
-            print(root.particle.MO.position.value)
             self.assertLess(np_norm(
                 root.particle.MO.rest_position.value - root.particle.MO.position.value), 0.41,
                 "Passed threshold on step " + str(i) + ".")
@@ -73,7 +70,6 @@ class Test(unittest.TestCase):
 
         for i in range(0, 100):
             Sofa.Simulation.animate(root, root.dt.value)
-            print(root.particle.MO.position.value)
             self.assertLess(np_norm(
                 root.particle.MO.rest_position.value - root.particle.MO.position.value), 0.26,
                 "Passed threshold on step " + str(i) + ".")
@@ -87,7 +83,6 @@ class Test(unittest.TestCase):
 
         for i in range(0, 100):
             Sofa.Simulation.animate(root, root.dt.value)
-            print(root.particle.MO.position.value)
             self.assertLess(np_norm(
                 root.particle.MO.rest_position.value - root.particle.MO.position.value), 0.26,
                 "Passed threshold on step " + str(i) + ".")

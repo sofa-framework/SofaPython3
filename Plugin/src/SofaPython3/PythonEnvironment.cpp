@@ -150,7 +150,7 @@ SOFAPYTHON3_API py::module PythonEnvironment::importFromFile(const std::string& 
     py::dict locals;
     locals["module_name"] = py::cast(module); // have to cast the std::string first
     locals["path"]        = py::cast(path);
-    msg_info("SofaPython3") << "Importing module: " << path ;
+
     py::object globs = py::globals();
     if (globals == nullptr)
         globals = &globs;
@@ -253,6 +253,7 @@ void PythonEnvironment::Init()
 
     addPythonModulePathsForPluginsByName("SofaPython3");
 
+    py::module::import("SofaRuntime");
     getStaticData()->m_sofamodule = py::module::import("Sofa");
 
 

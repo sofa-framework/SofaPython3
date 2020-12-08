@@ -27,38 +27,18 @@ jobs:
           brew install ccache ninja boost eigen pybind11
           python3 -m pip install numpy
 
-      - name: Get SOFA nightly build link
-        id: sofa_nightly_link
-        shell: python
-        run: |
-          import urllib.request, json, sys, re
-          url = 'https://api.github.com/repos/jnbrunet/sofa/actions/artifacts'
-          req = urllib.request.Request(url)
-          req.add_header('authorization', 'Bearer ${{ secrets.GITHUB_TOKEN }}')
-          r = urllib.request.urlopen(req).read()
-          artifacts = json.loads(r.decode('utf-8'))['artifacts']
-          os_artifacts = filter(lambda a:re.search('${{ matrix.os }}', a['name'], re.I), artifacts)
-          last_artifact_url = sorted(os_artifacts, reverse=False, key=lambda a:a['created_at'])[-1]['archive_download_url']
-          print(f"::set-output name=link::{last_artifact_url}")
-
-      - name: Cache SOFA
-        uses: actions/cache@v2
-        id: sofa_cache
-        with:
-          path: /opt/sofa
-          key: ${{ steps.sofa_nightly_link.outputs.link }}
-
       - name: Download SOFA nightly build
-        if: steps.sofa_cache.outputs.cache-hit != 'true'
         run:  |
-          curl --output sofa.zip \
-          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-          -u jnbrunet:$TOKEN -L -o sofa.zip / \
-          ${{ steps.sofa_nightly_link.outputs.link }}
+          curl --output sofa.zip -L \
+          https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries-v20.12/lastSuccessfulBuild/CI_SCOPE=binaries_minimal/artifact/MacOS/*zip*/MacOS.zip
 
       - name: Install SOFA nightly build
-        if: steps.sofa_cache.outputs.cache-hit != 'true'
-        run: sudo unzip sofa.zip -d $SOFA_ROOT
+        run: |
+          sudo unzip sofa.zip -d temp
+          sudo unzip temp/MacOS/`ls temp/MacOS/` -d temp
+          sudo rm -rf temp/MacOS
+          sudo mv temp/`ls temp` $SOFA_ROOT
+          rm -rf temp
 
       - name: Get Time
         id: time
@@ -122,41 +102,19 @@ jobs:
         run: |
           brew install boost
           python3 -m pip install numpy
-          
-          
-          
-      - name: Get SOFA nightly build link
-        id: sofa_nightly_link
-        shell: python
-        run: |
-          import urllib.request, json, sys, re
-          url = 'https://api.github.com/repos/jnbrunet/sofa/actions/artifacts'
-          req = urllib.request.Request(url)
-          req.add_header('authorization', 'Bearer ${{ secrets.GITHUB_TOKEN }}')
-          r = urllib.request.urlopen(req).read()
-          artifacts = json.loads(r.decode('utf-8'))['artifacts']
-          os_artifacts = filter(lambda a:re.search('${{ matrix.os }}', a['name'], re.I), artifacts)
-          last_artifact_url = sorted(os_artifacts, reverse=False, key=lambda a:a['created_at'])[-1]['archive_download_url']
-          print(f"::set-output name=link::{last_artifact_url}")
-
-      - name: Cache SOFA
-        uses: actions/cache@v2
-        id: sofa_cache
-        with:
-          path: /opt/sofa
-          key: ${{ steps.sofa_nightly_link.outputs.link }}
 
       - name: Download SOFA nightly build
-        if: steps.sofa_cache.outputs.cache-hit != 'true'
         run:  |
-          curl --output sofa.zip \
-          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-          -u jnbrunet:$TOKEN  -L -o sofa.zip / \
-          ${{ steps.sofa_nightly_link.outputs.link }}
+          curl --output sofa.zip -L \
+          https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries-v20.12/lastSuccessfulBuild/CI_SCOPE=binaries_minimal/artifact/MacOS/*zip*/MacOS.zip
 
       - name: Install SOFA nightly build
-        if: steps.sofa_cache.outputs.cache-hit != 'true'
-        run: sudo unzip sofa.zip -d $SOFA_ROOT && rm sofa.zip
+        run: |
+          sudo unzip sofa.zip -d temp
+          sudo unzip temp/MacOS/`ls temp/MacOS/` -d temp
+          sudo rm -rf temp/MacOS
+          sudo mv temp/`ls temp` $SOFA_ROOT
+          rm -rf temp
 
       - name: Install SP3
         uses: actions/download-artifact@v2
@@ -167,25 +125,24 @@ jobs:
       - name: Binding.Sofa.Tests
         if: ${{ always() }}
         run: |
-          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$SOFA_ROOT/plugins/SofaValidation/lib:$SOFA_ROOT/plugins/SofaNonUniformFem/lib:$SOFA_ROOT/plugins/SofaDenseSolver/lib:$LD_LIBRARY_PATH
-          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/site-packages:$PYTHONPATH
-          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins/SofaSparseSolver/lib
+          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH
+          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
+          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins
           chmod +x SofaPython3/bin/Bindings.Sofa.Tests
           ./SofaPython3/bin/Bindings.Sofa.Tests
       - name: Bindings.SofaRuntime.Tests
         if: ${{ always() }}
         run: |
-          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$SOFA_ROOT/plugins/SofaValidation/lib:$SOFA_ROOT/plugins/SofaNonUniformFem/lib:$SOFA_ROOT/plugins/SofaDenseSolver/lib:$LD_LIBRARY_PATH
-          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/site-packages:$PYTHONPATH
-          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins/SofaSparseSolver/lib
+          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH
+          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
+          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins
           chmod +x SofaPython3/bin/Bindings.SofaRuntime.Tests
           ./SofaPython3/bin/Bindings.SofaRuntime.Tests
       - name: Bindings.SofaTypes.Tests
         if: ${{ always() }}
         run: |
-          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$SOFA_ROOT/plugins/SofaValidation/lib:$SOFA_ROOT/plugins/SofaNonUniformFem/lib:$SOFA_ROOT/plugins/SofaDenseSolver/lib:$LD_LIBRARY_PATH
-          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/site-packages:$PYTHONPATH
-          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins/SofaSparseSolver/lib
+          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH
+          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
           chmod +x SofaPython3/bin/Bindings.SofaTypes.Tests
           ./SofaPython3/bin/Bindings.SofaTypes.Tests
 

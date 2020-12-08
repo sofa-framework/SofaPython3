@@ -55,9 +55,10 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 #include <SofaPython3/PythonTest.h>
 #include <sofa/helper/Utils.h>
+#include <SofaPython3/PythonTestExtractor.h>
 
 using sofapython3::PythonTest ;
-using sofapython3::PythonTestList ;
+using sofapython3::PythonTestExtractor ;
 using sofapython3::PrintTo ;
 using std::string;
 
@@ -79,12 +80,12 @@ static int _inited_=init();
 class SofaExporter : public PythonTest {};
 
 /// static build of the test list
-static struct PythonModule_SofaExporter_tests : public PythonTestList
+static struct PythonModule_SofaExporter_tests : public PythonTestExtractor
 {
     PythonModule_SofaExporter_tests()
     {
         const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
-        addTestDir(executable_directory+"/tests", "SofaExporter_");
+        addTestDirectory(executable_directory+"/tests", "SofaExporter_");
     }
 } python_tests;
 
@@ -92,7 +93,7 @@ static struct PythonModule_SofaExporter_tests : public PythonTestList
 /// this allows to do gtest_filter=*FileName*
 INSTANTIATE_TEST_CASE_P(SofaPython3,
                         SofaExporter,
-                        ::testing::ValuesIn(python_tests.list),
+                        ::testing::ValuesIn(python_tests.extract()),
                         SofaExporter::getTestName);
 
 TEST_P(SofaExporter, all_tests) { run(GetParam()); }
