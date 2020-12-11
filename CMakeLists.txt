@@ -23,12 +23,6 @@ endif ()
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMake")
 include(SofaPython3Tools)
 
-if (SP3_COMPILED_AS_SOFA_SUBPROJECT)
-    if(PLUGIN_SOFAPYTHON)
-        message(FATAL_ERROR "SofaPython3 cannot be built alongside SofaPython. Please set PLUGIN_SOFAPYTHON to OFF")
-    endif()
-endif()
-
 # OPTIONS
 include(CMakeDependentOption)
 
@@ -78,6 +72,11 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Set the minimum python version to 3.7
 set(PYBIND11_PYTHON_VERSION 3.7)
+
+# Find Python3 executable and set PYTHON_EXECUTABLE before finding pybind11
+# to be sure that pybind11 relies on the right Python version
+find_package(Python3 ${PYBIND11_PYTHON_VERSION} COMPONENTS Interpreter REQUIRED)
+set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
 
 # Set the minimum pybind11 version to 2.3 (before that the pybind11::embed target did not exist)
 find_package(pybind11 2.3 CONFIG QUIET REQUIRED)
