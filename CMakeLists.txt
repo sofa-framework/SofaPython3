@@ -134,9 +134,11 @@ if (NOT SP3_COMPILED_AS_SUBPROJECT)
 endif()
 
 sofa_add_plugin(Plugin SofaPython3 ON)
-sofa_add_plugin(bindings SofaPython3_Bindings ON)
-sofa_add_plugin(examples SofaPython3_Examples ON)
-sofa_add_plugin(docs SofaPython3_Docs ON)
+if(PLUGIN_SOFAPYTHON3)
+    add_subdirectory(bindings)
+    add_subdirectory(examples)
+    add_subdirectory(docs)
+endif()
 
 SP3_add_python_package(
     SOURCE_DIRECTORY
