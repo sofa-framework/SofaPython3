@@ -205,12 +205,10 @@ public:
 template <typename T> class py_shared_ptr : public sofa::core::sptr<T>
 {
 public:
-    py_shared_ptr(T *ptr) : sofa::core::sptr<T>(ptr)
-    {
-        auto nptr = dynamic_cast<PythonTrampoline*>(ptr);
-        if(nptr)
-            nptr->setInstance( py::cast(ptr) ) ;
-    }
+    using Base = typename sofa::core::sptr<T>;
+    using Base::Base;
+    py_shared_ptr(const py_shared_ptr& other, T* ptr) : sofa::core::sptr<T>(ptr) {}
+    py_shared_ptr(T* ptr) : sofa::core::sptr<T>(ptr) {}
 };
 
 SOFAPYTHON3_API void setItem2D(py::array a, py::slice slice, py::object o);

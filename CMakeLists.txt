@@ -64,6 +64,9 @@ if(MSVC)
     # With C++17 (/std:c++17), to get MSVC to behave, you need /permissive-
     # see https://github.com/pybind/pybind11/issues/1616
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive-")
+
+    # use M_PI in cmath.h
+    add_definitions("-D_USE_MATH_DEFINES")
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
@@ -172,13 +175,23 @@ if (SP3_LINK_TO_USER_SITE AND SP3_PYTHON_PACKAGES_LINK_DIRECTORY)
     install(DIRECTORY DESTINATION ${SP3_PYTHON_PACKAGES_LINK_DIRECTORY})
     foreach(directory ${directories})
         if(IS_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
-            install(CODE "\
+            if(WIN32)
+                install(CODE "\
                 execute_process( \
-                    COMMAND ${CMAKE_COMMAND} -E create_symlink \
+                    COMMAND ${CMAKE_COMMAND} -E copy_directory \
                     ${CMAKE_INSTALL_PREFIX}/${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory}/ \
                     ${SP3_PYTHON_PACKAGES_LINK_DIRECTORY}/${directory}   \
                 )"
             )
+            else()
+                install(CODE "\
+                    execute_process( \
+                        COMMAND ${CMAKE_COMMAND} -E create_symlink \
+                        ${CMAKE_INSTALL_PREFIX}/${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory}/ \
+                        ${SP3_PYTHON_PACKAGES_LINK_DIRECTORY}/${directory}   \
+                    )"
+                )
+            endif()
         endif()
     endforeach()
 endif()

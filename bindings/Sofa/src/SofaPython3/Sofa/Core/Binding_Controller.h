@@ -26,15 +26,10 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************/
 
 #pragma once
-
 #include "Binding_BaseObject.h"
+#include <SofaPython3/DataHelper.h>
 
 #include <sofa/core/behavior/BaseController.h>
-
-template class pybind11::class_<sofa::core::behavior::BaseController,
-                          sofa::core::objectmodel::BaseObject,
-                          sofa::core::sptr<sofa::core::behavior::BaseController>>;
-
 
 namespace sofapython3
 {
@@ -44,14 +39,30 @@ class Controller : public BaseController
 {
 public:
     SOFA_CLASS(Controller, BaseController);
-    void init() override ;
-    void reinit() override;
+    void init() override {};
+    void reinit() override {};
 
-    Controller();
-    ~Controller() override;
+    Controller() {};
+    ~Controller() override {};
 };
 
 void moduleAddController(py::module &m);
+
+class Controller_Trampoline : public Controller
+{
+public:
+    Controller_Trampoline() = default;
+
+    ~Controller_Trampoline() override = default;
+
+    void init() override;
+    void reinit() override;
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
+
+private:
+    void callScriptMethod(const py::object& self, sofa::core::objectmodel::Event* event,
+        const std::string& methodName);
+};
 
 } /// namespace sofapython3
 
