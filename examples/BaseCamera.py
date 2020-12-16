@@ -78,7 +78,7 @@ def Sphere(rootNode, name, position, color):
     #### Visualization of the sphere
     sphereVisu = sphere.addChild("VisualModel")
     sphereVisu.loader = sphereVisu.addObject('MeshObjLoader', name="loader", 
-        filename="mesh/ball.obj", scale=0.5)
+                                              filename="mesh/ball.obj", scale=0.5)
     sphereVisu.addObject('OglModel', name="model", src="@loader", color=color)
     sphereVisu.addObject('RigidMapping')
     return sphere
