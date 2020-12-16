@@ -1,23 +1,25 @@
-Welcome to SofaPython3 !
-========================
+General overview
+================
 
-The project is python3 binding for the Sofa simulation framework.
-It is composed of one *Sofa plugin* and several *python modules*.
+The SofaPython3 project brings python bindings for the `SOFA simulation framework <https://www.sofa-framework.org>`_.
+Thereby, it allows users to access most of the components and API found in SOFA directly into their python scripts.
 
-*Sofa plugin* embeds a python3 interpreter and a scene loader. This plugins allows you to load
-a python interpreter in a sofa simulation to write Sofa scene directly using python. It also
-permits to implement in python3 custom sofa component like ForceField, Controllers, Visitors.
+This project is composed of two modules: *Sofa plugin* and several *python modules*.
 
-Apart from the SofaPython3 plugin we also provide several *python modules* that exposes python different
-parts of Sofa.
+1. The **SofaPython3 plugin** which embeds a python interpreter and a scene loader. This plugin allows one to load a python
+script as the main simulation scene file. The scene loader will automatically detect the ".py", ".py3", ".py3scn" or
+".pyscn" file extension and load the script into the embedded python interpreter.
 
-The general guidelines design for these binding was to be as much as possible idiomatic python3 API
-and with tight integration for numpy.
+2. The **SofaPython3 bindings** which make the link between the SOFA API and python. These are compiled (C++) python
+modules compatible with the C-Python ABI and can therefore be directly imported into any python interpreter, given
+that the python version is compatible. Hence, the python interpreter embedded inside the *SOFA plugin* will be able
+to load these binding modules. In addition, one could load the binding modules directly inside their own python
+interpreter without requiring the load of the plugin.
 
 General overview
 -----------------
-The Sofa python module:
-^^^^^^^^^^^^^^^^^^^^^^^
+The SOFA python packages:
+^^^^^^^^^^^^^^^^^^^^^^^^^
 Exposes the base Sofa object to build and manipulate a Sofa simulation.
 
 - contains 4 submodules :
