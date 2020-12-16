@@ -1,44 +1,110 @@
-import Sofa.Core
+import Sofa
+import Sofa.Gui
 
+
+# This python script shows the functions to be implemented
+# in order to create your Controller in python
 class EmptyController(Sofa.Core.Controller):
-    """ custom %EmptyController% component for SOFA """
 
     def __init__(self, *args, **kwargs):
+        # These are needed (and the normal way to override from a python class)
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
+
+    # Default BaseObject functions********************************
+    def init(self):
         pass
 
-    def init():
+    def bwdInit():
         pass
     
     def reinit():
         pass
     
-    # DEFAULT EVENTS:
-    def onAnimateBeginEvent(self, event):
-        """ called at the beginning of each time step """
+    # Default Events *********************************************
+    def onAnimateBeginEvent(self, event): # called at each begin of animation step
         pass
 
-    def onAnimateEndEvent(self, event):
-        """ called at the end of each time step """
+    def onAnimateEndEvent(self, event): # called at each end of animation step
         pass
 
     def onKeypressedEvent(self, event):
-        """ called when a key release event is triggered from the UI """
-        pass
+        key = event['key']
+        if ord(key) == 19:  # up
+            print("You pressed the Up key")
+
+        if ord(key) == 21:  # down
+            print("You pressed the Down key")
+
+        if ord(key) == 18:  # left
+            print("You pressed the Left key")
+
+        if ord(key) == 20:  # right
+            print("You pressed the Right key")
 
     def onKeyreleasedEvent(self, event):
-        """ called when a key release event is triggered from the UI """
-        pass
+        key = event['key']
+        if ord(key) == 19:  # up
+            print("You released the Up key")
+
+        if ord(key) == 21:  # down
+            print("You released the Down key")
+
+        if ord(key) == 18:  # left
+            print("You released the Left key")
+
+        if ord(key) == 20:  # right
+            print("You released the Right key")
 
     def onMouseEvent(self, event):
-        """ called when a mouse event is triggered from the UI """
-        pass
+        if (event['State']== 0): # mouse moving
+            print("Mouse is moving (x,y) = "+str(event['mouseX'])+" , "+str(event['mouseY']))
+
+        if (event['State']==1): # left mouse clicked
+            print("Left mouse clicked")
+
+        if (event['State']==2): # left mouse released
+            print("Left mouse released")
+
+        if (event['State']==3): # right mouse released
+            print("Right mouse clicked")
+
+        if (event['State']==4): # right mouse released
+            print("Right mouse released")
+
+        if (event['State']==5): # wheel clicked
+            print("Mouse wheel clicked")
+
+        if (event['State']==6): # wheel released
+            print("Mouse wheel released")
 
     def onScriptEvent(self, event):
-        """ catches events sent from other python scripts """
         pass
 
     def onEvent(self, event):
-        """ generic method called when no script method exists for the sent event """
         pass
 
+
+def createScene(root):
+    root.dt = 0.01
+    root.addObject('DefaultVisualManagerLoop')
+    root.addObject('DefaultAnimationLoop')
+
+    # Add our python controller in the scene
+    root.addObject( EmptyController(name="MyEmptyController") )
+
+
+def main():
+    root=Sofa.Core.Node("root")
+    createScene(root)
+
+    Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
+    Sofa.Gui.GUIManager.createGUI(root, __file__)
+    Sofa.Gui.GUIManager.SetDimension(1080, 1080)
+    Sofa.Gui.GUIManager.MainLoop(root)
+    Sofa.Gui.GUIManager.closeGUI()
+
+    print("End of simulation.")
+
+
+if __name__ == '__main__':
+    main()
