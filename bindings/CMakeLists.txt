@@ -21,23 +21,12 @@ if (SP3_WITH_SOFAEXPORTER)
     target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.SofaExporter)
 endif()
 
-configure_package_config_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/BindingsConfig.cmake.in"
-    "${CMAKE_BINARY_DIR}/cmake/SofaPython3/BindingsConfig.cmake"
-    INSTALL_DESTINATION
-        "${LIBRARY_OUTPUT_DIRECTORY}/cmake/SofaPython3"
-)
-
-install(FILES "${CMAKE_BINARY_DIR}/cmake/SofaPython3/BindingsConfig.cmake" DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/cmake/SofaPython3")
-
-install(TARGETS ${PROJECT_NAME} EXPORT BindingsTargets)
-
-install(
-    EXPORT BindingsTargets
-    NAMESPACE SofaPython3::
-    DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/cmake/SofaPython3"
-    COMPONENT headers
-)
+sofa_create_component_in_package_with_targets(
+    COMPONENT_NAME ${PROJECT_NAME}
+    COMPONENT_VERSION ${SofaPython3_VERSION}
+    PACKAGE_NAME SofaPython3
+    TARGETS ${PROJECT_NAME}
+    )
 
 if (SP3_COMPILED_AS_SOFA_SUBPROJECT)
     ## Python configuration file (build tree), the lib in the source dir (easier while developping .py files)
