@@ -27,17 +27,20 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include <pybind11/detail/init.h>
 
-#include "Binding_Base.h"
-#include "Binding_BaseObject.h"
-#include "Binding_BaseCamera.h"
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaBaseVisual/BaseCamera.h>
+
+#include <SofaPython3/Sofa/Core/Binding_BaseCamera.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseCamera_doc.h>
 
 #include <SofaPython3/PythonFactory.h>
-#include "Binding_BaseCamera_doc.h"
 
-namespace sofapython3
-{
+namespace py { using namespace pybind11; }
+using sofa::core::objectmodel::BaseObject;
+using sofa::component::visualmodel::BaseCamera;
+
+namespace sofapython3 {
 
 std::vector<double> getProjectionMatrix(BaseCamera* self)
 {
@@ -78,7 +81,7 @@ void moduleAddBaseCamera(py::module &m)
     /// register the BaseCamera binding in the pybind11 typeing sytem
     py::class_<BaseCamera,
                sofa::core::objectmodel::BaseObject,
-               sofa::core::sptr<BaseCamera>> c(m, "Camera", sofapython3::doc::baseCamera::baseCameraClass);
+               py_shared_ptr<BaseCamera>> c(m, "Camera", sofapython3::doc::baseCamera::baseCameraClass);
 
     /// register the BaseCamera binding in the downcasting subsystem
     PythonFactory::registerType<BaseCamera>([](sofa::core::objectmodel::Base* object)

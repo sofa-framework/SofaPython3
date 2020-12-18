@@ -37,12 +37,9 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 /////////////////////////////// DECLARATION //////////////////////////////
 namespace sofapython3
 {
-    /// Makes an alias for the pybind11 namespace to increase readability.
-    namespace py { using namespace pybind11; }
-
-    typedef std::function<py::object(sofa::core::objectmodel::Base*)> componentDowncastingFunction;
-    typedef std::function<py::object(sofa::core::objectmodel::BaseData*)> dataDowncastingFunction;
-    typedef std::function<py::dict(sofa::core::objectmodel::Event*)> eventDowncastingFunction;
+    typedef std::function<pybind11::object(sofa::core::objectmodel::Base*)> componentDowncastingFunction;
+    typedef std::function<pybind11::object(sofa::core::objectmodel::BaseData*)> dataDowncastingFunction;
+    typedef std::function<pybind11::dict(sofa::core::objectmodel::Event*)> eventDowncastingFunction;
     typedef std::function<sofa::core::objectmodel::BaseData*()> dataCreatorFunction;
 
     typedef sofa::helper::Factory< std::string, sofa::core::objectmodel::BaseData> DataFactory;
@@ -50,12 +47,12 @@ namespace sofapython3
     class SOFAPYTHON3_API PythonFactory
     {
     public:
-        static py::object toPython(sofa::core::objectmodel::Base* object);
-        static py::object toPython(const sofa::core::objectmodel::BaseData* data);
-        static py::object toPython(sofa::core::objectmodel::BaseData* data);
-        static py::object valueToPython_ro(sofa::core::objectmodel::BaseData* data);
-        static void fromPython(sofa::core::objectmodel::BaseData* data, const py::object& value);
-        static py::object toPython(sofa::core::objectmodel::Event* event);
+        static pybind11::object toPython(sofa::core::objectmodel::Base* object);
+        static pybind11::object toPython(const sofa::core::objectmodel::BaseData* data);
+        static pybind11::object toPython(sofa::core::objectmodel::BaseData* data);
+        static pybind11::object valueToPython_ro(sofa::core::objectmodel::BaseData* data);
+        static void fromPython(sofa::core::objectmodel::BaseData* data, const pybind11::object& value);
+        static pybind11::object toPython(sofa::core::objectmodel::Event* event);
         static sofa::core::objectmodel::BaseData* createInstance(const std::string& typeName);
 
         static void registerType(const std::string& typeName, componentDowncastingFunction fct);

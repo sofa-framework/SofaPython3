@@ -27,22 +27,11 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "Binding_BaseObject.h"
-#include <sofa/core/objectmodel/DataCallback.h>
-#include <SofaSimulationGraph/DAGNode.h>
+#include <pybind11/pybind11.h>
 
-#include <sofa/helper/system/FileMonitor.h>
-#include <SofaPython3/Prefab.h>
+namespace sofapython3 {
 
-
-template class pybind11::class_<sofa::core::objectmodel::BasePrefab,
-                                sofa::simulation::graph::DAGNode,
-                                sofa::core::sptr<sofa::core::objectmodel::BasePrefab>>;
-
-namespace sofapython3
-{
-
-void moduleAddPrefab(py::module &m);
+void moduleAddPrefab(pybind11::module &m);
 
 } /// namespace sofapython3
 

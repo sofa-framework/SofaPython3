@@ -41,6 +41,7 @@ def createParticle(node, node_name, use_implicit_scheme, use_iterative_solver):
 
 def rssffScene(use_implicit_scheme=True, use_iterative_solver=True):
     SofaRuntime.importPlugin("SofaSparseSolver")
+    SofaRuntime.importPlugin("SofaExplicitOdeSolver")
     node = Sofa.Core.Node("root")
     node.gravity = [0, -10, 0]
     createParticle(node, "particle", use_implicit_scheme, use_iterative_solver)

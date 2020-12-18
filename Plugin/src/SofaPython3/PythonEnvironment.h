@@ -70,7 +70,6 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 namespace sofapython3
 {
-namespace py { using namespace pybind11; }
 using sofa::simulation::SceneLoader ;
 
 /// Forward definition
@@ -82,9 +81,9 @@ public:
     static void Init();
     static void Release();
 
-    static py::module importFromFile(const std::string& module,
+    static pybind11::module importFromFile(const std::string& module,
                                      const std::string& path,
-                                     py::object* globals = nullptr);
+                                     pybind11::object* globals = nullptr);
 
     /// Add a path to sys.path, the list of search path for Python modules.
     static void addPythonModulePath(const std::string& path);

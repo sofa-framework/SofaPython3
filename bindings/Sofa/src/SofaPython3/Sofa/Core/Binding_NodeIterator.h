@@ -28,28 +28,21 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include <functional>
 #include <pybind11/pybind11.h>
-#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
 
 #include <sofa/simulation/Node.h>
 
-namespace sofapython3
-{
-namespace py { using namespace pybind11; }
+namespace sofapython3 {
 
-using sofa::simulation::Node;
-using sofa::core::objectmodel::BaseNode;
-
-class NodeIterator
-{
+class NodeIterator {
 public:
-    Node::SPtr owner;
+    sofa::core::sptr<sofa::simulation::Node> owner;
     size_t     index=0;
-    std::function<size_t (Node*)> size ;
-    std::function<Base::SPtr (Node*, size_t)> get ;
+    std::function<size_t (sofa::simulation::Node *)> size ;
+    std::function<sofa::core::sptr<sofa::core::Base> (sofa::simulation::Node *, size_t)> get ;
 
-    NodeIterator(Node::SPtr owner_,
-                 std::function<size_t (Node*)> size_,
-                 std::function<Base::SPtr (Node*, size_t)> get_)
+    NodeIterator(sofa::core::sptr<sofa::simulation::Node> owner_,
+                 std::function<size_t (sofa::simulation::Node *)> size_,
+                 std::function<sofa::core::sptr<sofa::core::Base> (sofa::simulation::Node *, size_t)> get_)
     {
         size = size_;
         get = get_;
@@ -58,6 +51,6 @@ public:
     }
 };
 
-void moduleAddNodeIterator(py::module &m);
+void moduleAddNodeIterator(pybind11::module &m);
 
 } /// namespace sofapython3

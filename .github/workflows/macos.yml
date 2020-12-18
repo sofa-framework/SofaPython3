@@ -69,6 +69,7 @@ jobs:
           -DCMAKE_C_COMPILER_LAUNCHER=ccache
           -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           -DCMAKE_PREFIX_PATH=$SOFA_ROOT/lib/cmake
+          -DCMAKE_BUILD_TYPE=Release
           .
           && ninja && ninja install
           && echo ${CCACHE_BASEDIR}
@@ -125,24 +126,22 @@ jobs:
       - name: Binding.Sofa.Tests
         if: ${{ always() }}
         run: |
-          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH
-          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
-          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins
+          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib
+          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages
           chmod +x SofaPython3/bin/Bindings.Sofa.Tests
           ./SofaPython3/bin/Bindings.Sofa.Tests
       - name: Bindings.SofaRuntime.Tests
         if: ${{ always() }}
         run: |
-          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH
-          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
-          export SOFA_PLUGIN_PATH=$SOFA_ROOT/plugins
+          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib
+          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages
           chmod +x SofaPython3/bin/Bindings.SofaRuntime.Tests
           ./SofaPython3/bin/Bindings.SofaRuntime.Tests
       - name: Bindings.SofaTypes.Tests
         if: ${{ always() }}
         run: |
-          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH
-          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
+          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib
+          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages
           chmod +x SofaPython3/bin/Bindings.SofaTypes.Tests
           ./SofaPython3/bin/Bindings.SofaTypes.Tests
 

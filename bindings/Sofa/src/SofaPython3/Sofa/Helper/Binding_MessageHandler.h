@@ -31,34 +31,24 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <pybind11/pybind11.h>
 
 /// Forward declaration
-namespace sofa {
-    namespace helper {
-        namespace logging {
-            class Message;
-        }
-    }
+namespace sofa::helper::logging {
+class Message;
 }
 
-namespace sofapython3
-{
+namespace sofapython3 {
 
-/// Makes an alias for the pybind11 namespace to increase readability.
-namespace py { using namespace pybind11; }
-
-using namespace pybind11::literals;
-using sofa::helper::logging::Message ;
-using sofa::helper::logging::MessageHandler ;
-
-class PyMessageHandler: public MessageHandler
-{
+class PyMessageHandler: public sofa::helper::logging::MessageHandler {
 public:
-    virtual void process(Message& m) override ;
-
-    PyMessageHandler();
-    ~PyMessageHandler() override;
+    void process(sofa::helper::logging::Message& m) override {}
 };
 
-void moduleAddMessageHandler(py::module &m);
+class MessageHandler_Trampoline : public PyMessageHandler
+{
+public:
+    void process(sofa::helper::logging::Message& m) override ;
+};
+
+void moduleAddMessageHandler(pybind11::module &m);
 
 } /// namespace sofapython3
 

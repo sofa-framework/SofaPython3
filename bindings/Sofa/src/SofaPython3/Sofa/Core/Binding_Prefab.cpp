@@ -26,21 +26,15 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************/
 
 #include <pybind11/pybind11.h>
-#include <pybind11/eval.h>
-
-#include "Binding_Prefab.h"
-#include "Binding_Prefab_doc.h"
-
-#include <SofaPython3/DataHelper.h>
-#include <SofaPython3/PythonFactory.h>
-#include <SofaPython3/PythonEnvironment.h>
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <sofa/core/objectmodel/DataCallback.h>
-using sofa::core::objectmodel::DataCallback;
+#include <SofaPython3/Sofa/Core/Binding_Prefab.h>
+#include <SofaPython3/Sofa/Core/Binding_Prefab_doc.h>
 
-PYBIND11_DECLARE_HOLDER_TYPE(Prefab,
-                             sofapython3::py_shared_ptr<Prefab>, true)
+#include <SofaPython3/Prefab.h>
+#include <sofa/core/objectmodel/DataCallback.h>
+#include <sofa/helper/system/FileMonitor.h>
+using sofa::core::objectmodel::DataCallback;
 
 #include <sofa/simulation/VisualVisitor.h>
 using sofa::simulation::VisualInitVisitor;
@@ -48,20 +42,19 @@ using sofa::simulation::VisualInitVisitor;
 #include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation;
 
-namespace sofapython3
-{
 
-class Prefab_Trampoline : public Prefab, public PythonTrampoline
-{
+/// Bind the python's attribute error
+namespace pybind11 { PYBIND11_RUNTIME_EXCEPTION(attribute_error, PyExc_AttributeError) }
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
+/// To bring in the `_a` literal
+using namespace pybind11::literals;
+
+namespace sofapython3 {
+
+class Prefab_Trampoline : public Prefab {
 public:
-    Prefab_Trampoline() = default;
-
-    ~Prefab_Trampoline() override = default;
-
-    std::string getClassName() const override
-    {
-        return "Prefab"; /// pyobject->ob_type->tp_name;
-    }
+    SOFA_CLASS(Prefab_Trampoline, Prefab);
 
     void doReInit() override ;
 };
@@ -86,14 +79,13 @@ void Prefab_Trampoline::doReInit()
 void moduleAddPrefab(py::module &m) {
     py::class_<sofa::core::objectmodel::BasePrefab,
             sofa::simulation::Node,
-            sofa::core::objectmodel::BasePrefab::SPtr>(m, "BasePrefab");
+            py_shared_ptr<sofa::core::objectmodel::BasePrefab>>(m, "BasePrefab");
 
     py::class_<Prefab,
             Prefab_Trampoline,
             BasePrefab,
             py_shared_ptr<Prefab>> f(m, "RawPrefab",
                                      py::dynamic_attr(),
-                                     py::multiple_inheritance(),
                                      sofapython3::doc::prefab::Prefab);
 
     f.def(py::init([](py::args& /*args*/, py::kwargs& kwargs){

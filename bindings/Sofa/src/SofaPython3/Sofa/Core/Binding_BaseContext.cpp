@@ -25,7 +25,8 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - thierry.gaugry@inria.fr
 ********************************************************************/
 
-#include "Binding_BaseContext.h"
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseContext.h>
 #include <SofaPython3/PythonFactory.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -33,11 +34,13 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/BaseMass.h>
 
+namespace py { using namespace pybind11; }
+
 using namespace sofa::core::objectmodel;
 namespace sofapython3 {
 
 void moduleAddBaseContext(py::module& m) {
-    py::class_<BaseContext, Base, BaseContext::SPtr> c (m, "BaseContext");
+    py::class_<BaseContext, Base, py_shared_ptr<BaseContext>> c (m, "BaseContext");
 
     py::enum_<BaseContext::SearchDirection>(c, "SearchDirection")
         .value("SearchUp",      BaseContext::SearchDirection::SearchUp)

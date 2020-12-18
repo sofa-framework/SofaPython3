@@ -29,12 +29,15 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <sofa/helper/logging/Messaging.h>
 #include <SofaPython3/PythonEnvironment.h>
 #include <sofa/core/objectmodel/Base.h>
-#include "System/Submodule_System.h"
-#include "Binding_MessageHandler.h"
-#include "Binding_Vector.h"
+#include <SofaPython3/Sofa/Helper/System/Submodule_System.h>
+#include <SofaPython3/Sofa/Helper/Binding_MessageHandler.h>
+#include <SofaPython3/Sofa/Helper/Binding_Vector.h>
 
-namespace sofapython3
-{
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
+
+namespace sofapython3 {
+
 using sofa::core::objectmodel::Base;
 using sofa::helper::logging::ComponentInfo;
 using sofa::helper::logging::SofaComponentInfo;

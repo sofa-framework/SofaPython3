@@ -25,10 +25,17 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - thierry.gaugry@inria.fr
 ********************************************************************/
 
-#include "Binding_DataDict.h"
+#include <SofaPython3/Sofa/Core/Binding_DataDict.h>
 
-namespace sofapython3
-{
+using sofa::core::objectmodel::Base;
+using sofa::core::objectmodel::BaseData;
+using sofa::core::sptr;
+
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
+
+namespace sofapython3 {
+
 void moduleAddDataDict(py::module& m)
 {
     ////////////////////////////////////////////////////////////////////////////////////////////////

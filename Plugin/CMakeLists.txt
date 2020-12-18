@@ -37,7 +37,6 @@ endif(SP3_BUILD_TEST)
 find_package(pybind11 CONFIG REQUIRED)
 find_package(SofaFramework REQUIRED)
 find_package(SofaSimulation REQUIRED)
-find_package(SofaGeneral REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})

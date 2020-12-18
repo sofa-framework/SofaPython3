@@ -1,7 +1,6 @@
 project(Bindings.Sofa.Helper)
 
 set(HEADER_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Helper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Vector.h
     ${CMAKE_CURRENT_SOURCE_DIR}/System/Submodule_System.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_MessageHandler.h

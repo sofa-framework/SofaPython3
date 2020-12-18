@@ -25,8 +25,9 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - thierry.gaugry@inria.fr
 ********************************************************************/
 
-#include "Binding_ObjectFactory.h"
-#include "Binding_ObjectFactory_doc.h"
+#include <sofa/core/ObjectFactory.h>
+#include <SofaPython3/Sofa/Core/Binding_ObjectFactory.h>
+#include <SofaPython3/Sofa/Core/Binding_ObjectFactory_doc.h>
 #include <numeric>
 #include <sstream>
 #include <pybind11/stl.h>

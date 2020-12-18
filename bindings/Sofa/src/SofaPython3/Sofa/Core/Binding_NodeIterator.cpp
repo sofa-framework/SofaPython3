@@ -28,10 +28,14 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 /// Neede to have automatic conversion from pybind types to stl container.
 #include <pybind11/stl.h>
 #include <SofaPython3/PythonFactory.h>
-#include "Binding_NodeIterator.h"
+#include <SofaPython3/Sofa/Core/Binding_NodeIterator.h>
 
-namespace sofapython3
-{
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
+
+using sofa::core::objectmodel::BaseObject;
+
+namespace sofapython3 {
 
 void moduleAddNodeIterator(py::module &m)
 {
@@ -70,11 +74,13 @@ void moduleAddNodeIterator(py::module &m)
 
     d.def("at", [](NodeIterator& d, size_t index) -> py::object
     {
-        return py::cast(d.get(d.owner.get(), index));
+        return PythonFactory::toPython(d.get(d.owner.get(), index).get());
     });
     d.def("remove_at", [](NodeIterator& d, size_t index)
     {
-        BaseNode::SPtr n(dynamic_cast<BaseNode*>(d.get(d.owner.get(), index).get()));
+        sofa::core::sptr<sofa::core::objectmodel::BaseNode> n(
+                dynamic_cast<sofa::core::objectmodel::BaseNode *>(d.get(d.owner.get(), index).get())
+        );
         d.owner->removeChild(n);
     });
 }

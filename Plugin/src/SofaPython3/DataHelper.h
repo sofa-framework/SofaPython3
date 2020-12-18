@@ -37,8 +37,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseNode.h>
-
-#include "config.h"
+#include <SofaPython3/config.h>
 
 ////////////////////////// FORWARD DECLARATION ///////////////////////////
 namespace sofa {
@@ -183,7 +182,6 @@ namespace sofa {
 /////////////////////////////// DECLARATION //////////////////////////////
 namespace sofapython3
 {
-namespace py { using namespace pybind11; }
 
 using sofa::core::objectmodel::Base;
 using sofa::core::objectmodel::BaseData;
@@ -192,59 +190,40 @@ using sofa::core::objectmodel::BaseNode;
 using sofa::core::objectmodel::BaseObject;
 using sofa::defaulttype::AbstractTypeInfo;
 
+SOFAPYTHON3_API void setItem2D(pybind11::array a, pybind11::slice slice, pybind11::object o);
+SOFAPYTHON3_API void setItem2D(pybind11::array a, const pybind11::slice& slice,
+               const pybind11::slice& slice1, pybind11::object o);
+SOFAPYTHON3_API void setItem1D(pybind11::array a, pybind11::slice slice, pybind11::object o);
+SOFAPYTHON3_API void setItem(pybind11::array a, pybind11::slice slice, pybind11::object value);
 
-class SOFAPYTHON3_API PythonTrampoline
-{
-protected:
-    std::shared_ptr<PyObject> pyobject;
-public:
-    virtual ~PythonTrampoline();
-    virtual void  setInstance(py::object s);
-};
-
-template <typename T> class py_shared_ptr : public sofa::core::sptr<T>
-{
-public:
-    using Base = typename sofa::core::sptr<T>;
-    using Base::Base;
-    py_shared_ptr(const py_shared_ptr& other, T* ptr) : sofa::core::sptr<T>(ptr) {}
-    py_shared_ptr(T* ptr) : sofa::core::sptr<T>(ptr) {}
-};
-
-SOFAPYTHON3_API void setItem2D(py::array a, py::slice slice, py::object o);
-SOFAPYTHON3_API void setItem2D(py::array a, const py::slice& slice,
-               const py::slice& slice1, py::object o);
-SOFAPYTHON3_API void setItem1D(py::array a, py::slice slice, py::object o);
-SOFAPYTHON3_API void setItem(py::array a, py::slice slice, py::object value);
-
-SOFAPYTHON3_API py::slice toSlice(const py::object& o);
+SOFAPYTHON3_API pybind11::slice toSlice(const pybind11::object& o);
 SOFAPYTHON3_API std::string getPathTo(Base* b);
 SOFAPYTHON3_API const char* getFormat(const AbstractTypeInfo& nfo);
 
-SOFAPYTHON3_API std::map<void*, py::array>& getObjectCache();
+SOFAPYTHON3_API std::map<void*, pybind11::array>& getObjectCache();
 SOFAPYTHON3_API void trimCache();
 
 SOFAPYTHON3_API bool hasArrayFor(BaseData* d);
-SOFAPYTHON3_API py::array resetArrayFor(BaseData* d);
-SOFAPYTHON3_API py::array getPythonArrayFor(BaseData* d);
+SOFAPYTHON3_API pybind11::array resetArrayFor(BaseData* d);
+SOFAPYTHON3_API pybind11::array getPythonArrayFor(BaseData* d);
 
 
 
-py::buffer_info SOFAPYTHON3_API toBufferInfo(BaseData& m);
-py::object SOFAPYTHON3_API convertToPython(BaseData* d);
+pybind11::buffer_info SOFAPYTHON3_API toBufferInfo(BaseData& m);
+pybind11::object SOFAPYTHON3_API convertToPython(BaseData* d);
 
-void SOFAPYTHON3_API copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo, const py::list& l);
+void SOFAPYTHON3_API copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo, const pybind11::list& l);
 
-std::string SOFAPYTHON3_API toSofaParsableString(const py::handle& p);
+std::string SOFAPYTHON3_API toSofaParsableString(const pybind11::handle& p);
 
-//py::object SOFAPYTHON3_API dataToPython(BaseData* d);
+//pybind11::object SOFAPYTHON3_API dataToPython(BaseData* d);
 
 /// RVO optimized function. Don't care about copy on the return code.
 void SOFAPYTHON3_API fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc,
-                               const py::dict& dict);
+                               const pybind11::dict& dict);
 
 template<typename T>
-void copyScalar(BaseData* a, const AbstractTypeInfo& nfo, py::array_t<T, py::array::c_style> src)
+void copyScalar(BaseData* a, const AbstractTypeInfo& nfo, pybind11::array_t<T, pybind11::array::c_style> src)
 {
     void* ptr = a->beginEditVoidPtr();
 
@@ -269,7 +248,7 @@ size_t SOFAPYTHON3_API getNDim(BaseData* self);
 /// https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.size.html#numpy.ndarray.size
 size_t SOFAPYTHON3_API getSize(BaseData* self);
 
-SOFAPYTHON3_API std::ostream& operator<<(std::ostream& out, const py::buffer_info& p);
+SOFAPYTHON3_API std::ostream& operator<<(std::ostream& out, const pybind11::buffer_info& p);
 
 // TODO: move this somewhere else as we will probably need it in several other places.
 template <class T> class raw_ptr
@@ -315,8 +294,8 @@ public:
     ~scoped_writeonly_access(){ data->endEditVoidPtr(); }
 };
 
-SOFAPYTHON3_API BaseData* addData(py::object py_self, const std::string& name, py::object value = py::none(), py::object defaultValue = py::none(), const std::string& help = "", const std::string& group = "Property", std::string type = "");
-SOFAPYTHON3_API BaseLink* addLink(py::object py_self, const std::string& name, py::object value, const std::string& help);
+SOFAPYTHON3_API BaseData* addData(pybind11::object py_self, const std::string& name, pybind11::object value = pybind11::none(), pybind11::object defaultValue = pybind11::none(), const std::string& help = "", const std::string& group = "Property", std::string type = "");
+SOFAPYTHON3_API BaseLink* addLink(pybind11::object py_self, const std::string& name, pybind11::object value, const std::string& help);
 SOFAPYTHON3_API bool isProtectedKeyword(const std::string& name);
 
 }  // namespace sofapython3

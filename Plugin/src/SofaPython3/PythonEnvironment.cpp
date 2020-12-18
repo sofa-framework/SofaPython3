@@ -76,7 +76,9 @@ using sofa::simulation::SceneLoaderFactory;
 
 #include <pybind11/embed.h>
 #include <pybind11/eval.h>
-namespace py = pybind11;
+
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
 
 #include "SceneLoaderPY3.h"
 using sofapython3::SceneLoaderPY3;

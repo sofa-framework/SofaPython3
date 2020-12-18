@@ -29,29 +29,27 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message;
 
-#include "Binding_Base.h"
-#include "Binding_BaseContext.h"
-#include "Binding_BaseObject.h"
-#include "Binding_DataDict.h"
-#include "Binding_BaseData.h"
-#include "Binding_BaseCamera.h"
-#include "Binding_ForceField.h"
-#include "Binding_Context.h"
-#include "Binding_Controller.h"
-#include "Binding_DataEngine.h"
-#include "Binding_ObjectFactory.h"
-#include "Binding_Node.h"
-#include "Binding_NodeIterator.h"
-#include "Binding_Prefab.h"
-#include "Binding_BaseLink.h"
-#include "Binding_PythonScriptEvent.h"
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseContext.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
+#include <SofaPython3/Sofa/Core/Binding_DataDict.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseData.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseCamera.h>
+#include <SofaPython3/Sofa/Core/Binding_ForceField.h>
+#include <SofaPython3/Sofa/Core/Binding_Context.h>
+#include <SofaPython3/Sofa/Core/Binding_Controller.h>
+#include <SofaPython3/Sofa/Core/Binding_DataEngine.h>
+#include <SofaPython3/Sofa/Core/Binding_ObjectFactory.h>
+#include <SofaPython3/Sofa/Core/Binding_Node.h>
+#include <SofaPython3/Sofa/Core/Binding_NodeIterator.h>
+#include <SofaPython3/Sofa/Core/Binding_Prefab.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseLink.h>
+#include <SofaPython3/Sofa/Core/Binding_PythonScriptEvent.h>
 
-#include "Data/Binding_DataString.h"
-#include "Data/Binding_DataLink.h"
-#include "Data/Binding_DataVectorString.h"
-#include "Data/Binding_DataContainer.h"
-
-#include "Submodule_Core.h"
+#include <SofaPython3/Sofa/Core/Data/Binding_DataString.h>
+#include <SofaPython3/Sofa/Core/Data/Binding_DataLink.h>
+#include <SofaPython3/Sofa/Core/Data/Binding_DataVectorString.h>
+#include <SofaPython3/Sofa/Core/Data/Binding_DataContainer.h>
 
 #include <sofa/core/init.h>
 #include <SofaBase/initSofaBase.h>

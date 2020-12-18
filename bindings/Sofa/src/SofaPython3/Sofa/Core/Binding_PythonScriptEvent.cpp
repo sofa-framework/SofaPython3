@@ -25,10 +25,12 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - thierry.gaugry@inria.fr
 ********************************************************************/
 
-#include "Binding_PythonScriptEvent.h"
-
+#include <SofaPython3/Sofa/Core/Binding_PythonScriptEvent.h>
 #include <SofaPython3/PythonFactory.h>
 #include <sofa/core/objectmodel/Event.h>
+
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
 
 namespace sofapython3 {
 using namespace pybind11::literals;

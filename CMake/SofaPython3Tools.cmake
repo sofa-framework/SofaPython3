@@ -125,12 +125,13 @@ function(SP3_add_python_module)
         PUBLIC $<INSTALL_INTERFACE:include>
     )
 
-    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang") # Clang or AppleCLang
         target_compile_options(${A_TARGET} PUBLIC -fsized-deallocation)
     endif()
 
     if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         target_compile_options(${A_TARGET} PRIVATE -Dregister=)
+        target_compile_options(${A_TARGET} PRIVATE -fvisibility=hidden)
     endif()
 
     target_link_libraries(${A_TARGET} PUBLIC pybind11::module)

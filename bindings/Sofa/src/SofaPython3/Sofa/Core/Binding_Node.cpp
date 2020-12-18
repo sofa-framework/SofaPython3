@@ -39,11 +39,11 @@ namespace simpleapi = sofa::simpleapi;
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaSimulationGraph/DAGNode.h>
 using sofa::core::ExecParams;
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
 #include <SofaPython3/DataHelper.h>
 
 #include <sofa/core/ObjectFactory.h>
@@ -52,20 +52,23 @@ using sofa::core::ObjectFactory;
 #include <SofaPython3/PythonFactory.h>
 using sofapython3::PythonFactory;
 
-#include "Binding_Node.h"
-#include "Binding_NodeIterator.h"
-#include "Binding_Context.h"
+#include <SofaPython3/Sofa/Core/Binding_Node.h>
+#include <SofaPython3/Sofa/Core/Binding_Node_doc.h>
+#include <SofaPython3/Sofa/Core/Binding_NodeIterator.h>
+#include <SofaPython3/Sofa/Core/Binding_PythonScriptEvent.h>
 
 using sofa::core::objectmodel::BaseObjectDescription;
 
 #include <queue>
 #include <sofa/core/objectmodel/Link.h>
 
-#include "Binding_Node_doc.h"
-#include "Binding_PythonScriptEvent.h"
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
 
-namespace sofapython3
-{
+
+using sofa::simulation::Node;
+
+namespace sofapython3 {
 
 
 bool checkParamUsage(BaseObjectDescription& desc)
@@ -134,24 +137,34 @@ std::string getLinkPath(Node* node){
 
 
 
-Node::SPtr __init__noname()
-{
-    return sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>("unnamed");
+py_shared_ptr<Node> __init__noname() {
+    auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>("unnamed");
+    return dag_node;
 }
 
-Node::SPtr __init__(const std::string& name)
-{
-    return sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>(name);
+py_shared_ptr<Node> __init__(const std::string& name) {
+    auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>(name);
+    return dag_node;
 }
 
 /// Method: init (beware this is not the python __init__, this is sofa's init())
 void init(Node& self) { self.init(ExecParams::defaultInstance()); }
 
-py::object addObject(Node& self, BaseObject* object)
+py::object addObject(Node& self, const py::object & object)
 {
-    if(self.addObject(object))
-        return PythonFactory::toPython(object);
+    try {
+        auto base_object = py::cast<py_shared_ptr<BaseObject>>(object);
+        if (self.addObject(base_object))
+            return object;
+    } catch (...) {
+        throw py::type_error("Trying to add an object that isn't derived from sofa::core::objectmodel::BaseObject.");
+    }
     return py::none();
+}
+
+void removeObject(Node& self, BaseObject* object)
+{
+    self.removeObject(object);
 }
 
 /// Implement the addObject function.
@@ -453,16 +466,16 @@ void moduleAddNode(py::module &m) {
     /// typing system.
     py::class_<sofa::core::objectmodel::BaseNode,
             sofa::core::objectmodel::Base,
-            sofa::core::objectmodel::BaseNode::SPtr>(m, "BaseNode");
+            py_shared_ptr<sofa::core::objectmodel::BaseNode>>(m, "BaseNode");
 
     py::class_<Node, sofa::core::objectmodel::BaseNode,
-            sofa::core::objectmodel::Context, Node::SPtr>
+            sofa::core::objectmodel::Context, py_shared_ptr<Node>>
             p(m, "Node", sofapython3::doc::sofa::core::Node::Class);
 
     PythonFactory::registerType<sofa::simulation::graph::DAGNode>(
                 [](sofa::core::objectmodel::Base* object)
     {
-        return py::cast(static_cast<Node*>(object->toBaseNode()));
+        return py::cast(dynamic_cast<Node*>(object->toBaseNode()));
     });
 
     p.def(py::init(&__init__noname), sofapython3::doc::sofa::core::Node::init);
@@ -486,7 +499,7 @@ void moduleAddNode(py::module &m) {
     p.def_property_readonly("objects", &property_objects, sofapython3::doc::sofa::core::Node::objects);
     p.def("__getattr__", &__getattr__);
     p.def("__getitem__", &__getitem__);
-    p.def("removeObject", &Node::removeObject, sofapython3::doc::sofa::core::Node::removeObject);
+    p.def("removeObject", &removeObject, sofapython3::doc::sofa::core::Node::removeObject);
     p.def("getRootPath", &Node::getRootPath, sofapython3::doc::sofa::core::Node::getRootPath);
     p.def("moveChild", &moveChild, sofapython3::doc::sofa::core::Node::moveChild);
     p.def("isInitialized", &Node::isInitialized, sofapython3::doc::sofa::core::Node::isInitialized);

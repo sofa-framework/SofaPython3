@@ -40,12 +40,11 @@ using namespace pybind11::literals;
 using sofa::simulation::Simulation;
 
 #include <sofa/core/visual/VisualParams.h>
-#include "Submodule_Simulation_doc.h"
+#include <SofaPython3/Sofa/Simulation/Submodule_Simulation_doc.h>
 
 #include <sofa/core/init.h>
 #include <sofa/simulation/init.h>
 #include <SofaSimulationGraph/init.h>
-#include <SofaBaseVisual/initBaseVisual.h>
 
 namespace py = pybind11;
 
@@ -58,7 +57,6 @@ PYBIND11_MODULE(Simulation, simulation)
     sofa::core::init();
     sofa::simulation::core::init();
     sofa::simulation::graph::init();
-    sofa::component::initBaseVisual();
 
     if(!sofa::simulation::getSimulation())
         sofa::simulation::setSimulation(new DAGSimulation());

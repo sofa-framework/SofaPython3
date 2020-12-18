@@ -1,5 +1,4 @@
-#include "Prefab.h"
-
+#include <SofaPython3/Prefab.h>
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/PythonFactory.h>
 #include <SofaPython3/PythonEnvironment.h>
@@ -14,6 +13,9 @@ using sofa::simulation::VisualInitVisitor;
 
 #include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation;
+
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
 
 namespace sofapython3
 {
