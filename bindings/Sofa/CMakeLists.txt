@@ -18,7 +18,6 @@ add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 foreach(sofabindings_module ${SOFABINDINGS_MODULE_LIST})
 	target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.${sofabindings_module})
-    set_target_properties(${PROJECT_NAME}.${sofabindings_module} PROPERTIES FOLDER "Bindings/Sofa")
 endforeach()
 
 install(TARGETS ${PROJECT_NAME} EXPORT BindingsTargets)
