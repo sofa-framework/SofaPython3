@@ -1,10 +1,10 @@
 project(Bindings)
 
-add_subdirectory(Sofa)
-add_subdirectory(SofaRuntime)
-add_subdirectory(SofaGui)
-add_subdirectory(SofaTypes)
-add_subdirectory(Modules)
+set(BINDINGS_MODULE_LIST Sofa SofaRuntime SofaGui SofaTypes Modules)
+
+foreach(bindings_module ${BINDINGS_MODULE_LIST})
+    add_subdirectory(${bindings_module})
+endforeach()
 
 if (SP3_WITH_SOFAEXPORTER)
   add_subdirectory(SofaExporter)
@@ -13,12 +13,14 @@ endif()
 add_library(${PROJECT_NAME} INTERFACE)
 add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
-target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.Modules)
-target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.Sofa)
-target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.SofaExporter)
-target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.SofaGui)
-target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.SofaRuntime)
-target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.SofaTypes)
+foreach(bindings_module ${BINDINGS_MODULE_LIST})
+    target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.${bindings_module})
+    set_target_properties(${PROJECT_NAME}.${bindings_module} PROPERTIES FOLDER ${PROJECT_NAME})
+endforeach()
+
+if (SP3_WITH_SOFAEXPORTER)
+    target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.SofaExporter)
+endif()
 
 configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/BindingsConfig.cmake.in"
