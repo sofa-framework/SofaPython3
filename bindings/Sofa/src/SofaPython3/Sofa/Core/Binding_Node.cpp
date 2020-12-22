@@ -150,12 +150,11 @@ py_shared_ptr<Node> __init__(const std::string& name) {
 /// Method: init (beware this is not the python __init__, this is sofa's init())
 void init(Node& self) { self.init(ExecParams::defaultInstance()); }
 
-py::object addObject(Node& self, const py::object & object)
+py::object addObject(Node& self, BaseObject * object)
 {
     try {
-        auto base_object = py::cast<py_shared_ptr<BaseObject>>(object);
-        if (self.addObject(base_object))
-            return object;
+        if (self.addObject(object))
+            return PythonFactory::toPython(object);
     } catch (...) {
         throw py::type_error("Trying to add an object that isn't derived from sofa::core::objectmodel::BaseObject.");
     }
@@ -483,7 +482,7 @@ void moduleAddNode(py::module &m) {
     p.def("init", &init, sofapython3::doc::sofa::core::Node::initSofa );
     p.def("add", &addKwargs, sofapython3::doc::sofa::core::Node::addKwargs);
     p.def("addObject", &addObjectKwargs, sofapython3::doc::sofa::core::Node::addObjectKwargs);
-    p.def("addObject", &addObject, sofapython3::doc::sofa::core::Node::addObject);
+    p.def("addObject", &addObject, sofapython3::doc::sofa::core::Node::addObject, py::keep_alive<0, 2>());
     p.def("createObject", &createObject, sofapython3::doc::sofa::core::Node::createObject);
     p.def("addChild", &addChildKwargs, sofapython3::doc::sofa::core::Node::addChildKwargs);
     p.def("addChild", &addChild, sofapython3::doc::sofa::core::Node::addChild);

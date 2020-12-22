@@ -77,50 +77,6 @@ private:
 
 // Type caster for SP3 and SOFA holders
 namespace pybind11::detail {
-/**
- * This is an alias type caster that converts sofa::core::sptr<T> to sofapython3::py_shared_ptr<T>.
- * It is needed for when bound C++ function returns sofa::core::sptr instead of py_shared_ptr while the holder
- * type was set to the latter.
- * @tparam T
- */
-template <typename T>
-class type_caster<sofa::core::sptr<T>> {
-
-PYBIND11_TYPE_CASTER (sofa::core::sptr<T> , _("sofa::core::sptr<T>"));
-
-    using BaseCaster = copyable_holder_caster<T, sofapython3::py_shared_ptr<T>>;
-
-    bool load (pybind11::handle src, bool b)
-    {
-        // First make sure the py::object is an instanced of sofapython3::py_shared_ptr<T>
-        BaseCaster bc;
-        bool success = bc.load (src, b);
-        if (!success) {
-            return false;
-        }
-
-        // Convert the holder_caster to a sofapython3::py_shared_ptr<T> instance
-        auto base_ptr = static_cast<sofapython3::py_shared_ptr<T>> (bc);
-
-        // Take ownership of the py::object
-        auto h = BaseCaster::cast(base_ptr, return_value_policy(), handle());
-        auto py_obj = reinterpret_borrow<object>(h);
-
-        // Save a copy into the holder so that it doesn't get deleted and thereby creating slicing
-        base_ptr.set_object(py_obj);
-
-        // Set the value to the ptr
-        value = sofa::core::sptr<T> (base_ptr);
-        return true;
-    }
-
-    static handle cast (sofa::core::sptr<T> sp,
-                        return_value_policy rvp,
-                        handle h)
-    {
-        return BaseCaster::cast (sp, rvp, h);
-    }
-};
 
 template <typename T>
 struct always_construct_holder<sofapython3::py_shared_ptr<T>> : always_construct_holder<void, true>  { };
@@ -172,6 +128,51 @@ PYBIND11_TYPE_CASTER (sofapython3::py_shared_ptr<T> , _("sofapython3::py_shared_
 
 template <typename T>
 struct is_holder_type<T, sofapython3::py_shared_ptr<T>> : std::true_type {};
+
+/**
+ * This is an alias type caster that converts sofa::core::sptr<T> to sofapython3::py_shared_ptr<T>.
+ * It is needed for when bound C++ function returns sofa::core::sptr instead of py_shared_ptr while the holder
+ * type was set to the latter.
+ * @tparam T
+ */
+template <typename T>
+class type_caster<sofa::core::sptr<T>> {
+
+PYBIND11_TYPE_CASTER (sofa::core::sptr<T> , _("sofa::core::sptr<T>"));
+
+    using BaseCaster = copyable_holder_caster<T, sofapython3::py_shared_ptr<T>>;
+
+    bool load (pybind11::handle src, bool b)
+    {
+        // First make sure the py::object is an instanced of sofapython3::py_shared_ptr<T>
+        BaseCaster bc;
+        bool success = bc.load (src, b);
+        if (!success) {
+            return false;
+        }
+
+        // Convert the holder_caster to a sofapython3::py_shared_ptr<T> instance
+        auto base_ptr = static_cast<sofapython3::py_shared_ptr<T>> (bc);
+
+        // Take ownership of the py::object
+        auto h = BaseCaster::cast(base_ptr, return_value_policy(), handle());
+        auto py_obj = reinterpret_borrow<object>(h);
+
+        // Save a copy into the holder so that it doesn't get deleted and thereby creating slicing
+        base_ptr.set_object(py_obj);
+
+        // Set the value to the ptr
+        value = sofa::core::sptr<T> (base_ptr);
+        return true;
+    }
+
+    static handle cast (sofa::core::sptr<T> sp,
+                        return_value_policy rvp,
+                        handle h)
+    {
+        return BaseCaster::cast (sp, rvp, h);
+    }
+};
 }
 
 namespace sofapython3 {
