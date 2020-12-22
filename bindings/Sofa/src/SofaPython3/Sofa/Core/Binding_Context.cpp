@@ -25,14 +25,18 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - thierry.gaugry@inria.fr
 ********************************************************************/
 
-#include "Binding_BaseContext.h"
-#include "Binding_Context.h"
+#include <sofa/core/objectmodel/Context.h>
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseContext.h>
+#include <SofaPython3/Sofa/Core/Binding_Context.h>
 
 using namespace sofa::core::objectmodel;
+namespace py { using namespace pybind11; }
+
 namespace sofapython3 {
 
 void moduleAddContext(py::module& m) {
-    py::class_<Context, BaseContext, Context::SPtr> (m, "Context");
+    py::class_<Context, BaseContext, py_shared_ptr<Context>> (m, "Context");
 }
 
 } // namespace sofapython3

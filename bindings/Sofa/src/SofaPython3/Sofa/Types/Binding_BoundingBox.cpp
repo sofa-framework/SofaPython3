@@ -25,15 +25,17 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - thierry.gaugry@inria.fr
 ********************************************************************/
 
-#include "Binding_BoundingBox.h"
+#include <SofaPython3/Sofa/Types/Binding_BoundingBox.h>
 
-#include <SofaPython3/Sofa/Core/Binding_BaseData.h>
-
+#include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <SofaPython3/PythonFactory.h>
 
 using sofa::defaulttype::BoundingBox;
+using sofa::core::objectmodel::BaseData;
+
+namespace py { using namespace pybind11; }
 
 namespace sofapython3 {
 
@@ -80,7 +82,11 @@ void moduleAddBoundingBox(py::module& m)
     }, "returns the center of the bbox");
 
     PythonFactory::registerType("BoundingBox", [](BaseData* data) -> py::object {
-        return py::cast(dynamic_cast<sofa::Data<BoundingBox>*>(data));
+        // Weird bug here, using a dynamic_cast will fail to convert the BaseData to a Data<BoundingBox> on MacOS and
+        // MSVC, even if the type is good. We therefore use in reinterpret_cast to force it until we understand why
+        // the initial cast fails.
+        auto bbox = reinterpret_cast<sofa::Data<BoundingBox>*>(data);
+        return py::cast(bbox);
     });
 
 }

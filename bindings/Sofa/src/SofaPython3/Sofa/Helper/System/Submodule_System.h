@@ -28,11 +28,9 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include <pybind11/pybind11.h>
 
-namespace sofapython3
-{
-namespace py { using namespace pybind11; }
+namespace sofapython3 {
 
-void moduleAddSystem(py::module &m);
+void moduleAddSystem(pybind11::module &m);
 
 } /// namespace sofapython3
 

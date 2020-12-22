@@ -26,9 +26,8 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************/
 
 #include <pybind11/stl.h>
-#include <pybind11/iostream.h>
-#include "Binding_FileRepository.h"
-#include "Binding_FileRepository_doc.h"
+#include <SofaPython3/Sofa/Helper/System/Binding_FileRepository.h>
+#include <SofaPython3/Sofa/Helper/System/Binding_FileRepository_doc.h>
 #include <sofa/helper/system/FileRepository.h>
 
 namespace py { using namespace pybind11; }

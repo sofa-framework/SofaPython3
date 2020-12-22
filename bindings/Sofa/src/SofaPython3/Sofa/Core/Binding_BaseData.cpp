@@ -29,23 +29,25 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <pybind11/eval.h>
 
 #include <sofa/defaulttype/DataTypeInfo.h>
-using sofa::defaulttype::AbstractTypeInfo;
 
 #include <sofa/core/objectmodel/BaseData.h>
-using sofa::core::objectmodel::BaseData;
-
 #include <sofa/core/objectmodel/BaseObject.h>
-using  sofa::core::objectmodel::BaseObject;
 
-#include <sofa/core/objectmodel/BaseNode.h>
-using  sofa::core::objectmodel::BaseNode;
-
-#include "Binding_Base.h"
-#include "Binding_BaseData.h"
-#include "Data/Binding_DataContainer.h"
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseData.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseData_doc.h>
+#include <SofaPython3/Sofa/Core/Data/Binding_DataContainer.h>
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/PythonFactory.h>
-#include "Binding_BaseData_doc.h"
+
+/// Bind the python's attribute error
+namespace pybind11 { PYBIND11_RUNTIME_EXCEPTION(attribute_error, PyExc_AttributeError) }
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
+
+using namespace sofa::core::objectmodel;
+using sofa::defaulttype::AbstractTypeInfo;
+
 namespace sofapython3
 {
 

@@ -27,11 +27,12 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 #include <pybind11/stl.h>
 
-#include "Binding_GUIManager.h"
+#include <SofaPython3/SofaGui/Binding_GUIManager.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/BaseGUI.h>
 
-namespace py = pybind11;
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
 
 namespace sofapython3 {
 

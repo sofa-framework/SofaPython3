@@ -17,8 +17,6 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataEngine_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField_doc.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Visitor.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Visitor_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node.h
@@ -33,7 +31,6 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataString_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataVectorString.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataVectorString_doc.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Core.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_PythonScriptEvent.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseLink.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseLink_doc.h
@@ -56,7 +53,6 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataLink.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataVectorString.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Visitor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_NodeIterator.cpp

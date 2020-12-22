@@ -28,26 +28,24 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include <pybind11/pybind11.h>
-#include <pybind11/detail/init.h>
 #include <sofa/core/objectmodel/ScriptEvent.h>
 
 #include <SofaPython3/config.h>
 
 namespace sofapython3
 {
-namespace py { using namespace pybind11; }
 
 class PythonScriptEvent : public sofa::core::objectmodel::ScriptEvent
 {
     SOFA_EVENT_H(PythonScriptEvent)
 public:
-    PythonScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventName, py::object userData=py::none());
+    PythonScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventName, pybind11::object userData=pybind11::none());
     ~PythonScriptEvent() override;
-    py::object getUserData() const { return m_userData; }
+    pybind11::object getUserData() const { return m_userData; }
     inline static const char* GetClassName() { return "PythonScriptEvent"; }
 
 private:
-    py::object m_userData;
+    pybind11::object m_userData;
 };
 
 void moduleAddPythonScriptEvent();

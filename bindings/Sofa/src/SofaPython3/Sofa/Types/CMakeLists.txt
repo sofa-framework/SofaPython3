@@ -1,7 +1,6 @@
 project(Bindings.Sofa.Types)
 
 set(HEADER_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Types.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BoundingBox.h
 )
 

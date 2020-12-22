@@ -32,17 +32,12 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/MechanicalParams.h>
 
-#include "Binding_BaseObject.h"
-#include <SofaPython3/DataHelper.h>
-
-namespace sofapython3
-{
+namespace sofapython3 {
 
 template<class TDOFType>
-class ForceField_Trampoline  : public sofa::core::behavior::ForceField<TDOFType>, public PythonTrampoline
-{
-
+class ForceField_Trampoline  : public sofa::core::behavior::ForceField<TDOFType> {
 public:
+    SOFA_CLASS(ForceField_Trampoline, SOFA_TEMPLATE(sofa::core::behavior::ForceField, TDOFType));
     using sofa::core::behavior::ForceField<TDOFType>::mstate;
     using sofa::core::behavior::ForceField<TDOFType>::getContext;
     using typename sofa::core::behavior::ForceField<TDOFType>::DataTypes;
@@ -58,14 +53,13 @@ public:
     void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
     void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) override;
 
-    py::object _addKToMatrix(const sofa::core::MechanicalParams* mparams, int nNodes, int nDofs);
+    pybind11::object _addKToMatrix(const sofa::core::MechanicalParams* mparams, int nNodes, int nDofs);
     void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* dfId) override;
 
     SReal getPotentialEnergy(const sofa::core::MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/) const override { return 0.0; }
 
-    std::string getClassName() const override;
 };
 
-void moduleAddForceField(py::module &m);
+void moduleAddForceField(pybind11::module &m);
 
 } /// namespace sofapython3

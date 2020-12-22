@@ -26,8 +26,8 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************/
 
 #include <functional>
-#include "PythonFactory.h"
-#include "DataHelper.h"
+#include <SofaPython3/PythonFactory.h>
+#include <SofaPython3/DataHelper.h>
 
 #include <SofaSimulationGraph/DAGNode.h>
 
@@ -59,6 +59,11 @@ using sofa::core::objectmodel::ScriptEvent;
 using sofa::core::objectmodel::Event;
 
 #include <sofa/defaulttype/DataTypeInfo.h>
+
+/// Bind the python's attribute error
+namespace pybind11 { PYBIND11_RUNTIME_EXCEPTION(attribute_error, PyExc_AttributeError) }
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
 
 namespace sofapython3
 {

@@ -28,7 +28,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include <string>
-#include "config.h"
+#include <SofaPython3/config.h>
 #include <sofa/helper/testing/BaseTest.h>
 
 #include <boost/filesystem/path.hpp>

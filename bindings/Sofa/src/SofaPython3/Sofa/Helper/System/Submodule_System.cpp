@@ -25,14 +25,14 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - thierry.gaugry@inria.fr
 ********************************************************************/
 
-#include "Submodule_System.h"
-#include "Binding_FileRepository.h"
+#include <SofaPython3/Sofa/Helper/System/Submodule_System.h>
+#include <SofaPython3/Sofa/Helper/System/Binding_FileRepository.h>
 
-namespace sofapython3
-{
+namespace py { using namespace pybind11; }
 
-void moduleAddSystem(py::module &m)
-{
+namespace sofapython3 {
+
+void moduleAddSystem(py::module &m) {
     auto system = m.def_submodule("System");
 
     moduleAddFileRepository(system);

@@ -27,7 +27,6 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include <sofa/core/ObjectFactory.h>
 #include <pybind11/pybind11.h>
 
 namespace sofapython3 {

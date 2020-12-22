@@ -27,7 +27,6 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 
 #include <iostream>
-#include <pybind11/embed.h>
 
 #include <sofa/core/init.h>
 #include <sofa/core/ObjectFactory.h>
@@ -37,10 +36,12 @@ using sofa::core::ObjectFactory;
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message;
 
+#include <sofa/simulation/Node.h>
+using sofa::simulation::Node;
+
 #include <SofaPython3/DataHelper.h>
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
-#include <SofaPython3/Sofa/Core/Binding_Node.h>
-#include "Submodule_Components.h"
 
 namespace py = pybind11;
 using namespace py::literals;
@@ -76,13 +77,13 @@ PYBIND11_MODULE(Components, m)
             throw py::type_error(std::string("Invalid first argument. Expecting 'Node' but got ") + py::cast<std::string>(py::str(pynode)));
         }
 
-        auto node = py::cast<sofa::simulation::Node*>(pynode);
+        auto node = py::cast<py_shared_ptr<sofa::simulation::Node>>(pynode);
 
         /// Prepare the description to hold the different python attributes as data field's
         /// arguments then create the object.
         BaseObjectDescription desc {s.name.c_str(), s.name.c_str()};
         fillBaseObjectdescription(desc, kwargs);
-        auto object = ObjectFactory::getInstance()->createObject(node, &desc);
+        auto object = py_shared_ptr<sofa::core::objectmodel::BaseObject>(ObjectFactory::getInstance()->createObject(node.get(), &desc));
 
         /// After calling createObject the returned value can be either a nullptr
         /// or non-null but with error message or non-null.

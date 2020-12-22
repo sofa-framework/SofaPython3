@@ -39,27 +39,25 @@ using sofa::core::objectmodel::BaseLink;
 using sofa::helper::WriteOnlyAccessor;
 
 #include <SofaPython3/PythonFactory.h>
-//#include <SofaPython3/DataFactory.h>
 
-#include "Binding_Base.h"
-#include "Binding_Base_doc.h"
-
-
-#include "Binding_DataDict.h"
-#include "Binding_BaseData.h"
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/Sofa/Core/Binding_Base_doc.h>
+#include <SofaPython3/Sofa/Core/Binding_DataDict.h>
 #include "Data/Binding_DataContainer.h"
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
 
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject;
-#include <sofa/core/objectmodel/BaseNode.h>
-using sofa::core::objectmodel::BaseNode;
-#include <sofa/core/objectmodel/BaseContext.h>
-using sofa::core::objectmodel::BaseContext;
-
 #include <SofaPython3/DataHelper.h>
+
+/// Bind the python's attribute error
+namespace pybind11 { PYBIND11_RUNTIME_EXCEPTION(attribute_error, PyExc_AttributeError) }
+
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
+
+/// Bring pybind11 literals
+using namespace pybind11::literals;
 
 namespace sofapython3
 {
@@ -420,7 +418,7 @@ py::object BindingBase::setDataValues(Base& self, py::kwargs kwargs)
 
 void moduleAddBase(py::module &m)
 {
-    py::class_<Base, Base::SPtr> base(m, "Base", py::dynamic_attr(), doc::base::BaseClass);
+    py::class_<Base, py_shared_ptr<Base>> base(m, "Base", py::dynamic_attr(), doc::base::BaseClass);
     /// set & get the name as string. The alternative is to access the data field using
     /// obj.name.value = "aName"
     base.def("getName", [](Base& b){ return b.getName(); }, sofapython3::doc::base::getName);

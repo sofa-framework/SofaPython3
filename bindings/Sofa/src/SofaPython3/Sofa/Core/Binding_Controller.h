@@ -27,31 +27,37 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "Binding_BaseObject.h"
-
+#include <pybind11/pybind11.h>
 #include <sofa/core/behavior/BaseController.h>
 
-template class pybind11::class_<sofa::core::behavior::BaseController,
-                          sofa::core::objectmodel::BaseObject,
-                          sofa::core::sptr<sofa::core::behavior::BaseController>>;
+namespace sofapython3 {
 
-
-namespace sofapython3
-{
-using sofa::core::behavior::BaseController;
-
-class Controller : public BaseController
-{
+/**
+ * Empty controller shell that allows pybind11 to bind the init and reinit methods (since BaseController doesn't have
+ * them)
+ */
+class Controller : public sofa::core::behavior::BaseController {
 public:
-    SOFA_CLASS(Controller, BaseController);
-    void init() override ;
-    void reinit() override;
-
-    Controller();
-    ~Controller() override;
+    SOFA_CLASS(Controller, sofa::core::behavior::BaseController);
+    void init() override {};
+    void reinit() override {};
 };
 
-void moduleAddController(py::module &m);
+class Controller_Trampoline : public Controller
+{
+public:
+    SOFA_CLASS(Controller_Trampoline, Controller);
+
+    void init() override;
+    void reinit() override;
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
+
+private:
+    void callScriptMethod(const pybind11::object& self, sofa::core::objectmodel::Event* event,
+        const std::string& methodName);
+};
+
+void moduleAddController(pybind11::module &m);
 
 } /// namespace sofapython3
 

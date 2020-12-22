@@ -27,10 +27,10 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include <sofa/core/objectmodel/BaseData.h>
-#include <SofaPython3/DataHelper.h>
+#include <pybind11/pybind11.h>
 
-namespace sofapython3
-{
-    void moduleAddBaseData(py::module& m);
+namespace sofapython3 {
+
+    void moduleAddBaseData(pybind11::module& m);
+
 } /// sofapython3

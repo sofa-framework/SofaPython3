@@ -24,19 +24,20 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - jean-nicolas.brunet@inria.fr
     - thierry.gaugry@inria.fr
 ********************************************************************/
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/Sofa/Core/Binding_DataEngine.h>
+#include <SofaPython3/Sofa/Core/Binding_DataEngine_doc.h>
 
-#include "Binding_DataEngine.h"
-#include "Binding_DataEngine_doc.h"
-
-#include <SofaPython3/DataHelper.h>
 #include <SofaPython3/PythonFactory.h>
 #include <SofaPython3/PythonEnvironment.h>
 using sofapython3::PythonEnvironment;
 
 #include <pybind11/pybind11.h>
 
-PYBIND11_DECLARE_HOLDER_TYPE(PyDataEngine,
-                             sofapython3::py_shared_ptr<PyDataEngine>, true)
+/// Bind the python's attribute error
+namespace pybind11 { PYBIND11_RUNTIME_EXCEPTION(attribute_error, PyExc_AttributeError) }
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
 
 namespace sofapython3
 {
@@ -46,41 +47,10 @@ namespace sofapython3
     using sofa::core::objectmodel::BaseObject;
     using sofa::core::objectmodel::DDGNode;
 
-    void PyDataEngine::init() {
-    }
-
-    void PyDataEngine::doUpdate() {
-    }
-
-    PyDataEngine::PyDataEngine() {
-    }
-
-    PyDataEngine::~PyDataEngine() {
-    }
-
-    class DataEngine_Trampoline : public PyDataEngine, public PythonTrampoline
-    {
-    public:
-        DataEngine_Trampoline();
-
-        ~DataEngine_Trampoline() override;
-
-        std::string getClassName() const override
-        {
-            return pyobject->ob_type->tp_name;
-        }
-        void init() override ;
-        void doUpdate() override ;
-    };
-
-    DataEngine_Trampoline::DataEngine_Trampoline() = default;
-
-    DataEngine_Trampoline::~DataEngine_Trampoline() = default;
-
     void DataEngine_Trampoline::init()
     {
         PythonEnvironment::gil acquire;
-        PYBIND11_OVERLOAD(void, PyDataEngine, init, );
+        PYBIND11_OVERLOAD(void, DataEngine, init, );
     }
 
     void DataEngine_Trampoline::doUpdate()
@@ -101,12 +71,12 @@ namespace sofapython3
 
     void moduleAddDataEngine(pybind11::module &m)
     {
-        py::class_<PyDataEngine,
+        py::class_<DataEngine,
                 DataEngine_Trampoline,
                 BaseObject,
-                py_shared_ptr<PyDataEngine>> f(m, "DataEngine",
+                py_shared_ptr<DataEngine>> f(m, "DataEngine",
                                                py::dynamic_attr(),
-                                               py::multiple_inheritance(), sofapython3::doc::dataengine::DataEngine);
+                                               sofapython3::doc::dataengine::DataEngine);
 
         f.def(py::init([](py::args& /*args*/, py::kwargs& kwargs)
         {
@@ -130,8 +100,8 @@ namespace sofapython3
                   return c;
               }));
 
-        f.def("addInput", &PyDataEngine::addInput, sofapython3::doc::dataengine::addInput);
-        f.def("addOutput", &PyDataEngine::addOutput, sofapython3::doc::dataengine::addOutput);
+        f.def("addInput", &DataEngine::addInput, sofapython3::doc::dataengine::addInput);
+        f.def("addOutput", &DataEngine::addOutput, sofapython3::doc::dataengine::addOutput);
     }
 
 } /// namespace sofapython3

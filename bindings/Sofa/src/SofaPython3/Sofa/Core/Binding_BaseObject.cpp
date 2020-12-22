@@ -25,12 +25,13 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - thierry.gaugry@inria.fr
 ********************************************************************/
 
-#include "Binding_BaseObject.h"
-#include "Binding_Controller.h"
-#include <sofa/core/ObjectFactory.h>
-#include "Binding_BaseObject_doc.h"
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseObject_doc.h>
+#include <SofaPython3/Sofa/Core/Binding_Controller.h>
 #include <SofaPython3/PythonFactory.h>
 
+#include <sofa/core/ObjectFactory.h>
 
 // Imports for getCategories
 #include <sofa/core/objectmodel/ContextObject.h>
@@ -56,6 +57,13 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
+
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
+
+using sofa::core::objectmodel::BaseData;
+using sofa::core::objectmodel::Base;
+using sofa::core::objectmodel::BaseObject;
 
 namespace sofapython3
 {
@@ -244,13 +252,13 @@ py::object __getitem__(BaseObject &self, std::string s)
 void moduleAddBaseObject(py::module& m)
 {
     /// Register the BaseObject binding into the pybind11 typing system
-    py::class_<BaseObject, Base, BaseObject::SPtr>p(m, "Object", sofapython3::doc::baseObject::Class);
+    py::class_<BaseObject, Base, py_shared_ptr<BaseObject>>p(m, "Object", sofapython3::doc::baseObject::Class);
 
     /// Register the BaseObject binding into the downcasting subsystem
     PythonFactory::registerType<sofa::core::objectmodel::BaseObject>(
                 [](sofa::core::objectmodel::Base* object)
     {
-        return py::cast(object->toBaseObject());
+        return py::cast(py_shared_ptr<sofa::core::objectmodel::BaseObject>(object->toBaseObject()));
     });
 
     p.def("init", &BaseObject::init, sofapython3::doc::baseObject::init);
