@@ -3,54 +3,56 @@
 import Sofa
 import Sofa.Helper
 import unittest
-import tempfile
 import os
+from pathlib import Path
+from tempfile import gettempdir
 
 
 class Test(unittest.TestCase):
     def __init__(self, methodName):
         unittest.TestCase.__init__(self, methodName)
-        self.temp_dir1 = tempfile.TemporaryDirectory(suffix="Test", prefix="FileRepository")
-        self.temp_file1 = open(os.path.join(self.temp_dir1.name, "a_simple_test_file_1.txt"), "w")
 
-        self.temp_dir2 = tempfile.TemporaryDirectory(suffix="Test", prefix="FileRepository")
-        self.temp_file2 = open(os.path.join(self.temp_dir2.name, "a_simple_test_file_2.txt"), "w")
+        # First temporary directory
+        self.temp_dir1 = os.path.join(gettempdir(), f'FileRepository_{hash(os.times())}_test_1')
+        os.makedirs(self.temp_dir1, exist_ok=True)
+        self.temp_file1 = open(os.path.join(self.temp_dir1, "a_simple_test_file_1.txt"), "w")
 
-        os.environ['FILEREPOSITORYTEST'] = self.temp_dir1.name
+        # Second temporary directory
+        self.temp_dir2 = os.path.join(gettempdir(), f'FileRepository_{hash(os.times())}_test_2')
+        os.makedirs(self.temp_dir2, exist_ok=True)
+        self.temp_file2 = open(os.path.join(self.temp_dir2, "a_simple_test_file_2.txt"), "w")
+
+        self.repository = Sofa.Helper.System.FileRepository()
+
+    def test_environment(self):
+        os.environ['FILEREPOSITORYTEST'] = self.temp_dir1
         self.repository = Sofa.Helper.System.FileRepository("FILEREPOSITORYTEST")
-        self.assertEqual(self.repository.getPaths(), [self.temp_dir1.name])
+
+        self.assertEqual([Path(p) for p in self.repository.getPaths()], [Path(self.temp_dir1)])
         self.repository.clear()
         self.assertEqual(self.repository.getPaths(), [])
 
     def test_add_remove_directories(self):
-        self.repository.addFirstPath(self.temp_dir1.name)
-        self.repository.addFirstPath(self.temp_dir2.name)
-        self.assertEqual(self.repository.getPaths(), [self.temp_dir2.name, self.temp_dir1.name])
+        self.repository.addFirstPath(self.temp_dir1)
+        self.repository.addFirstPath(self.temp_dir2)
+        self.assertEqual([Path(p) for p in self.repository.getPaths()], [Path(self.temp_dir2), Path(self.temp_dir1)])
 
-        self.repository.removePath(self.temp_dir2.name)
-        self.assertEqual(self.repository.getPaths(), [self.temp_dir1.name])
+        self.repository.removePath(str(Path(self.temp_dir2).as_posix()))
+        self.assertEqual([Path(p) for p in self.repository.getPaths()], [Path(self.temp_dir1)])
 
-        self.repository.addLastPath(self.temp_dir2.name)
-        self.assertEqual(self.repository.getPaths(), [self.temp_dir1.name, self.temp_dir2.name])
+        self.repository.addLastPath(self.temp_dir2)
+        self.assertEqual([Path(p) for p in self.repository.getPaths()], [Path(self.temp_dir1), Path(self.temp_dir2)])
 
         self.repository.clear()
 
     def test_find_file(self):
-        self.repository.addFirstPath(self.temp_dir1.name)
+        self.repository.addFirstPath(self.temp_dir1)
         self.assertTrue(self.repository.findFile("a_simple_test_file_1.txt"))
-        self.repository.addFirstPath(self.temp_dir2.name)
+        self.repository.addFirstPath(self.temp_dir2)
         self.assertTrue(self.repository.findFile("a_simple_test_file_2.txt"))
 
-        self.assertEqual(self.repository.getFile("a_simple_test_file_1.txt"), os.path.join(self.temp_dir1.name, "a_simple_test_file_1.txt"))
-        self.assertEqual(self.repository.getFile("a_simple_test_file_2.txt"), os.path.join(self.temp_dir2.name, "a_simple_test_file_2.txt"))
+        self.assertEqual(Path(self.repository.getFile("a_simple_test_file_1.txt")), Path(os.path.join(self.temp_dir1, "a_simple_test_file_1.txt")))
+        self.assertEqual(Path(self.repository.getFile("a_simple_test_file_2.txt")), Path(os.path.join(self.temp_dir2, "a_simple_test_file_2.txt")))
 
         self.repository.clear()
 
-
-def runTests():
-    suite = unittest.TestLoader().loadTestsFromTestCase(Test)
-    return unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful()
-
-
-def createScene(rootNode):
-    runTests()

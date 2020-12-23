@@ -15,6 +15,7 @@ enable_testing()
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaHelper SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "PYTHON_TESTFILES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"")
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "Bindings/Tests")
 
 set(RPATH "$ORIGIN/../lib")
 if (APPLE)
