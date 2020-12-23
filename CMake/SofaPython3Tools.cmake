@@ -48,17 +48,23 @@ function(SP3_add_python_package)
 
     cmake_parse_arguments(A "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
+    set(OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY})
+    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+        set(OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY})
+    endif()
+
+
     file(GLOB_RECURSE files RELATIVE ${A_SOURCE_DIRECTORY} ${A_SOURCE_DIRECTORY}/*)
     foreach(file_relative_path ${files})
         set(file_absolute_path ${A_SOURCE_DIRECTORY}/${file_relative_path})
         configure_file(
             ${file_absolute_path}
-            ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}/${file_relative_path}
+            ${OUTPUT_DIRECTORY}/${file_relative_path}
             @ONLY
         )
         get_filename_component(relative_directory ${file_relative_path} DIRECTORY)
         install(
-            FILES "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}/${file_relative_path}"
+            FILES "${OUTPUT_DIRECTORY}/${file_relative_path}"
             DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}/${relative_directory}"
         )
     endforeach()
@@ -117,7 +123,7 @@ function(SP3_add_python_module)
 
     find_package(pybind11 CONFIG QUIET REQUIRED)
 
-    pybind11_add_module(${A_TARGET} SHARED "${A_SOURCES}")
+    pybind11_add_module(${A_TARGET} SHARED NO_EXTRAS "${A_SOURCES}")
     add_library(SofaPython3::${A_TARGET} ALIAS ${A_TARGET})
 
     target_include_directories(${A_TARGET}
@@ -131,10 +137,8 @@ function(SP3_add_python_module)
 
     if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         target_compile_options(${A_TARGET} PRIVATE -Dregister=)
-        target_compile_options(${A_TARGET} PRIVATE -fvisibility=hidden)
     endif()
 
-    target_link_libraries(${A_TARGET} PUBLIC pybind11::module)
     target_link_libraries(${A_TARGET} PUBLIC "${A_DEPENDS}")
 
     set_target_properties(

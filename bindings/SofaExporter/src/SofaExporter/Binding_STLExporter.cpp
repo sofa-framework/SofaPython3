@@ -25,15 +25,20 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - thierry.gaugry@inria.fr
 ********************************************************************/
 
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaExporter/Binding_STLExporter.h>
 #include <SofaExporter/Binding_STLExporter_doc.h>
 
 #include <SofaPython3/PythonFactory.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
+#include <SofaExporter/STLExporter.h>
 
 using  sofa::component::exporter::STLExporter;
 
-namespace sofapython3
-{
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
+
+namespace sofapython3 {
 
 void moduleAddSTLExporter(py::module &m)
 {
@@ -43,7 +48,7 @@ void moduleAddSTLExporter(py::module &m)
         return py::cast(dynamic_cast<STLExporter*>(object));
     });
 
-    py::class_<STLExporter, sofa::core::objectmodel::BaseObject, sofa::core::sptr<STLExporter>> p(m, "STLExporter");
+    py::class_<STLExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<STLExporter>> p(m, "STLExporter");
 
     p.def("write", &STLExporter::write, sofapython3::doc::SofaExporter::STLExporter::write::docstring);
 }

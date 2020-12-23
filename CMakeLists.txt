@@ -73,6 +73,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Enable use of folder for IDE like VS
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 # Set the minimum python version to 3.7
 set(PYBIND11_PYTHON_VERSION 3.7)
 
