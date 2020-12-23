@@ -118,7 +118,6 @@ PYBIND11_MODULE(Core, core)
     moduleAddBase(core);
     moduleAddBaseContext(core);
     moduleAddBaseData(core);
-    moduleAddContactListener(core);
     moduleAddDataContainerContext(core);
     moduleAddDataContainer(core);
     moduleAddDataString(core);
@@ -126,6 +125,7 @@ PYBIND11_MODULE(Core, core)
     moduleAddDataVectorString(core);
     moduleAddBaseObject(core);
     moduleAddBaseCamera(core);
+    moduleAddContactListener(core);
     moduleAddContext(core);
     moduleAddController(core);
     moduleAddDataEngine(core);

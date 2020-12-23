@@ -27,6 +27,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************/
 
 
+#include "sofa/config.h"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
@@ -46,11 +47,6 @@ using sofa::core::collision::ContactListener;
 namespace sofapython3
 {
 
-    void hello(const ContactListener& self){
-        std::cout << "Hello \n";
-    }
-
-
 void moduleAddContactListener(pybind11::module &m)
 {
     /* /// register the ContactListener binding in the pybind11 typing sytem */
@@ -58,13 +54,13 @@ void moduleAddContactListener(pybind11::module &m)
                sofa::core::objectmodel::BaseObject,
                py_shared_ptr<ContactListener>> c(m, "ContactListener", sofapython3::doc::contactListener::contactListenerClass);
 
+    c.def("getNumberOfContacts", &ContactListener::getNumberOfContacts);
+
     /// register the ContactListener binding in the downcasting subsystem
     PythonFactory::registerType<ContactListener>([](sofa::core::objectmodel::Base* object)
     {
         return py::cast(dynamic_cast<ContactListener*>(object));
     });
-    c.def("hello", &hello);
-    c.def("getNumberOfContacts", &ContactListener::getNumberOfContacts);
 }
 
 } /// namespace sofapython3
