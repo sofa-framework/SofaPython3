@@ -1,6 +1,6 @@
 project(Bindings.Modules)
 
-set(MODULEBINDINGS_MODULE_LIST SofaBaseTopology)
+set(MODULEBINDINGS_MODULE_LIST SofaBaseTopology SofaDeformable)
 
 foreach(modulebindings_module ${MODULEBINDINGS_MODULE_LIST})
 	add_subdirectory(src/SofaPython3/${modulebindings_module})

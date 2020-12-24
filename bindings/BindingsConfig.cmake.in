@@ -12,6 +12,9 @@ find_package(SofaPython3 COMPONENTS Plugin)
 # Required by the bindings Modules.SofaBaseTopology, Sofa.Components, Sofa.Core, Sofa.Simulation
 find_package(SofaBase REQUIRED)
 
+# Required by the bindings Modules.SofaDeformable
+find_package(SofaDeformable REQUIRED)
+
 # Required by the bindings Sofa.Components, Sofa.Core, Sofa.Helper, Sofa.Simulation, Sofa.Types, SofaGui
 find_package(SofaFramework REQUIRED)
 
