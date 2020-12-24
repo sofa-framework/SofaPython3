@@ -49,12 +49,13 @@ namespace sofapython3
 
 void moduleAddContactListener(pybind11::module &m)
 {
-    /* /// register the ContactListener binding in the pybind11 typing sytem */
+    /// register the ContactListener binding in the pybind11 typing sytem
     pybind11::class_<ContactListener,
                sofa::core::objectmodel::BaseObject,
                py_shared_ptr<ContactListener>> c(m, "ContactListener", sofapython3::doc::contactListener::contactListenerClass);
 
-    c.def("getNumberOfContacts", &ContactListener::getNumberOfContacts);
+    /// Commented out until feature is in SOFA master
+    /* c.def("getNumberOfContacts", &ContactListener::getNumberOfContacts); */
 
     /// register the ContactListener binding in the downcasting subsystem
     PythonFactory::registerType<ContactListener>([](sofa::core::objectmodel::Base* object)
