@@ -67,9 +67,9 @@ if (NOT TARGET SofaPython3::Plugin)
 endif()
 
 find_package(SofaFramework REQUIRED)
-find_package(SofaBase REQUIRED)
-find_package(SofaCommon REQUIRED)
 find_package(SofaSimulation REQUIRED)
+find_package(SofaBaseVisual REQUIRED)
+find_package(SofaBaseUtils REQUIRED)
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
@@ -77,5 +77,5 @@ SP3_add_python_module(
     MODULE_NAME  Core
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
-    DEPENDS      SofaBase SofaCore SofaSimulation SofaCommon SofaPython3::Plugin
+    DEPENDS      SofaBaseUtils SofaCore SofaHelper SofaSimulationCore SofaDefaultType SofaBaseVisual SofaPython3::Plugin
 )

@@ -51,6 +51,12 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include "PythonEnvironment.h"
 using sofapython3::PythonEnvironment;
 
+#include <sofa/core/init.h>
+#include <sofa/defaulttype/init.h>
+#include <sofa/simulation/init.h>
+#include <sofa/helper/init.h>
+#include <SofaSimulationGraph/init.h>
+
 extern "C" {
 
 SOFAPYTHON3_API void initExternalModule();
@@ -65,6 +71,12 @@ void initExternalModule()
     static bool first = true;
     if (first)
     {
+        sofa::core::init();
+        sofa::defaulttype::init();
+        sofa::simulation::core::init();
+        sofa::simulation::graph::init();
+        sofa::helper::init();
+
         PythonEnvironment::Init();
         first = false;
     }

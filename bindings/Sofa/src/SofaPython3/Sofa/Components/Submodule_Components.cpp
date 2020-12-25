@@ -28,7 +28,6 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 
-#include <sofa/core/init.h>
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::objectmodel::BaseObjectDescription;
 using sofa::core::ObjectFactory;
@@ -42,6 +41,10 @@ using sofa::simulation::Node;
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
+
+#include <sofa/core/init.h>
+#include <sofa/helper/init.h>
+#include <sofa/simulation/init.h>
 
 namespace py = pybind11;
 using namespace py::literals;
@@ -63,6 +66,8 @@ PYBIND11_MODULE(Components, m)
 {
     // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
     sofa::core::init();
+    sofa::helper::init();
+    sofa::simulation::core::init();
 
     py::class_<FCreator> mm(m, "Creator");
     mm.def("__call__", [](FCreator& s, const py::args& args, const py::kwargs& kwargs){

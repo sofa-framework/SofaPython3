@@ -28,6 +28,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <pybind11/pybind11.h>
 
 #include <sofa/gui/Main.h>
+#include <sofa/core/init.h>
 
 #include "Binding_BaseGui.h"
 #include "Binding_GUIManager.h"
@@ -64,6 +65,7 @@ PYBIND11_MODULE(Gui, m) {
     // This is needed to make sure the GuiMain library (libSofaGuiMain.so) is correctly
     // linked since the GUIs are statically created during the load of the library.
     sofa::gui::initMain();
+    sofa::core::init();
 
     moduleAddBaseGui(m);
     moduleAddGuiManager(m);

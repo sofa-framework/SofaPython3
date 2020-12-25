@@ -9,17 +9,20 @@ find_package(pybind11 CONFIG REQUIRED)
 # Required by Modules.SofaBaseTopology, Sofa.Components, Sofa.Core, Sofa.Helper, Sofa.Types, SofaExporter, SofaGui, SofaRuntime, SofaTypes
 find_package(SofaPython3 COMPONENTS Plugin)
 
-# Required by the bindings Modules.SofaBaseTopology, Sofa.Components, Sofa.Core, Sofa.Simulation
-find_package(SofaBase REQUIRED)
+# Required by the bindings Modules.SofaBaseTopology
+find_package(SofaBaseTopology REQUIRED)
 
 # Required by the bindings Sofa.Components, Sofa.Core, Sofa.Helper, Sofa.Simulation, Sofa.Types, SofaGui
 find_package(SofaFramework REQUIRED)
 
-# Required by the bindings Sofa.Core, Sofa.Simulation
+# Required by the bindings Sofa.Core, Sofa.Simulation, SofaRuntime
 find_package(SofaSimulation REQUIRED)
 
 # Required by the bindings SofaGui
 find_package(SofaGui REQUIRED)
+
+# Required by the bindings Sofa.Core
+find_package(SofaBaseVisual REQUIRED)
 
 #  Required by the bindings SofaExporter
 if(SP3_WITH_SOFAEXPORTER)

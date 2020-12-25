@@ -27,19 +27,16 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 
 #include <pybind11/pybind11.h>
-//#include <src/pybind/Binding_BoundingBox.h>
-//#include <src/pybind/Binding_Color.h>
-//#include <src/pybind/Binding_Frame.h>
 #include <SofaPython3/SofaTypes/Binding_Mat.h>
 #include <SofaPython3/SofaTypes/Binding_Quat.h>
 #include <SofaPython3/SofaTypes/Binding_Vec.h>
+#include <sofa/defaulttype/init.h>
 
 /// The first parameter must be named the same as the module file to load.
 PYBIND11_MODULE(SofaTypes, m) {
-//  moduleAddBoundingBox(m);
-//  moduleAddColor(m);
-//  moduleAddFrame(m);
-  moduleAddMat(m);
-  moduleAddQuat(m);
-  moduleAddVec(m);
+    sofa::defaulttype::init();
+
+    moduleAddMat(m);
+    moduleAddQuat(m);
+    moduleAddVec(m);
 }
