@@ -1,3 +1,4 @@
+
 /*********************************************************************
 Copyright 2019, CNRS, University of Lille, INRIA
 
@@ -27,51 +28,38 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************/
 
 #include <pybind11/pybind11.h>
-#include "Binding_LinearSpring.h"
-#include "Binding_LinearSpring_doc.h"
+#include "Binding_SpringForceField.h"
+#include "Binding_SpringForceField_doc.h"
 
-#include <SofaDeformable/config.h>
 #include <SofaDeformable/SpringForceField.h>
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
-
-
-namespace sofapython3 {
+#include <SofaPython3/PythonFactory.h>
 
 using sofa::component::interactionforcefield::LinearSpring;
 typedef LinearSpring<SReal> LinearSpringR;
 
+namespace sofapython3 {
+
 namespace py { using namespace pybind11; }
 
-void moduleAddLinearSpring(pybind11::module& m) {
-    // Create a python binding for the C++ class LinearSpring from SofaDeformable
-    py::class_<LinearSpringR> s (m, "LinearSpring", sofapython3::doc::SofaDeformable::LinearSpringClass);
+template<class DataType>
+void moduleAddSpringForceField(py::module& m) {
+    // template the SpringForceField to use it with different types of MechanicalStates such as Vec3 or Rigid3
+    using SpringForceField = sofa::component::interactionforcefield::SpringForceField<DataType>;
 
-    // Initializer for the class
-    s.def(py::init<sofa::Index,
-                   sofa::Index,
-                   SReal,
-                   SReal,
-                   SReal,
-                   bool,
-                   bool>(),
-                   py::arg("index1"),
-                   py::arg("index2"),
-                   py::arg("springStiffness"),
-                   py::arg("dampingFactor"),
-                   py::arg("restLength"),
-                   py::arg("elongationOnly"),
-                   py::arg("enabled"));
+    // create a python binding for the c++ class SpringForceField from SofaDeformable
+    // no init binding, because creation should be done via node.addObject("SpringForceField")
+    py::class_<SpringForceField,
+            sofa::core::objectmodel::BaseObject,
+            py_shared_ptr<SpringForceField>> s (m, "SpringForceField", sofapython3::doc::SofaDeformable::SpringForceFieldClass);
 
-    // Make class fields accessible from python (e.g. spring.restLength = 10)
-    s.def_readwrite("index1", &LinearSpringR::m1);
-    s.def_readwrite("index2", &LinearSpringR::m2);
-    s.def_readwrite("springStiffness", &LinearSpringR::ks);
-    s.def_readwrite("dampingFactor", &LinearSpringR::kd);
-    s.def_readwrite("restLength", &LinearSpringR::initpos);
-    s.def_readwrite("elongationOnly", &LinearSpringR::elongationOnly);
-    s.def_readwrite("enabled", &LinearSpringR::enabled);
+    s.def("clear", &SpringForceField::clear);
+    /* s.def("addSpring", &SpringForceField::addSpring) */
 
+    // register the binding in the downcasting subsystem
+    PythonFactory::registerType<SpringForceField>([](sofa::core::objectmodel::Base* object){
+        return py::cast(dynamic_cast<SpringForceField*>(object));
+    });
 }
-
 } // namespace sofapython3

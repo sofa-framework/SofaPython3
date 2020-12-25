@@ -26,23 +26,13 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - paul.scheikl@kit.edu
 ********************************************************************/
 
-#include <pybind11/pybind11.h>
-#include "Binding_LinearSpring.h"
-#include "Binding_SpringForceField.h"
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidVec6Types.h>
+#pragma once
 
+namespace sofapython3::doc::SofaDeformable {
 
-namespace py { using namespace pybind11; }
+static auto SpringForceFieldClass =
+R"(
+A ForceField containing LinearSpring.
+)";
 
-namespace sofapython3
-{
-
-PYBIND11_MODULE(SofaDeformable, m)
-{
-    moduleAddLinearSpring(m);
-    moduleAddSpringForceField<sofa::defaulttype::Vec3dTypes>(m);
-    moduleAddSpringForceField<sofa::defaulttype::Vec6dTypes>(m);
-}
-
-} // namespace sofapython3
+} // sofapython3::doc::SofaDeformable

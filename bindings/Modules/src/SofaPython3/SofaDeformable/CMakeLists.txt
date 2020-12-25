@@ -3,11 +3,14 @@ project(Bindings.Modules.SofaDeformable)
 set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Module_SofaDeformable.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinearSpring.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_SpringForceField.cpp
 )
 
 set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinearSpring.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinearSpring_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_SpringForceField.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_SpringForceField_doc.h
 )
 
 if (NOT TARGET SofaPython3::Plugin)
