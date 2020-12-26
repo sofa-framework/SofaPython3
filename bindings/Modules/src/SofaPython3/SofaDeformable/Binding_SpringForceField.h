@@ -32,7 +32,6 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 namespace sofapython3 {
 
-template<class DataType>
 void moduleAddSpringForceField(pybind11::module& m);
 
 } // namespace sofapython3

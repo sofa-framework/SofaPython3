@@ -28,31 +28,31 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************/
 
 #include <pybind11/pybind11.h>
-#include "Binding_SpringForceField.h"
-#include "Binding_SpringForceField_doc.h"
+#include <SofaPython3/SofaDeformable/Binding_SpringForceField.h>
+#include <SofaPython3/SofaDeformable/Binding_SpringForceField_doc.h>
 
 #include <SofaDeformable/SpringForceField.h>
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/PythonFactory.h>
 
-using sofa::component::interactionforcefield::LinearSpring;
-typedef LinearSpring<SReal> LinearSpringR;
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofapython3 {
 
 namespace py { using namespace pybind11; }
 
 template<class DataType>
-void moduleAddSpringForceField(py::module& m) {
+void bindSpringForcefield(py::module& m) {
     // template the SpringForceField to use it with different types of MechanicalStates such as Vec3 or Rigid3
     using SpringForceField = sofa::component::interactionforcefield::SpringForceField<DataType>;
 
     // create a python binding for the c++ class SpringForceField from SofaDeformable
     // no init binding, because creation should be done via node.addObject("SpringForceField")
+    std::string type_name = sofa::helper::NameDecoder::getTypeName<SpringForceField>();
     py::class_<SpringForceField,
             sofa::core::objectmodel::BaseObject,
-            py_shared_ptr<SpringForceField>> s (m, "SpringForceField", sofapython3::doc::SofaDeformable::SpringForceFieldClass);
+            py_shared_ptr<SpringForceField>> s (m, type_name.c_str(), sofapython3::doc::SofaDeformable::SpringForceFieldClass);
 
     s.def("clear", &SpringForceField::clear);
     /* s.def("addSpring", &SpringForceField::addSpring) */
@@ -61,5 +61,10 @@ void moduleAddSpringForceField(py::module& m) {
     PythonFactory::registerType<SpringForceField>([](sofa::core::objectmodel::Base* object){
         return py::cast(dynamic_cast<SpringForceField*>(object));
     });
+}
+
+void moduleAddSpringForceField(py::module& m) {
+    bindSpringForcefield<sofa::defaulttype::Vec3dTypes>(m);
+    bindSpringForcefield<sofa::defaulttype::Vec6dTypes>(m);
 }
 } // namespace sofapython3
