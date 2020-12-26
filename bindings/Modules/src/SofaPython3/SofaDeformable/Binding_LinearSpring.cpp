@@ -27,13 +27,13 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************/
 
 #include <pybind11/pybind11.h>
-#include "Binding_LinearSpring.h"
-#include "Binding_LinearSpring_doc.h"
 
 #include <SofaDeformable/config.h>
 #include <SofaDeformable/SpringForceField.h>
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/SofaDeformable/Binding_LinearSpring.h>
+#include <SofaPython3/SofaDeformable/Binding_LinearSpring_doc.h>
 
 
 namespace sofapython3 {
@@ -44,10 +44,10 @@ typedef LinearSpring<SReal> LinearSpringR;
 namespace py { using namespace pybind11; }
 
 void moduleAddLinearSpring(pybind11::module& m) {
-    // Create a python binding for the C++ class LinearSpring from SofaDeformable
+    // create a python binding for the C++ class LinearSpring from SofaDeformable
     py::class_<LinearSpringR> s (m, "LinearSpring", sofapython3::doc::SofaDeformable::LinearSpringClass);
 
-    // Initializer for the class
+    // initializer for the class
     s.def(py::init<sofa::Index,
                    sofa::Index,
                    SReal,
@@ -57,13 +57,14 @@ void moduleAddLinearSpring(pybind11::module& m) {
                    bool>(),
                    py::arg("index1"),
                    py::arg("index2"),
-                   py::arg("springStiffness"),
-                   py::arg("dampingFactor"),
+                   py::arg("springStiffness") = 100,
+                   py::arg("dampingFactor") = 5,
                    py::arg("restLength"),
-                   py::arg("elongationOnly"),
-                   py::arg("enabled"));
+                   py::arg("elongationOnly") = false,
+                   py::arg("enabled") = true,
+                   sofapython3::doc::SofaDeformable::LinearSpringInit);
 
-    // Make class fields accessible from python (e.g. spring.restLength = 10)
+    // make class fields accessible from python (e.g. spring.restLength = 10)
     s.def_readwrite("index1", &LinearSpringR::m1);
     s.def_readwrite("index2", &LinearSpringR::m2);
     s.def_readwrite("springStiffness", &LinearSpringR::ks);
@@ -71,6 +72,31 @@ void moduleAddLinearSpring(pybind11::module& m) {
     s.def_readwrite("restLength", &LinearSpringR::initpos);
     s.def_readwrite("elongationOnly", &LinearSpringR::elongationOnly);
     s.def_readwrite("enabled", &LinearSpringR::enabled);
+
+    // print the spring in a human readable form in python with print(spring)
+    s.def("__str__", [](const LinearSpringR& self){
+      std::ostringstream out;
+      out << "<Sofa.SofaDeformable.LinearSpring: [";
+      out << "index1: ";
+      out << self.m1;
+      out << "; index2: ";
+      out << self.m2;
+      out << "; springStiffness: ";
+      out << self.ks;
+      out << "; dampingFactor: ";
+      out << self.kd;
+      out << "; restLength: ";
+      out << self.initpos;
+      out << "; elongationOnly: ";
+      out << self.elongationOnly;
+      out << "; enabled: ";
+      out << self.enabled;
+      out << "] at ";
+      out << &self;
+      out << ">";
+
+      return out.str();
+    });
 
 }
 

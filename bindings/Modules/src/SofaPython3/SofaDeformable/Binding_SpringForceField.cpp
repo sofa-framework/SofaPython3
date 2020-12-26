@@ -27,16 +27,20 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
     - paul.scheikl@kit.edu
 ********************************************************************/
 
+#include <vector>
 #include <pybind11/pybind11.h>
-#include <SofaPython3/SofaDeformable/Binding_SpringForceField.h>
-#include <SofaPython3/SofaDeformable/Binding_SpringForceField_doc.h>
+#include <pybind11/stl.h>
+#include <pybind11/cast.h>
 
 #include <SofaDeformable/SpringForceField.h>
+#include <sofa/defaulttype/VecTypes.h>
+
+#include <SofaPython3/SofaDeformable/Binding_SpringForceField.h>
+#include <SofaPython3/SofaDeformable/Binding_SpringForceField_doc.h>
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/PythonFactory.h>
 
-#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofapython3 {
 
@@ -47,6 +51,9 @@ void bindSpringForcefield(py::module& m) {
     // template the SpringForceField to use it with different types of MechanicalStates such as Vec3 or Rigid3
     using SpringForceField = sofa::component::interactionforcefield::SpringForceField<DataType>;
 
+    using sofa::component::interactionforcefield::LinearSpring;
+    typedef LinearSpring<SReal> LinearSpringR;
+
     // create a python binding for the c++ class SpringForceField from SofaDeformable
     // no init binding, because creation should be done via node.addObject("SpringForceField")
     std::string type_name = sofa::helper::NameDecoder::getTypeName<SpringForceField>();
@@ -54,8 +61,46 @@ void bindSpringForcefield(py::module& m) {
             sofa::core::objectmodel::BaseObject,
             py_shared_ptr<SpringForceField>> s (m, type_name.c_str(), sofapython3::doc::SofaDeformable::SpringForceFieldClass);
 
-    s.def("clear", &SpringForceField::clear);
-    /* s.def("addSpring", &SpringForceField::addSpring) */
+    // remove all springs and optionally reserve memory for #reserve springs in the vector of springs
+    s.def("clear", &SpringForceField::clear, py::arg("reserve") = 0, sofapython3::doc::SofaDeformable::SpringForceFieldClear);
+
+    // directly binding this one with &SpringForceField::getSprings returns a vector including CPUMemoryManager
+    s.def("getSprings", [](const SpringForceField& self){
+        std::vector<LinearSpringR> springs = self.getSprings();
+        return springs;
+    }, sofapython3::doc::SofaDeformable::SpringForceFieldGetSprings);
+
+    // remove the nth spring
+    s.def("removeSpring", &SpringForceField::removeSpring, py::arg("index"), sofapython3::doc::SofaDeformable::SpringForceFieldRemoveSpring);
+
+    // remove springs specified by a list of indices
+    s.def("removeSprings", [](SpringForceField& self, const std::vector<int> &v){
+                for (const auto index: v){
+                    self.removeSpring(index);
+                }
+            },
+            py::arg("indices"), sofapython3::doc::SofaDeformable::SpringForceFieldRemoveSprings);
+
+    // add spring form a LinearSpringR
+    s.def("addSpring", py::overload_cast<const LinearSpringR &>(&SpringForceField::addSpring), py::arg("spring"), sofapython3::doc::SofaDeformable::SpringForceFieldAddSpring);
+
+    // add spring from construtor arguments for a LinearSpringR
+    s.def("addSpring", py::overload_cast<sofa::Index, sofa::Index, SReal, SReal, SReal>(&SpringForceField::addSpring),
+            py::arg("index1"),
+            py::arg("index2"),
+            py::arg("springStiffness"),
+            py::arg("dampingFactor"),
+            py::arg("restLength"),
+            sofapython3::doc::SofaDeformable::SpringForceFieldAddSpring);
+
+    // add multiple springs at once
+    s.def("addSprings", [](SpringForceField& self, const std::vector<LinearSpringR> &v){
+                for (const auto spring: v){
+                    self.addSpring(spring);
+                }
+            },
+            py::arg("springs"), sofapython3::doc::SofaDeformable::SpringForceFieldAddSprings);
+
 
     // register the binding in the downcasting subsystem
     PythonFactory::registerType<SpringForceField>([](sofa::core::objectmodel::Base* object){

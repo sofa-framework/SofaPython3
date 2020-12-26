@@ -32,7 +32,21 @@ namespace sofapython3::doc::SofaDeformable {
 
 static auto LinearSpringClass =
 R"(
-LinearSpring.
+A LinearSpring between two objects, specified by indices on a topology.
+)";
+
+static auto LinearSpringInit =
+R"(
+Create a linear spring from indices and spring parameters.
+:param index1: Index of the point on object 1.
+:param index2: Index of the point on object 2.
+:param springStiffness: Stiffnes k of the spring (f = -k*x -d*v)
+:param dampingFactor: Damping factor d of the spring (f = -k*x -d*v)
+:param restLength: Initial length of the spring, such that f = 0
+:param elongationOnly: If set to true, no compression of the spring is possible (x < 0)
+:param enabled: If set to false, no force will be calculated for this spring
+
+:return: A linear spring of type Sofa.SofaDeformable.LinearSpring
 )";
 
 } // sofapython3::doc::SofaDeformable
