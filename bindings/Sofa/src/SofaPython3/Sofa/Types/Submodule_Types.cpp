@@ -26,6 +26,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************/
 
 #include <sofa/core/init.h>
+#include <sofa/defaulttype/init.h>
 
 #include <SofaPython3/Sofa/Types/Binding_BoundingBox.h>
 
@@ -35,6 +36,7 @@ PYBIND11_MODULE(Types, types)
 {
     // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
     sofa::core::init();
+    sofa::defaulttype::init();
 
     types.doc() = R"doc(
            Default data types

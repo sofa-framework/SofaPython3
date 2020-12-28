@@ -27,7 +27,6 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 #include "Binding_Vec.h"
 #include <functional>
-#include <type_traits>
 #include <pybind11/operators.h>
 
 #define BINDING_VEC_MAKE_NAME(N, T)                                            \

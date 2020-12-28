@@ -23,5 +23,5 @@ SP3_add_python_module(
     MODULE_NAME  Helper
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
-    DEPENDS      SofaCore SofaPython3::Plugin
+    DEPENDS      SofaCore SofaHelper SofaPython3::Plugin
 )

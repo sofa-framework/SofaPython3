@@ -25,7 +25,7 @@ SP3_add_python_module(
         MODULE_NAME  SofaRuntime
         SOURCES      ${SOURCE_FILES}
         HEADERS      ${HEADER_FILES}
-        DEPENDS      SofaSimulationGraph SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
+        DEPENDS      SofaCore SofaHelper SofaSimulationCore SofaSimulationGraph SofaSimulationCommon SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
 )
 
 if(SP3_BUILD_TEST)
