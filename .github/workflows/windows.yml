@@ -1,0 +1,33 @@
+name: CI
+
+on: pull_request
+
+jobs:
+  build:
+    name: Building on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-2019]
+    env:
+      TOKEN: ${{ secrets.SOFA_REPO_READ_TOKEN }}
+      SOFA_ROOT: ${{ github.workspace }}/sofa
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+
+      - name: Display the path
+        run: |
+          echo ${env:PATH}
+        shell: pwsh
+
+      - name: Get SOFA
+        run: |
+          curl --output sofa.zip -L https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries-v20.12/lastSuccessfulBuild/CI_SCOPE=binaries_minimal/artifact/Linux/*zip*/Linux.zip
+        shell: pwsh
