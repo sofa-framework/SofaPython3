@@ -36,6 +36,7 @@ using sofa::helper::logging::Message;
 #include <SofaPython3/Sofa/Core/Binding_BaseData.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseCamera.h>
 #include <SofaPython3/Sofa/Core/Binding_ForceField.h>
+#include <SofaPython3/Sofa/Core/Binding_ContactListener.h>
 #include <SofaPython3/Sofa/Core/Binding_Context.h>
 #include <SofaPython3/Sofa/Core/Binding_Controller.h>
 #include <SofaPython3/Sofa/Core/Binding_DataEngine.h>
@@ -55,6 +56,7 @@ using sofa::helper::logging::Message;
 #include <sofa/helper/init.h>
 #include <sofa/simulation/init.h>
 #include <sofa/defaulttype/init.h>
+#include <SofaBaseCollision/initSofaBaseCollision.h>
 #include <SofaBaseVisual/initSofaBaseVisual.h>
 #include <SofaBaseUtils/initSofaBaseUtils.h>
 
@@ -69,6 +71,7 @@ PYBIND11_MODULE(Core, core)
     sofa::helper::init();
     sofa::simulation::core::init();
     sofa::defaulttype::init();
+    sofa::component::initSofaBaseCollision();
     sofa::component::initSofaBaseVisual();
     sofa::component::initSofaBaseUtils(); // Needed to add "RequiredPlugin" components
 
@@ -128,6 +131,7 @@ PYBIND11_MODULE(Core, core)
     moduleAddDataVectorString(core);
     moduleAddBaseObject(core);
     moduleAddBaseCamera(core);
+    moduleAddContactListener(core);
     moduleAddContext(core);
     moduleAddController(core);
     moduleAddDataEngine(core);
