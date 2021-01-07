@@ -26,6 +26,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************/
 
 #include <sofa/core/init.h>
+#include <sofa/helper/init.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <SofaPython3/PythonEnvironment.h>
 #include <sofa/core/objectmodel/Base.h>
@@ -115,6 +116,7 @@ PYBIND11_MODULE(Helper, helper)
 {
     // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
     sofa::core::init();
+    sofa::helper::init();
 
     helper.doc() = R"doc(
            Utility functions

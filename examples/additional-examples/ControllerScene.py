@@ -81,6 +81,7 @@ class RotationController(Sofa.Core.Controller):
             print("You just switch to rotation control ")
             self.move = 1
 
+
 def createScene(root):
 
     # rpath =os.environ["SOFA_ROOT"]+"../src/share/mesh/"
@@ -91,8 +92,8 @@ def createScene(root):
 
     loader = root.addObject('MeshObjLoader', name='loader',
                             filename="mesh/liver.obj")
-    te = root.addObject(
-        "TransformEngine", name="te", input_position=loader.position.getLinkPath(), rotation=[0,0,0])
+    te = root.addObject("TransformEngine", name="te",
+                        input_position=loader.position.getLinkPath(), rotation=[0,0,0])
     mo = root.addObject("MechanicalObject", name="mo",
                         position=te.output_position.getLinkPath())
 
@@ -100,26 +101,32 @@ def createScene(root):
     visu.addObject('OglModel', name="visu", src=loader.getLinkPath())
     visu.addObject('IdentityMapping', name="BM", src=mo.getLinkPath())
 
+    # If script is loaded by SOFA (runSofa), this script must be added as a controller
     if not _runAsPythonScript:
         root.addObject(RotationController(name="MyController", engine=root.te))
 
 
 def main():
-    # can be executed from terminal directly:
-
-    # Register all the common component in the factory.
+    # Load the required plugins
     SofaRuntime.importPlugin("SofaOpenglVisual")
+    SofaRuntime.importPlugin("SofaGeneralEngine")
+
+    # Check and save if the script is called from python environment
     global _runAsPythonScript
     _runAsPythonScript = True
-    root = Sofa.Core.Node()
 
+    # Create and initialize the scene
+    root = Sofa.Core.Node()
     createScene(root)
     Sofa.Simulation.init(root)
+
+    # Run simulation
     for i in range(0, 360):
         Sofa.Simulation.animate(root, root.dt.value)
         root.te.rotation[0] += 1
-        #print("For i = "+ str(i)+", we have : "+str(root.te.rotation.value[0]))
+
     print("Last value is : "+ str(root.te.rotation.value[0]))
+
 
 if __name__ == '__main__':
     main()

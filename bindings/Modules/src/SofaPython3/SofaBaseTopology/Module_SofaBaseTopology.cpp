@@ -27,8 +27,10 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 
 #include <pybind11/pybind11.h>
 
-#include "Binding_RegularGridTopology.h"
-#include "Binding_SparseGridTopology.h"
+#include <SofaPython3/SofaBaseTopology/Binding_RegularGridTopology.h>
+#include <SofaPython3/SofaBaseTopology/Binding_SparseGridTopology.h>
+
+#include <SofaBaseTopology/initSofaBaseTopology.h>
 
 namespace py { using namespace pybind11; }
 
@@ -37,6 +39,8 @@ namespace sofapython3
 
 PYBIND11_MODULE(BaseTopology, m)
 {
+    sofa::component::initSofaBaseTopology();
+
     moduleAddRegularGridTopology(m);
     moduleAddSparseGridTopology(m);
 }

@@ -53,10 +53,12 @@ using sofa::helper::logging::Message;
 #include <SofaPython3/Sofa/Core/Data/Binding_DataContainer.h>
 
 #include <sofa/core/init.h>
-#include <SofaBase/initSofaBase.h>
-#include <SofaCommon/initSofaCommon.h>
-#include <SofaSimulation/initSofaSimulation.h>
+#include <sofa/helper/init.h>
+#include <sofa/simulation/init.h>
+#include <sofa/defaulttype/init.h>
 #include <SofaBaseCollision/initSofaBaseCollision.h>
+#include <SofaBaseVisual/initSofaBaseVisual.h>
+#include <SofaBaseUtils/initSofaBaseUtils.h>
 
 namespace sofapython3
 {
@@ -66,10 +68,12 @@ PYBIND11_MODULE(Core, core)
 {
     // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
     sofa::core::init();
-    sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
+    sofa::helper::init();
+    sofa::simulation::core::init();
+    sofa::defaulttype::init();
     sofa::component::initSofaBaseCollision();
-    sofa::initSofaSimulation();
+    sofa::component::initSofaBaseVisual();
+    sofa::component::initSofaBaseUtils(); // Needed to add "RequiredPlugin" components
 
     core.doc() = R"doc(
            Scene components

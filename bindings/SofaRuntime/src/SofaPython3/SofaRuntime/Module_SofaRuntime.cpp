@@ -28,9 +28,6 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <pybind11/eval.h>
 namespace py = pybind11;
 
-#include <sofa/simulation/Node.h>
-using sofa::simulation::Node;
-
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Simulation;
@@ -56,14 +53,7 @@ using sofapython3::SceneLoaderPY3;
 #include <SofaSimulationCommon/init.h>
 #include <SofaSimulationGraph/init.h>
 
-#include <sofa/helper/system/FileRepository.h>
-
-#include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaPython3/Sofa/Core/Binding_Node.h>
-
 #include "Timer/Submodule_Timer.h"
-
-#include <SofaPython3/DataHelper.h>
 
 #include <sofa/helper/logging/MessageDispatcher.h>
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
@@ -71,6 +61,12 @@ using sofapython3::SceneLoaderPY3;
 using sofa::helper::logging::MessageDispatcher;
 using sofa::helper::logging::MainPerComponentLoggingMessageHandler;
 using sofa::helper::logging::MainConsoleMessageHandler;
+
+#include <sofa/core/init.h>
+#include <sofa/helper/init.h>
+#include <sofa/simulation/init.h>
+#include <SofaSimulationGraph/init.h>
+#include <SofaSimulationCommon/init.h>
 
 namespace sofapython3
 {
@@ -116,6 +112,13 @@ PYBIND11_MODULE(SofaRuntime, m) {
                    SofaRuntime.importPlugin("SofaSparseSolver")
 
               )doc";
+
+    // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
+    sofa::core::init();
+    sofa::helper::init();
+    sofa::simulation::core::init();
+    sofa::simulation::graph::init();
+    sofa::simulation::common::init();
 
     // Add the plugin directory to PluginRepository
     const std::string& pluginDir = Utils::getExecutableDirectory();
