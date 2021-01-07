@@ -16,3 +16,7 @@ foreach(modulebindings_module ${MODULEBINDINGS_MODULE_LIST})
 endforeach()
 
 install(TARGETS ${PROJECT_NAME} EXPORT BindingsTargets)
+
+if(SP3_BUILD_TEST)
+	add_subdirectory(tests)
+endif()

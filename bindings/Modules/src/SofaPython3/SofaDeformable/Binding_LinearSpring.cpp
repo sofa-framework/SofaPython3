@@ -18,11 +18,6 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 *********************************************************************/
 /********************************************************************
  Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
     - paul.scheikl@kit.edu
 ********************************************************************/
 
@@ -31,7 +26,6 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <SofaDeformable/config.h>
 #include <SofaDeformable/SpringForceField.h>
 
-#include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/SofaDeformable/Binding_LinearSpring.h>
 #include <SofaPython3/SofaDeformable/Binding_LinearSpring_doc.h>
 

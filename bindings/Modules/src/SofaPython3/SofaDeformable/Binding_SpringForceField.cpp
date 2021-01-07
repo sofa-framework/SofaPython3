@@ -19,11 +19,7 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 *********************************************************************/
 /********************************************************************
  Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
     - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
     - paul.scheikl@kit.edu
 ********************************************************************/
 
@@ -75,11 +71,14 @@ void bindSpringForcefield(py::module& m) {
 
     // remove springs specified by a list of indices
     s.def("removeSprings", [](SpringForceField& self, const std::vector<int> &v){
-                for (const auto index: v){
-                    self.removeSpring(index);
-                }
-            },
-            py::arg("indices"), sofapython3::doc::SofaDeformable::SpringForceFieldRemoveSprings);
+        // Sorting the indices backward (by decreasing indices)
+        std::vector<int> indices = v;
+        std::sort(indices.begin(), indices.end(), std::greater<int>());
+        // Using an reverse iterator to remove springs by decreasing indices
+        for (const auto & index : indices) {
+            self.removeSpring(index);
+        }
+    }, py::arg("indices"), sofapython3::doc::SofaDeformable::SpringForceFieldRemoveSprings);
 
     // add spring form a LinearSpringR
     s.def("addSpring", py::overload_cast<const LinearSpringR &>(&SpringForceField::addSpring), py::arg("spring"), sofapython3::doc::SofaDeformable::SpringForceFieldAddSpring);
@@ -95,11 +94,10 @@ void bindSpringForcefield(py::module& m) {
 
     // add multiple springs at once
     s.def("addSprings", [](SpringForceField& self, const std::vector<LinearSpringR> &v){
-                for (const auto spring: v){
-                    self.addSpring(spring);
-                }
-            },
-            py::arg("springs"), sofapython3::doc::SofaDeformable::SpringForceFieldAddSprings);
+        for (const auto spring: v){
+            self.addSpring(spring);
+        }
+    }, py::arg("springs"), sofapython3::doc::SofaDeformable::SpringForceFieldAddSprings);
 
 
     // register the binding in the downcasting subsystem

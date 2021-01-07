@@ -144,4 +144,10 @@ jobs:
           export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages
           chmod +x SofaPython3/bin/Bindings.SofaTypes.Tests
           ./SofaPython3/bin/Bindings.SofaTypes.Tests
-
+      - name: Bindings.Modules.Tests
+        if: ${{ always() }}
+        run: |
+          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib
+          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages
+          chmod +x SofaPython3/bin/Bindings.Modules.Tests
+          ./SofaPython3/bin/Bindings.Modules.Tests

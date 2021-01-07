@@ -56,6 +56,7 @@ using sofa::helper::logging::Message;
 #include <SofaBase/initSofaBase.h>
 #include <SofaCommon/initSofaCommon.h>
 #include <SofaSimulation/initSofaSimulation.h>
+#include <SofaBaseCollision/initSofaBaseCollision.h>
 
 namespace sofapython3
 {
@@ -67,6 +68,7 @@ PYBIND11_MODULE(Core, core)
     sofa::core::init();
     sofa::component::initSofaBase();
     sofa::component::initSofaCommon();
+    sofa::component::initSofaBaseCollision();
     sofa::initSofaSimulation();
 
     core.doc() = R"doc(

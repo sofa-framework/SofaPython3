@@ -16,15 +16,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 *********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-    - paul.scheikl@kit.edu
-********************************************************************/
 
 #include <pybind11/pybind11.h>
 #include <SofaPython3/SofaDeformable/Binding_LinearSpring.h>
