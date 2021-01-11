@@ -73,5 +73,5 @@ sofa_create_component_in_package_with_targets(
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "."
-    RELOCATABLE ".."
+    OPTIMIZE_BUILD_DIR FALSE
     )

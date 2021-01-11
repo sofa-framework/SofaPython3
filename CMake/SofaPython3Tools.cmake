@@ -65,7 +65,7 @@ function(SP3_add_python_package)
         get_filename_component(relative_directory ${file_relative_path} DIRECTORY)
         install(
             FILES "${OUTPUT_DIRECTORY}/${file_relative_path}"
-            DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}/${relative_directory}"
+            DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}/${relative_directory}"
         )
     endforeach()
 
@@ -221,9 +221,9 @@ function(SP3_add_python_module)
 
     install(TARGETS ${A_TARGET}
         EXPORT BindingsTargets
-        RUNTIME DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT applications
-        LIBRARY DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
-        ARCHIVE DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
+        RUNTIME DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT applications
+        LIBRARY DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
+        ARCHIVE DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
     )
 
     foreach(header ${A_HEADERS})

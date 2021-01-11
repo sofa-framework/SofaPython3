@@ -1,14 +1,13 @@
 project(Bindings)
 
 set(BINDINGS_MODULE_LIST Sofa SofaRuntime SofaGui SofaTypes Modules)
+if(SP3_WITH_SOFAEXPORTER)
+    list(APPEND BINDINGS_MODULE_LIST SofaExporter)
+endif()
 
 foreach(bindings_module ${BINDINGS_MODULE_LIST})
     add_subdirectory(${bindings_module})
 endforeach()
-
-if (SP3_WITH_SOFAEXPORTER)
-  add_subdirectory(SofaExporter)
-endif()
 
 add_library(${PROJECT_NAME} INTERFACE)
 add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
@@ -17,10 +16,6 @@ foreach(bindings_module ${BINDINGS_MODULE_LIST})
     target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.${bindings_module})
 endforeach()
 
-if (SP3_WITH_SOFAEXPORTER)
-    target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.SofaExporter)
-endif()
-
 sofa_create_component_in_package_with_targets(
     COMPONENT_NAME ${PROJECT_NAME}
     COMPONENT_VERSION ${SofaPython3_VERSION}
@@ -28,16 +23,16 @@ sofa_create_component_in_package_with_targets(
     TARGETS ${PROJECT_NAME}
     )
 
-if (SP3_COMPILED_AS_SOFA_SUBPROJECT)
-    ## Python configuration file (build tree), the lib in the source dir (easier while developping .py files)
-    file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/plugin.SofaPython3.bindings" "${CMAKE_BINARY_DIR}/${SP3_PYTHON_PACKAGES_DIRECTORY}\n")
+#if (SP3_COMPILED_AS_SOFA_SUBPROJECT)
+#    ## Python configuration file (build tree), the lib in the source dir (easier while developping .py files)
+#    file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/plugin.SofaPython3.bindings" "${CMAKE_BINARY_DIR}/${SP3_PYTHON_PACKAGES_DIRECTORY}\n")
 
-    ## Python configuration file (install tree)
-    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/installed-bindings-config"
-            "${CMAKE_INSTALL_PREFIX}/${SP3_PYTHON_PACKAGES_DIRECTORY}\n")
+#    ## Python configuration file (install tree)
+#    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/installed-bindings-config"
+#            "${CMAKE_INSTALL_PREFIX}/${SP3_PYTHON_PACKAGES_DIRECTORY}\n")
 
 
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-bindings-config"
-            DESTINATION "etc/sofa/python.d"
-            RENAME "plugin.SofaPython3.bindings")
-endif()
+#    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-bindings-config"
+#            DESTINATION "etc/sofa/python.d"
+#            RENAME "plugin.SofaPython3.bindings")
+#endif()

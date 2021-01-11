@@ -164,7 +164,7 @@ if (SP3_LINK_TO_USER_SITE AND SP3_PYTHON_PACKAGES_LINK_DIRECTORY)
                 install(CODE "\
                 execute_process( \
                     COMMAND ${CMAKE_COMMAND} -E copy_directory \
-                    ${CMAKE_INSTALL_PREFIX}/${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory}/ \
+                    ${CMAKE_INSTALL_PREFIX}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory}/ \
                     ${SP3_PYTHON_PACKAGES_LINK_DIRECTORY}/${directory}   \
                 )"
             )
@@ -172,7 +172,7 @@ if (SP3_LINK_TO_USER_SITE AND SP3_PYTHON_PACKAGES_LINK_DIRECTORY)
                 install(CODE "\
                     execute_process( \
                         COMMAND ${CMAKE_COMMAND} -E create_symlink \
-                        ${CMAKE_INSTALL_PREFIX}/${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory}/ \
+                        ${CMAKE_INSTALL_PREFIX}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory}/ \
                         ${SP3_PYTHON_PACKAGES_LINK_DIRECTORY}/${directory}   \
                     )"
                 )
