@@ -1,5 +1,5 @@
-Download and Install
-================================
+Installation
+============
 
 The plugin can be compiled from the source. 
 
