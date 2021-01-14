@@ -65,7 +65,7 @@ function(SP3_add_python_package)
         get_filename_component(relative_directory ${file_relative_path} DIRECTORY)
         install(
             FILES "${OUTPUT_DIRECTORY}/${file_relative_path}"
-            DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}/${relative_directory}"
+            DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}/${relative_directory}"
         )
     endforeach()
 
@@ -171,9 +171,35 @@ function(SP3_add_python_module)
 
     if (APPLE)
         # In MacOS, the target dependency name is RPATH/site-packages/PackageName, so we need to add
-        # an RPATH to the directory that contains "site-paclages"
+        # an RPATH to the directory that contains "site-packages"
         list(APPEND ${A_TARGET}_DEPENDECIES_RPATH "$ORIGIN/../..")
     endif()
+
+    # Compute the installation RPATHs from the target's SOFA relocatable dependencies
+    # 1. First, compute the relative path from the current target towards the "plugins" relocatable directory of SOFA
+    # 2. Append to the previous computed path the RELOCATABLE_INSTALL_DIR target property of the dependency since the
+    #    latter is formulated with respect to the "plugins" relocatable (e.g. "plugins/SofaBoundaryConditions/lib")
+    foreach(DEPENDENCY ${A_DEPENDS})
+        if (TARGET ${DEPENDENCY})
+            get_target_property(DEPENDENCY_RELOCATABLE_INSTALL_DIR "${DEPENDENCY}" RELOCATABLE_INSTALL_DIR)
+            if (DEPENDENCY_RELOCATABLE_INSTALL_DIR)
+                # Get the relative path from this binding module to the install lib directory
+                # For example, for lib/python3/site-packages/Sofa/Core.***.so, the relative path will be
+                # "../../.."
+                file(RELATIVE_PATH relative_towards_plugins_dir "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+                # Here, we assume that the SP3 plugin will be installed in the SOFA plugins directory (i.e. $SOFA_ROOT/plugins)
+                # Hence, we need to compute the relative path from this plugins directory to the current binding
+                # modules, for example, plugins/SofaPython3/lib/python3/site-packages/Sofa/Core.***.so
+                # will become "../../../../../.." (three levels upper than the previous computed relative path)
+                set(relative_towards_plugins_dir "${relative_towards_plugins_dir}../../..")
+
+                # Alright, now we have the path from the current target towards the "plugins" relocatable directory of SOFA
+                # We can compute the relative path from the current target towards the dependency relocatable path.
+                set(relative_towards_dependency_dir "${relative_towards_plugins_dir}/${DEPENDENCY_RELOCATABLE_INSTALL_DIR}")
+                list(APPEND ${A_TARGET}_DEPENDECIES_RPATH "$ORIGIN/${relative_towards_dependency_dir}/lib")
+            endif()
+        endif()
+    endforeach()
         
     set_target_properties(
         ${A_TARGET}
@@ -220,9 +246,9 @@ function(SP3_add_python_module)
 
     install(TARGETS ${A_TARGET}
         EXPORT BindingsTargets
-        RUNTIME DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT applications
-        LIBRARY DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
-        ARCHIVE DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
+        RUNTIME DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT applications
+        LIBRARY DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
+        ARCHIVE DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
     )
 
     foreach(header ${A_HEADERS})
