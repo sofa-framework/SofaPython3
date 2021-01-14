@@ -101,12 +101,16 @@ set(SP3_PYTHON_PACKAGES_DIRECTORY
     This will be prepend to LIBRARY_OUTPUT_DIRECTORY (default to site-packages)"
 )
 
-# Get the Python's user site packages directory, or FASLE if not found
+# Get the Python's user site packages directory, or FALSE if not found
 SP3_get_python_user_site()
-CMAKE_DEPENDENT_OPTION(
+
+# Add an option to automatically create links towards the python packages of SP3
+# into the python's user site packages directory.
+option(
     SP3_LINK_TO_USER_SITE
     "Install python packages to python's user site directory. The directory path can be changed by setting SP3_PYTHON_PACKAGES_LINK_DIRECTORY."
-    OFF "PYTHON_USER_SITE" OFF)
+    OFF
+)
 
 set(SP3_PYTHON_PACKAGES_LINK_DIRECTORY
     "${PYTHON_USER_SITE}"
