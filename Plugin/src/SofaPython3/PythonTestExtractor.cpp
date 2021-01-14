@@ -5,6 +5,9 @@
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/system/SetDirectory.h>
 
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager;
+
 using sofa::helper::system::SetDirectory;
 namespace py = pybind11;
 
@@ -45,6 +48,8 @@ py::object PythonTestExtractor::getTestSuite(py::module& unittest, py::module& m
 
 std::vector<PythonTestData> PythonTestExtractor::extract () const
 {
+    PluginManager::getInstance().loadPlugin("SofaPython3");
+
     PythonEnvironment::Init();
     PythonEnvironment::gil scoped_gil;
 
