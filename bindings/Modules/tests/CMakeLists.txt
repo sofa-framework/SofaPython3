@@ -24,14 +24,6 @@ sofa_auto_set_target_rpath(
     RELOCATABLE "plugins"
 )
 
-# This will set rpaths relative to SP3 plugin library
-get_target_property(RPATH ${PROJECT_NAME} "INSTALL_RPATH")
-list(APPEND RPATH "$ORIGIN/../lib")
-if (APPLE)
-    list(APPEND RPATH "@executable_path/../lib")
-endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH "${RPATH}")
-
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 
 set(DIR_BINDING_LIST SofaBaseTopology SofaDeformable)

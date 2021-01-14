@@ -5,6 +5,22 @@ if(SP3_WITH_SOFAEXPORTER)
     list(APPEND BINDINGS_MODULE_LIST SofaExporter)
 endif()
 
+# This will set rpaths relative to SP3 plugin library
+if(UNIX)
+    set(CMAKE_INSTALL_RPATH
+        "$ORIGIN/../lib"
+        "$$ORIGIN/../lib"
+    )
+    if(APPLE)
+        set(CMAKE_MACOSX_RPATH ON)
+        list(APPEND CMAKE_INSTALL_RPATH
+            "@loader_path/../lib"
+            "@executable_path/../lib"
+        )
+        set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+    endif()
+endif()
+
 foreach(bindings_module ${BINDINGS_MODULE_LIST})
     add_subdirectory(${bindings_module})
 endforeach()
