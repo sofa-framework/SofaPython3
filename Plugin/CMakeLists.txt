@@ -77,6 +77,13 @@ if (CMAKE_SYSTEM_NAME STREQUAL Windows )
     target_compile_definitions(${PROJECT_NAME} PUBLIC "-DHAVE_SNPRINTF")
 endif()
 
+set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES
+        CXX_VISIBILITY_PRESET "hidden"
+        CUDA_VISIBILITY_PRESET "hidden"
+)
+
 # Install header files
 foreach(header ${HEADER_FILES})
     file(RELATIVE_PATH relative_path "${CMAKE_CURRENT_SOURCE_DIR}/src" "${header}")
