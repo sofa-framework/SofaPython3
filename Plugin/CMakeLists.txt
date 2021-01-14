@@ -66,6 +66,13 @@ if (CMAKE_SYSTEM_NAME STREQUAL Windows )
     target_compile_definitions(${PROJECT_NAME} PUBLIC "-DHAVE_SNPRINTF")
 endif()
 
+set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES
+        CXX_VISIBILITY_PRESET "hidden"
+        CUDA_VISIBILITY_PRESET "hidden"
+)
+
 sofa_create_component_in_package_with_targets(
     COMPONENT_NAME ${PROJECT_NAME}
     COMPONENT_VERSION ${SofaPython3_VERSION}

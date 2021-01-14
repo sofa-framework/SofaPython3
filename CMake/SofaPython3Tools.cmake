@@ -69,7 +69,6 @@ function(SP3_add_python_package)
         )
     endforeach()
 
-    message(STATUS "Python package ${A_SOURCE_DIRECTORY} added to directory ${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}")
 endfunction()
 
 # - Create a target for a python module binding code with pybind11 support.
@@ -238,10 +237,5 @@ function(SP3_add_python_module)
             COMPONENT headers
         )
     endforeach()
-
-
-    if (NOT A_QUIET)
-        message(STATUS "Python module '${MODULE_NAME}' added to ${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}")
-    endif ()
 
 endfunction()

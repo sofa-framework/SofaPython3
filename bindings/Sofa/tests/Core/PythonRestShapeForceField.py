@@ -38,6 +38,7 @@ def RestShapeObject(impl, name="unnamed", position=[]):
         return node
  
 def createScene(node):
+        node.addObject("RequiredPlugin", name="SofaBaseLinearSolver")
         node.addObject("RequiredPlugin", name="SofaImplicitOdeSolver")
         node.addObject("DefaultAnimationLoop", name="loop")
         node.addObject("EulerImplicitSolver")
