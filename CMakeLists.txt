@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaPython3)
 
 # Manually define VERSION
-set(SOFAPYTHON3_VERSION_MAJOR 1)
-set(SOFAPYTHON3_VERSION_MINOR 0)
+set(SOFAPYTHON3_VERSION_MAJOR 20)
+set(SOFAPYTHON3_VERSION_MINOR 12)
 set(SOFAPYTHON3_VERSION_PATCH 0)
 set(SOFAPYTHON3_VERSION ${SOFAPYTHON3_VERSION_MAJOR}.${SOFAPYTHON3_VERSION_MINOR}.${SOFAPYTHON3_VERSION_PATCH})
 
@@ -18,6 +18,18 @@ if (NOT "${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
 else()
     unset(SP3_COMPILED_AS_SUBPROJECT)
 endif ()
+
+# If the plugin is compiled within SOFA, add an option to deactivate it, in which case the remaining
+# of this file won't run and therefore will not generate any error if the requirements (python, pybind11)
+# are not found.
+if (SP3_COMPILED_AS_SOFA_SUBPROJECT)
+    option(PLUGIN_SOFAPYTHON3 "Build the SofaPython3 plugin." ON)
+    if (NOT PLUGIN_SOFAPYTHON3)
+        return()
+    else()
+        message("Adding plugin SofaPython3")
+    endif()
+endif()
 
 # CMAKE TOOLS
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMake")
@@ -89,12 +101,16 @@ set(SP3_PYTHON_PACKAGES_DIRECTORY
     This will be prepend to LIBRARY_OUTPUT_DIRECTORY (default to site-packages)"
 )
 
-# Get the Python's user site packages directory, or FASLE if not found
+# Get the Python's user site packages directory, or FALSE if not found
 SP3_get_python_user_site()
-CMAKE_DEPENDENT_OPTION(
+
+# Add an option to automatically create links towards the python packages of SP3
+# into the python's user site packages directory.
+option(
     SP3_LINK_TO_USER_SITE
     "Install python packages to python's user site directory. The directory path can be changed by setting SP3_PYTHON_PACKAGES_LINK_DIRECTORY."
-    ON "PYTHON_USER_SITE" OFF)
+    OFF
+)
 
 set(SP3_PYTHON_PACKAGES_LINK_DIRECTORY
     "${PYTHON_USER_SITE}"
@@ -103,13 +119,17 @@ set(SP3_PYTHON_PACKAGES_LINK_DIRECTORY
     (default to $(python3 -m site --user-site))"
 )
 
-message("-- Python version: ${PYTHON_VERSION_STRING}")
-message("-- Python executable: ${PYTHON_EXECUTABLE}")
-message("-- Python include dirs: ${PYTHON_INCLUDE_DIRS}")
-message("-- Python libraries: ${PYTHON_LIBRARIES}")
-message("-- Python user site: ${PYTHON_USER_SITE}")
-message("-- pybind11 version: ${pybind11_VERSION}")
-message("-- pybind11 config: ${pybind11_CONFIG}")
+message(STATUS "Python:
+    Version: ${PYTHON_VERSION_STRING}
+    Executable: ${PYTHON_EXECUTABLE}
+    Headers: ${PYTHON_INCLUDE_DIRS}
+    Libraries: ${PYTHON_LIBRARIES}
+    User site: ${PYTHON_USER_SITE}"
+)
+message(STATUS "pybind11:
+    Version: ${pybind11_VERSION}
+    Config: ${pybind11_CONFIG}"
+)
 
 # When using python3 from XCode on MacOS, the RPath is wrongly set to XCode frameworks directory:
 #   LC_LOAD_DYLIB   @rpath/Python3.framework/Versions/3.7/Python3
@@ -134,10 +154,10 @@ if (NOT SP3_COMPILED_AS_SUBPROJECT)
     message(STATUS "SOFA Framework:\n\tVersion: ${SofaFramework_VERSION}\n\tLocation: ${SOFA_ROOT_DIR}")
 endif()
 
-sofa_add_plugin(Plugin SofaPython3 ON)
-sofa_add_plugin(bindings SofaPython3_Bindings ON)
-sofa_add_plugin(examples SofaPython3_Examples ON)
-sofa_add_plugin(docs SofaPython3_Docs ON)
+add_subdirectory(Plugin)
+add_subdirectory(bindings)
+add_subdirectory(examples)
+add_subdirectory(docs)
 
 SP3_add_python_package(
     SOURCE_DIRECTORY
