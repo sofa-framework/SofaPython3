@@ -1,0 +1,6 @@
+bruno.josue.marques@inria.fr
+damien.marchal@univ-lille.fr
+eve.le-guillou@centrale.centralelille.fr
+jean-nicolas.brunet@inria.fr
+paul.scheikl@kit.edu
+thierry.gaugry@inria.fr
