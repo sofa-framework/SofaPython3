@@ -156,14 +156,14 @@ function(SP3_add_python_module)
     #    We compute its path relative to this target output file
     #    Ex: ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/site-packages/Sofa  --> $ORIGIN/../Sofa
     # 3. Add the relative path computed in 2 to the list of RPATHS
-    set(${A_TARGET}_DEPENDECIES_RPATH "${CMAKE_INSTALL_PREFIX}/${LIBRARY_OUTPUT_DIRECTORY}")
+    set(${A_TARGET}_DEPENDENCIES_RPATH "${CMAKE_INSTALL_PREFIX}/${LIBRARY_OUTPUT_DIRECTORY}")
     foreach(DEPENDENCY ${A_DEPENDS})
         if (TARGET ${DEPENDENCY})
             get_target_property(DEPENDENCY_LIBRARY_OUTPUT_DIRECTORY "${DEPENDENCY}" LIBRARY_OUTPUT_DIRECTORY)
             if (DEPENDENCY_LIBRARY_OUTPUT_DIRECTORY)
                 file(RELATIVE_PATH dependency_path_from_packages "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}" "${DEPENDENCY_LIBRARY_OUTPUT_DIRECTORY}")
                 if (NOT "${dependency_path_from_packages}" STREQUAL "" AND NOT "${dependency_path_from_packages}" STREQUAL "../")
-                    list(APPEND ${A_TARGET}_DEPENDECIES_RPATH "$ORIGIN/../${dependency_path_from_packages}")
+                    list(APPEND ${A_TARGET}_DEPENDENCIES_RPATH "$ORIGIN/../${dependency_path_from_packages}")
                 endif()
             endif()
         endif()
@@ -172,7 +172,7 @@ function(SP3_add_python_module)
     if (APPLE)
         # In MacOS, the target dependency name is RPATH/site-packages/PackageName, so we need to add
         # an RPATH to the directory that contains "site-packages"
-        list(APPEND ${A_TARGET}_DEPENDECIES_RPATH "$ORIGIN/../..")
+        list(APPEND ${A_TARGET}_DEPENDENCIES_RPATH "$ORIGIN/../..")
     endif()
 
     # Compute the installation RPATHs from the target's SOFA relocatable dependencies
@@ -196,7 +196,10 @@ function(SP3_add_python_module)
                 # Alright, now we have the path from the current target towards the "plugins" relocatable directory of SOFA
                 # We can compute the relative path from the current target towards the dependency relocatable path.
                 set(relative_towards_dependency_dir "${relative_towards_plugins_dir}/${DEPENDENCY_RELOCATABLE_INSTALL_DIR}")
-                list(APPEND ${A_TARGET}_DEPENDECIES_RPATH "$ORIGIN/${relative_towards_dependency_dir}/lib")
+                list(APPEND ${A_TARGET}_DEPENDENCIES_RPATH "$ORIGIN/${relative_towards_dependency_dir}/lib")
+                list(APPEND ${A_TARGET}_DEPENDENCIES_RPATH "$$ORIGIN/${relative_towards_dependency_dir}/lib")
+                list(APPEND ${A_TARGET}_DEPENDENCIES_RPATH "@loader_path/${relative_towards_dependency_dir}/lib")
+                list(APPEND ${A_TARGET}_DEPENDENCIES_RPATH "@executable_path/${relative_towards_dependency_dir}/lib")
             endif()
         endif()
     endforeach()
@@ -210,7 +213,7 @@ function(SP3_add_python_module)
             INSTALL_RPATH_USE_LINK_PATH TRUE
 
             # This will set the remaining RPATHs from our Bindings targets dependencies (install/lib/site-packages/*)
-            INSTALL_RPATH "${${A_TARGET}_DEPENDECIES_RPATH}"
+            INSTALL_RPATH "${${A_TARGET}_DEPENDENCIES_RPATH}"
 
             # Don't use the installation RPATH for built files
             BUILD_WITH_INSTALL_RPATH FALSE
