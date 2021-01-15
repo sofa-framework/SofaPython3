@@ -164,6 +164,9 @@ function(SP3_add_python_module)
                 file(RELATIVE_PATH dependency_path_from_packages "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}" "${DEPENDENCY_LIBRARY_OUTPUT_DIRECTORY}")
                 if (NOT "${dependency_path_from_packages}" STREQUAL "" AND NOT "${dependency_path_from_packages}" STREQUAL "../")
                     list(APPEND ${A_TARGET}_DEPENDENCIES_RPATH "$ORIGIN/../${dependency_path_from_packages}")
+                    list(APPEND ${A_TARGET}_DEPENDENCIES_RPATH "$$ORIGIN/../${dependency_path_from_packages}")
+                    list(APPEND ${A_TARGET}_DEPENDENCIES_RPATH "@loader_path/../${dependency_path_from_packages}")
+                    list(APPEND ${A_TARGET}_DEPENDENCIES_RPATH "@executable_path/../${dependency_path_from_packages}")
                 endif()
             endif()
         endif()
@@ -173,6 +176,9 @@ function(SP3_add_python_module)
         # In MacOS, the target dependency name is RPATH/site-packages/PackageName, so we need to add
         # an RPATH to the directory that contains "site-packages"
         list(APPEND ${A_TARGET}_DEPENDENCIES_RPATH "$ORIGIN/../..")
+        list(APPEND ${A_TARGET}_DEPENDENCIES_RPATH "$$ORIGIN/../..")
+        list(APPEND ${A_TARGET}_DEPENDENCIES_RPATH "@loader_path/../..")
+        list(APPEND ${A_TARGET}_DEPENDENCIES_RPATH "@executable_path/../..")
     endif()
 
     # Compute the installation RPATHs from the target's SOFA relocatable dependencies
