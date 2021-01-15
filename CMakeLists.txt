@@ -25,13 +25,6 @@ if (SP3_COMPILED_AS_SOFA_SUBPROJECT)
     endif()
 endif()
 
-# SofaPython3 cannot be compiled alongside SofaPython(2)
-if (SP3_COMPILED_AS_SOFA_SUBPROJECT)
-    if(PLUGIN_SOFAPYTHON)
-        message(FATAL_ERROR "SofaPython3 cannot be built alongside SofaPython. Please set PLUGIN_SOFAPYTHON to OFF")
-    endif()
-endif()
-
 # CMAKE TOOLS
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMake")
 include(SofaPython3Tools)
@@ -86,6 +79,30 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Set the minimum python version to 3.7
 set(PYBIND11_PYTHON_VERSION 3.7)
 
+# Find Python3 executable and set PYTHON_EXECUTABLE before finding pybind11
+# to be sure that pybind11 relies on the right Python version
+set(python_version "${PYBIND11_PYTHON_VERSION}")
+set(python_version_flag "")
+if(PYTHON_EXECUTABLE)
+    execute_process(
+        COMMAND "${PYTHON_EXECUTABLE}" "--version"
+        OUTPUT_VARIABLE cmd_output
+        )
+    string(REGEX MATCH "[0-9]+\.[0-9]+" python_exec_version "${cmd_output}")
+    if(python_exec_version VERSION_GREATER_EQUAL PYBIND11_PYTHON_VERSION)
+        set(python_version "${python_exec_version}")
+        set(python_version_flag "EXACT")
+    endif()
+endif()
+message("${PROJECT_NAME}: Searching Python ${python_version} ${python_version_flag}")
+find_package(Python ${python_version} ${python_version_flag} COMPONENTS Interpreter Development REQUIRED)
+set(PYTHON_VERSION ${Python_VERSION})
+set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
+set(PYTHON_LIBRARIES ${Python_LIBRARIES})
+set(PYTHON_INCLUDE_DIRS ${Python_INCLUDE_DIRS})
+set(PYTHON_LIBRARY ${Python_LIBRARY})
+set(PYTHON_INCLUDE_DIR ${Python_INCLUDE_DIR})
+
 # Set the minimum pybind11 version to 2.3 (before that the pybind11::embed target did not exist)
 find_package(pybind11 2.3 CONFIG QUIET REQUIRED)
 
@@ -115,7 +132,7 @@ set(SP3_PYTHON_PACKAGES_LINK_DIRECTORY
 )
 
 message(STATUS "Python:
-    Version: ${PYTHON_VERSION_STRING}
+    Version: ${PYTHON_VERSION}
     Executable: ${PYTHON_EXECUTABLE}
     Headers: ${PYTHON_INCLUDE_DIRS}
     Libraries: ${PYTHON_LIBRARIES}
