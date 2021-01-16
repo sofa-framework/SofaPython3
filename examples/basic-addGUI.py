@@ -11,6 +11,7 @@ USE_GUI = True
 def main():
     # Make sure to load all SOFA libraries
     SofaRuntime.importPlugin("SofaBaseMechanics")
+    SofaRuntime.importPlugin("SofaOpenglVisual")
 
     #Create the root node
     root = Sofa.Core.Node("root")

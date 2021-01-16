@@ -8,8 +8,8 @@ import os
 
 def main():
 	# Make sure to load all SOFA libraries
-	# SofaRuntime.importPlugin("SofaBaseMechanics")
-
+	SofaRuntime.importPlugin("SofaOpenglVisual")
+	
 	root = Sofa.Core.Node("root")
 
 	# Call the above function to create the scene graph
@@ -32,8 +32,6 @@ def main():
 	tf.write(scene)
 	tf.flush()
 	node = Sofa.Simulation.load(tf.name)
-
-	# Once defined, initialization of the scene graph
 
 	# Find out the supported GUIs
 	print ("Supported GUIs are: " + Sofa.Gui.GUIManager.ListSupportedGUI(","))

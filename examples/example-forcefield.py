@@ -50,6 +50,7 @@ def createScene(node):
         return node
 
 def main():
+    SofaRuntime.importPlugin("SofaOpenglVisual")
     SofaRuntime.importPlugin("SofaBaseMechanics")
     SofaRuntime.importPlugin("SofaImplicitOdeSolver")
 
