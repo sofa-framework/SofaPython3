@@ -1,4 +1,5 @@
 import Sofa
+import SofaRuntime
 import Sofa.Gui
 from Sofa.Helper import msg_info
 import numpy as np
@@ -52,6 +53,9 @@ def createScene(root):
 
 
 def main():
+    SofaRuntime.importPlugin("SofaOpenglVisual")
+    SofaRuntime.importPlugin("SofaImplicitOdeSolver")
+
     root=Sofa.Core.Node("root")
     createScene(root)
     Sofa.Simulation.init(root)
