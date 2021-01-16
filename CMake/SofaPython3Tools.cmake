@@ -122,13 +122,36 @@ function(SP3_add_python_module)
 
     find_package(pybind11 CONFIG QUIET REQUIRED)
 
-    pybind11_add_module(${A_TARGET} SHARED NO_EXTRAS "${A_SOURCES}")
+    # We are doing manually what's usually done with pybind11_add_module(${A_TARGET} SHARED "${A_SOURCES}")
+    # since we got some problems on MacOS using recent versions of pybind11 where the SHARED argument wasn't taken
+    # into account
+    python_add_library(${A_TARGET} SHARED "${A_SOURCES}")
     add_library(SofaPython3::${A_TARGET} ALIAS ${A_TARGET})
+
+    target_link_libraries(${A_TARGET} PRIVATE pybind11::headers)
+    target_link_libraries(${A_TARGET} PRIVATE pybind11::embed)
+    target_link_libraries(${A_TARGET} PRIVATE pybind11::lto)
+
+    if(MSVC)
+        target_link_libraries(${A_TARGET} PRIVATE pybind11::windows_extras)
+    endif()
+
+    set_target_properties(${A_TARGET}
+        PROPERTIES
+            CXX_VISIBILITY_PRESET "hidden"
+            CUDA_VISIBILITY_PRESET "hidden")
 
     target_include_directories(${A_TARGET}
         PUBLIC "$<BUILD_INTERFACE:${path_to_src}/>"
         PUBLIC $<INSTALL_INTERFACE:include>
     )
+
+    pybind11_extension(${A_TARGET})
+
+    if(NOT MSVC AND NOT ${CMAKE_BUILD_TYPE} MATCHES Debug|RelWithDebInfo)
+        # Strip unnecessary sections of the binary on Linux/macOS
+        pybind11_strip(${A_TARGET})
+    endif()
 
     if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang") # Clang or AppleCLang
         target_compile_options(${A_TARGET} PUBLIC -fsized-deallocation)
