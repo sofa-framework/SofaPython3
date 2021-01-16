@@ -18,7 +18,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include "sofa/defaulttype/Quat.h"
 #include <pybind11/pybind11.h>
+#include <pybind11/pytypes.h>
 #include <pybind11/stl.h>
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
@@ -107,6 +109,14 @@ void moduleAddBaseCamera(py::module &m)
          vec1 = sofa::defaulttype::Vec3(py::cast<double>(p1[0]),py::cast<double>(p1[1]),py::cast<double>(p1[2]));
          vec2 = sofa::defaulttype::Vec3(py::cast<double>(p2[0]),py::cast<double>(p2[1]),py::cast<double>(p2[2]));
          return (self->getOrientationFromLookAt(vec1, vec2));
+    });
+
+    c.def("getLookAtFromOrientation", [](BaseCamera *self, py::list pos, double distance, py::list quat) {
+         sofa::defaulttype::Vec3 position;
+         sofa::defaulttype::Quat orientation;
+         position = sofa::defaulttype::Vec3(py::cast<double>(pos[0]),py::cast<double>(pos[1]),py::cast<double>(pos[2]));
+         orientation = sofa::defaulttype::Quat(py::cast<double>(quat[0]),py::cast<double>(quat[1]),py::cast<double>(quat[2]),py::cast<double>(quat[3]));
+         return (self->getLookAtFromOrientation(position, distance, orientation));
     });
 
     c.def("getPositionFromOrientation", [](BaseCamera *self, py::list p1, py::float_ p2, py::list p3) {
