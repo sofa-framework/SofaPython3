@@ -10,7 +10,7 @@ USE_GUI = True
 
 def main():
     # Make sure to load all SOFA libraries
-    SofaRuntime.importPlugin("SofaOpenglVisual")
+    SofaRuntime.importPlugin("SofaBaseMechanics")
 
     #Create the root node
     root = Sofa.Core.Node("root")
@@ -48,11 +48,9 @@ def createScene(root):
     node1 = root.addChild("Node1")
     node2 = root.addChild("Node2")
 
-    node1.addObject("MechanicalObject")
-    node1.addObject("OglModel")
+    node1.addObject("MechanicalObject", template="Rigid3d", position="0 0 0   0 0 0 1", showObject="1")
 
-    node2.addObject("MechanicalObject")
-    node2.addObject("OglModel")
+    node2.addObject("MechanicalObject", template="Rigid3d", position="1 1 1   0 0 0 1", showObject="1")
 
     return root
 
