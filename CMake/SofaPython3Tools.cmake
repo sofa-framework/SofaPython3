@@ -128,12 +128,36 @@ function(SP3_add_python_module)
     python_add_library(${A_TARGET} SHARED "${A_SOURCES}")
     add_library(SofaPython3::${A_TARGET} ALIAS ${A_TARGET})
 
-    target_link_libraries(${A_TARGET} PRIVATE pybind11::headers)
-    target_link_libraries(${A_TARGET} PRIVATE pybind11::embed)
-    target_link_libraries(${A_TARGET} PRIVATE pybind11::lto)
+    if ("${pybind11_VERSION}" VERSION_GREATER_EQUAL "2.6.0")
+        target_link_libraries(${A_TARGET} PRIVATE pybind11::headers)
+        target_link_libraries(${A_TARGET} PRIVATE pybind11::embed)
+        target_link_libraries(${A_TARGET} PRIVATE pybind11::lto)
+        if(MSVC)
+            target_link_libraries(${A_TARGET} PRIVATE pybind11::windows_extras)
+        endif()
 
-    if(MSVC)
-        target_link_libraries(${A_TARGET} PRIVATE pybind11::windows_extras)
+        pybind11_extension(${A_TARGET})
+        pybind11_strip(${A_TARGET})
+    else()
+        target_link_libraries(${A_TARGET} PRIVATE pybind11::module)
+
+        # Equivalent to pybind11_extension(${A_TARGET}) which doesn't exists on pybind11 versions < 5
+        set_target_properties(${A_TARGET} PROPERTIES PREFIX "" SUFFIX "${PYTHON_MODULE_EXTENSION}")
+
+        if(NOT MSVC AND NOT ${CMAKE_BUILD_TYPE} MATCHES Debug|RelWithDebInfo)
+            # Equivalent to pybind11_strip(${A_TARGET}) which doesn't exists on pybind11 versions < 5
+            # Strip unnecessary sections of the binary on Linux/macOS
+            if(CMAKE_STRIP)
+                if(APPLE)
+                    set(x_opt -x)
+                endif()
+
+                add_custom_command(
+                        TARGET ${A_TARGET}
+                        POST_BUILD
+                        COMMAND ${CMAKE_STRIP} ${x_opt} $<TARGET_FILE:${A_TARGET}>)
+            endif()
+        endif()
     endif()
 
     set_target_properties(${A_TARGET}
@@ -146,12 +170,7 @@ function(SP3_add_python_module)
         PUBLIC $<INSTALL_INTERFACE:include>
     )
 
-    pybind11_extension(${A_TARGET})
 
-    if(NOT MSVC AND NOT ${CMAKE_BUILD_TYPE} MATCHES Debug|RelWithDebInfo)
-        # Strip unnecessary sections of the binary on Linux/macOS
-        pybind11_strip(${A_TARGET})
-    endif()
 
     if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang") # Clang or AppleCLang
         target_compile_options(${A_TARGET} PUBLIC -fsized-deallocation)
