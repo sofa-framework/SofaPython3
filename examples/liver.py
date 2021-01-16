@@ -10,6 +10,7 @@ USE_GUI = True
 
 def main():
     SofaRuntime.importPlugin("SofaOpenglVisual")
+    SofaRuntime.importPlugin("SofaImplicitOdeSolver")
 
     root = Sofa.Core.Node("root")
     createScene(root)
