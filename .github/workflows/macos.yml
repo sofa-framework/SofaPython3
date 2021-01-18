@@ -70,6 +70,7 @@ jobs:
           -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           -DCMAKE_PREFIX_PATH=$SOFA_ROOT/lib/cmake
           -DCMAKE_BUILD_TYPE=Release
+          -DPYTHON_EXECUTABLE=$(which python)
           .
           && ninja && ninja install
           && echo ${CCACHE_BASEDIR}

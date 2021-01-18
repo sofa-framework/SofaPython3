@@ -122,13 +122,55 @@ function(SP3_add_python_module)
 
     find_package(pybind11 CONFIG QUIET REQUIRED)
 
-    pybind11_add_module(${A_TARGET} SHARED NO_EXTRAS "${A_SOURCES}")
+    # We are doing manually what's usually done with pybind11_add_module(${A_TARGET} SHARED "${A_SOURCES}")
+    # since we got some problems on MacOS using recent versions of pybind11 where the SHARED argument wasn't taken
+    # into account
+    python_add_library(${A_TARGET} SHARED "${A_SOURCES}")
     add_library(SofaPython3::${A_TARGET} ALIAS ${A_TARGET})
+
+    if ("${pybind11_VERSION}" VERSION_GREATER_EQUAL "2.6.0")
+        target_link_libraries(${A_TARGET} PRIVATE pybind11::headers)
+        target_link_libraries(${A_TARGET} PRIVATE pybind11::embed)
+        target_link_libraries(${A_TARGET} PRIVATE pybind11::lto)
+        if(MSVC)
+            target_link_libraries(${A_TARGET} PRIVATE pybind11::windows_extras)
+        endif()
+
+        pybind11_extension(${A_TARGET})
+        pybind11_strip(${A_TARGET})
+    else()
+        target_link_libraries(${A_TARGET} PRIVATE pybind11::module)
+
+        # Equivalent to pybind11_extension(${A_TARGET}) which doesn't exists on pybind11 versions < 5
+        set_target_properties(${A_TARGET} PROPERTIES PREFIX "" SUFFIX "${PYTHON_MODULE_EXTENSION}")
+
+        if(NOT MSVC AND NOT ${CMAKE_BUILD_TYPE} MATCHES Debug|RelWithDebInfo)
+            # Equivalent to pybind11_strip(${A_TARGET}) which doesn't exists on pybind11 versions < 5
+            # Strip unnecessary sections of the binary on Linux/macOS
+            if(CMAKE_STRIP)
+                if(APPLE)
+                    set(x_opt -x)
+                endif()
+
+                add_custom_command(
+                        TARGET ${A_TARGET}
+                        POST_BUILD
+                        COMMAND ${CMAKE_STRIP} ${x_opt} $<TARGET_FILE:${A_TARGET}>)
+            endif()
+        endif()
+    endif()
+
+    set_target_properties(${A_TARGET}
+        PROPERTIES
+            CXX_VISIBILITY_PRESET "hidden"
+            CUDA_VISIBILITY_PRESET "hidden")
 
     target_include_directories(${A_TARGET}
         PUBLIC "$<BUILD_INTERFACE:${path_to_src}/>"
         PUBLIC $<INSTALL_INTERFACE:include>
     )
+
+
 
     if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang") # Clang or AppleCLang
         target_compile_options(${A_TARGET} PUBLIC -fsized-deallocation)
