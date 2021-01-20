@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.12)
 
 project(SofaPython3 VERSION 20.12.0)
 
+find_package(SofaFramework REQUIRED)
+
 # Detect if SofaPython3 is a subproject of another project (eg. when compiled within Sofa)
 if (NOT "${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
     set(SP3_COMPILED_AS_SUBPROJECT 1)
@@ -158,8 +160,6 @@ if (APPLE)
     set(CMAKE_INSTALL_RPATH "/Applications/Xcode.app/Contents/Developer/Library/Frameworks")
     set(CMAKE_BUILD_RPATH "/Applications/Xcode.app/Contents/Developer/Library/Frameworks")
 endif()
-
-find_package(SofaFramework REQUIRED)
 
 if (NOT SP3_COMPILED_AS_SUBPROJECT)
     get_filename_component(SOFA_ROOT_DIR "${SofaFramework_DIR}/../../.." ABSOLUTE)
