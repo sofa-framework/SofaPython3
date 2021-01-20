@@ -4,6 +4,26 @@
 @PACKAGE_INIT@
 
 set(SP3_WITH_SOFAEXPORTER @SP3_WITH_SOFAEXPORTER@)
+set(SP3_PYTHON_PACKAGES_DIRECTORY @SP3_PYTHON_PACKAGES_DIRECTORY@)
+
+include("${CMAKE_CURRENT_LIST_DIR}/SofaPython3Tools.cmake")
+
+# Find Python3 executable and set PYTHON_EXECUTABLE before finding pybind11
+# to be sure that pybind11 relies on the right Python version
+set(python_version @PYBIND11_PYTHON_VERSION@)
+set(python_version_flag @python_version_flag@)
+
+find_package(Python ${python_version} ${python_version_flag} COMPONENTS Interpreter Development REQUIRED)
+
+set(PYTHON_VERSION ${Python_VERSION})
+set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
+set(PYTHON_LIBRARIES ${Python_LIBRARIES})
+set(PYTHON_INCLUDE_DIRS ${Python_INCLUDE_DIRS})
+set(PYTHON_LIBRARY ${Python_LIBRARY})
+set(PYTHON_INCLUDE_DIR ${Python_INCLUDE_DIR})
+
+# Set the minimum pybind11 version to 2.3 (before that the pybind11::embed target did not exist)
+find_package(pybind11 2.3 CONFIG QUIET REQUIRED)
 
 if (SofaPython3_FIND_COMPONENTS)
         foreach(component ${SofaPython3_FIND_COMPONENTS})

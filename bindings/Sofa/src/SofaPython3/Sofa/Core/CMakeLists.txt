@@ -77,8 +77,9 @@ find_package(SofaBaseUtils REQUIRED)
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
-    PACKAGE_NAME Sofa
-    MODULE_NAME  Core
+    PACKAGE      Bindings
+    MODULE       Core
+    DESTINATION  Sofa
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
     DEPENDS      SofaBaseUtils SofaBaseCollision SofaCore SofaHelper SofaSimulationCore SofaDefaultType SofaBaseVisual SofaPython3::Plugin
