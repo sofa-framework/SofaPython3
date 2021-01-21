@@ -217,7 +217,7 @@ function(SP3_add_python_module)
         "@loader_path/${from_target_to_lib}/../lib"
         "@executable_path/${from_target_to_lib}/../lib"
         )
-    
+
     # RPATH needed to find dependencies in <SOFA_install_dir>/lib
     list(APPEND TARGET_DEPENDENCIES_RPATH
         "$ORIGIN/${from_target_to_lib}/../../../lib"
@@ -229,7 +229,7 @@ function(SP3_add_python_module)
     if (APPLE)
         # In MacOS, the target dependency name is RPATH/site-packages/PackageName, so we need to add
         # an RPATH to the directory that contains "site-packages"
-        list(APPEND TARGET_DEPENDENCIES_RPATH 
+        list(APPEND TARGET_DEPENDENCIES_RPATH
             "$ORIGIN/../.."
             "$$ORIGIN/../.."
             "@loader_path/../.."
@@ -251,11 +251,10 @@ function(SP3_add_python_module)
         if(DEPENDENCY_LIBRARY_OUTPUT_DIRECTORY MATCHES ".*${SP3_PYTHON_PACKAGES_DIRECTORY}.*")
             file(RELATIVE_PATH from_target_to_dependency "${TARGET_LIBRARY_OUTPUT_DIRECTORY}" "${DEPENDENCY_LIBRARY_OUTPUT_DIRECTORY}")
             file(TO_CMAKE_PATH "${from_target_to_dependency}" from_target_to_dependency) # prettify this path
-            
+
             if(from_target_to_dependency)
                 if(NOT "@loader_path/${from_target_to_dependency}" IN_LIST TARGET_DEPENDENCIES_RPATH)
-                    # RPATH needed to find libs in <SofaPython3_install_dir>/lib
-                    list(APPEND TARGET_DEPENDENCIES_RPATH 
+                    list(APPEND TARGET_DEPENDENCIES_RPATH
                         "$ORIGIN/${from_target_to_dependency}"
                         "$$ORIGIN/${from_target_to_dependency}"
                         "@loader_path/${from_target_to_dependency}"
@@ -284,10 +283,10 @@ function(SP3_add_python_module)
             # Hence, we need to compute the relative path from this plugins directory to the current binding
             # modules, for example, plugins/SofaPython3/lib/python3/site-packages/Sofa/Core.***.so
             # will become "../../../../../.." (three levels upper than the previous computed relative path)
-            
+
             # Alright, now we have the path from the current target towards the "plugins" relocatable directory of SOFA
             # We can compute the relative path from the current target towards the dependency relocatable path.
-            list(APPEND TARGET_DEPENDENCIES_RPATH 
+            list(APPEND TARGET_DEPENDENCIES_RPATH
                 "$ORIGIN/${from_target_to_lib}/../../../${DEPENDENCY_RELOCATABLE_INSTALL_DIR}/lib"
                 "$$ORIGIN/${from_target_to_lib}/../../../${DEPENDENCY_RELOCATABLE_INSTALL_DIR}/lib"
                 "@loader_path/${from_target_to_lib}/../../../${DEPENDENCY_RELOCATABLE_INSTALL_DIR}/lib"
@@ -297,7 +296,7 @@ function(SP3_add_python_module)
     endforeach()
 
     message("${A_TARGET}: DEPENDENCIES_RPATH = ${TARGET_DEPENDENCIES_RPATH}")
-        
+
     set_target_properties(
         ${A_TARGET}
         PROPERTIES
