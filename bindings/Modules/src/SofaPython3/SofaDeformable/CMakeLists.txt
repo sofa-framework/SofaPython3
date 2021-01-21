@@ -22,8 +22,9 @@ find_package(SofaDeformable REQUIRED)
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
-    PACKAGE_NAME Sofa
-    MODULE_NAME  SofaDeformable
+    PACKAGE      Bindings
+    MODULE       SofaDeformable
+    DESTINATION  Sofa
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
     DEPENDS      SofaBase SofaDeformable SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core

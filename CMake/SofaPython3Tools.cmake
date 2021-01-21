@@ -75,26 +75,27 @@ endfunction()
 #
 # SP3_add_python_module(TARGET MODULE_NAME DESTINATION SOURCES PYTHON_VERSION DEPENDS QUIET)
 #  TARGET             - (input) The name of the generated target. Only used when cpp files are included in the sources.
-#  PACKAGE_NAME       - (input) The name of the package that will contain this module.
-#  MODULE_NAME        - (input) The name of the module.
+#  PACKAGE            - (input) The name of the cmake package that will contain this target. Note that the package must
+#                               be created later on during the cmake configure stage using the macro sofa_create_package(),
+#                               or be manually created using cmake's install command with "Targets" as suffix, e.g.:
+#                               install(EXPORT ${PACKAGE}Targets).
+#  MODULE             - (input) The name of the module. This is the name that will be used in python to do the actual
+#                               import of the python module containing the bindings, i.e. "from MODULE import *".
 #  DESTINATION        - (input) The output directory that will contain the compiled module.
-#                               For the build tree, it will be ${SP3_PYTHON_PACKAGES_BUILD_DIRECTORY}/${DESTINATION}.
-#                               For the install tree, it will be ${SP3_PYTHON_PACKAGES_INSTALL_DIRECTORY}/${DESTINATION}.
-#                               The default is ${PACKAGE_NAME}
+#                               For the build tree, it will be ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_BUILD_DIRECTORY}/${DESTINATION}.
+#                               For the install tree, it will be ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_INSTALL_DIRECTORY}/${DESTINATION}.
 #  SOURCES            - (input) list of source files that will be compiled with pybind11 support.
 #  HEADERS            - (input) list of header files that will be installed after the build.
 #  DEPENDS            - (input) set of target the generated target will depends on.
 #  QUIET              - (input) if set, not information messages will be printed out.
 function(SP3_add_python_module)
     set(options QUIET)
-    set(oneValueArgs TARGET PACKAGE_NAME MODULE_NAME DESTINATION PYTHON_VERSION )
+    set(oneValueArgs TARGET PACKAGE MODULE DESTINATION PYTHON_VERSION )
     set(multiValueArgs SOURCES HEADERS DEPENDS)
 
     cmake_parse_arguments(A "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    if (NOT A_DESTINATION)
-        set(DESTINATION "${A_PACKAGE_NAME}")
-    endif ()
+    set(DESTINATION "${A_DESTINATION}")
 
     # Fetch the current path relative to /bindings/*/src
     # Must test if the result is nested into the CMAKE_CURRENT_SOURCE_DIR (case where src exists outside the plugin directory)
@@ -108,11 +109,11 @@ function(SP3_add_python_module)
     endif()
 
 
-    if (NOT DEFINED A_MODULE_NAME)
+    if (NOT DEFINED A_MODULE)
         message(FATAL_ERROR "A module name must be provided.")
     endif()
 
-    set(MODULE_NAME ${A_MODULE_NAME})
+    set(MODULE_NAME ${A_MODULE})
 
     if (NOT DEFINED A_TARGET)
         set(A_TARGET ${MODULE_NAME})
@@ -295,12 +296,15 @@ function(SP3_add_python_module)
     endif()
 
 
-    install(TARGETS ${A_TARGET}
-        EXPORT BindingsTargets
-        RUNTIME DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT applications
-        LIBRARY DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
-        ARCHIVE DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
-    )
+    if (A_PACKAGE)
+        install(
+            TARGETS ${A_TARGET}
+            EXPORT ${A_PACKAGE}Targets
+            RUNTIME DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT applications
+            LIBRARY DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
+            ARCHIVE DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
+        )
+    endif()
 
     foreach(header ${A_HEADERS})
         file(RELATIVE_PATH path_from_package "${path_to_src}" "${header}")
