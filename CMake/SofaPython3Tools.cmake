@@ -203,60 +203,28 @@ function(SP3_add_python_module)
     #    Ex: ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/site-packages/Sofa  --> $ORIGIN/../Sofa
     # 3. Add the relative path computed in 2 to the list of RPATHS
     get_target_property(TARGET_DEPENDENCIES_RPATH ${A_TARGET} "INSTALL_RPATH")
-    message("${A_TARGET}: DEPENDENCIES_RPATH = ${TARGET_DEPENDENCIES_RPATH}")    
-    
+
     # Get the relative path from this binding module to the install lib directory
     # For example, for lib/python3/site-packages/Sofa/Core.***.so, the relative path will be
     # "../../.."
     file(RELATIVE_PATH from_target_to_lib "${TARGET_LIBRARY_OUTPUT_DIRECTORY}" "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
     file(TO_CMAKE_PATH "${from_target_to_lib}" from_target_to_lib) # prettify this path
-    
-    #foreach(DEPENDENCY ${DEPENDS_ALL})
-    #    if(NOT TARGET ${DEPENDENCY})
-    #        continue()
-    #    endif()
-    #    get_target_property(aliased_dep ${DEPENDENCY} ALIASED_TARGET)
-    #    if(aliased_dep)
-    #        set(DEPENDENCY ${aliased_dep})
-    #    endif()
-    #    get_target_property(DEPENDENCY_LIBRARY_OUTPUT_DIRECTORY "${DEPENDENCY}" LIBRARY_OUTPUT_DIRECTORY)
-    #    if(DEPENDENCY_LIBRARY_OUTPUT_DIRECTORY)
-    #        file(RELATIVE_PATH from_sitepackages_to_lib "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}" "${DEPENDENCY_LIBRARY_OUTPUT_DIRECTORY}")
-    #        file(TO_CMAKE_PATH "${from_sitepackages_to_lib}" from_sitepackages_to_lib) # prettify this path
-    #        
-    #        message("${A_TARGET}: CMAKE_LIBRARY_OUTPUT_DIRECTORY/SP3_PYTHON_PACKAGES_DIRECTORY = ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}")
-    #        message("${A_TARGET}: DEPENDENCY_LIBRARY_OUTPUT_DIRECTORY = ${DEPENDENCY_LIBRARY_OUTPUT_DIRECTORY}")
-    #        message("${A_TARGET}: from_sitepackages_to_lib = ${from_sitepackages_to_lib}")
-    #        
-    #        if (NOT "${from_sitepackages_to_lib}" STREQUAL "" AND NOT "${from_sitepackages_to_lib}" STREQUAL "../")
-    #            # RPATH needed to find libs in <SofaPython3_install_dir>/lib
-    #            list(APPEND TARGET_DEPENDENCIES_RPATH 
-    #                "$ORIGIN/../${from_sitepackages_to_lib}"
-    #                "$$ORIGIN/../${from_sitepackages_to_lib}"
-    #                "@loader_path/../${from_sitepackages_to_lib}"
-    #                "@executable_path/../${from_sitepackages_to_lib}"
-    #                )
-    #        endif()
-    #    endif()
-    #endforeach()
-    
+
     # RPATH needed to find libs in <SofaPython3_install_dir>/lib
-    list(APPEND TARGET_DEPENDENCIES_RPATH 
-        "$ORIGIN/${from_target_to_lib}"
-        "$$ORIGIN/${from_target_to_lib}"
-        "@loader_path/${from_target_to_lib}"
-        "@executable_path/${from_target_to_lib}"
+    list(APPEND TARGET_DEPENDENCIES_RPATH
+        "$ORIGIN/${from_target_to_lib}/../lib"
+        "$$ORIGIN/${from_target_to_lib}/../lib"
+        "@loader_path/${from_target_to_lib}/../lib"
+        "@executable_path/${from_target_to_lib}/../lib"
         )
-    message("${A_TARGET}: DEPENDENCIES_RPATH = ${TARGET_DEPENDENCIES_RPATH}")
     
     # RPATH needed to find libs in <SOFA_install_dir>/lib
-    list(APPEND TARGET_DEPENDENCIES_RPATH 
-        "$ORIGIN/${from_target_to_lib}/../../../${LIBRARY_OUTPUT_DIRECTORY}"
-        "$$ORIGIN/${from_target_to_lib}/../../../${LIBRARY_OUTPUT_DIRECTORY}"
-        "@loader_path/${from_target_to_lib}/../../../${LIBRARY_OUTPUT_DIRECTORY}"
-        "@executable_path/${from_target_to_lib}/../../../${LIBRARY_OUTPUT_DIRECTORY}"
+    list(APPEND TARGET_DEPENDENCIES_RPATH
+        "$ORIGIN/${from_target_to_lib}/../../../lib"
+        "$$ORIGIN/${from_target_to_lib}/../../../lib"
+        "@loader_path/${from_target_to_lib}/../../../lib"
+        "@executable_path/${from_target_to_lib}/../../../lib"
         )
-    message("${A_TARGET}: DEPENDENCIES_RPATH = ${TARGET_DEPENDENCIES_RPATH}")
 
     if (APPLE)
         # In MacOS, the target dependency name is RPATH/site-packages/PackageName, so we need to add
@@ -298,6 +266,7 @@ function(SP3_add_python_module)
                 )
         endif()
     endforeach()
+
     message("${A_TARGET}: DEPENDENCIES_RPATH = ${TARGET_DEPENDENCIES_RPATH}")
         
     set_target_properties(
