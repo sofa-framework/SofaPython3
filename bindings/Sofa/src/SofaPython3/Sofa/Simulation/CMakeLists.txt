@@ -17,8 +17,9 @@ find_package(SofaSimulation REQUIRED)
 
 SP3_add_python_module(
         TARGET       ${PROJECT_NAME}
-        PACKAGE_NAME Sofa
-        MODULE_NAME  Simulation
+        PACKAGE      Bindings
+        MODULE       Simulation
+        DESTINATION  Sofa
         SOURCES      ${SOURCE_FILES}
         HEADERS      ${HEADER_FILES}
         DEPENDS      SofaCore SofaSimulationCore SofaSimulationGraph SofaPython3::Plugin

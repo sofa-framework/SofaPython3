@@ -94,7 +94,6 @@ if(PYTHON_EXECUTABLE)
         set(python_version_flag "EXACT")
     endif()
 endif()
-message("${PROJECT_NAME}: Searching Python ${python_version} ${python_version_flag}")
 find_package(Python ${python_version} ${python_version_flag} COMPONENTS Interpreter Development REQUIRED)
 set(PYTHON_VERSION ${Python_VERSION})
 set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
@@ -190,6 +189,12 @@ sofa_create_package(
     PACKAGE_VERSION ${PROJECT_VERSION}
     RELOCATABLE "plugins"
     )
+
+install(FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SofaPython3Tools.cmake"
+    DESTINATION lib/cmake/SofaPython3
+    COMPONENT headers
+)
 
 if (SP3_LINK_TO_USER_SITE AND SP3_PYTHON_PACKAGES_LINK_DIRECTORY)
     file(GLOB directories RELATIVE "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}" "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/*")
