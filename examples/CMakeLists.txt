@@ -18,9 +18,7 @@ set(EXAMPLES_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/loadXMLfromPython.py
     ${CMAKE_CURRENT_SOURCE_DIR}/ReadTheDocs_Example.py
     ${CMAKE_CURRENT_SOURCE_DIR}/realTimeClockScene.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/pygame_renderingloop/backend_pygame.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/pygame_renderingloop/pygame_test.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/additional-examples/ControllerScene.py    
+    ${CMAKE_CURRENT_SOURCE_DIR}/additional-examples/ControllerScene.py
 )
 
 add_custom_target(${PROJECT_NAME} SOURCES ${EXAMPLES_FILES})
