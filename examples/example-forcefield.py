@@ -1,9 +1,8 @@
 """Implementation of a RestShapeForceField in python"""
 # coding: utf8
 import Sofa
-import SofaRuntime
-import Sofa.Gui
 import numpy as np
+
 
 class RestShapeForceField(Sofa.Core.ForceField):
     """Implementation of a RestShapeForceField in python"""
@@ -30,6 +29,7 @@ class RestShapeForceField(Sofa.Core.ForceField):
     #def addKToMatrix(self, a, b):
     #    print(" Python::addKToMatrix: ", a, " ", b)
 
+
 def createScene(node):
         node.addObject("RequiredPlugin", name="SofaOpenglVisual")
         node.addObject("RequiredPlugin", name="SofaSparseSolver")
@@ -49,7 +49,10 @@ def createScene(node):
 
         return node
 
+
 def main():
+    import SofaRuntime
+    import Sofa.Gui
     SofaRuntime.importPlugin("SofaOpenglVisual")
     SofaRuntime.importPlugin("SofaBaseMechanics")
     SofaRuntime.importPlugin("SofaImplicitOdeSolver")

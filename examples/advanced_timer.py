@@ -43,6 +43,7 @@ def createScene(root):
     root.dt = 0.01
 
     # List of required plugins
+    root.addObject('RequiredPlugin', name='SofaBaseMechanics')
     root.addObject('RequiredPlugin', name='SofaSparseSolver')
     root.addObject('RequiredPlugin', name='SofaGraphComponent')
     root.addObject('RequiredPlugin', name='SofaOpenglVisual')

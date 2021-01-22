@@ -1,7 +1,5 @@
 # Required import for python
 import Sofa
-import SofaRuntime
-import Sofa.Gui
 
 
 # Choose in your script to activate or not the GUI
@@ -9,6 +7,8 @@ USE_GUI = True
 
 
 def main():
+    import SofaRuntime
+    import Sofa.Gui
     # Make sure to load all SOFA libraries
     SofaRuntime.importPlugin("SofaBaseMechanics")
     SofaRuntime.importPlugin("SofaOpenglVisual")
