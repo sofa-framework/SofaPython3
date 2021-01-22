@@ -1,5 +1,4 @@
 import Sofa
-import Sofa.Gui
 from Sofa.Helper import msg_info
 
 
@@ -30,6 +29,8 @@ def createScene(root):
 
 
 def main():
+    import Sofa.Gui
+    import SofaRuntime
     SofaRuntime.importPlugin("SofaOpenglVisual")
     root=Sofa.Core.Node("root")
     createScene(root)
