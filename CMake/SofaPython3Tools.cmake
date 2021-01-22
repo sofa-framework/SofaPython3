@@ -295,8 +295,6 @@ function(SP3_add_python_module)
         endif()
     endforeach()
 
-    message("${A_TARGET}: DEPENDENCIES_RPATH = ${TARGET_DEPENDENCIES_RPATH}")
-
     set_target_properties(
         ${A_TARGET}
         PROPERTIES
