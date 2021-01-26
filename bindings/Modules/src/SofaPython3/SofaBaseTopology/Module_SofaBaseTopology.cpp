@@ -30,7 +30,7 @@ namespace py { using namespace pybind11; }
 namespace sofapython3
 {
 
-PYBIND11_MODULE(BaseTopology, m)
+PYBIND11_MODULE(SofaBaseTopology, m)
 {
     sofa::component::initSofaBaseTopology();
 
