@@ -24,7 +24,6 @@ class RestShapeForceField(Sofa.Core.ForceField):
                  
     def addDForce(self, df, dx, params):
         pass
-        #print(" Python::addDForce: ", params)
         
     #def addKToMatrix(self, a, b):
     #    print(" Python::addKToMatrix: ", a, " ", b)
@@ -33,9 +32,10 @@ class RestShapeForceField(Sofa.Core.ForceField):
 def createScene(node):
         node.addObject("RequiredPlugin", name="SofaOpenglVisual")
         node.addObject("RequiredPlugin", name="SofaSparseSolver")
+        node.addObject("RequiredPlugin", name="SofaImplicitOdeSolver")
         node.addObject("OglLineAxis")
         node.addObject("DefaultAnimationLoop", name="loop")
-        node.addObject("EulerImplicit")
+        node.addObject("EulerImplicitSolver")
         node.addObject("CGLinearSolver", tolerance=1e-12, threshold=1e-12)
 
         o = node.addChild("Object")
