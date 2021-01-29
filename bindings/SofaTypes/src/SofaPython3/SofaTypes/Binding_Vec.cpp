@@ -22,6 +22,8 @@
 #include <functional>
 #include <pybind11/operators.h>
 
+#include <sstream>
+
 #define BINDING_VEC_MAKE_NAME(N, T)                                            \
     std::string(std::string("Vec") + std::to_string(N) + typeid(T).name())
 
@@ -217,7 +219,15 @@ T addCross(T p)
 {
     p.def("cross", [](typename T::type& a, typename T::type& b)
     {
-        return sofa::defaulttype::cross(a,b);
+            if constexpr (T::type::spatial_dimensions == 2 || T::type::spatial_dimensions == 3)
+            {
+                return sofa::type::cross(a, b);
+            }
+            else
+            {
+                // can only call cross with vec2 or vec3
+                return T();
+            }
     });
     return p;
 }

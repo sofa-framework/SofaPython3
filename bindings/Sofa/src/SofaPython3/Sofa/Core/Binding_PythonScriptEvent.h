@@ -22,6 +22,7 @@
 
 #include <pybind11/pybind11.h>
 #include <sofa/core/objectmodel/ScriptEvent.h>
+#include <sofa/simulation/Node.h>
 
 #include <SofaPython3/config.h>
 

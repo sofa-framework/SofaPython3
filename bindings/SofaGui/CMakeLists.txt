@@ -22,5 +22,5 @@ SP3_add_python_module(
     DESTINATION  Sofa
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
-    DEPENDS      SofaCore SofaGuiCommon SofaGuiMain SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
+    DEPENDS      SofaCore SofaGuiCommon SofaGui SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
 )
