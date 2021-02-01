@@ -1,9 +1,32 @@
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+
 #include <SofaPython3/PythonTestExtractor.h>
 #include <SofaPython3/PythonEnvironment.h>
 
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/system/SetDirectory.h>
+
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager;
 
 using sofa::helper::system::SetDirectory;
 namespace py = pybind11;
@@ -45,6 +68,8 @@ py::object PythonTestExtractor::getTestSuite(py::module& unittest, py::module& m
 
 std::vector<PythonTestData> PythonTestExtractor::extract () const
 {
+    PluginManager::getInstance().loadPlugin("SofaPython3");
+
     PythonEnvironment::Init();
     PythonEnvironment::gil scoped_gil;
 

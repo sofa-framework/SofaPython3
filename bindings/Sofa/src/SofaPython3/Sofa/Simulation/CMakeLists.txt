@@ -14,13 +14,13 @@ endif()
 
 find_package(SofaFramework REQUIRED)
 find_package(SofaSimulation REQUIRED)
-find_package(SofaBase REQUIRED)
 
 SP3_add_python_module(
         TARGET       ${PROJECT_NAME}
-        PACKAGE_NAME Sofa
-        MODULE_NAME  Simulation
+        PACKAGE      Bindings
+        MODULE       Simulation
+        DESTINATION  Sofa
         SOURCES      ${SOURCE_FILES}
         HEADERS      ${HEADER_FILES}
-        DEPENDS      SofaCore SofaSimulationCore SofaSimulationGraph SofaBaseVisual SofaPython3::Plugin
+        DEPENDS      SofaCore SofaSimulationCore SofaSimulationGraph SofaPython3::Plugin
 )

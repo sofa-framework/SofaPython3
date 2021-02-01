@@ -14,12 +14,9 @@ find_package(SofaExporter REQUIRED)
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
-    MODULE_NAME  SofaExporter
+    PACKAGE      Bindings
+    MODULE       SofaExporter
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
     DEPENDS      SofaExporter SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
 )
-
-if(SP3_BUILD_TEST)
-    add_subdirectory(tests)
-endif()

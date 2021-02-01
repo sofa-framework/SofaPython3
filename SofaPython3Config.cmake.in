@@ -4,27 +4,42 @@
 @PACKAGE_INIT@
 
 set(SP3_WITH_SOFAEXPORTER @SP3_WITH_SOFAEXPORTER@)
+set(SP3_PYTHON_PACKAGES_DIRECTORY @SP3_PYTHON_PACKAGES_DIRECTORY@)
 
-if (SofaPython3_FIND_COMPONENTS)
-        foreach(component ${SofaPython3_FIND_COMPONENTS})
-                if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/${component}Config.cmake")
-                        # For requested component, execute its "config" script
-                        set_and_check(config_file ${CMAKE_CURRENT_LIST_DIR}/${component}Config.cmake)
-                        include(${config_file})
-                        set(SofaPython3_${component}_FOUND True)
-                else()
-                        set(SofaPython3_FOUND False)
-                        set(SofaPython3_NOT_FOUND_MESSAGE "Unsupported component: ${component}.")
-                endif()
-        endforeach()
-else()
-        foreach(component  Plugin Bindings)
-                # For all available components, execute its "config" script
-                set_and_check(config_file "${CMAKE_CURRENT_LIST_DIR}/${component}Config.cmake")
-                include(${config_file})
-                set(Caribou_${component}_FOUND True)
-        endforeach()
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
+include(SofaPython3Tools)
+
+# Find Python3 executable and set PYTHON_EXECUTABLE before finding pybind11
+# to be sure that pybind11 relies on the right Python version
+set(python_version @PYBIND11_PYTHON_VERSION@)
+set(python_version_flag @python_version_flag@)
+
+find_package(Python ${python_version} ${python_version_flag} COMPONENTS Interpreter Development REQUIRED)
+
+set(PYTHON_VERSION ${Python_VERSION})
+set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
+set(PYTHON_LIBRARIES ${Python_LIBRARIES})
+set(PYTHON_INCLUDE_DIRS ${Python_INCLUDE_DIRS})
+set(PYTHON_LIBRARY ${Python_LIBRARY})
+set(PYTHON_INCLUDE_DIR ${Python_INCLUDE_DIR})
+
+# Set the minimum pybind11 version to 2.3 (before that the pybind11::embed target did not exist)
+find_package(pybind11 2.3 CONFIG QUIET REQUIRED)
+
+if(NOT SofaPython3_FIND_COMPONENTS)
+    set(SofaPython3_FIND_COMPONENTS Plugin Bindings)
 endif()
+foreach(component ${SofaPython3_FIND_COMPONENTS})
+    if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${component}Config.cmake")
+        # For requested component, execute its "config" script
+        set_and_check(config_file ${CMAKE_CURRENT_LIST_DIR}/${component}Config.cmake)
+        include(${config_file})
+        set(SofaPython3_${component}_FOUND True)
+    else()
+        set(SofaPython3_FOUND False)
+        set(SofaPython3_NOT_FOUND_MESSAGE "Unsupported component: ${component}.")
+    endif()
+endforeach()
 
 # Check that the component/target is there.
 check_required_components(@PROJECT_NAME@)

@@ -5,6 +5,7 @@ import Sofa.Core
 import Sofa.Types
 import Sofa.Simulation
 import tempfile
+import os
 
 class Test(unittest.TestCase):
     def test_load(self):
@@ -17,11 +18,11 @@ class Test(unittest.TestCase):
                 </Node>
             </Node>
         """
-        tf = tempfile.NamedTemporaryFile(mode="w+t", suffix=".scn")
-        tf.file.write(scene)
-        tf.file.flush()
-        tt = open(tf.name)
+        tf = tempfile.NamedTemporaryFile(mode="w+t", suffix=".scn", delete=False)
+        tf.write(scene)
+        tf.flush()
         node = Sofa.Simulation.load(tf.name)
         self.assertNotEqual(node, None)
         self.assertEqual(node.name.value, "rootNode")
+        os.remove(tf.name)
 

@@ -38,8 +38,10 @@ def RestShapeObject(impl, name="unnamed", position=[]):
         return node
  
 def createScene(node):
+        node.addObject("RequiredPlugin", name="SofaBaseLinearSolver")
+        node.addObject("RequiredPlugin", name="SofaImplicitOdeSolver")
         node.addObject("DefaultAnimationLoop", name="loop")
-        node.addObject("EulerImplicit")
+        node.addObject("EulerImplicitSolver")
         node.addObject("CGLinearSolver", tolerance=1e-12, threshold=1e-12)
         
         a=node.addChild( RestShapeObject( MyForceField("customFF", ks=5.0) , name="python", position=[[i-10.0, 0, 0] for i in range(100)] ) )

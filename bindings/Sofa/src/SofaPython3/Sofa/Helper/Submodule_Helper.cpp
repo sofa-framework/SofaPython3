@@ -1,40 +1,37 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 #include <sofa/core/init.h>
+#include <sofa/helper/init.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <SofaPython3/PythonEnvironment.h>
 #include <sofa/core/objectmodel/Base.h>
-#include "System/Submodule_System.h"
-#include "Binding_MessageHandler.h"
-#include "Binding_Vector.h"
+#include <SofaPython3/Sofa/Helper/System/Submodule_System.h>
+#include <SofaPython3/Sofa/Helper/Binding_MessageHandler.h>
+#include <SofaPython3/Sofa/Helper/Binding_Vector.h>
 
-namespace sofapython3
-{
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
+
+namespace sofapython3 {
+
 using sofa::core::objectmodel::Base;
 using sofa::helper::logging::ComponentInfo;
 using sofa::helper::logging::SofaComponentInfo;
@@ -112,6 +109,7 @@ PYBIND11_MODULE(Helper, helper)
 {
     // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
     sofa::core::init();
+    sofa::helper::init();
 
     helper.doc() = R"doc(
            Utility functions
