@@ -33,7 +33,7 @@ class PythonScriptEvent : public sofa::core::objectmodel::ScriptEvent
 {
     SOFA_EVENT_H(PythonScriptEvent)
 public:
-    PythonScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventName, pybind11::object userData=pybind11::none());
+    PythonScriptEvent(sofa::core::sptr<sofa::simulation::Node> sender, const char* eventName, pybind11::object userData=pybind11::none());
     ~PythonScriptEvent() override;
     pybind11::object getUserData() const { return m_userData; }
     inline static const char* GetClassName() { return "PythonScriptEvent"; }

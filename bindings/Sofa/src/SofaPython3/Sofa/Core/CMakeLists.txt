@@ -70,7 +70,6 @@ if (NOT TARGET SofaPython3::Plugin)
 endif()
 
 find_package(SofaFramework REQUIRED)
-find_package(SofaSimulation REQUIRED)
 find_package(SofaBaseCollision REQUIRED)
 find_package(SofaBaseVisual REQUIRED)
 find_package(SofaBaseUtils REQUIRED)

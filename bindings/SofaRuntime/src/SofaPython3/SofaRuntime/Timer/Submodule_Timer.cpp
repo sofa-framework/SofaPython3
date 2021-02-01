@@ -19,6 +19,7 @@
 ******************************************************************************/
 
 #include <sofa/helper/AdvancedTimer.h>
+#include <stack>
 using sofa::helper::AdvancedTimer;
 
 #include "Submodule_Timer.h"

@@ -21,6 +21,7 @@
 #include <pybind11/pybind11.h>
 
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Simulation;
 
 #include <SofaSimulationGraph/DAGSimulation.h>

@@ -10,7 +10,8 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/Timer/Submodule_Timer_doc.h
 )
 
-find_package(SofaSimulation REQUIRED)
+find_package(SofaSimulationGraph REQUIRED)
+find_package(SofaSimulationCommon REQUIRED)
 
 SP3_add_python_package(
     SOURCE_DIRECTORY

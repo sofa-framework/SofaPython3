@@ -21,8 +21,8 @@
 #include "Binding_Vec.h"
 #include <functional>
 #include <pybind11/operators.h>
-
 #include <sstream>
+using sofa::type::Vec;
 
 #define BINDING_VEC_MAKE_NAME(N, T)                                            \
     std::string(std::string("Vec") + std::to_string(N) + typeid(T).name())
@@ -190,7 +190,7 @@ py::class_<Vec<N,T>> addVec(py::module &m)
     p.def("normalized", &VecClass::normalized);
     p.def("sum", &VecClass::sum);
     p.def("dot", [](const VecClass &self, const VecClass &b) {
-        return sofa::defaulttype::dot(self, b);
+        return sofa::type::dot(self, b);
     });
 
 

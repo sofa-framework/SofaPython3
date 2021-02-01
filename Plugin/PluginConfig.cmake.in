@@ -4,7 +4,7 @@
 
 find_package(pybind11 CONFIG REQUIRED)
 find_package(SofaFramework REQUIRED)
-find_package(SofaSimulation REQUIRED)
+find_package(SofaSimulationGraph REQUIRED)
 
 # If we are importing this config file and the target is not yet there this is indicating that
 # target is an imported one. So we include it
