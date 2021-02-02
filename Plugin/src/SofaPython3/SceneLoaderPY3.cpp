@@ -33,8 +33,10 @@ using sofa::simulation::graph::DAGNode;
 #include <pybind11/embed.h>
 namespace py = pybind11;
 
-using namespace sofa::core::objectmodel;
+#include <sofa/helper/system/SetDirectory.h>
 using sofa::helper::system::SetDirectory;
+
+using namespace sofa::core::objectmodel;
 
 MSG_REGISTER_CLASS(sofapython3::SceneLoaderPY3, "SofaPython3::SceneLoader")
 
