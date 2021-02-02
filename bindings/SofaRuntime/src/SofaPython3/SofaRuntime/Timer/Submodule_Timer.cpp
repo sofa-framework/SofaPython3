@@ -19,11 +19,13 @@
 ******************************************************************************/
 
 #include <sofa/helper/AdvancedTimer.h>
+#include <stack>
 using sofa::helper::AdvancedTimer;
 
 #include "Submodule_Timer.h"
 #include "Submodule_Timer_doc.h"
 
+#include <stack>
 
 namespace sofapython3
 {

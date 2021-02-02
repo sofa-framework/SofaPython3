@@ -18,10 +18,14 @@ find_package(SofaDeformable REQUIRED)
 # Required by the bindings Sofa.Components, Sofa.Core, Sofa.Helper, Sofa.Simulation, Sofa.Types, SofaGui
 find_package(SofaFramework REQUIRED)
 
-# Required by the bindings Sofa.Core, Sofa.Simulation, SofaRuntime
-find_package(SofaSimulation REQUIRED)
+# Required by the bindings Sofa.Simulation, SofaRuntime
+find_package(SofaSimulationGraph REQUIRED)
+
+# Required by the bindings SofaRuntime
+find_package(SofaSimulationCommon REQUIRED)
 
 # Required by the bindings SofaGui
+find_package(Sofa.GL QUIET)
 find_package(SofaGui REQUIRED)
 
 # Required by the bindings Sofa.Core

@@ -28,6 +28,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 #include <SofaPython3/PythonEnvironment.h>
 using sofapython3::PythonEnvironment;

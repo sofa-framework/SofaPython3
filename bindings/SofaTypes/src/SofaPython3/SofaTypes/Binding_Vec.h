@@ -23,12 +23,15 @@
 namespace py = pybind11;
 using namespace pybind11::literals;
 
-#include <sofa/defaulttype/Vec.h>
-using sofa::defaulttype::Vec;
+#include <sofa/type/Vec.h>
+namespace sofa::type {
+template <unsigned int N, class T>
+class Vec;
+}
 
 namespace pyVec {
-template <sofa::Size N, class T>
-std::string __str__(const Vec<N, T> &self, bool repr = false);
+template <unsigned int N, class T>
+std::string __str__(const sofa::type::Vec<N, T> &self, bool repr = false);
 } // namespace pyVec
 
 void moduleAddVec(py::module &m);
