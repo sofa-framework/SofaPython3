@@ -57,6 +57,11 @@ public:
                                      const std::string& path,
                                      pybind11::object* globals = nullptr);
 
+    /// Add a new callback in PluginManager to auto-add future
+    /// loaded plugins to sys.path
+    static void addPluginManagerCallback();
+    static void removePluginManagerCallback();
+
     /// Add a path to sys.path, the list of search path for Python modules.
     static void addPythonModulePath(const std::string& path);
 
@@ -134,6 +139,7 @@ public:
 
 private:
     static PythonEnvironmentData* getStaticData() ;
+    static std::string pluginLibraryPath;
 };
 
 } // namespace sofapython3
