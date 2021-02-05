@@ -1,11 +1,7 @@
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 from qtpy.QtOpenGL import *
-<<<<<<< HEAD
 import Sofa.SofaGL
-=======
-
->>>>>>> c76b5908a139fa359e935a6bbf666986c04fa7ee
 import Sofa
 import SofaRuntime
 import Sofa.Gui
@@ -60,11 +56,7 @@ class glSofaWidget(QGLWidget):
         glEnable(GL_LIGHTING)
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LESS)
-<<<<<<< HEAD
         Sofa.SofaGL.glewInit()
-=======
-        Sofa.Simulation.glewInit()
->>>>>>> c76b5908a139fa359e935a6bbf666986c04fa7ee
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
         gluPerspective(45, (self.width() / self.height()), 0.1, 50.0)
@@ -83,11 +75,7 @@ class glSofaWidget(QGLWidget):
         cameraMVM = self.visuals_node.camera.getOpenGLModelViewMatrix()
         glMultMatrixd(cameraMVM)
 
-<<<<<<< HEAD
         Sofa.SofaGL.draw(self.visuals_node)
-=======
-        sim.draw(self.visuals_node)
->>>>>>> c76b5908a139fa359e935a6bbf666986c04fa7ee
 
     def get_depth_image(self):
         _, _, width, height = glGetIntegerv(GL_VIEWPORT)
