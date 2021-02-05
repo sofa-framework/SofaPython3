@@ -2,6 +2,14 @@ project(Bindings.Modules)
 
 set(MODULEBINDINGS_MODULE_LIST SofaBaseTopology SofaDeformable)
 
+find_package(Sofa.gl)
+if(Sofa.GL_FOUND)
+	list(APPEND MODULEBINDINGS_MODULE_LIST SofaGL)
+else()
+	message("Sofa.GL not detected. Python3 Bindings for Sofa.SofaGL will not be compiled.")
+endif()
+
+
 foreach(modulebindings_module ${MODULEBINDINGS_MODULE_LIST})
 	add_subdirectory(src/SofaPython3/${modulebindings_module})
 endforeach()
