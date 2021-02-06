@@ -2,7 +2,7 @@ project(Bindings.Modules)
 
 set(MODULEBINDINGS_MODULE_LIST SofaBaseTopology SofaDeformable)
 
-find_package(Sofa.gl QUIET)
+find_package(Sofa.GL QUIET)
 if(Sofa.GL_FOUND)
 	list(APPEND MODULEBINDINGS_MODULE_LIST SofaGL)
 else()
