@@ -35,14 +35,9 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.autosummary',
     'sphinxcontrib.contentui',
-    #'sphinx.ext.intersphinx',
-    #'sphinx.ext.mathjax',
-    #'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
-    #'autoapi.sphinx',
-    #'sphinx.ext.inheritance_diagram'
     ]
 
 #autoapi_modules = {'Sofa': None, 'Sofa.Core' : None}
@@ -85,18 +80,16 @@ author = u'consortium@sofa-framework.org'
 # built documents.
 #
 # The short X.Y version.
-_cmake_version_major_re = re.compile(r'set[^\S\n]*\(\w*_VERSION_MAJOR[^\S\n]+(\w+)[^\S\n]*\)')
-_cmake_version_minor_re = re.compile(r'set[^\S\n]*\(\w*_VERSION_MINOR[^\S\n]+(\w+)[^\S\n]*\)')
-_cmake_version_patch_re = re.compile(r'set[^\S\n]*\(\w*_VERSION_PATCH[^\S\n]+(\w+)[^\S\n]*\)')
+_cmake_version_re = re.compile(r'project[^\S\n]*\(\w*[^\S\n]*VERSION[^\S\n]+(\w+).(\w+).(\w+)[^\S\n]*\)')
 
 version_major = 0
 version_minor = 0
 version_patch = 0
 for line in open('../../../CMakeLists.txt'):
-    major, minor, patch = _cmake_version_major_re.search(line), _cmake_version_minor_re.search(line), _cmake_version_patch_re.search(line)
-    if major: version_major = major.group(1)
-    if minor: version_minor = minor.group(1)
-    if patch: version_patch = patch.group(1)
+    version = _cmake_version_re.search(line)
+    if version:
+        version_major, version_minor, version_patch = version.group(1), version.group(2), version.group(3)
+        break
 
 version = f'{version_major}.{version_minor}'
 # The full version, including alpha/beta/rc tags.
