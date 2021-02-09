@@ -45,11 +45,11 @@ void moduleAddDrawToolGL(pybind11::module& m) {
       vparam->drawTool() = new sofa::gl::DrawToolGL();
       vparam->setSupported(sofa::core::visual::API_OpenGL);
       sofa::simulation::getSimulation()->draw(vparam, node);
-    });
+    }, doc::SofaGL::draw);
 
     m.def("glewInit", [](){
       glewInit();
-    });
+    }, doc::SofaGL::glewInit);
 }
 
 } // namespace sofapython3

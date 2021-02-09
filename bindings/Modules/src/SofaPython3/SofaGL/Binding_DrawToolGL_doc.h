@@ -21,6 +21,16 @@
 #pragma once
 
 namespace sofapython3::doc::SofaGL {
+static auto draw =
+R"(
+Draw the openGL visual loop from the provided Node.
+:param node: Node to start visualize from
+:type node: Sofa::Simulation::Node
+)";
 
+static auto glewInit =
+R"(
+Initialize GLEW. This should be called once before drawing.
+)";
 
 } // sofapython3::doc::SofaGL
