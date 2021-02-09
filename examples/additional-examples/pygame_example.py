@@ -1,6 +1,5 @@
 import Sofa
 import Sofa.SofaGL
-import Sofa.Gui
 import SofaRuntime
 import Sofa.Simulation as sim
 import os
@@ -58,7 +57,7 @@ class scene_interface:
         # the current step in the simulation
         self.current_step = 0
         # Register all the common component in the factory.
-        SofaRuntime.PluginRepository.addFirstPath(os.path.join(sofa_directory, 'bin'))
+        SofaRuntime.PluginRepository.addFirstPath(os.path.join(sofa_directory, 'plugins'))
         SofaRuntime.importPlugin('SofaOpenglVisual')
         SofaRuntime.importPlugin("SofaComponentAll")
         SofaRuntime.importPlugin("SofaGeneralLoader")

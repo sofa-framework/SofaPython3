@@ -1,16 +1,16 @@
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 from qtpy.QtOpenGL import *
-import Sofa.SofaGL
+import Sofa.SofaGL as SGL
 import Sofa
 import SofaRuntime
-import Sofa.Gui
 import Sofa.Simulation as sim
 import os
 sofa_directory = os.environ['SOFA_ROOT']
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import numpy as np
+from PIL import Image
 
 
 """
@@ -56,7 +56,7 @@ class glSofaWidget(QGLWidget):
         glEnable(GL_LIGHTING)
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LESS)
-        Sofa.SofaGL.glewInit()
+        SGL.glewInit()
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
         gluPerspective(45, (self.width() / self.height()), 0.1, 50.0)
@@ -75,7 +75,7 @@ class glSofaWidget(QGLWidget):
         cameraMVM = self.visuals_node.camera.getOpenGLModelViewMatrix()
         glMultMatrixd(cameraMVM)
 
-        Sofa.SofaGL.draw(self.visuals_node)
+        SGL.draw(self.visuals_node)
 
     def get_depth_image(self):
         _, _, width, height = glGetIntegerv(GL_VIEWPORT)
@@ -87,15 +87,14 @@ class glSofaWidget(QGLWidget):
         depth_image = (depth_image - depth_image.min()) / (depth_image.max() - depth_image.min())
         depth_image = depth_image * 255
 
-        # from PIL import Image
-        # img2 = Image.fromarray(depth_image.astype(np.uint8), 'L')
-        # img2.show()
+        img2 = Image.fromarray(depth_image.astype(np.uint8), 'L')
+        img2.show()
 
 
 class SofaSim():
     def __init__(self):
         # Register all the common component in the factory.
-        SofaRuntime.PluginRepository.addFirstPath(os.path.join(sofa_directory, 'bin'))
+        SofaRuntime.PluginRepository.addFirstPath(os.path.join(sofa_directory, 'plugins'))
         SofaRuntime.importPlugin('SofaOpenglVisual')
         SofaRuntime.importPlugin("SofaComponentAll")
         SofaRuntime.importPlugin("SofaGeneralLoader")
@@ -147,7 +146,7 @@ class SofaSim():
 
     def step_sim(self):
         self.visuals.camera.position = self.visuals.camera.position + [-0.0002, 0, 0]
-        Sofa.Simulation.animate(self.root, self.root.getDt())  # uncomment to animated sim
+        Sofa.Simulation.animate(self.root, self.root.getDt())
 
 
 if __name__ == '__main__':
