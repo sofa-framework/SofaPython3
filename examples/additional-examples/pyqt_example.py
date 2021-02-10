@@ -1,7 +1,7 @@
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 from qtpy.QtOpenGL import *
-import Sofa.SofaGL as SGL
+import Sofa.SofaGL
 import Sofa
 import SofaRuntime
 import Sofa.Simulation as sim
@@ -11,7 +11,6 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 import numpy as np
 from PIL import Image
-
 
 """
 With something like this setup, we can use Sofa with our own GUI and not have to give over control of the main thread.
@@ -56,7 +55,9 @@ class glSofaWidget(QGLWidget):
         glEnable(GL_LIGHTING)
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LESS)
-        SGL.glewInit()
+        Sofa.SofaGL.glewInit()
+        Sofa.Simulation.initVisual(self.visuals_node)
+        Sofa.Simulation.initTextures(self.visuals_node)
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
         gluPerspective(45, (self.width() / self.height()), 0.1, 50.0)
@@ -75,7 +76,7 @@ class glSofaWidget(QGLWidget):
         cameraMVM = self.visuals_node.camera.getOpenGLModelViewMatrix()
         glMultMatrixd(cameraMVM)
 
-        SGL.draw(self.visuals_node)
+        Sofa.SofaGL.draw(self.visuals_node)
 
     def get_depth_image(self):
         _, _, width, height = glGetIntegerv(GL_VIEWPORT)
@@ -94,7 +95,7 @@ class glSofaWidget(QGLWidget):
 class SofaSim():
     def __init__(self):
         # Register all the common component in the factory.
-        SofaRuntime.PluginRepository.addFirstPath(os.path.join(sofa_directory, 'plugins'))
+        SofaRuntime.PluginRepository.addFirstPath(os.path.join(sofa_directory, 'bin'))
         SofaRuntime.importPlugin('SofaOpenglVisual')
         SofaRuntime.importPlugin("SofaComponentAll")
         SofaRuntime.importPlugin("SofaGeneralLoader")
@@ -132,11 +133,16 @@ class SofaSim():
         liver.addObject("MeshMatrixMass", massDensity="1")
         liver.addObject("FixedConstraint", indices="2 3 50")
 
+        visual = liver.addChild("visual")
+        visual.addObject('MeshObjLoader', name="meshLoader_0", filename="mesh/liver-smooth.obj", handleSeams="1")
+        visual.addObject('OglModel', name="VisualModel", src="@meshLoader_0", color='red')
+        visual.addObject('BarycentricMapping', input="@..", output="@VisualModel", name="visual mapping")
+
         # place light and a camera
         self.visuals = root.addChild('visuals')
-        self.visuals.addObject("LightManager")
-        self.visuals.addObject("SpotLight", position=[0, 10, 0], direction=[0, -1, 0])
-        self.visuals.addObject("InteractiveCamera", name="camera", position=[0, 10, 0],
+        root.addObject("LightManager")
+        root.addObject("DirectionalLight", direction=[0, 1, 0])
+        self.visuals.addObject("InteractiveCamera", name="camera", position=[0, 15, 0],
                                lookAt=[0, 0, 0], distance=37,
                                fieldOfView=45, zNear=0.63, zFar=55.69)
 
@@ -146,7 +152,8 @@ class SofaSim():
 
     def step_sim(self):
         self.visuals.camera.position = self.visuals.camera.position + [-0.0002, 0, 0]
-        Sofa.Simulation.animate(self.root, self.root.getDt())
+        Sofa.Simulation.animate(self.root, self.root.getDt())  # uncomment to animated sim
+        Sofa.Simulation.updateVisual(self.root)
 
 
 if __name__ == '__main__':
