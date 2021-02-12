@@ -219,15 +219,8 @@ T addCross(T p)
 {
     p.def("cross", [](typename T::type& a, typename T::type& b)
     {
-            if constexpr (T::type::spatial_dimensions == 2 || T::type::spatial_dimensions == 3)
-            {
-                return sofa::type::cross(a, b);
-            }
-            else
-            {
-                // can only call cross with vec2 or vec3
-                return T();
-            }
+            static_assert(T::type::spatial_dimensions == 2 || T::type::spatial_dimensions == 3, "Cross product function can only be used with Vec2 and Vec3");
+            return sofa::type::cross(a, b);
     });
     return p;
 }
