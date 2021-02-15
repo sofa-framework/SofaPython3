@@ -22,6 +22,11 @@
 
 #include <sofa/gui/Main.h>
 #include <sofa/core/init.h>
+#include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/Utils.h>
+#include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem;
+#include <sofa/gui/qt/qt.conf.h>
 
 #include "Binding_BaseGui.h"
 #include "Binding_GUIManager.h"
@@ -55,6 +60,18 @@ PYBIND11_MODULE(Gui, m) {
                     :members:
              )doc";
 
+    std::string sofaPrefixAbsolute = sofa::helper::Utils::getSofaPathPrefix();
+    std::string inputFilepath = FileSystem::cleanPath(sofaPrefixAbsolute + "/bin/qt.conf");
+    bool success = sofa::gui::qt::loadQtConfWithCustomPrefix(inputFilepath, sofaPrefixAbsolute);
+    if(success)
+    {
+        msg_info("Sofa.Gui") << "Loaded qt.conf from " << inputFilepath << " customized with Prefix = " << sofaPrefixAbsolute;
+    }
+    else
+    {
+        msg_warning("Sofa.Gui") << "Failed loading and/or customizing qt.conf from " << inputFilepath;
+    }
+
     // This is needed to make sure the GuiMain library (libSofaGuiMain.so) is correctly
     // linked since the GUIs are statically created during the load of the library.
     sofa::gui::initMain();
@@ -63,4 +80,5 @@ PYBIND11_MODULE(Gui, m) {
     moduleAddBaseGui(m);
     moduleAddGuiManager(m);
 }
-}
+
+} // namespace sofapython3
