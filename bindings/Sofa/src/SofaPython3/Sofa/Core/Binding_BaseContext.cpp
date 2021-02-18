@@ -22,6 +22,7 @@
 #include <SofaPython3/Sofa/Core/Binding_BaseContext.h>
 #include <SofaPython3/PythonFactory.h>
 #include <sofa/core/BaseState.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -55,8 +56,8 @@ void moduleAddBaseContext(py::module& m) {
     c.def("getState", &BaseContext::getState, "Mechanical Degrees-of-Freedom");
     c.def("getMechanicalState", &BaseContext::getMechanicalState, "Mechanical Degrees-of-Freedom");
     c.def("getTopology", &BaseContext::getTopology, "Topology");
-    c.def("getMeshTopology", &BaseContext::getMeshTopology, "Mesh Topology (unified interface for both static and dynamic topologies)");
-    c.def("getMeshTopologyLink", &BaseContext::getMeshTopologyLink, "Mesh Topology (unified interface for both static and dynamic topologies)");
+    c.def("getMeshTopology", &BaseContext::getMeshTopology, py::arg("SearchDirection") = BaseContext::SearchDirection::SearchUp, "Mesh Topology (unified interface for both static and dynamic topologies)");
+    c.def("getMeshTopologyLink", &BaseContext::getMeshTopologyLink, py::arg("SearchDirection") = BaseContext::SearchDirection::SearchUp, "Mesh Topology (unified interface for both static and dynamic topologies)");
     c.def("getMass", &BaseContext::getMass, "Mass");
 
     c.def("__str__", [](const BaseContext & context) {std::ostringstream s; s << context; return s.str();}, "Get a string representation of the context.");
