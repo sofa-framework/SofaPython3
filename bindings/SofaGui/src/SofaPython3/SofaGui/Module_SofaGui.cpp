@@ -70,6 +70,12 @@ PYBIND11_MODULE(Gui, m) {
     else
     {
         msg_warning("Sofa.Gui") << "Failed loading and/or customizing qt.conf from " << inputFilepath;
+
+        std::cout << "qt_resource_data:" << std::endl;
+        for (int i = 0 ; i < qt_resource_data.size() ; ++i) {
+           std::cout << qt_resource_data[i];
+        }
+        std::cout << std::endl;
     }
 
     // This is needed to make sure the GuiMain library (libSofaGuiMain.so) is correctly
