@@ -345,7 +345,7 @@ void PythonEnvironment::addPythonModulePathsForPlugins(const std::string& plugin
 
     if(!added)
     {
-        msg_info("PythonEnvironment") << "No python3 dir found in " << pluginsDirectory;
+        msg_info("SofaPython3") << "No python3 dir found in " << pluginsDirectory;
     }
 }
 
@@ -365,7 +365,7 @@ void PythonEnvironment::addPythonModulePathsForPluginsByName(const std::string& 
             return;
         }
     }
-    msg_info("PythonEnvironment") << pluginName << " not found in PluginManager's map.";
+    msg_info("SofaPython3") << pluginName << " not found in PluginManager's map.";
 }
 
 void PythonEnvironment::addPluginManagerCallback()
