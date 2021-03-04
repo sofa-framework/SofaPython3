@@ -27,6 +27,8 @@ using sofa::helper::AdvancedTimer;
 
 #include <stack>
 
+#include <sofa/helper/logging/Messaging.h>
+
 namespace sofapython3
 {
 
