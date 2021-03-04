@@ -17,6 +17,7 @@
 *******************************************************************************
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <pybind11/stl.h>
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseContext.h>
@@ -35,8 +36,68 @@ using namespace sofa::core::topology;
 
 namespace sofapython3 {
 
+std::vector<int> convertEdge(const BaseMeshTopology::Edge &edge)
+{
+    static std::vector<int> vector_edge{2, 0};
+    vector_edge.at(0) = edge[0];
+    vector_edge.at(1) = edge[1];
+    return vector_edge;
+}
+
+std::vector<int> convertTetra(const BaseMeshTopology::Tetra &tetra)
+{
+    static std::vector<int> vector_tetra{4, 0};
+    vector_tetra.resize(4);
+    for (int i = 0; i < 4; i++){
+        vector_tetra.at(i) = tetra[i];
+    }    
+    return vector_tetra;
+}
+
+std::vector<int> edgesInTetrahedron(const BaseMeshTopology::EdgesInTetrahedron &edges)
+{
+    static std::vector<int> vector_edges{6, 0};
+    vector_edges.resize(6);
+    for (int i = 0; i < 6; i++){
+        vector_edges.at(i) = edges[i];
+    }
+    return vector_edges;
+}
+
 void moduleAddBaseMeshTopology(py::module& m) {
     py::class_<BaseMeshTopology, Base, py_shared_ptr<BaseMeshTopology>> c (m, "BaseMeshTopology");
+
+    /// register the ContactListener binding in the downcasting subsystem
+    PythonFactory::registerType<BaseMeshTopology>([](sofa::core::objectmodel::Base* object)
+    {
+        return py::cast(dynamic_cast<BaseMeshTopology*>(object));
+    });
+
+    c.def("getNbPoints", &BaseMeshTopology::getNbPoints);
+    c.def("getNbLines", &BaseMeshTopology::getNbLines);
+    c.def("getNbEdges", &BaseMeshTopology::getNbEdges);
+    c.def("getNbTriangles", &BaseMeshTopology::getNbTriangles);
+    c.def("getNbTetrahedra", &BaseMeshTopology::getNbTetrahedra);
+    c.def("getNbHexahedra", &BaseMeshTopology::getNbHexahedra);
+    c.def("getNbQuads", &BaseMeshTopology::getNbQuads);
+    c.def("getNbTetras", &BaseMeshTopology::getNbTetras);
+
+    c.def("getEdge", [](BaseMeshTopology &self, int i){return convertEdge(self.getEdge(i));});
+
+    c.def("getLocalEdgesInTetrahedron", [](BaseMeshTopology &self, int i){return convertEdge(self.getLocalEdgesInTetrahedron(i));},
+    R"(
+        Returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge.
+        )");
+
+    c.def("getEdgesInTetrahedron", [](BaseMeshTopology &self, int i){return edgesInTetrahedron(self.getEdgesInTetrahedron(i));},
+    R"(
+        Returns the set of edges adjacent to a given tetrahedron.
+        )");
+
+    c.def("getTetrahedron", [](BaseMeshTopology &self, int i){return convertTetra(self.getTetrahedron(i));},
+    R"(
+        Returns the vertices of Tetrahedron at index i.
+        )");
 }
 
 } // namespace sofapython3
