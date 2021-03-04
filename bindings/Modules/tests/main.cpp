@@ -22,6 +22,7 @@
 #include <SofaPython3/PythonTestExtractor.h>
 #include <sofa/helper/Utils.h>
 
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
 
 
