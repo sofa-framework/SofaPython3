@@ -28,6 +28,8 @@
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager;
 
+#include <sofa/helper/logging/Messaging.h>
+
 using sofa::helper::system::SetDirectory;
 namespace py = pybind11;
 
