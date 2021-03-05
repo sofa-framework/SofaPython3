@@ -85,17 +85,17 @@ set(PYBIND11_PYTHON_VERSION 3.7)
 # to be sure that pybind11 relies on the right Python version
 set(python_version "${PYBIND11_PYTHON_VERSION}")
 set(python_version_flag "")
-if(PYTHON_EXECUTABLE)
-    execute_process(
-        COMMAND "${PYTHON_EXECUTABLE}" "--version"
-        OUTPUT_VARIABLE cmd_output
-        )
-    string(REGEX MATCH "[0-9]+\.[0-9]+" python_exec_version "${cmd_output}")
-    if(python_exec_version VERSION_GREATER_EQUAL PYBIND11_PYTHON_VERSION)
-        set(python_version "${python_exec_version}")
-        set(python_version_flag "EXACT")
-    endif()
-endif()
+#if(PYTHON_EXECUTABLE)
+#    execute_process(
+#        COMMAND "${PYTHON_EXECUTABLE}" "--version"
+#        OUTPUT_VARIABLE cmd_output
+#        )
+#    string(REGEX MATCH "[0-9]+\.[0-9]+" python_exec_version "${cmd_output}")
+#    if(python_exec_version VERSION_GREATER_EQUAL PYBIND11_PYTHON_VERSION)
+#        set(python_version "${python_exec_version}")
+#        set(python_version_flag "EXACT")
+#    endif()
+#endif()
 find_package(Python ${python_version} ${python_version_flag} COMPONENTS Interpreter Development REQUIRED)
 set(PYTHON_VERSION ${Python_VERSION})
 set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
