@@ -21,6 +21,7 @@
 #include <SofaPython3/PythonTestExtractor.h>
 #include <SofaPython3/PythonEnvironment.h>
 
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/system/SetDirectory.h>

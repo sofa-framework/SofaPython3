@@ -29,6 +29,7 @@ using sofapython3::PythonTestExtractor ;
 using sofapython3::PrintTo ;
 using std::string;
 
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
 using sofa::helper::logging::MessageDispatcher;
 using sofa::helper::logging::MainPerComponentLoggingMessageHandler;
