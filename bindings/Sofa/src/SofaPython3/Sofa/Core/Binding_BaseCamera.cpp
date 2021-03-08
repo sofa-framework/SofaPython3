@@ -129,6 +129,16 @@ void moduleAddBaseCamera(py::module &m)
          return(self->getPositionFromOrientation(vec1, vec2, vec3));
     });
 
+    c.def("getLookAtFromOrientation", [](BaseCamera *self, py::list p1, py::float_ p2, py::list p3) {
+         sofa::defaulttype::Vec3 vec1;
+         double vec2;
+         sofa::defaulttype::Quat vec3;
+         vec1 = sofa::defaulttype::Vec3(py::cast<double>(p1[0]),py::cast<double>(p1[1]),py::cast<double>(p1[2]));
+         vec2 = py::cast<double>(p2);
+         vec3 = sofa::defaulttype::Quat(py::cast<double>(p3[0]),py::cast<double>(p3[1]),py::cast<double>(p3[2]),py::cast<double>(p3[3]));
+         return(self->getLookAtFromOrientation(vec1, vec2, vec3));
+    });
+
     c.def("setCameraType", [](BaseCamera *self, int p1) {
          self->setCameraType(p1);
     });
