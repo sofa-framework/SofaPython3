@@ -36,34 +36,6 @@ using namespace sofa::core::topology;
 
 namespace sofapython3 {
 
-std::vector<int> convertEdge(const BaseMeshTopology::Edge &edge)
-{
-    static std::vector<int> vector_edge{2, 0};
-    vector_edge.at(0) = edge[0];
-    vector_edge.at(1) = edge[1];
-    return vector_edge;
-}
-
-std::vector<int> convertTetra(const BaseMeshTopology::Tetra &tetra)
-{
-    static std::vector<int> vector_tetra{4, 0};
-    vector_tetra.resize(4);
-    for (int i = 0; i < 4; i++){
-        vector_tetra.at(i) = tetra[i];
-    }    
-    return vector_tetra;
-}
-
-std::vector<int> edgesInTetrahedron(const BaseMeshTopology::EdgesInTetrahedron &edges)
-{
-    static std::vector<int> vector_edges{6, 0};
-    vector_edges.resize(6);
-    for (int i = 0; i < 6; i++){
-        vector_edges.at(i) = edges[i];
-    }
-    return vector_edges;
-}
-
 void moduleAddBaseMeshTopology(py::module& m) {
     py::class_<BaseMeshTopology, Base, py_shared_ptr<BaseMeshTopology>> c (m, "BaseMeshTopology");
 
@@ -82,22 +54,40 @@ void moduleAddBaseMeshTopology(py::module& m) {
     c.def("getNbQuads", &BaseMeshTopology::getNbQuads);
     c.def("getNbTetras", &BaseMeshTopology::getNbTetras);
 
-    c.def("getEdge", [](BaseMeshTopology &self, int i){return convertEdge(self.getEdge(i));});
+    c.def("getEdge", 
+      [] (BaseMeshTopology &self, const sofa::Index & index) -> std::array<sofa::Index, 2> {
+          const auto & e = self.getEdge(index);
+          return {{e[0], e[1]}};
+      },
+      py::arg("index")
+    );
 
-    c.def("getLocalEdgesInTetrahedron", [](BaseMeshTopology &self, int i){return convertEdge(self.getLocalEdgesInTetrahedron(i));},
-    R"(
-        Returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge.
-        )");
+    c.def("getLocalEdgesInTetrahedron", 
+      [] (const BaseMeshTopology & self, const sofa::Index & index) -> std::array<sofa::Index, 2> {
+          const auto & e = self.getLocalEdgesInTetrahedron(index);
+          return {{e[0], e[1]}};
+      },
+      py::arg("index"),
+      "Returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge."
+    );
 
-    c.def("getEdgesInTetrahedron", [](BaseMeshTopology &self, int i){return edgesInTetrahedron(self.getEdgesInTetrahedron(i));},
-    R"(
-        Returns the set of edges adjacent to a given tetrahedron.
-        )");
+    c.def("getEdgesInTetrahedron", 
+      [] (BaseMeshTopology & self, const sofa::Index & index) -> std::array<sofa::Index, 6> {
+          const auto & e = self.getEdgesInTetrahedron(index);
+          return {{e[0], e[1], e[2], e[3], e[4], e[5]}};
+      },
+      py::arg("index"),
+      "Returns the set of edges adjacent to a given tetrahedron."
+    );
 
-    c.def("getTetrahedron", [](BaseMeshTopology &self, int i){return convertTetra(self.getTetrahedron(i));},
-    R"(
-        Returns the vertices of Tetrahedron at index i.
-        )");
+    c.def("getTetrahedron", 
+      [] (BaseMeshTopology & self, const sofa::Index & index) -> std::array<sofa::Index, 4> {
+          const auto & n = self.getTetrahedron(index);
+          return {{n[0], n[1], n[2], n[3]}};
+      },
+      py::arg("index"),
+      "Returns the vertices of Tetrahedron at index."
+    );
 }
 
 } // namespace sofapython3
