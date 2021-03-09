@@ -4,10 +4,10 @@ import Sofa
 import numpy as np
 
 
-class RestShapeForceField(Sofa.Core.ForceField):
+class RestShapeForceField(Sofa.Core.ForceFieldVec3d):
     """Implementation of a RestShapeForceField in python"""
     def __init__(self, ks=1.0, kd=1.0, *args, **kwargs):
-        Sofa.Core.ForceField.__init__(self, *args, **kwargs)
+        Sofa.Core.ForceFieldVec3d.__init__(self, *args, **kwargs)
         self.addData("ks", type="float", value=ks, help="The stiffness spring", group="Spring's Properties")                  
         self.addData("kd", type="float", value=kd, help="The damping spring", group="Spring's Properties")                  
         

@@ -5,9 +5,9 @@ import numpy as np
 
 # This python script shows the functions to be implemented
 # in order to create your ForceField in python
-class EmptyForceField(Sofa.Core.ForceField):
+class EmptyForceField(Sofa.Core.ForceFieldVec3d):
     def __init__(self, *args, **kwargs):
-        Sofa.Core.ForceField.__init__(self, *args, **kwargs)
+        Sofa.Core.ForceFieldVec3d.__init__(self, *args, **kwargs)
         pass
 
     # Function called at the component initialization
