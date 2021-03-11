@@ -2,9 +2,9 @@ import Sofa
 import Sofa.Core
 import numpy as np
 
-class NaiveRestShapeSpringsForcefield(Sofa.Core.ForceField):
+class NaiveRestShapeSpringsForcefield(Sofa.Core.ForceFieldVec3d):
     def __init__(self, *args, **kwargs):
-        Sofa.Core.ForceField.__init__(self, *args, **kwargs)
+        Sofa.Core.ForceFieldVec3d.__init__(self, *args, **kwargs)
         self.addData(name="stiffness", value=kwargs.get("stiffness"), type="double",
                      help="scalar value representing the stiffness between"
                           "the actual position and the rest shape position")
