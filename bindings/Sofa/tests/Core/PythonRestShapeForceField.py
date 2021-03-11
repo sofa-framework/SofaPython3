@@ -3,11 +3,11 @@ import Sofa
 import Sofa.Core
 import numpy as np
 
-class MyForceField(Sofa.Core.ForceField):
+class MyForceField(Sofa.Core.ForceFieldVec3d):
     def __init__(self, *args, **kwargs):
         kwargs["ks"] = kwargs.get("ks", 1.0)
         kwargs["kd"] = kwargs.get("kd", 0.1)
-        Sofa.Core.ForceField.__init__(self, *args, **kwargs)
+        Sofa.Core.ForceFieldVec3d.__init__(self, *args, **kwargs)
                         
     def init(self):
         self.initpos = self.mstate.position.array().copy()
@@ -38,6 +38,7 @@ def RestShapeObject(impl, name="unnamed", position=[]):
         return node
  
 def createScene(node):
+        node.addObject("RequiredPlugin", name="SofaComponentAll")
         node.addObject("RequiredPlugin", name="SofaBaseLinearSolver")
         node.addObject("RequiredPlugin", name="SofaImplicitOdeSolver")
         node.addObject("DefaultAnimationLoop", name="loop")
