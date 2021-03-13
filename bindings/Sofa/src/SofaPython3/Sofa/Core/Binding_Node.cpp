@@ -403,7 +403,7 @@ py::object getMass(Node *self)
 {
     sofa::core::behavior::BaseMass* mass = self->mass.get();
     if (mass) {
-        return PythonFactory::toPython(mass);
+        return PythonFactory::toPython(sofa::core::castToBase(mass));
     }
     return py::none();
 }
@@ -413,7 +413,7 @@ py::object getForceField(Node *self, unsigned int index)
 {
     sofa::core::behavior::BaseForceField* ff = self->forceField.get(index);
     if (ff) {
-        return PythonFactory::toPython(ff);
+        return PythonFactory::toPython(sofa::core::castToBase(ff));
     }
     return py::none();
 }
@@ -423,7 +423,7 @@ py::object getMechanicalState(Node *self)
 {
     sofa::core::behavior::BaseMechanicalState* state = self->mechanicalState.get();
     if (state) {
-        return PythonFactory::toPython(state);
+        return PythonFactory::toPython(sofa::core::castToBase(state));
     }
     return py::none();
 }
@@ -433,7 +433,7 @@ py::object getMechanicalMapping(Node *self)
 {
     sofa::core::BaseMapping* mapping = self->mechanicalMapping.get();
     if (mapping) {
-        return PythonFactory::toPython(mapping);
+        return PythonFactory::toPython(sofa::core::castToBase(mapping));
     }
     return py::none();
 }
