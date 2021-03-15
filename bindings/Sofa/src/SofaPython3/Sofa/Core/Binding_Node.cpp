@@ -141,7 +141,7 @@ py_shared_ptr<Node> __init__(const std::string& name) {
 }
 
 /// Method: init (beware this is not the python __init__, this is sofa's init())
-void init(Node& self) { self.init(ExecParams::defaultInstance()); }
+void init(Node& self) { self.init(sofa::core::execparams::defaultInstance()); }
 
 py::object addObject(Node& self, BaseObject * object)
 {
@@ -450,7 +450,7 @@ py::object getRoot(Node* self)
 void sendEvent(Node* self, py::object pyUserData, char* eventName)
 {
     sofapython3::PythonScriptEvent event(self, eventName, pyUserData);
-    self->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
+    self->propagateEvent(sofa::core::execparams::defaultInstance(), &event);
 }
 
 void moduleAddNode(py::module &m) {
