@@ -51,6 +51,8 @@ using sofa::core::objectmodel::MouseEvent;
 using sofa::core::objectmodel::ScriptEvent;
 using sofa::core::objectmodel::Event;
 
+#include <sofa/core/topology/Topology.h>
+
 #include <sofa/defaulttype/DataTypeInfo.h>
 
 /// Bind the python's attribute error
