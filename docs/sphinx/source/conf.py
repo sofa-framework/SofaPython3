@@ -40,15 +40,13 @@ extensions = [
     'sphinx.ext.napoleon',
     ]
 
-#autoapi_modules = {'Sofa': None, 'Sofa.Core' : None}
-
 import sys
-import os
 import re
+from pathlib import Path
 
-#sys.path.append("/home/dmarchal/projects/DEFROST/dev/sofa2/builds/release/lib/site-packages/")
-sys.path.append(os.getcwd()+"/../../sphinx-stubs")
-print(sys.path)
+stub_path = Path(__file__+"/../../../sphinx-stubs").resolve()
+sys.path.insert(0, stub_path)
+print(f"Adding {stub_path} to sys.path")
 
 ## Include Python objects as they appear in source files
 ## Default: alphabetically ('alphabetical')
@@ -215,8 +213,8 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
             return MagicMock()
 
-MOCK_MODULES = ['numpy']
-sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+autodoc_mock_imports = ['numpy', 'Sofa', 'SofaRuntime', 'SofaExporter', 'SofaTypes', 'splib']
+sys.modules.update((mod_name, Mock()) for mod_name in autodoc_mock_imports)
 
 
 # Example configuration for intersphinx: refer to the Python standard library.

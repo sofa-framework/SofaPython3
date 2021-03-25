@@ -180,7 +180,7 @@ py::module addSubmoduleTimer(py::module &m)
     timer.def("stepEnd", [](const std::string& id){ AdvancedTimer::stepEnd(id);}, py::arg("id"));
     timer.def("end", [](const std::string& id){ AdvancedTimer::end(id);}, py::arg("id"));
 
-    timer.def("setOutputType", &AdvancedTimer::setOutputType, py::arg("id"), py::arg("newOutputType"), doc::Timer::setOutputType);
+    timer.def("setOutputType", [](const std::string& id, const std::string& type){ AdvancedTimer::setOutputType(id, type);}, py::arg("id"), py::arg("newOutputType"), doc::Timer::setOutputType);
     timer.def("getRecords", &getRecords, py::arg("id"));
 
     return timer;
