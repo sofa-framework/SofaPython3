@@ -118,6 +118,8 @@ PythonEnvironmentData* PythonEnvironment::getStaticData()
     return m_staticdata;
 }
 
+std::string PythonEnvironment::pluginLibraryPath = "";
+
 SOFAPYTHON3_API py::module PythonEnvironment::importFromFile(const std::string& module, const std::string& path, py::object* globals)
 {
     PythonEnvironment::gil lock;
@@ -238,6 +240,17 @@ void PythonEnvironment::Init()
 
     // python modules are automatically reloaded at each scene loading
     //setAutomaticModuleReload( true );
+
+    // Initialize pluginLibraryPath by reading PluginManager's map
+    std::map<std::string, Plugin>& map = PluginManager::getInstance().getPluginMap();
+    for( const auto& elem : map)
+    {
+        Plugin p = elem.second;
+        if ( p.getModuleName() == sofa_tostring(SOFA_TARGET) )
+        {
+            pluginLibraryPath = elem.first;
+        }
+    }
 }
 
 void PythonEnvironment::executePython(std::function<void()> cb)
@@ -332,7 +345,7 @@ void PythonEnvironment::addPythonModulePathsForPlugins(const std::string& plugin
 
     if(!added)
     {
-        msg_warning("PythonEnvironment") << "No python dir found in " << pluginsDirectory;
+        msg_info("SofaPython3") << "No python3 dir found in " << pluginsDirectory;
     }
 }
 
@@ -352,7 +365,30 @@ void PythonEnvironment::addPythonModulePathsForPluginsByName(const std::string& 
             return;
         }
     }
-    msg_warning("PythonEnvironment") << pluginName << " not found in PluginManager's map.";
+    msg_info("SofaPython3") << pluginName << " not found in PluginManager's map.";
+}
+
+void PythonEnvironment::addPluginManagerCallback()
+{
+    PluginManager::getInstance().addOnPluginLoadedCallback(pluginLibraryPath,
+        [](const std::string& pluginLibraryPath, const Plugin& plugin) {
+            // WARNING: loaded plugin must be organized like plugin_name/lib/plugin_name.so
+            for ( auto path : sofa::helper::system::PluginRepository.getPaths() )
+            {
+                std::string pluginRoot = FileSystem::cleanPath( path + "/" + plugin.getModuleName() );
+                if ( FileSystem::exists(pluginRoot) && FileSystem::isDirectory(pluginRoot) )
+                {
+                    addPythonModulePathsForPlugins(pluginRoot);
+                    return;
+                }
+            }
+        }
+    );
+}
+
+void PythonEnvironment::removePluginManagerCallback()
+{
+    PluginManager::getInstance().removeOnPluginLoadedCallback(pluginLibraryPath);
 }
 
 
