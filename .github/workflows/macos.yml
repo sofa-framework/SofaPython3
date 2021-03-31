@@ -27,12 +27,12 @@ jobs:
           brew install ccache ninja boost eigen pybind11
           python3 -m pip install numpy
 
-      - name: Download SOFA nightly build
+      - name: Download SOFA v20.12.02
         run:  |
           curl --output sofa.zip -L \
-          https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries-v20.12/lastSuccessfulBuild/CI_SCOPE=binaries_minimal/artifact/MacOS/*zip*/MacOS.zip
+          https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/CI_SCOPE=binaries_minimal/309/artifact/MacOS/*zip*/MacOS.zip
 
-      - name: Install SOFA nightly build
+      - name: Install SOFA v20.12.02
         run: |
           sudo unzip sofa.zip -d temp
           sudo unzip temp/MacOS/`ls temp/MacOS/` -d temp
@@ -105,12 +105,12 @@ jobs:
           brew install boost
           python3 -m pip install numpy
 
-      - name: Download SOFA nightly build
+      - name: Download SOFA v20.12.02
         run:  |
           curl --output sofa.zip -L \
-          https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries-v20.12/lastSuccessfulBuild/CI_SCOPE=binaries_minimal/artifact/MacOS/*zip*/MacOS.zip
+          https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/CI_SCOPE=binaries_minimal/309/artifact/MacOS/*zip*/MacOS.zip
 
-      - name: Install SOFA nightly build
+      - name: Install SOFA v20.12.02
         run: |
           sudo unzip sofa.zip -d temp
           sudo unzip temp/MacOS/`ls temp/MacOS/` -d temp
