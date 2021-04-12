@@ -74,6 +74,7 @@ PYBIND11_MODULE(Simulation, simulation)
     {
         sofa::simulation::getSimulation()->initTextures(n);
     });
+    simulation.def("cleanup", [](){sofa::simulation::common::cleanup(); sofa::simulation::graph::cleanup();});
 }
 
 } /// namespace sofapython3
