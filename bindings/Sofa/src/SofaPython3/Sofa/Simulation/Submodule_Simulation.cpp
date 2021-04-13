@@ -41,6 +41,7 @@ using sofa::simulation::Simulation;
 #include <sofa/core/init.h>
 #include <sofa/simulation/init.h>
 #include <SofaSimulationGraph/init.h>
+#include <SofaSimulationCommon/init.h>
 
 namespace py = pybind11;
 
