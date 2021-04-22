@@ -1,5 +1,6 @@
 Additionnal libraries
 =====================
+
 Additionnal libraries for the SofaPython3 plugin.
 
 .. autosummary::
@@ -7,5 +8,3 @@ Additionnal libraries for the SofaPython3 plugin.
 
     splib
     Sofa.constants
-
-

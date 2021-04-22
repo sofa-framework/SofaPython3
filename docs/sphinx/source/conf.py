@@ -70,7 +70,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'SofaPython3'
-copyright = u'2020, SOFA Framework'
+copyright = u'2021, SOFA Framework'
 author = u'consortium@sofa-framework.org'
 
 # The version info for the project you're documenting, acts as replacement for
