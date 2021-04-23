@@ -85,7 +85,7 @@ void moduleAddQuat(py::module &m) {
         (void (Quat::*)(const Quat &, const Quat &, double, bool)) &
             Quat::slerp,
         "a"_a, "b"_a, "t"_a, "allowdFlip"_a = true);
-  p.def("slerp", (Quat(Quat::*)(Quat &, double)) & Quat::slerp, "q1"_a, "t"_a);
+  p.def("slerp", (Quat (Quat::*)(const Quat&, Quat::value_type) const) &Quat::slerp, "q1"_a, "t"_a);
   p.def("slerp2", &Quat::slerp2, "q1"_a, "t"_a);
 
   p.def(py::self + py::self);
