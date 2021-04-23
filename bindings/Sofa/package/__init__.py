@@ -34,16 +34,17 @@ import functools
 import traceback
 import importlib
 
+import Sofa.constants
 import Sofa.Helper
 import Sofa.Core
 import Sofa.Simulation
 import Sofa.Types
-import Sofa.Components
+# import Sofa.Components
 import SofaTypes
 
 from .prefab import *
 
-__all__=["animation", "prefab"]
+__all__=["constants", "Helper", "Core", "Simulation", "Types", "SofaTypes", "prefab"]
 
 # Keep a list of the modules always imported in the Sofa-PythonEnvironment
 try:
