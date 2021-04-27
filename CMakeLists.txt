@@ -190,9 +190,9 @@ sofa_create_package(
     RELOCATABLE "plugins"
     )
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SofaPython3Tools.cmake" "${CMAKE_BINARY_DIR}/cmake/SofaPython3Tools.cmake" COPYONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SofaPython3Tools.cmake" "${CMAKE_BINARY_DIR}/lib/cmake/SofaPython3Tools.cmake" COPYONLY)
 install(FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SofaPython3Tools.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/lib/cmake/SofaPython3Tools.cmake"
     DESTINATION lib/cmake/SofaPython3
     COMPONENT headers
 )
