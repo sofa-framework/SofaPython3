@@ -1,6 +1,12 @@
 project(Bindings.Sofa)
 
-set(SOFABINDINGS_MODULE_LIST Core Helper Simulation Types)
+set(SOFABINDINGS_MODULE_LIST
+    Components
+    Core
+    Helper
+    Simulation
+    Types
+    )
 
 foreach(sofabindings_module ${SOFABINDINGS_MODULE_LIST})
 	add_subdirectory(src/SofaPython3/Sofa/${sofabindings_module})
