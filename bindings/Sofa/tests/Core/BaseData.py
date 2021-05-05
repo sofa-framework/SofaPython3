@@ -91,11 +91,15 @@ class NpArrayTestController(Sofa.Core.Controller):
         test.assertEqual(repr(self.vector_text_3entries),
                          repr(["v1", "v2", "v3"]))
 
+def create_scene(rootName="root"):
+    root = Sofa.Core.Node(rootName)
+    root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+    return root
 
 class Test(unittest.TestCase):
 
     def test_getattr(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         c = root.addObject("MechanicalObject", name="c")
         self.assertEqual(str(type(c.position)), "<class 'Sofa.Core.DataContainer'>")
         c.addData("d1", type="string", value="coucou")
@@ -108,7 +112,7 @@ class Test(unittest.TestCase):
         self.assertEqual(str(type(c.bbox)), "<class 'Sofa.Types.BoundingBox'>")
 
     def test_typeName(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         c = root.addObject("MechanicalObject", name="t", position=[
             [0, 0, 0], [1, 1, 1], [2, 2, 2]])
         self.assertEqual(c.position.typeName(), "vector<Vec3d>")
@@ -116,19 +120,19 @@ class Test(unittest.TestCase):
 
     # @unittest.skip  # no reason needed
     def test_ValidDataAccess(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         c = root.addObject("MechanicalObject", name="t", position=[
             [0, 0, 0], [1, 1, 1], [2, 2, 2]])
         self.assertTrue(c.position is not None)
 
     # @unittest.skip  # no reason needed
     def test_InvalidDataAccess(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         self.assertRaises(AttributeError, getattr, root, "invalidData")
 
     # @unittest.skip  # no reason needed
     def test_DataAsArray2D(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         v = [[0, 0, 0], [1, 1, 1], [2, 2, 2]]
         c = root.addObject("MechanicalObject", name="t", position=v)
         self.assertEqual(len(c.position.value), 3)
@@ -139,7 +143,7 @@ class Test(unittest.TestCase):
     # @unittest.skip  # no reason needed
     def test_DataArray2DSetFromList(self):
         v = [[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]]
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         c = root.addObject("MechanicalObject", name="t", position=v)
         c.position = [[1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4]]
         numpy.testing.assert_array_equal(c.position.array(), [[1.0, 1.0, 1.0], [
@@ -148,7 +152,7 @@ class Test(unittest.TestCase):
     # @unittest.skip  # no reason needed
     def test_DataArray2DResizeFromArray(self):
         v = [[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]]
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         c = root.addObject("MechanicalObject", name="t", position=v)
         zeros = numpy.zeros((100, 3), dtype=numpy.float64)
         c.position.value = zeros
@@ -157,7 +161,7 @@ class Test(unittest.TestCase):
     # @unittest.skip  # no reason needed
     def test_DataArray2DInvalidResizeFromArray(self):
         v = [[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]]
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         c = root.addObject("MechanicalObject", name="t", position=v)
         zeros = numpy.zeros((4, 100), dtype=numpy.float64)
 
@@ -168,7 +172,7 @@ class Test(unittest.TestCase):
     # @unittest.skip  # no reason needed
     def test_DataArray2DSetFromArray(self):
         v = [[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4]]
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         c = root.addObject("MechanicalObject", name="t", position=v)
 
         zeros = numpy.zeros((500, 3), dtype=numpy.float64)
@@ -185,7 +189,7 @@ class Test(unittest.TestCase):
 
     @unittest.skip  # no reason needed
     def test_DataArray2DElementWiseOperation(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         m = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
         v = [[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]]
         c = root.addObject("MechanicalObject", name="t", position=v)
@@ -193,7 +197,7 @@ class Test(unittest.TestCase):
 
     def test_UnknowAttribute(self):
         """ Access a non-existing attribute of a data field so this should trigger AttributeError"""
-        root = Sofa.Core.Node("root")  # < Create a new node
+        root = create_scene("root")  # < Create a new node
         # < Create a new object
         c = root.addObject("MechanicalObject", name="t")
         p = c.position.value  # < Retrive its position
@@ -205,7 +209,7 @@ class Test(unittest.TestCase):
     # @unittest.skip  # no reason needed
 
     def test_DataArray2DOperation(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         v = numpy.array([[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]])
         c = root.addObject("MechanicalObject", name="t", position=v.tolist())
         c2 = c.position.value * 2.0
@@ -219,7 +223,7 @@ class Test(unittest.TestCase):
 
     # @unittest.skip  # no reason needed
     def test_DataAsArray1D(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         v = [[0, 0, 0], [1, 1, 1], [2, 2, 2]]
         c = root.addObject("MechanicalObject", name="t",
                            position=v, showColor=[0.42, 0.1, 0.9, 1.0])
@@ -228,7 +232,7 @@ class Test(unittest.TestCase):
 
     # @unittest.skip  # no reason needed
     def test_DataWrapper1D(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         v = [[0, 0, 0], [1, 1, 1], [2, 2, 2]]
         root.addObject("MechanicalObject", name="obj", position=v)
 
@@ -245,7 +249,7 @@ class Test(unittest.TestCase):
         self.assertRaises(ValueError, (lambda c: t(c)), color)
 
     def test_DataAsContainerNumpyArray_(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         v = numpy.array([[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]])
         c = root.addObject("MechanicalObject", name="t", position=v.tolist())
         Sofa.Simulation.init(root)
@@ -258,7 +262,7 @@ class Test(unittest.TestCase):
             numpy.testing.assert_array_equal(c.position.array(), v)
 
     def test_DataAsContainerNumpyArrayRepeat(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         v = numpy.array([[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]])
         c = root.addObject("MechanicalObject", name="t", position=v.tolist())
 
@@ -289,13 +293,13 @@ class Test(unittest.TestCase):
             numpy.testing.assert_array_equal(wa, v*4.0)
 
     def test_DataString(self):
-        n = Sofa.Core.Node("rootNode")
+        n = create_scene("rootNode")
         self.assertTrue(isinstance(n.name, Sofa.Core.DataString))
         self.assertEqual(n.name.value, "rootNode")
         self.assertEqual(len(n.name), 8)
 
     def test_DataAsContainerNumpyArray(self):
-        n = Sofa.Core.Node("rootNode")
+        n = create_scene("rootNode")
         c = n.addObject(NpArrayTestController(name="c"))
 
         c.testLen(self)
@@ -305,7 +309,7 @@ class Test(unittest.TestCase):
         c.testValue(self)
 
     def test_name(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         root.addData(name="aField", value=1.0 , help="help message",group="theDataGroup", type="float")
         data = root.getData("aField")
         self.assertEqual(data.getName(),"aField")
@@ -313,21 +317,21 @@ class Test(unittest.TestCase):
         self.assertEqual(data.getName(),"aNewField")
 
     def test_getValueString(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         c = root.addObject("MechanicalObject", name="t", position=[[0,1,0]])
         self.assertEqual(c.position.getValueString(),"0 1 0")
 
     def test_getValueTypeString(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         c = root.addObject("MechanicalObject", name="t", position=[[0,1,0]])
         self.assertEqual(c.position.getValueTypeString(),"vector<Vec3d>")
 
     def test_isRequired(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         self.assertFalse(root.name.isRequired())
 
     def test_Persistent(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         root.addData(name="aField", value=1.0 , help="help message",group="theDataGroup", type="float")
         data = root.getData("aField")
         self.assertTrue(data.isPersistent())
@@ -335,7 +339,7 @@ class Test(unittest.TestCase):
         self.assertFalse(data.isPersistent())
 
     def test_Parent(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         root.addData(name="aField", value=1.0 , help="help message",group="theDataGroup", type="float")
         root.addData(name="aFieldParent", value=1.0 , help="help message",group="theDataGroup", type="float")
         data = root.getData("aField")
@@ -346,7 +350,7 @@ class Test(unittest.TestCase):
         self.assertEqual(data.getParent().getName(),"aFieldParent")
 
     def test_getLinkPath(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         root.addData(name="aField", value=1.0 , help="help message",group="theDataGroup", type="float")
         root.addData(name="aFieldParent", value=1.0 , help="help message",group="theDataGroup", type="float")
         data = root.getData("aField")
@@ -356,7 +360,7 @@ class Test(unittest.TestCase):
         self.assertEqual(dataParent.getLinkPath(),"@/.aFieldParent")
 
     def test_read(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         root.addData(name="aField", value=1.0 , help="help message",group="theDataGroup", type="float")
         data = root.getData("aField")
         self.assertEqual(data.value,1.0)
@@ -365,7 +369,7 @@ class Test(unittest.TestCase):
         self.assertFalse(data.read("test"))
 
     def test_Dirty(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         root.addData(name="aField", value=1.0 , help="help message",group="theDataGroup", type="float")
         root.addData(name="aFieldParent", value=1.0 , help="help message",group="theDataGroup", type="float")
         data = root.getData("aField")
@@ -378,7 +382,7 @@ class Test(unittest.TestCase):
         self.assertFalse(data.isDirty())
 
     def test_readOnly(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         root.addData(name="aField", value=1.0 , help="help message",group="theDataGroup", type="float")
         data = root.getData("aField")
         self.assertFalse(data.isReadOnly())
@@ -386,7 +390,7 @@ class Test(unittest.TestCase):
         self.assertTrue(data.isReadOnly())
 
     def test_DownCast(self):
-        root = Sofa.Core.Node('root')
+        root = create_scene('root')
         self.assertEqual(type(root.name), Sofa.Core.DataString)
         self.assertEqual(type(root.gravity), Sofa.Core.DataContainer)
         self.assertEqual(type(root.dt), Sofa.Core.Data)

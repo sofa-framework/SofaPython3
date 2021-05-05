@@ -15,6 +15,7 @@ slowcpy = numpy.zeros((1000000,3), dtype=numpy.float32)
 aList = rawcpy.tolist()
 
 root = Sofa.Core.Node("root")
+root.addObject("RequiredPlugin", name="SofaBaseMechanics")
 obj = root.createObject("MechanicalObject", name="test", position=aList)
 
 obj.position = aList
