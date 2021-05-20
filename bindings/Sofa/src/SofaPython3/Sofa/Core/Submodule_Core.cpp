@@ -39,6 +39,8 @@ using sofa::helper::logging::Message;
 #include <SofaPython3/Sofa/Core/Binding_Prefab.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseLink.h>
 #include <SofaPython3/Sofa/Core/Binding_PythonScriptEvent.h>
+#include <SofaPython3/Sofa/Core/Binding_Topology.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseMeshTopology.h>
 
 #include <SofaPython3/Sofa/Core/Data/Binding_DataString.h>
 #include <SofaPython3/Sofa/Core/Data/Binding_DataLink.h>
@@ -134,6 +136,8 @@ PYBIND11_MODULE(Core, core)
     moduleAddNodeIterator(core);
     moduleAddPrefab(core);
     moduleAddBaseLink(core);
+    moduleAddTopology(core);
+    moduleAddBaseMeshTopology(core);
 }
 
 } ///namespace sofapython3

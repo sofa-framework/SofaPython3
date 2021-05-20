@@ -20,47 +20,36 @@
 
 #include <pybind11/pybind11.h>
 
-#include <SofaGui/initSofaGui.h>
-#include <sofa/core/init.h>
+#include <sofa/simulation/Node.h>
+using sofa::simulation::Node;
 
-#include "Binding_BaseGui.h"
-#include "Binding_GUIManager.h"
+#include <sofa/core/visual/VisualParams.h>
 
-namespace py = pybind11;
+#include <sofa/simulation/Simulation.h>
+#include <sofa/gl/DrawToolGL.h>
+
+#include <SofaPython3/SofaGL/Binding_DrawToolGL.h>
+#include <SofaPython3/SofaGL/Binding_DrawToolGL_doc.h>
+
 
 namespace sofapython3 {
-/// The first parameter must be named the same as the module file to load.
-PYBIND11_MODULE(Gui, m) {
 
-    m.doc() = R"doc(
-            Sofa.Gui
-            -----------------------
-
-            Example of use:
-
-                .. code-block:: python
-                    import Sofa.Gui
-
-                    supported_gui = Sofa.Gui.GUIManager.ListSupportedGUI(",")
-                    print ("Supported GUIs are " + supported_gui)
-
-                    Sofa.Gui.GUIManager.Init("gui_script_example")
-                    Sofa.Gui.GUIManager.createGUI(root)
-                    Sofa.Gui.GUIManager.MainLoop(root)
-                    Sofa.Gui.GUIManager.closeGUI()
+using DrawToolGL = sofa::gl::DrawToolGL;
 
 
-                .. automodule:: Gui
-                    :toctree: _autosummary
-                    :members:
-             )doc";
+namespace py { using namespace pybind11; }
 
-    // This is needed to make sure the GuiMain library (libSofaGuiMain.so) is correctly
-    // linked since the GUIs are statically created during the load of the library.
-    sofa::gui::initSofaGui();
-    sofa::core::init();
+void moduleAddDrawToolGL(pybind11::module& m) {
+    m.def("draw", [](Node* node){
+      auto* vparam = sofa::core::visual::VisualParams::defaultInstance();
+      vparam->drawTool() = new sofa::gl::DrawToolGL();
+      vparam->setSupported(sofa::core::visual::API_OpenGL);
+      sofa::simulation::getSimulation()->draw(vparam, node);
+    }, doc::SofaGL::draw);
 
-    moduleAddBaseGui(m);
-    moduleAddGuiManager(m);
+    m.def("glewInit", [](){
+      glewInit();
+    }, doc::SofaGL::glewInit);
 }
-}
+
+} // namespace sofapython3

@@ -18,35 +18,19 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaPython3/PythonTest.h>
-#include <SofaPython3/PythonTestExtractor.h>
-#include <sofa/helper/Utils.h>
+#pragma once
 
-#include <sofa/helper/logging/Messaging.h>
-#include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
+namespace sofapython3::doc::SofaGL {
+static auto draw =
+R"(
+Draw the openGL visual loop from the provided Node.
+:param node: Node to start visualize from
+:type node: Sofa::Simulation::Node
+)";
 
+static auto glewInit =
+R"(
+Initialize GLEW. This should be called once before drawing.
+)";
 
-/// static build of the test list
-static struct Tests : public sofapython3::PythonTestExtractor
-{
-    Tests() {
-        using sofa::helper::logging::MessageDispatcher;
-        using sofa::helper::logging::MainPerComponentLoggingMessageHandler;
-
-        MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
-
-        const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
-        addTestDirectory(executable_directory+"/SofaBaseTopology", "SofaBaseTopology_");
-        addTestDirectory(executable_directory+"/SofaDeformable", "SofaDeformable_");
-    }
-} python_tests;
-
-/// run test list using the custom name function getTestName.
-/// this allows to do gtest_filter=*FileName*
-class Modules : public sofapython3::PythonTest {};
-INSTANTIATE_TEST_CASE_P(SofaPython3,
-                        Modules,
-                        ::testing::ValuesIn(python_tests.extract()),
-                        Modules::getTestName);
-
-TEST_P(Modules, all_tests) { run(GetParam()); }
+} // sofapython3::doc::SofaGL

@@ -29,6 +29,7 @@
 // Imports for getCategories
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/BaseMapping.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>

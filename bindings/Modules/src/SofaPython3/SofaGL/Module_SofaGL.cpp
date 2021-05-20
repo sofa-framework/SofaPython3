@@ -18,35 +18,18 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaPython3/PythonTest.h>
-#include <SofaPython3/PythonTestExtractor.h>
-#include <sofa/helper/Utils.h>
-
-#include <sofa/helper/logging/Messaging.h>
-#include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
+#include <pybind11/pybind11.h>
+#include <SofaPython3/SofaGL/Binding_DrawToolGL.h>
 
 
-/// static build of the test list
-static struct Tests : public sofapython3::PythonTestExtractor
+namespace py { using namespace pybind11; }
+
+namespace sofapython3
 {
-    Tests() {
-        using sofa::helper::logging::MessageDispatcher;
-        using sofa::helper::logging::MainPerComponentLoggingMessageHandler;
 
-        MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+PYBIND11_MODULE(SofaGL, m)
+{
+    moduleAddDrawToolGL(m);
+}
 
-        const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
-        addTestDirectory(executable_directory+"/SofaBaseTopology", "SofaBaseTopology_");
-        addTestDirectory(executable_directory+"/SofaDeformable", "SofaDeformable_");
-    }
-} python_tests;
-
-/// run test list using the custom name function getTestName.
-/// this allows to do gtest_filter=*FileName*
-class Modules : public sofapython3::PythonTest {};
-INSTANTIATE_TEST_CASE_P(SofaPython3,
-                        Modules,
-                        ::testing::ValuesIn(python_tests.extract()),
-                        Modules::getTestName);
-
-TEST_P(Modules, all_tests) { run(GetParam()); }
+} // namespace sofapython3

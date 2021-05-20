@@ -86,10 +86,8 @@ class Test(unittest.TestCase):
         mm  = root.addObject("BarycentricMapping", input="@/t1", output="@/t2")
         link_input = mm.findLink("input")
         self.assertEqual(link_input.getLinkedBase(0).getName(),"t1")
-        self.assertEqual(link_input.getLinkedData(0), None)
         link_output = mm.findLink("output")
         self.assertEqual(link_output.getLinkedBase(0).getName(),"t2")
-        self.assertEqual(link_output.getLinkedData(0), None)
         self.assertEqual(link_input.getOwnerBase().getName(), "BarycentricMapping")
         self.assertEqual(link_output.getOwnerBase().getName(), "BarycentricMapping")
 

@@ -13,7 +13,7 @@ if (NOT TARGET SofaPython3::Plugin)
 endif()
 
 find_package(SofaFramework REQUIRED)
-find_package(SofaSimulation REQUIRED)
+find_package(SofaSimulationGraph REQUIRED)
 
 SP3_add_python_module(
         TARGET       ${PROJECT_NAME}

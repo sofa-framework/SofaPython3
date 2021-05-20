@@ -21,6 +21,7 @@
 #include <SofaPython3/Sofa/Core/Binding_PythonScriptEvent.h>
 #include <SofaPython3/PythonFactory.h>
 #include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/Node.h>
 
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
@@ -30,7 +31,7 @@ using namespace pybind11::literals;
 
 SOFA_EVENT_CPP(PythonScriptEvent)
 
-PythonScriptEvent::PythonScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventName, py::object userData)
+PythonScriptEvent::PythonScriptEvent(sofa::core::sptr<sofa::simulation::Node> sender, const char* eventName, py::object userData)
     : sofa::core::objectmodel::ScriptEvent(sender,eventName)
     , m_userData(userData){}
 
