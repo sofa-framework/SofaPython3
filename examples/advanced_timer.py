@@ -30,8 +30,8 @@ class TimerController(Sofa.Core.Controller):
 
         nb_iterations = records['AnimateVisitor']['Mechanical (meca)']['StaticSolver::Solve']['nb_iterations']
         for i in range(int(nb_iterations)):
-            total_time = records['AnimateVisitor']['Mechanical (meca)']['StaticSolver::Solve']['step_'+str(i)]['total_time']
-            CG_iterations = records['AnimateVisitor']['Mechanical (meca)']['StaticSolver::Solve']['step_'+str(i)]['CG iterations']
+            total_time = records['AnimateVisitor']['Mechanical (meca)']['StaticSolver::Solve']['NewtonStep'][i]['total_time']
+            CG_iterations = records['AnimateVisitor']['Mechanical (meca)']['StaticSolver::Solve']['NewtonStep'][i]['MBKSolve']['CG iterations']
             print(f"  Newton iteration #{i} took {total_time:.2f} ms using {int(CG_iterations)} CG iterations")
 
         if not self.use_sofa_profiler_timer:
