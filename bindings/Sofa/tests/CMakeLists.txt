@@ -19,6 +19,7 @@ set(PYTHON_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/DataEngine.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/MyRestShapeForceField.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/MechanicalParams.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/MultiVecId.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/PythonRestShapeForceField.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseLink.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/VecId.py
