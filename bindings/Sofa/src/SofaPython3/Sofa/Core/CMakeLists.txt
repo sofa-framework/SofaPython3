@@ -22,6 +22,8 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_MechanicalParams.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_MechanicalParams_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_NodeIterator.h
@@ -61,6 +63,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataVectorString.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_MechanicalParams.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_NodeIterator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Prefab.cpp
