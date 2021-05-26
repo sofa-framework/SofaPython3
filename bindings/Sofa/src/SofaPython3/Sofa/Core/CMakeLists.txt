@@ -10,6 +10,7 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseObject_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseCamera.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseContext.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseState.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ContactListener.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ContactListener_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Context.h
@@ -49,6 +50,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseObject.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseCamera.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseContext.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseState.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ContactListener.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Context.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Controller.cpp
