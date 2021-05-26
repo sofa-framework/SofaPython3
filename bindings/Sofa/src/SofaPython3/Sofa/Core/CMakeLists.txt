@@ -42,6 +42,7 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseData_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseCamera_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Topology.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_VecId.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseMeshTopology.h
 )
 
@@ -71,6 +72,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_PythonScriptEvent.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseLink.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Topology.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_VecId.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseMeshTopology.cpp
 )
 
