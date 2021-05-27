@@ -7,6 +7,7 @@ set(SOURCE_FILES
 set(PYTHON_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/SofaDeformable/LinearSpring.py
     ${CMAKE_CURRENT_SOURCE_DIR}/SofaDeformable/SpringForceField.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/SofaSimulationCore/MechanicalOperations.py
     ${CMAKE_CURRENT_SOURCE_DIR}/SofaSimulationCore/VectorOperations.py
 )
 

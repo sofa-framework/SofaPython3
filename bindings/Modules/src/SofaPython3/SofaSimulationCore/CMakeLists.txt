@@ -1,6 +1,7 @@
 project(Bindings.Modules.SofaSimulationCore)
 
 set(SOURCE_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_MechanicalOperations.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_VectorOperations.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Module_SofaSimulationCore.cpp
 )

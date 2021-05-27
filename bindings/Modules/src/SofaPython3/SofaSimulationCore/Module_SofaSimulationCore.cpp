@@ -26,10 +26,12 @@ namespace py { using namespace pybind11; }
 namespace sofapython3
 {
 
+void moduleAddMechanicalOperations(pybind11::module& m);
 void moduleAddVectorOperations(pybind11::module& m);
 
 PYBIND11_MODULE(SofaSimulationCore, m)
 {
+    moduleAddMechanicalOperations(m);
     moduleAddVectorOperations(m);
 }
 
