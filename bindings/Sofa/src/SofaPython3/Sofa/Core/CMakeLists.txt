@@ -22,6 +22,8 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_OdeSolver.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_OdeSolver_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_MechanicalParams.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_MechanicalParams_doc.h
@@ -67,6 +69,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ExecParams.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_OdeSolver.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_MechanicalParams.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_MultiVecId.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node.cpp
