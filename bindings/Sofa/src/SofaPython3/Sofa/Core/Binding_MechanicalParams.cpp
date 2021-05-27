@@ -28,7 +28,7 @@ namespace sofapython3 {
 
 void moduleAddMechanicalParams(py::module& m) {
     using namespace sofa::core;
-    py::class_<MechanicalParams> c (m, "MechanicalParams", doc::mechanicalparams::MechanicalParamsClass);
+    py::class_<MechanicalParams, ExecParams> c (m, "MechanicalParams", doc::mechanicalparams::MechanicalParamsClass);
     c.def(py::init());
 
     // Dt

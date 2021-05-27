@@ -34,6 +34,7 @@ using sofa::helper::logging::Message;
 #include <SofaPython3/Sofa/Core/Binding_Context.h>
 #include <SofaPython3/Sofa/Core/Binding_Controller.h>
 #include <SofaPython3/Sofa/Core/Binding_DataEngine.h>
+#include <SofaPython3/Sofa/Core/Binding_ExecParams.h>
 #include <SofaPython3/Sofa/Core/Binding_ObjectFactory.h>
 #include <SofaPython3/Sofa/Core/Binding_MechanicalParams.h>
 #include <SofaPython3/Sofa/Core/Binding_MultiVecId.h>
@@ -135,6 +136,7 @@ PYBIND11_MODULE(Core, core)
     moduleAddContext(core);
     moduleAddController(core);
     moduleAddDataEngine(core);
+    moduleAddExecParams(core);
     moduleAddForceField(core);
     moduleAddObjectFactory(core);
     moduleAddMechanicalParams(core);
