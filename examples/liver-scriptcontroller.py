@@ -9,8 +9,6 @@ USE_GUI = True
 def main():
     import SofaRuntime
     import Sofa.Gui
-    SofaRuntime.importPlugin("SofaOpenglVisual")
-    SofaRuntime.importPlugin("SofaImplicitOdeSolver")
 
     root = Sofa.Core.Node("root")
     createScene(root)
@@ -44,14 +42,14 @@ def createScene(root):
     root.addObject('MeshObjLoader', name="LiverSurface", filename="mesh/liver-smooth.obj")
 
     liver = root.addChild('Liver')
-    liver.addObject('EulerImplicitSolver', name="cg_odesolver", rayleighStiffness="0.1", rayleighMass="0.1")
-    liver.addObject('CGLinearSolver', name="linear_solver", iterations="25", tolerance="1e-09", threshold="1e-09")
+    liver.addObject('EulerImplicitSolver', name="cg_odesolver", rayleighStiffness=0.1, rayleighMass=0.1)
+    liver.addObject('CGLinearSolver', name="linear_solver", iterations=25, tolerance=1e-09, threshold=1e-09)
     liver.addObject('MeshGmshLoader', name="meshLoader", filename="mesh/liver.msh")
     liver.addObject('TetrahedronSetTopologyContainer', name="topo", src="@meshLoader")
     liver.addObject('MechanicalObject', name="dofs", src="@meshLoader")
     liver.addObject('TetrahedronSetGeometryAlgorithms', template="Vec3d", name="GeomAlgo")
-    liver.addObject('DiagonalMass', name="Mass", massDensity="1.0")
-    liver.addObject('TetrahedralCorotationalFEMForceField', template="Vec3d", name="FEM", method="large", poissonRatio="0.3", youngModulus="3000", computeGlobalMatrix="0")
+    liver.addObject('DiagonalMass', name="Mass", massDensity=1.0)
+    liver.addObject('TetrahedralCorotationalFEMForceField', template="Vec3d", name="FEM", method="large", poissonRatio=0.3, youngModulus=3000, computeGlobalMatrix=False)
     liver.addObject('FixedConstraint', name="FixedConstraint", indices="3 39 64")
 
     visu = liver.addChild('Visu')
@@ -75,8 +73,6 @@ class KeyPressedController(Sofa.Core.Controller):
     """
     def __init__(self, *args, **kwargs):
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
-        self.listening = True
-        self.name = "keyPressedController"
         self.iteration = 0
 
     def onKeypressedEvent(self, event):
@@ -89,10 +85,10 @@ class KeyPressedController(Sofa.Core.Controller):
         newSphere = root.addChild('FallingSphere-'+str(self.iteration))
         newSphere.addObject('EulerImplicitSolver')
         newSphere.addObject('CGLinearSolver', threshold='1e-09', tolerance='1e-09', iterations='200')
-        MO = newSphere.addObject('MechanicalObject', showObject='1', position='-2 '+str(10+self.iteration)+' 0   0 0 0 1', name='Particle-'+str(self.iteration), template='Rigid3d')
-        Mass = newSphere.addObject('UniformMass', totalMass='1')
-        Force = newSphere.addObject('ConstantForceField', name="CFF", totalForce="0 -1 0 0 0 0" )
-        Sphere = newSphere.addObject('SphereCollisionModel', name="SCM", radius="1.0" )
+        MO = newSphere.addObject('MechanicalObject', showObject=True, position=[-2, 10+self.iteration, 0, 0, 0, 0, 1], name=f'Particle-{self.iteration}', template='Rigid3d')
+        Mass = newSphere.addObject('UniformMass', totalMass=1)
+        Force = newSphere.addObject('ConstantForceField', name="CFF", totalForce=[0, -1, 0, 0, 0, 0] )
+        Sphere = newSphere.addObject('SphereCollisionModel', name="SCM", radius=1.0 )
         
         newSphere.init()
         self.iteration = self.iteration+1
