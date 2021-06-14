@@ -73,7 +73,7 @@ namespace sofapython3
 
         static std::map<std::string, componentDowncastingFunction>::iterator searchLowestCastAvailable(const sofa::core::objectmodel::BaseClass* metaclass);
 
-        static void uniqueKeys(std::back_insert_iterator<sofa::helper::vector<std::string> > it);
+        static void uniqueKeys(std::back_insert_iterator<sofa::type::vector<std::string> > it);
     private:
         static bool registerDefaultEvents();
         static bool registerDefaultTypes();

@@ -554,7 +554,7 @@ BaseData* addData(py::object py_self, const std::string& name, py::object value,
         data = PythonFactory::createInstance(type);
         if (!data)
         {
-            sofa::helper::vector<std::string> validTypes;
+            sofa::type::vector<std::string> validTypes;
             PythonFactory::uniqueKeys(std::back_inserter(validTypes));
             std::string typesString = "[";
             for (const auto& i : validTypes)
