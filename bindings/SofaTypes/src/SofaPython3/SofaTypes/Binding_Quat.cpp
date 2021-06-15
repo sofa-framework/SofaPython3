@@ -19,13 +19,13 @@
 ******************************************************************************/
 
 #include "Binding_Quat.h"
-typedef sofa::helper::Quater<double> Quat;
-#include <sofa/defaulttype/Vec.h>
-using sofa::defaulttype::Vec3d;
-using sofa::defaulttype::Vec4d;
-#include <sofa/defaulttype/Mat.h>
-typedef sofa::defaulttype::Mat4x4d Matrix4;
-typedef sofa::defaulttype::Mat3x3d Matrix3;
+typedef sofa::type::Quat<double> Quat;
+#include <sofa/type/Vec.h>
+using sofa::type::Vec3d;
+using sofa::type::Vec4d;
+#include <sofa/type/Mat.h>
+typedef sofa::type::Mat4x4d Matrix4;
+typedef sofa::type::Mat3x3d Matrix3;
 #include <pybind11/operators.h>
 
 void moduleAddQuat(py::module &m) {

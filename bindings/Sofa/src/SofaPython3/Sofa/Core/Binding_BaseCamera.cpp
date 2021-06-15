@@ -90,52 +90,52 @@ void moduleAddBaseCamera(py::module &m)
     c.def("getOpenGLModelViewMatrix", getOpenGLModelViewMatrix);
 
     c.def("rotate", [](BaseCamera *self, py::list p){
-        sofa::defaulttype::Quat vec;
-        vec = sofa::defaulttype::Quat(py::cast<double>(p[0]),py::cast<double>(p[1]),py::cast<double>(p[2]),py::cast<double>(p[3]));
+        sofa::type::Quat<SReal> vec;
+        vec = sofa::type::Quat<SReal>(py::cast<double>(p[0]),py::cast<double>(p[1]),py::cast<double>(p[2]),py::cast<double>(p[3]));
         self->rotate(vec);
     });
 
     c.def("rotateCameraAroundPoint", [](BaseCamera *self, py::list p1, py::list p2) {
-         sofa::defaulttype::Quat vec1;
-         sofa::defaulttype::Vec3 vec2;
-         vec1 = sofa::defaulttype::Quat(py::cast<double>(p1[0]),py::cast<double>(p1[1]),py::cast<double>(p1[2]),py::cast<double>(p1[3]));
-         vec2 = sofa::defaulttype::Vec3(py::cast<double>(p2[0]),py::cast<double>(p2[1]),py::cast<double>(p2[2]));
+         sofa::type::Quat<SReal> vec1;
+         sofa::type::Vec3 vec2;
+         vec1 = sofa::type::Quat<SReal>(py::cast<double>(p1[0]),py::cast<double>(p1[1]),py::cast<double>(p1[2]),py::cast<double>(p1[3]));
+         vec2 = sofa::type::Vec3(py::cast<double>(p2[0]),py::cast<double>(p2[1]),py::cast<double>(p2[2]));
          self->rotateCameraAroundPoint(vec1, vec2);
     });
 
     c.def("getOrientationFromLookAt", [](BaseCamera *self, py::list p1, py::list p2) {
-         sofa::defaulttype::Vec3 vec1;
-         sofa::defaulttype::Vec3 vec2;
-         vec1 = sofa::defaulttype::Vec3(py::cast<double>(p1[0]),py::cast<double>(p1[1]),py::cast<double>(p1[2]));
-         vec2 = sofa::defaulttype::Vec3(py::cast<double>(p2[0]),py::cast<double>(p2[1]),py::cast<double>(p2[2]));
+         sofa::type::Vec3 vec1;
+         sofa::type::Vec3 vec2;
+         vec1 = sofa::type::Vec3(py::cast<double>(p1[0]),py::cast<double>(p1[1]),py::cast<double>(p1[2]));
+         vec2 = sofa::type::Vec3(py::cast<double>(p2[0]),py::cast<double>(p2[1]),py::cast<double>(p2[2]));
          return (self->getOrientationFromLookAt(vec1, vec2));
     });
 
     c.def("getLookAtFromOrientation", [](BaseCamera *self, py::list pos, double distance, py::list quat) {
-         sofa::defaulttype::Vec3 position;
-         sofa::defaulttype::Quat orientation;
-         position = sofa::defaulttype::Vec3(py::cast<double>(pos[0]),py::cast<double>(pos[1]),py::cast<double>(pos[2]));
-         orientation = sofa::defaulttype::Quat(py::cast<double>(quat[0]),py::cast<double>(quat[1]),py::cast<double>(quat[2]),py::cast<double>(quat[3]));
+         sofa::type::Vec3 position;
+         sofa::type::Quat<SReal> orientation;
+         position = sofa::type::Vec3(py::cast<double>(pos[0]),py::cast<double>(pos[1]),py::cast<double>(pos[2]));
+         orientation = sofa::type::Quat<SReal>(py::cast<double>(quat[0]),py::cast<double>(quat[1]),py::cast<double>(quat[2]),py::cast<double>(quat[3]));
          return (self->getLookAtFromOrientation(position, distance, orientation));
     });
 
     c.def("getPositionFromOrientation", [](BaseCamera *self, py::list p1, py::float_ p2, py::list p3) {
-         sofa::defaulttype::Vec3 vec1;
+         sofa::type::Vec3 vec1;
          double vec2;
-         sofa::defaulttype::Quat vec3;
-         vec1 = sofa::defaulttype::Vec3(py::cast<double>(p1[0]),py::cast<double>(p1[1]),py::cast<double>(p1[2]));
+         sofa::type::Quat<SReal> vec3;
+         vec1 = sofa::type::Vec3(py::cast<double>(p1[0]),py::cast<double>(p1[1]),py::cast<double>(p1[2]));
          vec2 = py::cast<double>(p2);
-         vec3 = sofa::defaulttype::Quat(py::cast<double>(p3[0]),py::cast<double>(p3[1]),py::cast<double>(p3[2]),py::cast<double>(p3[3]));
+         vec3 = sofa::type::Quat<SReal>(py::cast<double>(p3[0]),py::cast<double>(p3[1]),py::cast<double>(p3[2]),py::cast<double>(p3[3]));
          return(self->getPositionFromOrientation(vec1, vec2, vec3));
     });
 
     c.def("getLookAtFromOrientation", [](BaseCamera *self, py::list p1, py::float_ p2, py::list p3) {
-         sofa::defaulttype::Vec3 vec1;
+         sofa::type::Vec3 vec1;
          double vec2;
-         sofa::defaulttype::Quat vec3;
-         vec1 = sofa::defaulttype::Vec3(py::cast<double>(p1[0]),py::cast<double>(p1[1]),py::cast<double>(p1[2]));
+         sofa::type::Quat<SReal> vec3;
+         vec1 = sofa::type::Vec3(py::cast<double>(p1[0]),py::cast<double>(p1[1]),py::cast<double>(p1[2]));
          vec2 = py::cast<double>(p2);
-         vec3 = sofa::defaulttype::Quat(py::cast<double>(p3[0]),py::cast<double>(p3[1]),py::cast<double>(p3[2]),py::cast<double>(p3[3]));
+         vec3 = sofa::type::Quat<SReal>(py::cast<double>(p3[0]),py::cast<double>(p3[1]),py::cast<double>(p3[2]),py::cast<double>(p3[3]));
          return(self->getLookAtFromOrientation(vec1, vec2, vec3));
     });
 
@@ -152,14 +152,14 @@ void moduleAddBaseCamera(py::module &m)
     });
 
     c.def("worldToScreenPoint", [](BaseCamera *self, py::list pos) {
-         sofa::defaulttype::Vec3 vec1;
-         vec1 = sofa::defaulttype::Vec3(py::cast<double>(pos[0]), py::cast<double>(pos[1]), py::cast<double>(pos[2]));
+         sofa::type::Vec3 vec1;
+         vec1 = sofa::type::Vec3(py::cast<double>(pos[0]), py::cast<double>(pos[1]), py::cast<double>(pos[2]));
          return(self->worldToScreenPoint(vec1));
     });
 
     c.def("screenToWorldPoint", [](BaseCamera *self, py::list pos) {
-         sofa::defaulttype::Vec3 vec1;
-         vec1 = sofa::defaulttype::Vec3(py::cast<double>(pos[0]), py::cast<double>(pos[1]), py::cast<double>(pos[2]));
+         sofa::type::Vec3 vec1;
+         vec1 = sofa::type::Vec3(py::cast<double>(pos[0]), py::cast<double>(pos[1]), py::cast<double>(pos[2]));
          return(self->screenToWorldPoint(vec1));
     });
 }

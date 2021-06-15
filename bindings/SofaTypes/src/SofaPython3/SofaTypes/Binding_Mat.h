@@ -25,8 +25,8 @@ namespace py = pybind11;
 using namespace pybind11::literals;
 
 
-#include <sofa/defaulttype/Mat.h>
-using sofa::defaulttype::Mat;
+#include <sofa/type/Mat.h>
+using sofa::type::Mat;
 #include "Binding_Vec.h"
 
 namespace pyMat {

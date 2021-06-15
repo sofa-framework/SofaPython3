@@ -22,10 +22,10 @@
 
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 #include <SofaPython3/PythonFactory.h>
 
-using sofa::defaulttype::BoundingBox;
+using sofa::type::BoundingBox;
 using sofa::core::objectmodel::BaseData;
 
 namespace py { using namespace pybind11; }
@@ -66,7 +66,7 @@ void moduleAddBoundingBox(py::module& m)
     }, "sets the max bbox position from a python list");
 
     bbox.def("getCenter", [](sofa::Data<BoundingBox>& bbox) {
-        const sofa::defaulttype::Vec3 val = bbox.getValue().maxBBox() - bbox.getValue().maxBBox();
+        const auto val = bbox.getValue().maxBBox() - bbox.getValue().maxBBox();
         py::list list;
         list.append(val[0]);
         list.append(val[1]);

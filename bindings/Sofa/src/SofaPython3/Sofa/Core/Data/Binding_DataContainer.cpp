@@ -38,7 +38,7 @@ using  sofa::core::objectmodel::BaseNode;
 #include "Binding_DataContainer.h"
 #include "Binding_DataContainer_doc.h"
 
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 
 namespace sofapython3
 {

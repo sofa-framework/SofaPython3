@@ -449,25 +449,25 @@ bool PythonFactory::registerDefaultTypes()
     PythonFactory::registerType<int>("int");
 
     // vectors
-    PythonFactory::registerType<sofa::defaulttype::Vec2d>("Vec2d");
-    PythonFactory::registerType<sofa::defaulttype::Vec3d>("Vec3d");
-    PythonFactory::registerType<sofa::defaulttype::Vec4d>("Vec4d");
-    PythonFactory::registerType<sofa::defaulttype::Vec6d>("Vec6d");
-    PythonFactory::registerType<sofa::defaulttype::Vec2f>("Vec2f");
-    PythonFactory::registerType<sofa::defaulttype::Vec3f>("Vec3f");
-    PythonFactory::registerType<sofa::defaulttype::Vec4f>("Vec4f");
-    PythonFactory::registerType<sofa::defaulttype::Vec6f>("Vec6f");
+    PythonFactory::registerType<sofa::type::Vec2d>("Vec2d");
+    PythonFactory::registerType<sofa::type::Vec3d>("Vec3d");
+    PythonFactory::registerType<sofa::type::Vec4d>("Vec4d");
+    PythonFactory::registerType<sofa::type::Vec6d>("Vec6d");
+    PythonFactory::registerType<sofa::type::Vec2f>("Vec2f");
+    PythonFactory::registerType<sofa::type::Vec3f>("Vec3f");
+    PythonFactory::registerType<sofa::type::Vec4f>("Vec4f");
+    PythonFactory::registerType<sofa::type::Vec6f>("Vec6f");
 
     // Matrices
-    PythonFactory::registerType<sofa::defaulttype::Mat2x2d>("Mat2x2d");
-    PythonFactory::registerType<sofa::defaulttype::Mat3x3d>("Mat3x3d");
-    PythonFactory::registerType<sofa::defaulttype::Mat3x4d>("Mat3x4d");
-    PythonFactory::registerType<sofa::defaulttype::Mat4x4d>("Mat4x4d");
+    PythonFactory::registerType<sofa::type::Mat2x2d>("Mat2x2d");
+    PythonFactory::registerType<sofa::type::Mat3x3d>("Mat3x3d");
+    PythonFactory::registerType<sofa::type::Mat3x4d>("Mat3x4d");
+    PythonFactory::registerType<sofa::type::Mat4x4d>("Mat4x4d");
 
-    PythonFactory::registerType<sofa::defaulttype::Mat2x2f>("Mat2x2f");
-    PythonFactory::registerType<sofa::defaulttype::Mat3x3f>("Mat3x3f");
-    PythonFactory::registerType<sofa::defaulttype::Mat3x4f>("Mat3x4f");
-    PythonFactory::registerType<sofa::defaulttype::Mat4x4f>("Mat4x4f");
+    PythonFactory::registerType<sofa::type::Mat2x2f>("Mat2x2f");
+    PythonFactory::registerType<sofa::type::Mat3x3f>("Mat3x3f");
+    PythonFactory::registerType<sofa::type::Mat3x4f>("Mat3x4f");
+    PythonFactory::registerType<sofa::type::Mat4x4f>("Mat4x4f");
 
     // Topology
     PythonFactory::registerType<sofa::core::topology::Topology::Edge>("Edge");
@@ -486,47 +486,47 @@ bool PythonFactory::registerDefaultTypes()
     for (const auto& container : containers)
     {
         // Scalars
-        PythonFactory::registerType<sofa::helper::vector<std::string>>(container + "<string>");
-        PythonFactory::registerType<sofa::helper::vector<float>>(container + "<float>");
-        PythonFactory::registerType<sofa::helper::vector<double>>(container + "<double>");
-        PythonFactory::registerType<sofa::helper::vector<bool>>(container + "<bool>");
-        PythonFactory::registerType<sofa::helper::vector<int>>(container + "<int>");
+        PythonFactory::registerType<sofa::type::vector<std::string>>(container + "<string>");
+        PythonFactory::registerType<sofa::type::vector<float>>(container + "<float>");
+        PythonFactory::registerType<sofa::type::vector<double>>(container + "<double>");
+        PythonFactory::registerType<sofa::type::vector<bool>>(container + "<bool>");
+        PythonFactory::registerType<sofa::type::vector<int>>(container + "<int>");
 
         // vectors
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec2d>>(container + "<Vec2d>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec3d>>(container + "<Vec3d>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec4d>>(container + "<Vec4d>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec6d>>(container + "<Vec6d>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Vec2d>>(container + "<Vec2d>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Vec3d>>(container + "<Vec3d>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Vec4d>>(container + "<Vec4d>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Vec6d>>(container + "<Vec6d>");
 
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec2f>>(container + "<Vec2f>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec3f>>(container + "<Vec3f>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec4f>>(container + "<Vec4f>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec6f>>(container + "<Vec6f>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Vec2f>>(container + "<Vec2f>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Vec3f>>(container + "<Vec3f>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Vec4f>>(container + "<Vec4f>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Vec6f>>(container + "<Vec6f>");
 
         // Matrices
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat2x2d>>(container + "<Mat2x2d>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat3x3d>>(container + "<Mat3x3d>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat3x4d>>(container + "<Mat3x4d>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat4x4d>>(container + "<Mat4x4d>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Mat2x2d>>(container + "<Mat2x2d>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Mat3x3d>>(container + "<Mat3x3d>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Mat3x4d>>(container + "<Mat3x4d>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Mat4x4d>>(container + "<Mat4x4d>");
 
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat2x2f>>(container + "<Mat2x2f>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat3x3f>>(container + "<Mat3x3f>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat3x4f>>(container + "<Mat3x4f>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat4x4f>>(container + "<Mat4x4f>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Mat2x2f>>(container + "<Mat2x2f>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Mat3x3f>>(container + "<Mat3x3f>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Mat3x4f>>(container + "<Mat3x4f>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Mat4x4f>>(container + "<Mat4x4f>");
 
 
         // Topology
-        PythonFactory::registerType<sofa::helper::vector<sofa::core::topology::Topology::Edge>>(container + "<Edge>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::core::topology::Topology::Triangle>>(container + "<Triangle>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::core::topology::Topology::Quad>>(container + "<Quad>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::core::topology::Topology::Tetra>>(container + "<Tetra>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::core::topology::Topology::Hexa>>(container + "<Hexa>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::core::topology::Topology::Penta>>(container + "<Penta>");
+        PythonFactory::registerType<sofa::type::vector<sofa::core::topology::Topology::Edge>>(container + "<Edge>");
+        PythonFactory::registerType<sofa::type::vector<sofa::core::topology::Topology::Triangle>>(container + "<Triangle>");
+        PythonFactory::registerType<sofa::type::vector<sofa::core::topology::Topology::Quad>>(container + "<Quad>");
+        PythonFactory::registerType<sofa::type::vector<sofa::core::topology::Topology::Tetra>>(container + "<Tetra>");
+        PythonFactory::registerType<sofa::type::vector<sofa::core::topology::Topology::Hexa>>(container + "<Hexa>");
+        PythonFactory::registerType<sofa::type::vector<sofa::core::topology::Topology::Penta>>(container + "<Penta>");
     }
     return true;
 }
 
-void PythonFactory::uniqueKeys(std::back_insert_iterator<sofa::helper::vector<std::string> > it)
+void PythonFactory::uniqueKeys(std::back_insert_iterator<sofa::type::vector<std::string> > it)
 {
     std::transform(s_dataCreationFct.begin(), s_dataCreationFct.end(),
                    it, [](const auto& item){ return item.first; });
