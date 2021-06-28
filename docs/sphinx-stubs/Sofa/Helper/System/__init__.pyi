@@ -96,13 +96,10 @@ class FileRepository():
         Print the list of path to std::cout.
         """
     @staticmethod
-    def relativeToPath(path: str, refPath: str, doLowerCaseOnWin32: bool = True) -> str: 
+    def relativeToPath(path: str, refPath: str) -> str: 
         """
         Returns a string such as refPath + string = path if path contains refPath.
         Otherwise returns path.
-        On WIN32 the implementation was also returning the path in lower case. This behavior is now
-        deprecated and should be remove the 2018-05-01. Until this date new implementation can be
-        used by setting doLowerCaseOnWin32=false;
         """
     def removePath(self, path: str) -> None: 
         """
