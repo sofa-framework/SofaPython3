@@ -21,11 +21,13 @@
 #include <pybind11/pybind11.h>
 
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Simulation;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation;
 
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
 using namespace pybind11::literals;
 
@@ -33,6 +35,7 @@ using namespace pybind11::literals;
 using sofa::simulation::Simulation;
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/VisualLoop.h>
 #include <SofaPython3/Sofa/Simulation/Submodule_Simulation_doc.h>
 
 #include <sofa/core/init.h>

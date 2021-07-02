@@ -43,7 +43,7 @@ using sofa::core::objectmodel::Event;
 
 void Prefab::init()
 {
-    Inherit1::init(sofa::core::ExecParams::defaultInstance());
+    Inherit1::init(sofa::core::execparams::defaultInstance());
     m_is_initialized = true;
     reinit();
 }
@@ -64,13 +64,13 @@ void Prefab::reinit()
     clearLoggedMessages();
 
     /// remove everything in the node.
-    execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
+    execute<sofa::simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
 
     doReInit();
 
     /// Beurk beurk beurk
     sofa::simulation::getSimulation()->initNode(this);
-    execute<VisualInitVisitor>(nullptr);
+    execute<VisualInitVisitor>(sofa::core::execparams::defaultInstance());
 }
 
 void Prefab::doReInit()

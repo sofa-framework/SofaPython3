@@ -25,7 +25,7 @@
 #define BINDING_MAT_MAKE_NAME(R, C)                                            \
     std::string(std::string("Mat") + std::to_string(R) + "x" + std::to_string(C))
 
-using namespace sofa::defaulttype;
+using namespace sofa::type;
 
 namespace pyMat {
 template <sofa::Size R, sofa::Size C>
@@ -188,7 +188,7 @@ template <> struct MATRIX<1, 1> {
 
         py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(1, 1).c_str());
         p.def(py::init([](py::list l) {
-                  MatClass *mat = new MatClass(NOINIT);
+                  MatClass *mat = new MatClass(sofa::type::NOINIT);
                   if (py::isinstance<py::list>(l[0])) // 2D array
                   {
                       for (sofa::Size i = 0; i < MatClass::nbLines; ++i) {
@@ -217,7 +217,7 @@ template <> struct MATRIX<2, 2> {
         py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(2, 2).c_str());
         p.def(py::init<Row, Row>());
         p.def(py::init([](py::list l) {
-                  MatClass *mat = new MatClass(NOINIT);
+                  MatClass *mat = new MatClass(sofa::type::NOINIT);
                   if (py::isinstance<py::list>(l[0])) // 2D array
                   {
                       for (sofa::Size i = 0; i < MatClass::nbLines; ++i) {
@@ -246,7 +246,7 @@ template <> struct MATRIX<3, 3> {
         py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(3, 3).c_str());
         p.def(py::init<Row, Row, Row>());
         p.def(py::init([](py::list l) {
-                  MatClass *mat = new MatClass(NOINIT);
+                  MatClass *mat = new MatClass(sofa::type::NOINIT);
                   if (py::isinstance<py::list>(l[0])) // 2D array
                   {
                       for (sofa::Size i = 0; i < MatClass::nbLines; ++i) {
@@ -275,7 +275,7 @@ template <> struct MATRIX<4, 4> {
         py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(4, 4).c_str());
         p.def(py::init<Row, Row, Row, Row>());
         p.def(py::init([](py::list l) {
-                  MatClass *mat = new MatClass(NOINIT);
+                  MatClass *mat = new MatClass(sofa::type::NOINIT);
                   if (py::isinstance<py::list>(l[0])) // 2D array
                   {
                       for (sofa::Size i = 0; i < MatClass::nbLines; ++i) {
@@ -304,7 +304,7 @@ template <> struct MATRIX<3, 4> {
         py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(3, 4).c_str());
         p.def(py::init<Row, Row, Row>());
         p.def(py::init([](py::list l) {
-                  MatClass *mat = new MatClass(NOINIT);
+                  MatClass *mat = new MatClass(sofa::type::NOINIT);
                   if (py::isinstance<py::list>(l[0])) // 2D array
                   {
                       for (sofa::Size i = 0; i < MatClass::nbLines; ++i) {

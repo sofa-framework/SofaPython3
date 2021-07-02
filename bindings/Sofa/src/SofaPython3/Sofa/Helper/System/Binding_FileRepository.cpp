@@ -82,7 +82,7 @@ void moduleAddFileRepository(py::module &m) {
     file_repository.def_static(
         "relativeToPath",
         &sofa::helper::system::FileRepository::relativeToPath,
-        py::arg("path").none(false), py::arg("refPath").none(false), py::arg("doLowerCaseOnWin32") = true,
+        py::arg("path").none(false), py::arg("refPath").none(false),
         doc::FileRepository::relativeToPath
     );
 

@@ -2,9 +2,15 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
+set(SP3_BUILD_TEST @SP3_BUILD_TEST@)
+
 find_package(pybind11 CONFIG REQUIRED)
 find_package(SofaFramework REQUIRED)
-find_package(SofaSimulation REQUIRED)
+find_package(SofaSimulationGraph REQUIRED)
+
+if(SP3_BUILD_TEST)
+    find_package(Sofa.Testing REQUIRED)
+endif()
 
 # If we are importing this config file and the target is not yet there this is indicating that
 # target is an imported one. So we include it

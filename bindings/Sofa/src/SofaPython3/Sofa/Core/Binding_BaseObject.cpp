@@ -29,6 +29,7 @@
 // Imports for getCategories
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/BaseMapping.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -50,6 +51,8 @@
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
+
+#include <sofa/core/ExecParams.h>
 
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
@@ -81,7 +84,7 @@ std::string getLinkPath(const BaseObject *self)
 
 void computeBBox(BaseObject *self)
 {
-    self->computeBBox(sofa::core::ExecParams::defaultInstance(), false);
+    self->computeBBox(sofa::core::execparams::defaultInstance(), false);
 }
 
 py::list getSlaves(BaseObject &self)

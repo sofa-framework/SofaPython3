@@ -49,6 +49,9 @@ Sets the interval for the given timer.
 
 static auto setOutputType =
 R"(
-Changes the output type for a given timer.
+Set the outputType for the given AdvancedTimer.
+
+@param id string id of the timer
+@param type string output type name (example : "json")
 )";
 }

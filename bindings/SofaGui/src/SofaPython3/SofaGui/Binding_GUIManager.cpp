@@ -23,6 +23,7 @@
 #include <SofaPython3/SofaGui/Binding_GUIManager.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/BaseGUI.h>
+#include <sofa/simulation/Node.h>
 
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }

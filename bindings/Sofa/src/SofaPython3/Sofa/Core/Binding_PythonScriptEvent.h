@@ -22,6 +22,7 @@
 
 #include <pybind11/pybind11.h>
 #include <sofa/core/objectmodel/ScriptEvent.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 
 #include <SofaPython3/config.h>
 
@@ -32,7 +33,7 @@ class PythonScriptEvent : public sofa::core::objectmodel::ScriptEvent
 {
     SOFA_EVENT_H(PythonScriptEvent)
 public:
-    PythonScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventName, pybind11::object userData=pybind11::none());
+    PythonScriptEvent(sofa::core::sptr<sofa::core::objectmodel::BaseNode> sender, const char* eventName, pybind11::object userData=pybind11::none());
     ~PythonScriptEvent() override;
     pybind11::object getUserData() const { return m_userData; }
     inline static const char* GetClassName() { return "PythonScriptEvent"; }

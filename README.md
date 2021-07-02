@@ -20,7 +20,7 @@ NB: This plugin cannot be build through in-build process when the old SofaPython
 
 ### Out-of-tree build
 This plugin should compile with out-of-tree builds.
-You might need to add the Sofa's installation path to the CMake prefix path. If you compiled Sofa in directory _$SOFA_ROOT/build_, consider doing an install step (make install, ninja install, etc.) and adding this installation path (example `cmake -DCMAKE_PREFIX_PATH=$SOFA_ROOT/build/install ..`).
+You might need to add the Sofa's installation path to the CMake prefix path. If you compiled Sofa in directory _$SOFA_ROOT/build_, consider doing an install step (make install, ninja install, etc.) and adding this installation path (example `cmake -DCMAKE_PREFIX_PATH=$SOFA_ROOT/build/install/lib/cmake ..`).
 
 ### Changing the python path
 The compilation of SofaPython3 plugin and bindings are tied to the python core library found during the CMake stage.

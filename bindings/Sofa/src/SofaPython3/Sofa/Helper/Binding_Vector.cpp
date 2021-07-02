@@ -20,7 +20,7 @@
 
 #include "Binding_Vector.h"
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/objectmodel/BaseData.h>
 
 #include <pybind11/stl.h>
@@ -30,7 +30,7 @@ namespace py { using namespace pybind11; }
 
 
 /**
- * To add sofa::helper::vector types, follow the 2 steps below
+ * To add sofa::type::vector types, follow the 2 steps below
  */
 
 // ------------------------------------
@@ -51,7 +51,7 @@ void declareVector(py::module &m, const std::string &typestr) {
 
     std::string pyclass_name = std::string("Vector") + typestr;
 
-    py::class_<sofa::helper::vector<T>> (m, pyclass_name.c_str(), v);
+    py::class_<sofa::type::vector<T>> (m, pyclass_name.c_str(), v);
 }
 
 namespace sofapython3 {

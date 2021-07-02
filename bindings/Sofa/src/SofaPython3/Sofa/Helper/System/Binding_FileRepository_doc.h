@@ -82,9 +82,6 @@ static auto relativeToPath =
 R"(
 Returns a string such as refPath + string = path if path contains refPath.
 Otherwise returns path.
-On WIN32 the implementation was also returning the path in lower case. This behavior is now
-deprecated and should be remove the 2018-05-01. Until this date new implementation can be
-used by setting doLowerCaseOnWin32=false;
 )";
 
 static auto getPathsJoined =

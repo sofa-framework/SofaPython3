@@ -4,13 +4,17 @@
 import unittest
 import Sofa
 
+def create_scene(rootName="root"):
+    root = Sofa.Core.Node(rootName)
+    root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+    return root
 
 class Test(unittest.TestCase):
     def __init__(self, a):
         unittest.TestCase.__init__(self, a)
 
     def test_Name(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         root.addObject("MechanicalObject", name="t")
         link = root.findLink("mechanicalState")
         self.assertEqual(link.getName(),"mechanicalState")
@@ -18,7 +22,7 @@ class Test(unittest.TestCase):
         self.assertEqual(link.getName(),"newName")
 
     def test_Help(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         root.addObject("MechanicalObject", name="t")
         link = root.findLink("mechanicalState")
         self.assertEqual(link.getHelp(), 'The MechanicalState attached to this node (storing all state vectors)')
@@ -26,7 +30,7 @@ class Test(unittest.TestCase):
         self.assertEqual(link.getHelp(), 'new help')
 
     def test_isMultiLink(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         root.addObject("MechanicalObject", name="t")
         link = root.findLink("mechanicalState")
         self.assertFalse(link.isMultiLink())
@@ -35,7 +39,7 @@ class Test(unittest.TestCase):
         self.assertTrue(link.isMultiLink())
 
     def test_Persistent(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         root.addObject("MechanicalObject", name="t")
         link = root.findLink("mechanicalState")
         self.assertFalse(link.isPersistent())
@@ -45,7 +49,7 @@ class Test(unittest.TestCase):
         self.assertFalse(link.isReadOnly())
 
     def test_getSize(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         link = root.findLink("child")
         self.assertEqual(link.getSize(),0)
         root.addChild("child1")
@@ -56,46 +60,44 @@ class Test(unittest.TestCase):
         self.assertEqual(link.getSize(),2)
 
     def test_getValue(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         root.addChild("child1")
         link = root.findLink("child")
         self.assertEqual(link.getValueString(), "@/child1")
         self.assertEqual(link.getValueTypeString(), "Node")
 
     def test_getLinkedPath(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         c1 = root.addChild("child1")
         link = root.findLink("child")
         self.assertEqual(link.getLinkedPath(0), "@/child1")
 
     def test_getOwnerBase(self):
-        root = Sofa.Core.Node("theRoot")
+        root = create_scene("theRoot")
         link = root.findLink("child")
         self.assertEqual(link.getOwnerBase().name.value,"theRoot")
 
     def test_getLinkedBase(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         root.addChild("aChild")
         link = root.findLink("child")
         self.assertEqual(link.getLinkedBase(0).name.value,"aChild")
 
     def test_getLinked_and_Owner(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         c1 = root.addObject("MechanicalObject", name="t1")
         c2 = root.addObject("MechanicalObject", name="t2")
         mm  = root.addObject("BarycentricMapping", input="@/t1", output="@/t2")
         link_input = mm.findLink("input")
         self.assertEqual(link_input.getLinkedBase(0).getName(),"t1")
-        self.assertEqual(link_input.getLinkedData(0), None)
         link_output = mm.findLink("output")
         self.assertEqual(link_output.getLinkedBase(0).getName(),"t2")
-        self.assertEqual(link_output.getLinkedData(0), None)
         self.assertEqual(link_input.getOwnerBase().getName(), "BarycentricMapping")
         self.assertEqual(link_output.getOwnerBase().getName(), "BarycentricMapping")
 
     @unittest.skip # Segmentation fault on MacOS
     def test_read(self):
-        root = Sofa.Core.Node("root")
+        root = create_scene("root")
         c1 = root.addObject("MechanicalObject", name="t1")
         link = root.findLink("object")
         self.assertEqual(link.getValueString(),"@//t1", F"Link value should be '@//t1', but it is {link.getValueString()}")

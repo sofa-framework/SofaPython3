@@ -141,7 +141,7 @@ py_shared_ptr<Node> __init__(const std::string& name) {
 }
 
 /// Method: init (beware this is not the python __init__, this is sofa's init())
-void init(Node& self) { self.init(ExecParams::defaultInstance()); }
+void init(Node& self) { self.init(sofa::core::execparams::defaultInstance()); }
 
 py::object addObject(Node& self, BaseObject * object)
 {
@@ -403,7 +403,7 @@ py::object getMass(Node *self)
 {
     sofa::core::behavior::BaseMass* mass = self->mass.get();
     if (mass) {
-        return PythonFactory::toPython(mass);
+        return PythonFactory::toPython(sofa::core::castToBase(mass));
     }
     return py::none();
 }
@@ -413,7 +413,7 @@ py::object getForceField(Node *self, unsigned int index)
 {
     sofa::core::behavior::BaseForceField* ff = self->forceField.get(index);
     if (ff) {
-        return PythonFactory::toPython(ff);
+        return PythonFactory::toPython(sofa::core::castToBase(ff));
     }
     return py::none();
 }
@@ -423,7 +423,7 @@ py::object getMechanicalState(Node *self)
 {
     sofa::core::behavior::BaseMechanicalState* state = self->mechanicalState.get();
     if (state) {
-        return PythonFactory::toPython(state);
+        return PythonFactory::toPython(sofa::core::castToBase(state));
     }
     return py::none();
 }
@@ -433,7 +433,7 @@ py::object getMechanicalMapping(Node *self)
 {
     sofa::core::BaseMapping* mapping = self->mechanicalMapping.get();
     if (mapping) {
-        return PythonFactory::toPython(mapping);
+        return PythonFactory::toPython(sofa::core::castToBase(mapping));
     }
     return py::none();
 }
@@ -450,7 +450,7 @@ py::object getRoot(Node* self)
 void sendEvent(Node* self, py::object pyUserData, char* eventName)
 {
     sofapython3::PythonScriptEvent event(self, eventName, pyUserData);
-    self->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
+    self->propagateEvent(sofa::core::execparams::defaultInstance(), &event);
 }
 
 void moduleAddNode(py::module &m) {

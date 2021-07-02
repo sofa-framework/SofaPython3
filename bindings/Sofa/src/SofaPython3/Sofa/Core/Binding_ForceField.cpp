@@ -28,6 +28,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 #include <SofaPython3/PythonEnvironment.h>
 using sofapython3::PythonEnvironment;
@@ -46,7 +47,10 @@ namespace sofapython3
     using sofa::core::behavior::MultiMatrixAccessor;
     using sofa::core::behavior::ForceField;
     using sofa::defaulttype::Vec3dTypes;
+    using sofa::defaulttype::Vec2dTypes;
+    using sofa::defaulttype::Vec1dTypes;
     using sofa::defaulttype::Rigid3dTypes;
+    using sofa::defaulttype::Rigid2dTypes;
 
     template<class TDOFType>
     ForceField_Trampoline<TDOFType>::ForceField_Trampoline() = default;
@@ -162,68 +166,44 @@ namespace sofapython3
         }
     }
 
+
+    template<class TDOFType>
+    void declare_forcefield(py::module &m, std::string typestr) {
+        std::string pyclass_name = std::string("ForceField") + typestr;
+        py::class_<ForceField<TDOFType>, BaseObject, ForceField_Trampoline<TDOFType>, py_shared_ptr<ForceField<TDOFType>>> f(m, pyclass_name.c_str(), py::dynamic_attr(), py::multiple_inheritance(), sofapython3::doc::forceField::forceFieldClass);
+        
+        f.def(py::init([](py::args &args, py::kwargs &kwargs) {
+            auto ff = sofa::core::sptr<ForceField_Trampoline<TDOFType>> (new ForceField_Trampoline<TDOFType>());
+
+            ff->f_listening.setValue(true);
+
+            if (args.size() == 1) ff->setName(py::cast<std::string>(args[0]));
+
+            py::object cc = py::cast(ff);
+            for (auto kv : kwargs) {
+                std::string key = py::cast<std::string>(kv.first);
+                py::object value = py::reinterpret_borrow<py::object>(kv.second);
+                if (key == "name") {
+                    if (args.size() != 0) {
+                        throw py::type_error("The name is set twice as a "
+                                            "named argument='" + py::cast<std::string>(value) + "' and as a"
+                                                                                                "positional argument='" +
+                                            py::cast<std::string>(args[0]) + "'.");
+                    }
+                }
+                BindingBase::SetAttr(cc, key, value);
+            }
+            return ff;
+        }));
+    }
+
+
 void moduleAddForceField(py::module &m) {
-    py::class_<ForceField<Vec3dTypes>,
-            BaseObject, ForceField_Trampoline<Vec3dTypes>,
-            py_shared_ptr<ForceField<Vec3dTypes>>> f(m, "ForceField",
-                                                     py::dynamic_attr(),
-                                                     sofapython3::doc::forceField::forceFieldClass);
-
-    f.def(py::init([](py::args &args, py::kwargs &kwargs) {
-        auto ff = sofa::core::sptr<ForceField_Trampoline<Vec3dTypes>> (new ForceField_Trampoline<Vec3dTypes>());
-
-        ff->f_listening.setValue(true);
-
-        if (args.size() == 1) ff->setName(py::cast<std::string>(args[0]));
-
-        py::object cc = py::cast(ff);
-        for (auto kv : kwargs) {
-            std::string key = py::cast<std::string>(kv.first);
-            py::object value = py::reinterpret_borrow<py::object>(kv.second);
-            if (key == "name") {
-                if (args.size() != 0) {
-                    throw py::type_error("The name is setted twice as a "
-                                         "named argument='" + py::cast<std::string>(value) + "' and as a"
-                                                                                             "positional argument='" +
-                                         py::cast<std::string>(args[0]) + "'.");
-                }
-            }
-            BindingBase::SetAttr(cc, key, value);
-        }
-        return ff;
-    }));
-
-
-    py::class_<ForceField<Rigid3dTypes>,
-            BaseObject, ForceField_Trampoline<Rigid3dTypes>,
-            py_shared_ptr<ForceField<Rigid3dTypes>>> f2(m, "ForceFieldRigid3",
-                                                        py::dynamic_attr(),
-                                                        py::multiple_inheritance(),
-                                                        sofapython3::doc::forceField::forceFieldClass);
-
-
-    f2.def(py::init([](py::args &args, py::kwargs &kwargs) {
-        auto c = sofa::core::sptr<ForceField_Trampoline<Rigid3dTypes>> (new ForceField_Trampoline<Rigid3dTypes>());
-        c->f_listening.setValue(true);
-
-        if (args.size() == 1) c->setName(py::cast<std::string>(args[0]));
-
-        py::object cc = py::cast(c);
-        for (auto kv : kwargs) {
-            std::string key = py::cast<std::string>(kv.first);
-            py::object value = py::reinterpret_borrow<py::object>(kv.second);
-            if (key == "name") {
-                if (args.size() != 0) {
-                    throw py::type_error("The name is setted twice as a "
-                                         "named argument='" + py::cast<std::string>(value) + "' and as a"
-                                                                                             "positional argument='" +
-                                         py::cast<std::string>(args[0]) + "'.");
-                }
-            }
-            BindingBase::SetAttr(cc, key, value);
-        }
-        return c;
-    }));
+    declare_forcefield<Vec3dTypes>(m, "Vec3d");
+    declare_forcefield<Vec2dTypes>(m, "Vec2d");
+    declare_forcefield<Vec1dTypes>(m, "Vec1d");
+    declare_forcefield<Rigid3dTypes>(m, "Rigid3d");
+    declare_forcefield<Rigid2dTypes>(m, "Rigid2d");
 }
 
 }  // namespace sofapython3

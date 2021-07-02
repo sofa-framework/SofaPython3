@@ -25,7 +25,6 @@ namespace py = pybind11;
 using namespace pybind11::literals;
 
 
-#include <sofa/defaulttype/Quat.h>
-using sofa::defaulttype::Quat;
+#include <sofa/type/Quat.h>
 
 void moduleAddQuat(py::module& m);

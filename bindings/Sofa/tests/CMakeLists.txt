@@ -49,7 +49,13 @@ sofa_auto_set_target_rpath(
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 
-set(DIR_BINDING_LIST Components Core Helper Simulation Types)
+set(DIR_BINDING_LIST
+    Components
+    Core
+    Helper
+    Simulation
+    Types
+    )
 get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 foreach(dir_binding ${DIR_BINDING_LIST})
     if (_isMultiConfig) # MSVC

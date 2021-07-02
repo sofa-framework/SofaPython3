@@ -38,6 +38,8 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseLink_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseData_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseCamera_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Topology.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseMeshTopology.h
 )
 
 set(SOURCE_FILES
@@ -63,6 +65,8 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Core.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_PythonScriptEvent.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseLink.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Topology.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseMeshTopology.cpp
 )
 
 if (NOT TARGET SofaPython3::Plugin)
@@ -70,7 +74,6 @@ if (NOT TARGET SofaPython3::Plugin)
 endif()
 
 find_package(SofaFramework REQUIRED)
-find_package(SofaSimulation REQUIRED)
 find_package(SofaBaseCollision REQUIRED)
 find_package(SofaBaseVisual REQUIRED)
 find_package(SofaBaseUtils REQUIRED)
