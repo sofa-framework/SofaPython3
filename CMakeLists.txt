@@ -34,11 +34,8 @@ include(SofaPython3Tools)
 # OPTIONS
 include(CMakeDependentOption)
 
-if (SP3_COMPILED_AS_SOFA_SUBPROJECT)
-    option(SP3_BUILD_TEST "Compile the automatic tests for SofaPython3, along with the gtest library." ${SOFA_BUILD_TESTS})
-else()
-    option(SP3_BUILD_TEST "Compile the automatic tests for SofaPython3, along with the gtest library." ON)
-endif()
+# If SOFA_BUILD_TESTS exists and is OFF, then this option will be auto-disabled
+cmake_dependent_option(SP3_BUILD_TEST "Compile the automatic tests for SofaPython3, along with the gtest library." ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
 
 find_package(SofaExporter QUIET)
 CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAEXPORTER "Bind the SOFA exporter component." ON "SofaExporter_FOUND" OFF)
