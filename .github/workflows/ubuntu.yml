@@ -42,12 +42,12 @@ jobs:
       - name: Install pybind11
         run: cd /tmp/pybind11  && sudo make install
 
-      - name: Download SOFA v20.12.02
+      - name: Download SOFA nightly build
         run:  |
           curl --output sofa.zip -L \
-          https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/CI_SCOPE=binaries_minimal/309/artifact/Linux/*zip*/Linux.zip
+          https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/lastSuccessfulBuild/CI_SCOPE=binaries_minimal/artifact/Linux/*zip*/Linux.zip
 
-      - name: Install SOFA v20.12.02
+      - name: Install SOFA nightly build
         run:  |
           sudo unzip sofa.zip -d temp
           sudo unzip temp/Linux/`ls temp/Linux/` -d temp
@@ -120,12 +120,12 @@ jobs:
           sudo apt install -qq libboost-all-dev
           python3 -m pip install numpy
 
-      - name: Download SOFA v20.12.02
+      - name: Download SOFA nightly build
         run:  |
           curl --output sofa.zip -L \
-          https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/CI_SCOPE=binaries_minimal/309/artifact/Linux/*zip*/Linux.zip
+          https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/lastSuccessfulBuild/CI_SCOPE=binaries_minimal/artifact/Linux/*zip*/Linux.zip
 
-      - name: Install SOFA v20.12.02
+      - name: Install SOFA nightly build
         run: |
           sudo unzip sofa.zip -d temp
           sudo unzip temp/Linux/`ls temp/Linux/` -d temp
