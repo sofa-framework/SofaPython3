@@ -132,12 +132,12 @@ std::string getLinkPath(Node* node){
 
 py_shared_ptr<Node> __init__noname() {
     auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>("unnamed");
-    return dag_node;
+    return std::move(dag_node);
 }
 
 py_shared_ptr<Node> __init__(const std::string& name) {
     auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>(name);
-    return dag_node;
+    return std::move(dag_node);
 }
 
 /// Method: init (beware this is not the python __init__, this is sofa's init())
