@@ -44,7 +44,7 @@ static struct Tests : public sofapython3::PythonTestExtractor
 /// run test list using the custom name function getTestName.
 /// this allows to do gtest_filter=*FileName*
 class Modules : public sofapython3::PythonTest {};
-INSTANTIATE_TEST_CASE_P(SofaPython3,
+INSTANTIATE_TEST_SUITE_P(SofaPython3,
                         Modules,
                         ::testing::ValuesIn(python_tests.extract()),
                         Modules::getTestName);
