@@ -146,10 +146,20 @@ static auto addObject =
         :type object: Sofa.Simulation.BaseObject*
         )";
 
-
 static auto createObject =
         R"(
         Deprecated, see addObject
+        )";
+
+static auto hasObject =
+        R"(
+        Check if there is a component with provided name.
+
+        :param n
+        :param name
+        :type n: Sofa.Simulation.Node
+        :type name: string
+        :return: True if the node has an object with correspdonding name.
         )";
 
 static auto addChildKwargs =
@@ -188,7 +198,7 @@ static auto getChild =
         :param name
         :type n: Sofa.Simulation.Node
         :type name: string
-        :return: the child of the same name
+        :return: the child with 'name', None otherwise
         )";
 
 static auto removeChild =

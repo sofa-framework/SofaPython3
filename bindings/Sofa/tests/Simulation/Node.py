@@ -174,6 +174,19 @@ class Test(unittest.TestCase):
             self.assertEqual(node.getLinkPath(),"@/node")
             self.assertEqual(node2.getLinkPath(), "@/node/node2")
 
+        def test_hasObjectWithFastPath(self):
+            root = Sofa.Core.Node("root")
+            root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+            self.assertTrue(root.hasObject("SofaBaseMechanics"))
+            self.assertFalse(root.hasObject("NonExistingObjectName"))
+
+        def test_hasObjectWithDefaultPythonFunction(self):
+            root = Sofa.Core.Node("root")
+            root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+
+            self.assertTrue(hasattr(root, "SofaBaseMechanics"))
+            self.assertFalse(hasattr(root, "NonExistingObjectName"))
+
         def test_removeObject(self):
             root = Sofa.Core.Node("root")
             root.addObject("RequiredPlugin", name="SofaBaseMechanics")
