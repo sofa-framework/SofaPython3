@@ -97,15 +97,12 @@ if(PYTHON_EXECUTABLE)
     endif()
 endif()
 find_package(Python ${python_version} ${python_version_flag} COMPONENTS Interpreter Development REQUIRED)
-set(PYTHON_VERSION ${Python_VERSION})
-set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
-set(PYTHON_LIBRARIES ${Python_LIBRARIES})
-set(PYTHON_INCLUDE_DIRS ${Python_INCLUDE_DIRS})
-set(PYTHON_LIBRARY ${Python_LIBRARY})
-set(PYTHON_INCLUDE_DIR ${Python_INCLUDE_DIR})
+set(PYTHON_EXECUTABLE_RESET "${PYTHON_EXECUTABLE}")
+set(PYTHON_EXECUTABLE "${Python_EXECUTABLE}" CACHE FILEPATH "" FORCE)
 
 # Set the minimum pybind11 version to 2.3 (before that the pybind11::embed target did not exist)
 find_package(pybind11 2.3 CONFIG QUIET REQUIRED)
+set(PYTHON_EXECUTABLE "${PYTHON_EXECUTABLE_RESET}" CACHE FILEPATH "" FORCE)
 
 set(SP3_PYTHON_PACKAGES_DIRECTORY
     "python3/site-packages"
@@ -133,11 +130,11 @@ set(SP3_PYTHON_PACKAGES_LINK_DIRECTORY
 )
 
 message(STATUS "Python:
-    Version: ${PYTHON_VERSION}
-    Executable: ${PYTHON_EXECUTABLE}
-    Headers: ${PYTHON_INCLUDE_DIRS}
-    Libraries: ${PYTHON_LIBRARIES}
-    User site: ${PYTHON_USER_SITE}"
+    Version: ${Python_VERSION}
+    Executable: ${Python_EXECUTABLE}
+    Headers: ${Python_INCLUDE_DIRS}
+    Libraries: ${Python_LIBRARIES}
+    User site: ${Python_USER_SITE}"
 )
 message(STATUS "pybind11:
     Version: ${pybind11_VERSION}
