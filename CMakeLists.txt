@@ -82,7 +82,9 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(PYBIND11_PYTHON_VERSION 3.7)
 
 # Find Python3
+message("--- find_package(Python) ---")
 find_package(Python ${PYBIND11_PYTHON_VERSION} COMPONENTS Interpreter Development REQUIRED)
+message("--- find_package(Python) done ---")
 
 # Save PYTHON_* vars
 set(PYTHON_VERSION_RESET "${PYTHON_VERSION}")
@@ -102,7 +104,9 @@ set(PYTHON_LIBRARY "${Python_LIBRARY}" CACHE INTERNAL "" FORCE)
 set(PYTHON_INCLUDE_DIR "${Python_INCLUDE_DIR}" CACHE INTERNAL "" FORCE)
 
 # Set the minimum pybind11 version to 2.3 (before that the pybind11::embed target did not exist)
+message("--- find_package(pybind11) ---")
 find_package(pybind11 2.3 CONFIG QUIET REQUIRED)
+message("--- find_package(pybind11) done ---")
 
 # Reset PYTHON_* vars
 set(PYTHON_VERSION "${PYTHON_VERSION_RESET}" CACHE STRING "" FORCE)
