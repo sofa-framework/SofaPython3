@@ -81,6 +81,9 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Set the minimum python version to 3.7
 set(PYBIND11_PYTHON_VERSION 3.7)
 
+# Find Python3
+find_package(Python ${PYBIND11_PYTHON_VERSION} COMPONENTS Interpreter Development REQUIRED)
+
 # Save PYTHON_* vars
 set(PYTHON_VERSION_RESET "${PYTHON_VERSION}")
 set(PYTHON_EXECUTABLE_RESET "${PYTHON_EXECUTABLE}")
@@ -88,9 +91,6 @@ set(PYTHON_LIBRARIES_RESET "${PYTHON_LIBRARIES}")
 set(PYTHON_INCLUDE_DIRS_RESET "${PYTHON_INCLUDE_DIRS}")
 set(PYTHON_LIBRARY_RESET "${PYTHON_LIBRARY}")
 set(PYTHON_INCLUDE_DIR_RESET "${PYTHON_INCLUDE_DIR}")
-
-# Find Python3
-find_package(Python ${PYBIND11_PYTHON_VERSION} COMPONENTS Interpreter Development REQUIRED)
 
 # Change PYTHON_* vars before pybind11 find_package
 # to be sure that pybind11 relies on the right Python version
