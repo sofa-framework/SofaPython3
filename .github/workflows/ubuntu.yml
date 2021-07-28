@@ -4,7 +4,7 @@ on: [workflow_dispatch, pull_request]
 
 jobs:
   build:
-    name: Building on ${{ matrix.os }} with SOFA ${{ matrix.sofa_branch }}
+    name: Building with SOFA ${{ matrix.sofa_branch }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -99,7 +99,7 @@ jobs:
           path: install
 
   tests:
-    name: Testing on ${{ matrix.os }} with SOFA ${{ matrix.sofa_branch }}
+    name: Testing with SOFA ${{ matrix.sofa_branch }}
     needs: [build]
     runs-on: ${{ matrix.os }}
     strategy:
