@@ -81,28 +81,36 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Set the minimum python version to 3.7
 set(PYBIND11_PYTHON_VERSION 3.7)
 
-# Find Python3 executable and set PYTHON_EXECUTABLE before finding pybind11
-# to be sure that pybind11 relies on the right Python version
-set(python_version "${PYBIND11_PYTHON_VERSION}")
-set(python_version_flag "")
-if(PYTHON_EXECUTABLE)
-    execute_process(
-        COMMAND "${PYTHON_EXECUTABLE}" "--version"
-        OUTPUT_VARIABLE cmd_output
-        )
-    string(REGEX MATCH "[0-9]+\.[0-9]+" python_exec_version "${cmd_output}")
-    if(python_exec_version VERSION_GREATER_EQUAL PYBIND11_PYTHON_VERSION)
-        set(python_version "${python_exec_version}")
-        set(python_version_flag "EXACT")
-    endif()
-endif()
-find_package(Python ${python_version} ${python_version_flag} COMPONENTS Interpreter Development REQUIRED)
+# Save PYTHON_* vars
+set(PYTHON_VERSION_RESET "${PYTHON_VERSION}")
 set(PYTHON_EXECUTABLE_RESET "${PYTHON_EXECUTABLE}")
+set(PYTHON_LIBRARIES_RESET "${PYTHON_LIBRARIES}")
+set(PYTHON_INCLUDE_DIRS_RESET "${PYTHON_INCLUDE_DIRS}")
+set(PYTHON_LIBRARY_RESET "${PYTHON_LIBRARY}")
+set(PYTHON_INCLUDE_DIR_RESET "${PYTHON_INCLUDE_DIR}")
+
+# Find Python3
+find_package(Python ${PYBIND11_PYTHON_VERSION} COMPONENTS Interpreter Development REQUIRED)
+
+# Change PYTHON_* vars before pybind11 find_package
+# to be sure that pybind11 relies on the right Python version
+set(PYTHON_VERSION "${Python_VERSION}" CACHE STRING "" FORCE)
 set(PYTHON_EXECUTABLE "${Python_EXECUTABLE}" CACHE FILEPATH "" FORCE)
+set(PYTHON_LIBRARIES "${Python_LIBRARIES}" CACHE STRING "" FORCE)
+set(PYTHON_INCLUDE_DIRS "${Python_INCLUDE_DIRS}" CACHE STRING "" FORCE)
+set(PYTHON_LIBRARY "${Python_LIBRARY}" CACHE INTERNAL "" FORCE)
+set(PYTHON_INCLUDE_DIR "${Python_INCLUDE_DIR}" CACHE INTERNAL "" FORCE)
 
 # Set the minimum pybind11 version to 2.3 (before that the pybind11::embed target did not exist)
 find_package(pybind11 2.3 CONFIG QUIET REQUIRED)
+
+# Reset PYTHON_* vars
+set(PYTHON_VERSION "${PYTHON_VERSION_RESET}" CACHE STRING "" FORCE)
 set(PYTHON_EXECUTABLE "${PYTHON_EXECUTABLE_RESET}" CACHE FILEPATH "" FORCE)
+set(PYTHON_LIBRARIES "${PYTHON_LIBRARIES_RESET}" CACHE STRING "" FORCE)
+set(PYTHON_INCLUDE_DIRS "${PYTHON_INCLUDE_DIRS_RESET}" CACHE STRING "" FORCE)
+set(PYTHON_LIBRARY "${PYTHON_LIBRARY_RESET}" CACHE INTERNAL "" FORCE)
+set(PYTHON_INCLUDE_DIR "${PYTHON_INCLUDE_DIR_RESET}" CACHE INTERNAL "" FORCE)
 
 set(SP3_PYTHON_PACKAGES_DIRECTORY
     "python3/site-packages"
