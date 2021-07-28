@@ -142,7 +142,7 @@ message(STATUS "Python:
     Executable: ${Python_EXECUTABLE}
     Headers: ${Python_INCLUDE_DIRS}
     Libraries: ${Python_LIBRARIES}
-    User site: ${Python_USER_SITE}"
+    User site: ${PYTHON_USER_SITE}"
 )
 message(STATUS "pybind11:
     Version: ${pybind11_VERSION}
