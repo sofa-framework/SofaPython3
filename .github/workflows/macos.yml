@@ -43,10 +43,26 @@ jobs:
 
       - name: Install requirements
         run: |
-          brew install ccache ninja boost eigen pybind11
+          brew install eigen boost
+          brew install ccache ninja
           python3 -m pip install numpy scipy
 
-      - name: Download and install the latest SOFA ${{ env.SOFA_BRANCH }} binaries
+      - name: pybind11 cache files
+        uses: actions/cache@v2
+        id: pybind11_cache
+        with:
+          path: /tmp/pybind11
+          key: pybind11_${{ env.GIT_BRANCH }}_${{ matrix.os }}_${{ hashFiles('**/lockfiles') }}
+
+      - name: Build and install pybind11
+        if: steps.pybind11_cache.outputs.cache-hit != 'true'
+        run: |
+          git clone -b v2.4.3 --depth 1 https://github.com/pybind/pybind11.git /tmp/pybind11
+          cd /tmp/pybind11
+          cmake -DCMAKE_BUILD_TYPE=Release -DPYBIND11_TEST=OFF -DPYTHON_EXECUTABLE=$(which python3.7) .
+          sudo make --silent install
+
+      - name: Download and install the latest SOFA ${{ matrix.sofa_branch }} binaries
         shell: bash
         run: |
           mkdir -p /tmp/sofa_zip
@@ -133,7 +149,7 @@ jobs:
           brew install boost
           python3 -m pip install numpy scipy
 
-      - name: Download and install the latest SOFA ${{ env.SOFA_BRANCH }} binaries
+      - name: Download and install the latest SOFA ${{ matrix.sofa_branch }} binaries
         shell: bash
         run: |
           mkdir -p /tmp/sofa_zip

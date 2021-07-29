@@ -57,12 +57,12 @@ jobs:
       - name: Build and install pybind11
         if: steps.pybind11_cache.outputs.cache-hit != 'true'
         run: |
-          git clone -b v2.4 --depth 1 https://github.com/pybind/pybind11.git /tmp/pybind11
+          git clone -b v2.4.3 --depth 1 https://github.com/pybind/pybind11.git /tmp/pybind11
           cd /tmp/pybind11
-          cmake -DCMAKE_BUILD_TYPE=Release -DPYBIND11_TEST=OFF .
+          cmake -DCMAKE_BUILD_TYPE=Release -DPYBIND11_TEST=OFF -DPYTHON_EXECUTABLE=$(which python3.7) .
           sudo make --silent install
 
-      - name: Download and install the latest SOFA ${{ env.SOFA_BRANCH }} binaries
+      - name: Download and install the latest SOFA ${{ matrix.sofa_branch }} binaries
         shell: bash
         run: |
           mkdir -p /tmp/sofa_zip
@@ -149,7 +149,7 @@ jobs:
           sudo apt install -qq libboost-all-dev
           python3 -m pip install numpy scipy
 
-      - name: Download and install the latest SOFA ${{ env.SOFA_BRANCH }} binaries
+      - name: Download and install the latest SOFA ${{ matrix.sofa_branch }} binaries
         shell: bash
         run: |
           mkdir -p /tmp/sofa_zip
