@@ -12,11 +12,22 @@ jobs:
         sofa_branch: [master, v21.06]
     env:
       SOFA_ROOT: /opt/sofa
-      SYSTEM: Linux
+      SOFA_OS: Linux
 
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
+
+      - name: Set env vars
+        run: |
+          if [ -n "$GITHUB_BASE_REF" ]; then
+            GIT_BRANCH="$GITHUB_BASE_REF"
+          else
+            GIT_BRANCH="${GITHUB_REF#refs/heads/}"
+          fi
+          echo "GIT_BRANCH = $GIT_BRANCH"
+          if [ -z "$GIT_BRANCH" ]; then exit 1; fi
+          echo "GIT_BRANCH=$GIT_BRANCH" >> $GITHUB_ENV
 
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
@@ -29,12 +40,12 @@ jobs:
           sudo apt install -qq ccache ninja-build
           python3 -m pip install numpy scipy
 
-      - name: Cache pybind11
+      - name: pybind11 cache files
         uses: actions/cache@v2
         id: pybind11_cache
         with:
           path: /tmp/pybind11
-          key: pybind24
+          key: pybind11_${{ env.GIT_BRANCH }}_${{ matrix.os }}_${{ hashFiles('**/lockfiles') }}
 
       - name: Build and install pybind11
         if: steps.pybind11_cache.outputs.cache-hit != 'true'
@@ -43,17 +54,16 @@ jobs:
           cd /tmp/pybind11
           cmake -DCMAKE_BUILD_TYPE=Release -DPYBIND11_TEST=OFF .
           sudo make --silent install
-          rm -rf /tmp/pybind11
 
-      - name: Download and install the latest SOFA ${{ matrix.sofa_branch }} binaries
+      - name: Download and install the latest SOFA ${{ env.SOFA_BRANCH }} binaries
         shell: bash
         run: |
           mkdir -p /tmp/sofa_zip
           mkdir -p /tmp/sofa_binaries
-          curl --output /tmp/sofa_zip/${SYSTEM}.zip -L \
-            https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/CI_BRANCH=${{ matrix.sofa_branch }},CI_SCOPE=minimal/lastSuccessfulBuild/artifact/${SYSTEM}/*zip*/${SYSTEM}.zip
-          unzip -qq /tmp/sofa_zip/${SYSTEM}.zip -d /tmp/sofa_zip
-          unzip -qq /tmp/sofa_zip/${SYSTEM}/SOFA_*.zip -d /tmp/sofa_binaries
+          curl --output /tmp/sofa_zip/${SOFA_OS}.zip -L \
+            https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/CI_BRANCH=${{ matrix.sofa_branch }},CI_SCOPE=minimal/lastSuccessfulBuild/artifact/${SOFA_OS}/*zip*/${SOFA_OS}.zip
+          unzip -qq /tmp/sofa_zip/${SOFA_OS}.zip -d /tmp/sofa_zip
+          unzip -qq /tmp/sofa_zip/${SOFA_OS}/SOFA_*.zip -d /tmp/sofa_binaries
           sudo mv /tmp/sofa_binaries/SOFA_* ${SOFA_ROOT}
           sudo ls -la ${SOFA_ROOT}
           rm -rf /tmp/sofa_*
@@ -62,7 +72,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: .ccache
-          key: ccache_${{ matrix.sofa_branch }}_${{ matrix.os }}_${{ hashFiles('**/lockfiles') }}
+          key: ccache_${{ env.GIT_BRANCH }}_${{ matrix.os }}_${{ hashFiles('**/lockfiles') }}
 
       - name: Build
         env:
@@ -87,11 +97,11 @@ jobs:
       - name: Create artifact
         uses: actions/upload-artifact@v2
         with:
-          name: SofaPython3_${{ matrix.sofa_branch }}_${{ matrix.os }}
+          name: SofaPython3_${{ env.GIT_BRANCH }}_${SOFA_OS}
           path: install
 
   tests:
-    name: Testing with SOFA ${{ matrix.sofa_branch }}
+    name: Testing on ${{ matrix.os }}
     needs: [build]
     runs-on: ${{ matrix.os }}
     strategy:
@@ -100,9 +110,20 @@ jobs:
         sofa_branch: [master, v21.06]
     env:
       SOFA_ROOT: /opt/sofa
-      SYSTEM: Linux
+      SOFA_OS: Linux
 
     steps:
+      - name: Set env vars
+        run: |
+          if [ -n "$GITHUB_BASE_REF" ]; then
+            GIT_BRANCH="$GITHUB_BASE_REF"
+          else
+            GIT_BRANCH="${GITHUB_REF#refs/heads/}"
+          fi
+          echo "GIT_BRANCH = $GIT_BRANCH"
+          if [ -z "$GIT_BRANCH" ]; then exit 1; fi
+          echo "GIT_BRANCH=$GIT_BRANCH" >> $GITHUB_ENV
+
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
         with:
@@ -113,15 +134,15 @@ jobs:
           sudo apt install -qq libboost-all-dev
           python3 -m pip install numpy scipy
 
-      - name: Download and install the latest SOFA ${{ matrix.sofa_branch }} binaries
+      - name: Download and install the latest SOFA ${{ env.SOFA_BRANCH }} binaries
         shell: bash
         run: |
           mkdir -p /tmp/sofa_zip
           mkdir -p /tmp/sofa_binaries
-          curl --output /tmp/sofa_zip/${SYSTEM}.zip -L \
-            https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/CI_BRANCH=${{ matrix.sofa_branch }},CI_SCOPE=minimal/lastSuccessfulBuild/artifact/${SYSTEM}/*zip*/${SYSTEM}.zip
-          unzip -qq /tmp/sofa_zip/${SYSTEM}.zip -d /tmp/sofa_zip
-          unzip -qq /tmp/sofa_zip/${SYSTEM}/SOFA_*.zip -d /tmp/sofa_binaries
+          curl --output /tmp/sofa_zip/${SOFA_OS}.zip -L \
+            https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/CI_BRANCH=${{ matrix.sofa_branch }},CI_SCOPE=minimal/lastSuccessfulBuild/artifact/${SOFA_OS}/*zip*/${SOFA_OS}.zip
+          unzip -qq /tmp/sofa_zip/${SOFA_OS}.zip -d /tmp/sofa_zip
+          unzip -qq /tmp/sofa_zip/${SOFA_OS}/SOFA_*.zip -d /tmp/sofa_binaries
           sudo mv /tmp/sofa_binaries/SOFA_* ${SOFA_ROOT}
           sudo ls -la ${SOFA_ROOT}
           rm -rf /tmp/sofa_*
@@ -129,7 +150,7 @@ jobs:
       - name: Install SP3
         uses: actions/download-artifact@v2
         with:
-          name: SofaPython3_${{ matrix.sofa_branch }}_${{ matrix.os }}
+          name: SofaPython3_${{ env.GIT_BRANCH }}_${SOFA_OS}
           path: SofaPython3
 
       - name: Binding.Sofa.Tests
