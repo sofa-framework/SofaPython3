@@ -96,7 +96,7 @@ jobs:
       - name: Create artifact
         uses: actions/upload-artifact@v2
         with:
-          name: sp3-${{ matrix.os }}
+          name: SofaPython3_${{ matrix.sofa_branch }}_${{ matrix.os }}
           path: install
 
   tests:
@@ -138,7 +138,7 @@ jobs:
       - name: Install SP3
         uses: actions/download-artifact@v2
         with:
-          name: sp3-${{ matrix.os }}
+          name: SofaPython3_${{ matrix.sofa_branch }}_${{ matrix.os }}
           path: SofaPython3
 
       - name: Binding.Sofa.Tests

@@ -71,7 +71,6 @@ jobs:
             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
             -DCMAKE_PREFIX_PATH=$SOFA_ROOT/lib/cmake \
             -DCMAKE_BUILD_TYPE=Release \
-            -DPYTHON_EXECUTABLE=$(which python) \
             .
           ninja install
           echo ${CCACHE_BASEDIR}
@@ -80,7 +79,7 @@ jobs:
       - name: Create artifact
         uses: actions/upload-artifact@v2
         with:
-          name: sp3-${{ matrix.os }}
+          name: SofaPython3_${{ matrix.sofa_branch }}_${{ matrix.os }}
           path: install
 
   tests:
@@ -96,7 +95,6 @@ jobs:
       SYSTEM: MacOS
 
     steps:
-
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
         with:
@@ -123,7 +121,7 @@ jobs:
       - name: Install SP3
         uses: actions/download-artifact@v2
         with:
-          name: sp3-${{ matrix.os }}
+          name: SofaPython3_${{ matrix.sofa_branch }}_${{ matrix.os }}
           path: SofaPython3
 
       - name: Binding.Sofa.Tests
