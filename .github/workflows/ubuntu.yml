@@ -20,7 +20,14 @@ jobs:
 
       - name: Set env vars
         run: |
-          if [ -n "${{ github.event.issue.number }}" ]; then
+          echo github.event.number = ${{ github.event.number  }}
+          echo github.event.pull_request.number = ${{ github.event.pull_request.number }}
+          echo github.event.issue.number = ${{ github.event.issue.number }}
+          if [ -n "${{ github.event.number }}" ]; then
+            GIT_BRANCH="PR-${{ github.event.number }}"
+          elif [ -n "${{ github.event.pull_request.number }}" ]; then
+            GIT_BRANCH="PR-${{ github.event.pull_request.number }}"
+          elif [ -n "${{ github.event.issue.number }}" ]; then
             GIT_BRANCH="PR-${{ github.event.issue.number }}"
           else
             GIT_BRANCH="${GITHUB_REF#refs/heads/}"
@@ -116,7 +123,14 @@ jobs:
     steps:
       - name: Set env vars
         run: |
-          if [ -n "${{ github.event.issue.number }}" ]; then
+          echo github.event.number = ${{ github.event.number  }}
+          echo github.event.pull_request.number = ${{ github.event.pull_request.number }}
+          echo github.event.issue.number = ${{ github.event.issue.number }}
+          if [ -n "${{ github.event.number }}" ]; then
+            GIT_BRANCH="PR-${{ github.event.number }}"
+          elif [ -n "${{ github.event.pull_request.number }}" ]; then
+            GIT_BRANCH="PR-${{ github.event.pull_request.number }}"
+          elif [ -n "${{ github.event.issue.number }}" ]; then
             GIT_BRANCH="PR-${{ github.event.issue.number }}"
           else
             GIT_BRANCH="${GITHUB_REF#refs/heads/}"
