@@ -82,9 +82,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(PYBIND11_PYTHON_VERSION 3.7)
 
 # Find Python3
-message("--- find_package(Python) ---")
 find_package(Python ${PYBIND11_PYTHON_VERSION} COMPONENTS Interpreter Development REQUIRED)
-message("--- find_package(Python) done ---")
 
 # Save PYTHON_* vars
 set(PYTHON_VERSION_RESET "${PYTHON_VERSION}")
@@ -111,24 +109,8 @@ elseif(EXISTS "${Python_INCLUDE_DIRS}")
     set(PYTHON_INCLUDE_DIR "${Python_INCLUDE_DIRS}" CACHE INTERNAL "" FORCE)
 endif()
 
-message("PYTHON_VERSION_RESET = ${PYTHON_VERSION_RESET}")
-message("PYTHON_EXECUTABLE_RESET = ${PYTHON_EXECUTABLE_RESET}")
-message("PYTHON_LIBRARIES_RESET = ${PYTHON_LIBRARIES_RESET}")
-message("PYTHON_INCLUDE_DIRS_RESET = ${PYTHON_INCLUDE_DIRS_RESET}")
-message("PYTHON_LIBRARY_RESET = ${PYTHON_LIBRARY_RESET}")
-message("PYTHON_INCLUDE_DIR_RESET = ${PYTHON_INCLUDE_DIR_RESET}")
-
-message("PYTHON_VERSION = ${PYTHON_VERSION}")
-message("PYTHON_EXECUTABLE = ${PYTHON_EXECUTABLE}")
-message("PYTHON_LIBRARIES = ${PYTHON_LIBRARIES}")
-message("PYTHON_INCLUDE_DIRS = ${PYTHON_INCLUDE_DIRS}")
-message("PYTHON_LIBRARY = ${PYTHON_LIBRARY}")
-message("PYTHON_INCLUDE_DIR = ${PYTHON_INCLUDE_DIR}")
-
 # Set the minimum pybind11 version to 2.3 (before that the pybind11::embed target did not exist)
-message("--- find_package(pybind11) ---")
 find_package(pybind11 2.3 CONFIG QUIET REQUIRED)
-message("--- find_package(pybind11) done ---")
 
 set(SP3_PYTHON_PACKAGES_DIRECTORY
     "python3/site-packages"
