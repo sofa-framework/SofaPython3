@@ -7,6 +7,7 @@ jobs:
     name: Building with SOFA ${{ matrix.sofa_branch }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [macos-10.15]
         sofa_branch: [master, v21.06]
@@ -113,6 +114,7 @@ jobs:
     needs: [build]
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [macos-10.15]
         sofa_branch: [master, v21.06]
