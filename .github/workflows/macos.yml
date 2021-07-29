@@ -53,7 +53,7 @@ jobs:
         id: pybind11_cache
         with:
           path: /tmp/pybind11
-          key: pybind11_${{ env.GIT_BRANCH }}_${{ matrix.os }}_${{ hashFiles('**/lockfiles') }}
+          key: pybind11_${{ env.GIT_BRANCH }}_${{ matrix.os }}_${{ hashFiles('.github/workflows/*.yml') }}
 
       - name: Build and install pybind11
         if: steps.pybind11_cache.outputs.cache-hit != 'true'
@@ -80,7 +80,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: .ccache
-          key: ccache_${{ env.GIT_BRANCH }}_${{ matrix.os }}_${{ hashFiles('**/lockfiles') }}
+          key: ccache_${{ env.GIT_BRANCH }}_${{ matrix.os }}_${{ hashFiles('.github/workflows/*.yml') }}
 
       - name: Build
         env:
