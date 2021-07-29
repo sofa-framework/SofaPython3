@@ -20,8 +20,8 @@ jobs:
 
       - name: Set env vars
         run: |
-          if [ -n "$GITHUB_BASE_REF" ]; then
-            GIT_BRANCH="$GITHUB_BASE_REF"
+          if [ -n "${{ github.event.issue.number }}" ]; then
+            GIT_BRANCH="PR-${{ github.event.issue.number }}"
           else
             GIT_BRANCH="${GITHUB_REF#refs/heads/}"
           fi
@@ -73,6 +73,7 @@ jobs:
             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
             -DCMAKE_PREFIX_PATH=$SOFA_ROOT/lib/cmake \
             -DCMAKE_BUILD_TYPE=Release \
+            -DPYTHON_EXECUTABLE=$(which python3.7) \
             .
           ninja install
           echo ${CCACHE_BASEDIR}
@@ -99,8 +100,8 @@ jobs:
     steps:
       - name: Set env vars
         run: |
-          if [ -n "$GITHUB_BASE_REF" ]; then
-            GIT_BRANCH="$GITHUB_BASE_REF"
+          if [ -n "${{ github.event.issue.number }}" ]; then
+            GIT_BRANCH="PR-${{ github.event.issue.number }}"
           else
             GIT_BRANCH="${GITHUB_REF#refs/heads/}"
           fi
