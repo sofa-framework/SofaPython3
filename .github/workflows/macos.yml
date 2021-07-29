@@ -41,20 +41,11 @@ jobs:
           sudo ls -la ${SOFA_ROOT}
           rm -rf /tmp/sofa_*
 
-      - name: Get Time
-        id: time
-        uses: nanzm/get-time-action@v1.0
-        with:
-          timeZone: 8
-          format: 'YYYY-MM-DD-HH-mm-ss'
-
       - name: ccache cache files
         uses: actions/cache@v2
         with:
           path: .ccache
-          key: ${{ matrix.os }}-ccache-${{ steps.time.outputs.time }}
-          restore-keys: |
-            ${{ matrix.os }}-ccache-
+          key: ccache_${{ matrix.sofa_branch }}_${{ matrix.os }}_${{ hashFiles('**/lockfiles') }}
 
       - name: Build
         env:
