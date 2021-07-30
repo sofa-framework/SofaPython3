@@ -197,6 +197,8 @@ jobs:
           echo "--------------------------------"
           otool -L ${SOFA_ROOT}/bin/runSofa
           echo "--------------------------------"
+          otool -L SofaPython3/bin/Bindings.Sofa.Tests
+          echo "--------------------------------"
           chmod +x SofaPython3/bin/Bindings.Sofa.Tests
           ./SofaPython3/bin/Bindings.Sofa.Tests
       - name: Bindings.SofaRuntime.Tests
