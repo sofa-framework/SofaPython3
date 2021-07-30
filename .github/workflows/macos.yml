@@ -99,6 +99,9 @@ jobs:
           CCACHE_COMPRESSLEVEL: 6
           CCACHE_MAXSIZE: "500M"
         run: |
+          echo "RUNNER_TOOL_CACHE = $RUNNER_TOOL_CACHE"
+          python_root="$(find $RUNNER_TOOL_CACHE -maxdepth 3 -type d -path '**/Python/*/x64')"
+          echo "python_root = $python_root"
           export CCACHE_BASEDIR=$GITHUB_WORKSPACE
           export CCACHE_DIR=$GITHUB_WORKSPACE/.ccache
           ccache -z
@@ -109,6 +112,8 @@ jobs:
             -DCMAKE_PREFIX_PATH=$SOFA_ROOT/lib/cmake \
             -DCMAKE_BUILD_TYPE=Release \
             -DPYTHON_EXECUTABLE=$(which python3.7) \
+            -DPython_EXECUTABLE=$(which python3.7) \
+            -DPython_ROOT=$python_root \
             .
           ninja install
           echo ${CCACHE_BASEDIR}
