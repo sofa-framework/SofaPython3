@@ -111,7 +111,7 @@ jobs:
       - name: Create artifact
         uses: actions/upload-artifact@v2
         with:
-          name: SofaPython3_${{ env.GIT_BRANCH }}_${SOFA_OS}
+          name: SofaPython3_${{ env.GIT_BRANCH }}_SOFA-${{ matrix.sofa_branch }}_${{ env.SOFA_OS }}
           path: install
 
   tests:
@@ -172,7 +172,7 @@ jobs:
       - name: Install SP3
         uses: actions/download-artifact@v2
         with:
-          name: SofaPython3_${{ env.GIT_BRANCH }}_${SOFA_OS}
+          name: SofaPython3_${{ env.GIT_BRANCH }}_SOFA-${{ matrix.sofa_branch }}_${{ env.SOFA_OS }}
           path: SofaPython3
 
       - name: Binding.Sofa.Tests
