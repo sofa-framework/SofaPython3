@@ -55,12 +55,17 @@ jobs:
           path: /tmp/pybind11
           key: pybind11_${{ env.GIT_BRANCH }}_${{ matrix.os }}_${{ hashFiles('.github/workflows/*.yml') }}
 
-      - name: Build and install pybind11
+      - name: Build pybind11
         if: steps.pybind11_cache.outputs.cache-hit != 'true'
         run: |
           git clone -b v2.4.3 --depth 1 https://github.com/pybind/pybind11.git /tmp/pybind11
           cd /tmp/pybind11
           cmake -DCMAKE_BUILD_TYPE=Release -DPYBIND11_TEST=OFF -DPYTHON_EXECUTABLE=$(which python3.7) .
+          make --silent
+
+      - name: Install pybind11
+        run: |
+          cd /tmp/pybind11
           sudo make --silent install
 
       - name: Download and install the latest SOFA ${{ matrix.sofa_branch }} binaries
