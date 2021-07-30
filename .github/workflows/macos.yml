@@ -43,12 +43,13 @@ jobs:
           python-version: '3.7'
 
       - name: Install requirements
+        shell: bash
         run: |
           brew install eigen boost
           brew install ccache ninja
-          brew list | grep python
-          brew unlink python@3.9
-          brew unlink python@3.8
+          brew list | grep python | while read package; do
+            brew unlink $package
+          done
           echo "python -V" && python -V
           echo "python3 -V" && python3 -V
           python3 -m pip install numpy scipy
@@ -157,8 +158,14 @@ jobs:
           python-version: '3.7'
 
       - name: Install requirements
+        shell: bash
         run: |
           brew install boost
+          brew list | grep python | while read package; do
+            brew unlink $package
+          done
+          echo "python -V" && python -V
+          echo "python3 -V" && python3 -V
           python3 -m pip install numpy scipy
 
       - name: Download and install the latest SOFA ${{ matrix.sofa_branch }} binaries
@@ -185,6 +192,11 @@ jobs:
         run: |
           export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$SOFA_ROOT/lib
           export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages
+          echo "--------------------------------"
+          ls -l ${SOFA_ROOT}
+          echo "--------------------------------"
+          otool -L ${SOFA_ROOT}/bin/runSofa
+          echo "--------------------------------"
           chmod +x SofaPython3/bin/Bindings.Sofa.Tests
           ./SofaPython3/bin/Bindings.Sofa.Tests
       - name: Bindings.SofaRuntime.Tests
