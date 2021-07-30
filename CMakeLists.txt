@@ -39,6 +39,10 @@ if (SP3_COMPILED_AS_SOFA_SUBPROJECT)
 else()
     option(SP3_BUILD_TEST "Compile the automatic tests for SofaPython3, along with the gtest library." ON)
 endif()
+if(SP3_BUILD_TEST)
+    # TODO: remove this when SOFA's GTest handles threads correctly
+    find_package(Threads REQUIRED)
+endif()
 
 find_package(SofaExporter QUIET)
 CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAEXPORTER "Bind the SOFA exporter component." ON "SofaExporter_FOUND" OFF)
