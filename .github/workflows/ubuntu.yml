@@ -115,7 +115,7 @@ jobs:
           path: install
 
   tests:
-    name: Testing on ${{ matrix.os }}
+    name: Testing with SOFA ${{ matrix.sofa_branch }}
     needs: [build]
     runs-on: ${{ matrix.os }}
     strategy:
