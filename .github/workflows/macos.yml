@@ -43,9 +43,13 @@ jobs:
           python-version: '3.7'
 
       - name: Install requirements
+        shell: bash
         run: |
           brew install eigen boost
           brew install ccache ninja
+          brew list | grep python | while read package; do
+            brew unlink $package
+          done
           python3 -m pip install numpy scipy
 
       - name: pybind11 cache files
@@ -93,6 +97,9 @@ jobs:
           CCACHE_COMPRESSLEVEL: 6
           CCACHE_MAXSIZE: "500M"
         run: |
+          echo "RUNNER_TOOL_CACHE = $RUNNER_TOOL_CACHE"
+          python_root="$(find $RUNNER_TOOL_CACHE -maxdepth 3 -type d -path '**/Python/3.7*/x64')"
+          echo "python_root = $python_root"
           export CCACHE_BASEDIR=$GITHUB_WORKSPACE
           export CCACHE_DIR=$GITHUB_WORKSPACE/.ccache
           ccache -z
@@ -102,7 +109,8 @@ jobs:
             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
             -DCMAKE_PREFIX_PATH=$SOFA_ROOT/lib/cmake \
             -DCMAKE_BUILD_TYPE=Release \
-            -DPYTHON_EXECUTABLE=$(which python3.7) \
+            -DPython_EXECUTABLE=$(which python3.7) \
+            -DPython_ROOT=$python_root \
             .
           ninja install
           echo ${CCACHE_BASEDIR}
@@ -152,8 +160,12 @@ jobs:
           python-version: '3.7'
 
       - name: Install requirements
+        shell: bash
         run: |
           brew install boost
+          brew list | grep python | while read package; do
+            brew unlink $package
+          done
           python3 -m pip install numpy scipy
 
       - name: Download and install the latest SOFA ${{ matrix.sofa_branch }} binaries
