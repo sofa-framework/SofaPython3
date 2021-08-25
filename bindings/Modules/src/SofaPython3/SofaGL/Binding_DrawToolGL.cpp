@@ -39,11 +39,17 @@ using DrawToolGL = sofa::gl::DrawToolGL;
 
 namespace py { using namespace pybind11; }
 
+sofa::core::visual::VisualParams* vparam = nullptr;
+sofa::gl::DrawToolGL *drawtool = new sofa::gl::DrawToolGL();
+
 void moduleAddDrawToolGL(pybind11::module& m) {
     m.def("draw", [](Node* node){
-      auto* vparam = sofa::core::visual::VisualParams::defaultInstance();
-      vparam->drawTool() = new sofa::gl::DrawToolGL();
-      vparam->setSupported(sofa::core::visual::API_OpenGL);
+      if (!vparam)
+      {
+        vparam = sofa::core::visual::VisualParams::defaultInstance();
+        vparam->drawTool() = drawtool;
+        vparam->setSupported(sofa::core::visual::API_OpenGL);
+      }
       sofa::simulation::getSimulation()->draw(vparam, node);
     }, doc::SofaGL::draw);
 
