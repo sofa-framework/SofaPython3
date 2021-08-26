@@ -211,12 +211,18 @@ if (SP3_LINK_TO_USER_SITE AND SP3_PYTHON_PACKAGES_LINK_DIRECTORY)
     # Create the site-package link directory if it doesn't exists yet
     install(DIRECTORY DESTINATION ${SP3_PYTHON_PACKAGES_LINK_DIRECTORY})
     foreach(directory ${directories})
+        if(SP3_COMPILED_AS_SOFA_SUBPROJECT)
+            set(LINK_SOURCE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/plugins/SofaPython3/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
+        else()
+            set(LINK_SOURCE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
+        endif()
+
         if(IS_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
             if(WIN32)
                 install(CODE "\
                 execute_process( \
                     COMMAND ${CMAKE_COMMAND} -E copy_directory \
-                    ${CMAKE_INSTALL_PREFIX}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory}/ \
+                    ${LINK_SOURCE_DIRECTORY}/ \
                     ${SP3_PYTHON_PACKAGES_LINK_DIRECTORY}/${directory}   \
                 )"
             )
@@ -224,7 +230,7 @@ if (SP3_LINK_TO_USER_SITE AND SP3_PYTHON_PACKAGES_LINK_DIRECTORY)
                 install(CODE "\
                     execute_process( \
                         COMMAND ${CMAKE_COMMAND} -E create_symlink \
-                        ${CMAKE_INSTALL_PREFIX}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory}/ \
+                        ${LINK_SOURCE_DIRECTORY}/ \
                         ${SP3_PYTHON_PACKAGES_LINK_DIRECTORY}/${directory}   \
                     )"
                 )
