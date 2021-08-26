@@ -76,7 +76,6 @@ void moduleAddMechanicalOperations(pybind11::module& m)
     c.def("getMatrixDimension", py::overload_cast<sofa::Size*, sofa::Size*, sofa::core::behavior::MultiMatrixAccessor*>(&MechanicalOperations::getMatrixDimension), py::arg("nrows"), py::arg("ncols"), py::arg("matrix") = nullptr);
     c.def("getMatrixDimension", py::overload_cast<sofa::core::behavior::MultiMatrixAccessor*>(&MechanicalOperations::getMatrixDimension), py::arg("matrix"));
     c.def("addMBK_ToMatrix", &MechanicalOperations::addMBK_ToMatrix, py::arg("matrix"), py::arg("mFact"), py::arg("bFact"), py::arg("kFact"));
-    c.def("addSubMBK_ToMatrix", &MechanicalOperations::addSubMBK_ToMatrix, py::arg("matrix"), py::arg("subMatrixIndex"), py::arg("mFact"), py::arg("bFact"), py::arg("kFact"));
     c.def("multiVector2BaseVector", &MechanicalOperations::multiVector2BaseVector, py::arg("src"), py::arg("dest"), py::arg("matrix"));
     c.def("baseVector2MultiVector", &MechanicalOperations::baseVector2MultiVector, py::arg("src"), py::arg("dest"), py::arg("matrix"));
     c.def("multiVectorPeqBaseVector", &MechanicalOperations::multiVectorPeqBaseVector, py::arg("dest"), py::arg("src"), py::arg("matrix"));
