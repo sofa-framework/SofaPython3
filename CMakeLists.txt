@@ -36,6 +36,10 @@ include(CMakeDependentOption)
 
 # If SOFA_BUILD_TESTS exists and is OFF, then this option will be auto-disabled
 cmake_dependent_option(SP3_BUILD_TEST "Compile the automatic tests for SofaPython3, along with the gtest library." ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SP3_BUILD_TEST)
+    # TODO: remove this when SOFA's GTest handles threads correctly
+    find_package(Threads REQUIRED)
+endif()
 
 find_package(SofaExporter QUIET)
 CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAEXPORTER "Bind the SOFA exporter component." ON "SofaExporter_FOUND" OFF)
@@ -78,15 +82,33 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Set the minimum python version to 3.7
 set(PYBIND11_PYTHON_VERSION 3.7)
 
-# Find Python3 executable and set PYTHON_EXECUTABLE before finding pybind11
-# to be sure that pybind11 relies on the right Python version
+# Find Python3
 find_package(Python ${PYBIND11_PYTHON_VERSION} COMPONENTS Interpreter Development REQUIRED)
-set(PYTHON_VERSION ${Python_VERSION})
-set(PYTHON_EXECUTABLE ${Python_EXECUTABLE})
-set(PYTHON_LIBRARIES ${Python_LIBRARIES})
-set(PYTHON_INCLUDE_DIRS ${Python_INCLUDE_DIRS})
-set(PYTHON_LIBRARY ${Python_LIBRARY})
-set(PYTHON_INCLUDE_DIR ${Python_INCLUDE_DIR})
+
+# Save PYTHON_* vars
+set(PYTHON_VERSION_RESET "${PYTHON_VERSION}")
+set(PYTHON_EXECUTABLE_RESET "${PYTHON_EXECUTABLE}")
+set(PYTHON_LIBRARIES_RESET "${PYTHON_LIBRARIES}")
+set(PYTHON_INCLUDE_DIRS_RESET "${PYTHON_INCLUDE_DIRS}")
+set(PYTHON_LIBRARY_RESET "${PYTHON_LIBRARY}")
+set(PYTHON_INCLUDE_DIR_RESET "${PYTHON_INCLUDE_DIR}")
+
+# Change PYTHON_* vars before pybind11 find_package
+# to be sure that pybind11 relies on the right Python version
+set(PYTHON_VERSION "${Python_VERSION}" CACHE STRING "" FORCE)
+set(PYTHON_EXECUTABLE "${Python_EXECUTABLE}" CACHE FILEPATH "" FORCE)
+set(PYTHON_LIBRARIES "${Python_LIBRARIES}" CACHE STRING "" FORCE)
+set(PYTHON_INCLUDE_DIRS "${Python_INCLUDE_DIRS}" CACHE STRING "" FORCE)
+if(EXISTS "${Python_LIBRARY}")
+    set(PYTHON_LIBRARY "${Python_LIBRARY}" CACHE INTERNAL "" FORCE)
+elseif(EXISTS "${Python_LIBRARIES}")
+    set(PYTHON_LIBRARY "${Python_LIBRARIES}" CACHE INTERNAL "" FORCE)
+endif()
+if(EXISTS "${Python_INCLUDE_DIR}")
+    set(PYTHON_INCLUDE_DIR "${Python_INCLUDE_DIR}" CACHE INTERNAL "" FORCE)
+elseif(EXISTS "${Python_INCLUDE_DIRS}")
+    set(PYTHON_INCLUDE_DIR "${Python_INCLUDE_DIRS}" CACHE INTERNAL "" FORCE)
+endif()
 
 # Set the minimum pybind11 version to 2.3 (before that the pybind11::embed target did not exist)
 find_package(pybind11 2.3 CONFIG QUIET REQUIRED)
@@ -117,10 +139,10 @@ set(SP3_PYTHON_PACKAGES_LINK_DIRECTORY
 )
 
 message(STATUS "Python:
-    Version: ${PYTHON_VERSION}
-    Executable: ${PYTHON_EXECUTABLE}
-    Headers: ${PYTHON_INCLUDE_DIRS}
-    Libraries: ${PYTHON_LIBRARIES}
+    Version: ${Python_VERSION}
+    Executable: ${Python_EXECUTABLE}
+    Headers: ${Python_INCLUDE_DIRS}
+    Libraries: ${Python_LIBRARIES}
     User site: ${PYTHON_USER_SITE}"
 )
 message(STATUS "pybind11:
@@ -186,12 +208,18 @@ if (SP3_LINK_TO_USER_SITE AND SP3_PYTHON_PACKAGES_LINK_DIRECTORY)
     # Create the site-package link directory if it doesn't exists yet
     install(DIRECTORY DESTINATION ${SP3_PYTHON_PACKAGES_LINK_DIRECTORY})
     foreach(directory ${directories})
+        if(SP3_COMPILED_AS_SOFA_SUBPROJECT)
+            set(LINK_SOURCE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/plugins/SofaPython3/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
+        else()
+            set(LINK_SOURCE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
+        endif()
+
         if(IS_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
             if(WIN32)
                 install(CODE "\
                 execute_process( \
                     COMMAND ${CMAKE_COMMAND} -E copy_directory \
-                    ${CMAKE_INSTALL_PREFIX}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory}/ \
+                    ${LINK_SOURCE_DIRECTORY}/ \
                     ${SP3_PYTHON_PACKAGES_LINK_DIRECTORY}/${directory}   \
                 )"
             )
@@ -199,7 +227,7 @@ if (SP3_LINK_TO_USER_SITE AND SP3_PYTHON_PACKAGES_LINK_DIRECTORY)
                 install(CODE "\
                     execute_process( \
                         COMMAND ${CMAKE_COMMAND} -E create_symlink \
-                        ${CMAKE_INSTALL_PREFIX}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory}/ \
+                        ${LINK_SOURCE_DIRECTORY}/ \
                         ${SP3_PYTHON_PACKAGES_LINK_DIRECTORY}/${directory}   \
                     )"
                 )
@@ -207,3 +235,11 @@ if (SP3_LINK_TO_USER_SITE AND SP3_PYTHON_PACKAGES_LINK_DIRECTORY)
         endif()
     endforeach()
 endif()
+
+# Reset PYTHON_* vars
+set(PYTHON_VERSION "${PYTHON_VERSION_RESET}" CACHE STRING "" FORCE)
+set(PYTHON_EXECUTABLE "${PYTHON_EXECUTABLE_RESET}" CACHE FILEPATH "" FORCE)
+set(PYTHON_LIBRARIES "${PYTHON_LIBRARIES_RESET}" CACHE STRING "" FORCE)
+set(PYTHON_INCLUDE_DIRS "${PYTHON_INCLUDE_DIRS_RESET}" CACHE STRING "" FORCE)
+set(PYTHON_LIBRARY "${PYTHON_LIBRARY_RESET}" CACHE INTERNAL "" FORCE)
+set(PYTHON_INCLUDE_DIR "${PYTHON_INCLUDE_DIR_RESET}" CACHE INTERNAL "" FORCE)

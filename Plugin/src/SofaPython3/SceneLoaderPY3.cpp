@@ -86,7 +86,7 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
                                             const std::vector<std::string>& arguments,
                                             Node::SPtr root_out)
 {
-    SOFA_UNUSED(arguments);
+    PythonEnvironment::setArguments(SetDirectory::GetFileName(filename).c_str(), arguments);
     PythonEnvironment::gil lock;
 
     try{

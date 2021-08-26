@@ -44,7 +44,7 @@ namespace
 
   /// run test list using the custom name function getTestName.
   /// this allows to do gtest_filter=*FileName*
-  INSTANTIATE_TEST_CASE_P(Batch,
+  INSTANTIATE_TEST_SUITE_P(Batch,
 			  PythonTest,
               ::testing::ValuesIn(python_tests.extract()),
               PythonTest::getTestName);

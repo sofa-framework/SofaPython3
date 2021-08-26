@@ -32,7 +32,7 @@ namespace sofapython3 {
 
 class PyMessageHandler: public sofa::helper::logging::MessageHandler {
 public:
-    void process(sofa::helper::logging::Message& m) override {}
+    void process(sofa::helper::logging::Message& m) override {SOFA_UNUSED(m);}
 };
 
 class MessageHandler_Trampoline : public PyMessageHandler
