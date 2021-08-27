@@ -31,6 +31,7 @@ using std::string;
 
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
+#include <sofa/helper/logging/MessageDispatcher.h>
 using sofa::helper::logging::MessageDispatcher;
 using sofa::helper::logging::MainPerComponentLoggingMessageHandler;
 

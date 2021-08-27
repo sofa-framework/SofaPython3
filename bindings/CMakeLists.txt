@@ -8,12 +8,16 @@ endif()
 # This will set rpaths relative to SP3 plugin library
 if(UNIX)
     set(CMAKE_INSTALL_RPATH
+        "$ORIGIN"
+        "$$ORIGIN"
         "$ORIGIN/../lib"
         "$$ORIGIN/../lib"
     )
     if(APPLE)
         set(CMAKE_MACOSX_RPATH ON)
         list(APPEND CMAKE_INSTALL_RPATH
+            "@loader_path"
+            "@executable_path"
             "@loader_path/../lib"
             "@executable_path/../lib"
         )
