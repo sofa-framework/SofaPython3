@@ -34,6 +34,30 @@ import functools
 import traceback
 import importlib
 
+# check if SOFA_ROOT has been (well) set
+sofaroot_path = os.environ.get('SOFA_ROOT')
+if not sofaroot_path:
+    print("Warning: The environment variable SOFA_ROOT is empty; loading SOFA's modules will likely fail on windows and/or SOFA won't find its resources.")
+else :
+    # Windows-only: starting from python 3.8, python wont read the env. variable PATH
+    # to get SOFA's dlls. os.add_dll_directory() is the new way to add paths for python
+    # to get external libraries.
+    
+    if sys.platform == 'win32':
+        sofa_bin_path = sofaroot_path + "\\bin"
+        test_file_path = sofa_bin_path + "\\Sofa.Helper.dll"
+    if not os.path.isfile(test_file_path):
+        print("Warning: The environment variable SOFA_ROOT is set but seems invalid; loading SOFA's modules will likely fail.")
+        print("SOFA_ROOT is currently set to " + sofaroot_path)
+    else:
+        # check if we need to explicitly find SOFA's libraries (starting from python3.8)
+        if sys.version_info.minor >= 8:
+            os.add_dll_directory(sofa_bin_path)
+        else:
+            # Add temporarily the bin/lib path to the env variable PATH
+            os.environ['PATH'] = sofa_bin_path + os.pathsep + os.environ['PATH']
+###
+
 import Sofa.constants
 import Sofa.Helper
 import Sofa.Core
