@@ -46,16 +46,16 @@ else :
     if sys.platform == 'win32':
         sofa_bin_path = sofaroot_path + "\\bin"
         test_file_path = sofa_bin_path + "\\Sofa.Helper.dll"
-    if not os.path.isfile(test_file_path):
-        print("Warning: The environment variable SOFA_ROOT is set but seems invalid; loading SOFA's modules will likely fail.")
-        print("SOFA_ROOT is currently set to " + sofaroot_path)
-    else:
-        # check if we need to explicitly find SOFA's libraries (starting from python3.8)
-        if sys.version_info.minor >= 8:
-            os.add_dll_directory(sofa_bin_path)
+        if not os.path.isfile(test_file_path):
+            print("Warning: The environment variable SOFA_ROOT is set but seems invalid; loading SOFA's modules will likely fail.")
+            print("SOFA_ROOT is currently set to " + sofaroot_path)
         else:
-            # Add temporarily the bin/lib path to the env variable PATH
-            os.environ['PATH'] = sofa_bin_path + os.pathsep + os.environ['PATH']
+            # check if we need to explicitly find SOFA's libraries (starting from python3.8)
+            if sys.version_info.minor >= 8:
+                os.add_dll_directory(sofa_bin_path)
+            else:
+                # Add temporarily the bin/lib path to the env variable PATH
+                os.environ['PATH'] = sofa_bin_path + os.pathsep + os.environ['PATH']
 ###
 
 import Sofa.constants
