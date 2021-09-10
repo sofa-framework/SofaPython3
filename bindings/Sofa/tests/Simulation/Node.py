@@ -42,14 +42,21 @@ class Test(unittest.TestCase):
                 self.assertTrue(o is not None)
                 self.assertTrue(root.child1.mechanical is not None)
 
-        def test_init(self):
+        def test_addObject_noInit(self):
+                root = Sofa.Core.Node("rootNode")
+                root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+                c = root.addChild("child1")
+                c = c.addObject("MechanicalObject", name="MO", position=[0.0,1.0,2.0]*100, __noInit=True)
+                self.assertEqual(len(c.rest_position.value), 0)
+                c.init()
+                self.assertEqual(len(c.rest_position.value), 100)
+
+        def test_addObject_defaultInit(self):
                 root = Sofa.Core.Node("rootNode")
                 root.addObject("RequiredPlugin", name="SofaBaseMechanics")
                 c = root.addChild("child1")
                 c = c.addObject("MechanicalObject", name="MO", position=[0.0,1.0,2.0]*100)
-                root.init()
-                print("TYPE: "+str(len(c.position.value)))
-                self.assertEqual(len(c.position.value), 100)
+                self.assertEqual(len(c.rest_position.value), 100)
 
         def test_createObjectInvalid(self):
                 root = Sofa.Core.Node("rootNode")

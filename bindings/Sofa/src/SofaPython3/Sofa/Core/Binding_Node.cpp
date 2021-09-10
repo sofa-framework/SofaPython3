@@ -18,7 +18,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-
 /// Neede to have automatic conversion from pybind types to stl container.
 #include <pybind11/stl.h>
 
@@ -170,11 +169,17 @@ py::object hasObject(Node &n, const std::string &name)
 /// Implement the addObject function.
 py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
+    bool doInit = true;
     if (kwargs.contains("name"))
     {
         std::string name = py::str(kwargs["name"]);
         if (sofapython3::isProtectedKeyword(name))
             throw py::value_error("addObject: Cannot call addObject with name " + name + ": Protected keyword");
+    }
+    if (kwargs.contains("__noInit"))
+    {
+        doInit = !py::bool_(kwargs["__noInit"]);
+        kwargs.attr("pop")("__noInit");
     }
     /// Prepare the description to hold the different python attributes as data field's
     /// arguments then create the object.
@@ -209,6 +214,10 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         BaseData* d = object->findData(py::cast<std::string>(a.first));
         if(d)
             d->setPersistent(true);
+    }
+    if(doInit)
+    {
+        object->init();
     }
     return PythonFactory::toPython(object.get());
 }
