@@ -220,7 +220,7 @@ py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& k
     {
         BaseObject* obj = py::cast<BaseObject*>(callable);
 
-        self->addObject(obj);    
+        self->addObject(obj);
         return py::cast(obj);
     }
 
@@ -326,24 +326,41 @@ py::object removeChildByName(Node& n, const std::string name)
 
 NodeIterator* property_children(Node* node)
 {
-    return new NodeIterator(node, [](Node* n) -> size_t { return n->child.size(); },
-    [](Node* n, unsigned int index) -> Base::SPtr { return n->child[index]; });
+    return new NodeIterator(node,
+                            [](Node* n) -> size_t { return n->child.size(); },
+                            [](Node* n, unsigned int index) -> Base::SPtr { return n->child[index]; },
+                            [](const Node* n, const std::string& name) { return n->getChild(name); },
+                            [](Node* n, unsigned int index) { n->removeChild(n->child[index]); }
+                            );
 }
 
 NodeIterator* property_parents(Node* node)
 {
-    return new NodeIterator(node, [](Node* n) -> size_t { return n->getNbParents(); },
-    [](Node* n, unsigned int index) -> Node::SPtr {
-    auto p = n->getParents();
-    return static_cast<Node*>(p[index]);
-});
+    return new NodeIterator(node,
+                            [](Node* n) -> size_t { return n->getNbParents(); },
+                            [](Node* n, unsigned int index) -> Node::SPtr {
+                                auto p = n->getParents();
+                                return static_cast<Node*>(p[index]);
+                                },
+                            [](const Node* n, const std::string& name) -> sofa::core::Base* {
+                                    const auto& parents = n->getParents();
+                                    return *std::find_if(parents.begin(),
+                                                     parents.end(),
+                                                     [name](BaseNode* child){ return child->getName() == name; });
+                                },
+                            [](Node*, unsigned int) {
+                                throw std::runtime_error("Removing a parent is not a supported operation. Please detach the node from the corresponding graph node.");
+                            });
 }
 
 NodeIterator* property_objects(Node* node)
 {
-    return new NodeIterator(node, [](Node* n) -> size_t { return n->object.size(); },
-    [](Node* n, unsigned int index) -> Base::SPtr { return (n->object[index]);
-});
+    return new NodeIterator(node,
+                            [](Node* n) -> size_t { return n->object.size(); },
+                            [](Node* n, unsigned int index) -> Base::SPtr { return (n->object[index]);},
+                            [](const Node* n, const std::string& name) { return n->getObject(name); },
+                            [](Node* n, unsigned int index) { n->removeObject(n->object[index]);}
+                            );
 }
 
 py::object __getattr__(Node& self, const std::string& name)

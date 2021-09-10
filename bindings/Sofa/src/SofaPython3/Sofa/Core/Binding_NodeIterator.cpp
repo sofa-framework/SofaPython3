@@ -43,7 +43,7 @@ void moduleAddNodeIterator(py::module &m)
 
     d.def("__getitem__", [](NodeIterator& d, const std::string& name) -> py::object
     {
-        BaseObject* obj =d.owner->getObject(name);
+        sofa::core::objectmodel::Base* obj = d.get_by_name(d.owner.get(), name);
         if(obj==nullptr)
             throw py::index_error("No existing object '"+name+"'");
         return PythonFactory::toPython(obj);
@@ -71,15 +71,11 @@ void moduleAddNodeIterator(py::module &m)
     });
     d.def("remove_at", [](NodeIterator& d, size_t index)
     {
-        sofa::core::sptr<sofa::core::objectmodel::BaseNode> n(
-                dynamic_cast<sofa::core::objectmodel::BaseNode *>(d.get(d.owner.get(), index).get())
-        );
-        d.owner->removeChild(n);
+        return d.remove_at(d.owner.get(), index);
     });
-    d.def("__contains__", [](NodeIterator& d, const std::string& name) -> py::object
+    d.def("__contains__", [](NodeIterator& d, const std::string& name)
     {
-        BaseObject* obj =d.owner->getObject(name);
-        return py::cast(obj==nullptr);
+        return d.get_by_name(d.owner.get(), name) != nullptr;
     });
 }
 
