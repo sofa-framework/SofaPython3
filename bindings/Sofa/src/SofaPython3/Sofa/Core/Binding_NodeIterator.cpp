@@ -76,6 +76,11 @@ void moduleAddNodeIterator(py::module &m)
         );
         d.owner->removeChild(n);
     });
+    d.def("__contains__", [](NodeIterator& d, const std::string& name) -> py::object
+    {
+        BaseObject* obj =d.owner->getObject(name);
+        return py::cast(obj==nullptr);
+    });
 }
 
 } /// namespace sofapython3
