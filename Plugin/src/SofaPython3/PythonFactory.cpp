@@ -301,7 +301,17 @@ void PythonFactory::fromPython(BaseData* d, const py::object& o)
         if(nfo.Integer()) {
             nfo.setIntegerValue(guard.ptr, 0, py::cast<int>(o));
         } else if(nfo.Text()) {
-            nfo.setTextValue(guard.ptr, 0, py::cast<py::str>(o));
+            if(py::isinstance<py::str>(o))
+            {
+                nfo.setTextValue(guard.ptr, 0, py::cast<py::str>(o));
+            }
+            else
+            {
+                std::stringstream s;
+                s<< "trying to set value for '"
+                 << d->getName() << "' from a python object of type " << py::cast<std::string>(py::str(o.get_type()))  ;
+                throw std::runtime_error(s.str());
+            }
         } else if(nfo.Scalar()) {
             nfo.setScalarValue(guard.ptr, 0, py::cast<double>(o));
         } else {
@@ -354,7 +364,7 @@ void PythonFactory::fromPython(BaseData* d, const py::object& o)
 
     std::stringstream s;
     s<< "binding problem, trying to set value for "
-     << d->getName() << ", " << py::cast<std::string>(py::str(o));
+     << d->getName() << ", from " << py::cast<std::string>(py::str(o.get_type()));
     throw std::runtime_error(s.str());
 }
 
