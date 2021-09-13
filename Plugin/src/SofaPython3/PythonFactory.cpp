@@ -291,9 +291,10 @@ void copyFromListOf<std::string>(BaseData& d, const AbstractTypeInfo& nfo, const
 
 void PythonFactory::fromPython(BaseData* d, const py::object& o)
 {
-
     const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
 
+    // Is this data field a container ?
+    // If no we fill it with direct access.
     if(!nfo.Container())
     {
         scoped_writeonly_access guard(d);
@@ -326,6 +327,18 @@ void PythonFactory::fromPython(BaseData* d, const py::object& o)
         }
 
         return ;
+    }
+
+    // The data field is a container, and we want to sets its value from a python string.
+    // This is the old sofa-behavior that we want to avoid.
+    // To smooth the deprecation process we are still allowing it ...but prints a warning.
+    if( !nfo.Text() && py::isinstance<py::str>(o) )
+    {
+        msg_deprecated(d->getOwner()) << "Data field '" << d->getName() << "' is initialized from a string."
+                                      << " This behavior was allowed with SofaPython2 but have very poor performance so it is now "
+                                      << "deprecated with SofaPython3. Please fix your scene (as this behavior will be removed).";
+        d->read( py::cast<std::string>(o) );
+        return;
     }
 
     if(nfo.Integer())
