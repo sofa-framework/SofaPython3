@@ -167,6 +167,20 @@ py::object hasObject(Node &n, const std::string &name)
     return py::cast(false);
 }
 
+py::object getObject(Node &n, const std::string &name, const py::kwargs& kwargs)
+{
+    if(kwargs.size()!=0)
+    {
+        msg_deprecated(&n) << "Calling the method getObject() with extra arguments is not supported anymore."
+                           << "To remove this message please refer to the documentation of the getObject method";
+    }
+
+    BaseObject *object = n.getObject(name);
+    if (object)
+        return PythonFactory::toPython(object);
+    return py::none();
+}
+
 /// Implement the addObject function.
 py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
@@ -174,7 +188,7 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
     {
         std::string name = py::str(kwargs["name"]);
         if (sofapython3::isProtectedKeyword(name))
-            throw py::value_error("addObject: Cannot call addObject with name " + name + ": Protected keyword");
+            throw py::value_error("Cannot call addObject with name " + name + ": Protected keyword");
     }
     /// Prepare the description to hold the different python attributes as data field's
     /// arguments then create the object.
@@ -230,7 +244,6 @@ py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& k
         self->addChild(node);
         return py::cast(node);
     }
-
     if(py::isinstance<py::str>(callable))
     {
         py::str type = callable;
@@ -262,7 +275,7 @@ py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& k
 py::object createObject(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
     msg_deprecated(self) << "The Node.createObject method is deprecated since sofa 19.06."
-                            "To remove this warning message, use 'addObject'.";
+                         << "To remove this warning message, use 'addObject'." << msgendl;
     return addObjectKwargs(self, type,kwargs);
 }
 
@@ -486,6 +499,7 @@ void moduleAddNode(py::module &m) {
     p.def("addObject", &addObject, sofapython3::doc::sofa::core::Node::addObject, py::keep_alive<0, 2>());
     p.def("createObject", &createObject, sofapython3::doc::sofa::core::Node::createObject);
     p.def("hasObject", &hasObject, sofapython3::doc::sofa::core::Node::hasObject);
+    p.def("getObject", &getObject, sofapython3::doc::sofa::core::Node::getObject);
     p.def("addChild", &addChildKwargs, sofapython3::doc::sofa::core::Node::addChildKwargs);
     p.def("addChild", &addChild, sofapython3::doc::sofa::core::Node::addChild);
     p.def("createChild", &createChild, sofapython3::doc::sofa::core::Node::createChild);
