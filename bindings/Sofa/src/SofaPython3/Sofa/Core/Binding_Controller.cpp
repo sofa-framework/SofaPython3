@@ -48,16 +48,17 @@ std::string Controller_Trampoline::getClassName() const
 
 void Controller_Trampoline::init()
 {
-    PythonEnvironment::gil acquire {"Controller_init"};
-    PYBIND11_OVERLOAD(void, Controller, init, );
+    PythonEnvironment::executePython(this, [this](){
+        PYBIND11_OVERLOAD(void, Controller, init, );
+    });
 }
 
 void Controller_Trampoline::reinit()
 {
-    PythonEnvironment::gil acquire {"Controller_reinit"};
-    PYBIND11_OVERLOAD(void, Controller, reinit, );
+    PythonEnvironment::executePython(this, [this](){
+        PYBIND11_OVERLOAD(void, Controller, reinit, );
+    });
 }
-
 
 /// If a method named "methodName" exists in the python controller,
 /// methodName is called, with the Event's dict as argument
@@ -73,22 +74,22 @@ void Controller_Trampoline::callScriptMethod(
 
 void Controller_Trampoline::handleEvent(Event* event)
 {
-    PythonEnvironment::gil acquire {"Controller_handleEvent"};
-
-    py::object self = py::cast(this);
-    std::string name = std::string("on")+event->getClassName();
-    /// Is there a method with this name in the class ?
-    if( py::hasattr(self, name.c_str()) )
-    {
-        py::object fct = self.attr(name.c_str());
-        if (PyCallable_Check(fct.ptr())) {
-            callScriptMethod(self, event, name);
-            return;
+    PythonEnvironment::executePython(this, [this,event](){
+        py::object self = py::cast(this);
+        std::string name = std::string("on")+event->getClassName();
+        /// Is there a method with this name in the class ?
+        if( py::hasattr(self, name.c_str()) )
+        {
+            py::object fct = self.attr(name.c_str());
+            if (PyCallable_Check(fct.ptr())) {
+                callScriptMethod(self, event, name);
+                return;
+            }
         }
-    }
 
-    /// Is the fallback method available.
-    callScriptMethod(self, event, "onEvent");
+        /// Is the fallback method available.
+        callScriptMethod(self, event, "onEvent");
+    });
 }
 
 void moduleAddController(py::module &m) {
