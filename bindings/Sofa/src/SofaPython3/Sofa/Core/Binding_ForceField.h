@@ -42,6 +42,7 @@ public:
     ~ForceField_Trampoline() override;
 
     void init() override;
+    std::string getClassName() const override;
 
     void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
     void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) override;
