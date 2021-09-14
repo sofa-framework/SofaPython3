@@ -24,8 +24,8 @@
 #include <SofaPython3/config.h>
 #include <sofa/helper/testing/BaseTest.h>
 
-#include <boost/filesystem/path.hpp>
-using boost::filesystem::path;
+#include <filesystem>
+using std::filesystem::path;
 
 namespace sofapython3
 {
