@@ -35,88 +35,96 @@ namespace py { using namespace pybind11; }
 
 namespace sofapython3
 {
-    using sofa::core::objectmodel::Event;
-    using sofa::core::objectmodel::BaseObject;
+using sofa::core::objectmodel::Event;
+using sofa::core::objectmodel::BaseObject;
 
-    void Controller_Trampoline::init()
+std::string Controller_Trampoline::getClassName() const
+{
+    PythonEnvironment::gil acquire {"getClassName"};
+
+    // Get the actual class name from python.
+    return py::str(py::cast(this).get_type().attr("__name__"));
+}
+
+void Controller_Trampoline::init()
+{
+    PythonEnvironment::gil acquire {"Controller_init"};
+    PYBIND11_OVERLOAD(void, Controller, init, );
+}
+
+void Controller_Trampoline::reinit()
+{
+    PythonEnvironment::gil acquire {"Controller_reinit"};
+    PYBIND11_OVERLOAD(void, Controller, reinit, );
+}
+
+
+/// If a method named "methodName" exists in the python controller,
+/// methodName is called, with the Event's dict as argument
+void Controller_Trampoline::callScriptMethod(
+        const py::object& self, Event* event, const std::string & methodName)
+{
+    if( py::hasattr(self, methodName.c_str()) )
     {
-        PythonEnvironment::gil acquire {"Controller_init"};
-        PYBIND11_OVERLOAD(void, Controller, init, );
+        py::object fct = self.attr(methodName.c_str());
+        fct(PythonFactory::toPython(event));
     }
+}
 
-    void Controller_Trampoline::reinit()
+void Controller_Trampoline::handleEvent(Event* event)
+{
+    PythonEnvironment::gil acquire {"Controller_handleEvent"};
+
+    py::object self = py::cast(this);
+    std::string name = std::string("on")+event->getClassName();
+    /// Is there a method with this name in the class ?
+    if( py::hasattr(self, name.c_str()) )
     {
-        PythonEnvironment::gil acquire {"Controller_reinit"};
-        PYBIND11_OVERLOAD(void, Controller, reinit, );
-    }
-
-
-    /// If a method named "methodName" exists in the python controller,
-    /// methodName is called, with the Event's dict as argument
-    void Controller_Trampoline::callScriptMethod(
-                const py::object& self, Event* event, const std::string & methodName)
-    {
-        if( py::hasattr(self, methodName.c_str()) )
-        {
-            py::object fct = self.attr(methodName.c_str());
-            fct(PythonFactory::toPython(event));
+        py::object fct = self.attr(name.c_str());
+        if (PyCallable_Check(fct.ptr())) {
+            callScriptMethod(self, event, name);
+            return;
         }
     }
 
-    void Controller_Trampoline::handleEvent(Event* event)
-    {
-        PythonEnvironment::gil acquire {"Controller_handleEvent"};
+    /// Is the fallback method available.
+    callScriptMethod(self, event, "onEvent");
+}
 
-        py::object self = py::cast(this);
-        std::string name = std::string("on")+event->getClassName();
-        /// Is there a method with this name in the class ?
-        if( py::hasattr(self, name.c_str()) )
-        {
-            py::object fct = self.attr(name.c_str());
-            if (PyCallable_Check(fct.ptr())) {
-                callScriptMethod(self, event, name);
-                return;
-            }
-        }
+void moduleAddController(py::module &m) {
+    py::class_<Controller,
+            Controller_Trampoline,
+            BaseObject,
+            py_shared_ptr<Controller>> f(m, "Controller",
+                                         py::dynamic_attr(),
+                                         sofapython3::doc::controller::Controller);
 
-        /// Is the fallback method available.
-        callScriptMethod(self, event, "onEvent");
-    }
+    f.def(py::init([](py::args& /*args*/, py::kwargs& kwargs)
+          {
+              auto c = sofa::core::sptr<Controller_Trampoline> (new Controller_Trampoline());
+              c->f_listening.setValue(true);
 
-    void moduleAddController(py::module &m) {
-        py::class_<Controller,
-                Controller_Trampoline,
-                BaseObject,
-                py_shared_ptr<Controller>> f(m, "Controller",
-                                             py::dynamic_attr(),
-                                             sofapython3::doc::controller::Controller);
+              for(auto kv : kwargs)
+              {
+                  std::string key = py::cast<std::string>(kv.first);
+                  py::object value = py::reinterpret_borrow<py::object>(kv.second);
 
-        f.def(py::init([](py::args& /*args*/, py::kwargs& kwargs)
-        {
-            auto c = sofa::core::sptr<Controller_Trampoline> (new Controller_Trampoline());
-            c->f_listening.setValue(true);
+                  if( key == "name")
+                  c->setName(py::cast<std::string>(kv.second));
+                  try {
+                      BindingBase::SetAttr(*c, key, value);
+                  } catch (py::attribute_error& /*e*/) {
+                      /// kwargs are used to set datafields to their initial values,
+                      /// but they can also be used as simple python attributes, unrelated to SOFA.
+                      /// thus we catch & ignore the py::attribute_error thrown by SetAttr
+                  }
+              }
+              return c;
+          }));
 
-            for(auto kv : kwargs)
-            {
-                std::string key = py::cast<std::string>(kv.first);
-                py::object value = py::reinterpret_borrow<py::object>(kv.second);
-
-                if( key == "name")
-                c->setName(py::cast<std::string>(kv.second));
-                try {
-                    BindingBase::SetAttr(*c, key, value);
-                } catch (py::attribute_error& /*e*/) {
-                    /// kwargs are used to set datafields to their initial values,
-                    /// but they can also be used as simple python attributes, unrelated to SOFA.
-                    /// thus we catch & ignore the py::attribute_error thrown by SetAttr
-                }
-            }
-            return c;
-        }));
-
-        f.def("init", &Controller::init);
-        f.def("reinit", &Controller::reinit);
-    }
+    f.def("init", &Controller::init);
+    f.def("reinit", &Controller::reinit);
+}
 
 
 }
