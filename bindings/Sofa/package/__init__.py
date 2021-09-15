@@ -37,14 +37,15 @@ import importlib
 import Sofa.constants
 import Sofa.Helper
 import Sofa.Core
+import Sofa.Config
 import Sofa.Simulation
 import Sofa.Types
 import Sofa.Components
 import SofaTypes
-
 from .prefab import *
+from .future import __enable_feature__
 
-__all__=["constants", "Helper", "Core", "Simulation", "Types", "SofaTypes", "prefab", "__futurefeatures__"]
+__all__=["constants", "Helper", "Core", "Simulation", "Types", "SofaTypes", "prefab", "future"]
 
 # Keep a list of the modules always imported in the Sofa-PythonEnvironment
 try:
@@ -55,7 +56,6 @@ except:
     # some modules could be added here manually and can be modified procedurally
     # e.g. plugin's modules defined from c++
     __SofaPythonEnvironment_modulesExcludedFromReload = []
-
 
 def unloadModules():
     """ call this function to unload python modules and to force their reload

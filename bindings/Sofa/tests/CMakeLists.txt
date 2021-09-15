@@ -11,6 +11,7 @@ set(SOURCE_FILES
 
 set(PYTHON_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Components/Components.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/Config/Config.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseData.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Base.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseObject.py
@@ -51,6 +52,7 @@ add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 
 set(DIR_BINDING_LIST
     Components
+    Config
     Core
     Helper
     Simulation
