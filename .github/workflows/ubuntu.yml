@@ -39,10 +39,10 @@ jobs:
           if [ -z "$GIT_BRANCH" ]; then exit 1; fi
           echo "GIT_BRANCH=$GIT_BRANCH" >> $GITHUB_ENV
 
-      - name: Set up Python $PYTHON_VERSION
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v2
         with:
-          python-version: $PYTHON_VERSION
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install requirements
         run: |
@@ -62,7 +62,7 @@ jobs:
         run: |
           git clone -b v$PYBIND_VERSION --depth 1 https://github.com/pybind/pybind11.git /tmp/pybind11
           cd /tmp/pybind11
-          cmake -DCMAKE_BUILD_TYPE=Release -DPYBIND11_TEST=OFF -DPYTHON_EXECUTABLE=$(which python$PYTHON_VERSION) .
+          cmake -DCMAKE_BUILD_TYPE=Release -DPYBIND11_TEST=OFF -DPYTHON_EXECUTABLE=$(which python${{ env.PYTHON_VERSION }}) .
           make --silent
 
       - name: Install pybind11
@@ -96,7 +96,7 @@ jobs:
           CCACHE_MAXSIZE: "500M"
         run: |
           echo "RUNNER_TOOL_CACHE = $RUNNER_TOOL_CACHE"
-          python_root="$(find $RUNNER_TOOL_CACHE -maxdepth 3 -type d -path '**/Python/$PYTHON_VERSION*/x64')"
+          python_root="$(find $RUNNER_TOOL_CACHE -maxdepth 3 -type d -path '**/Python/${{ env.PYTHON_VERSION }}*/x64')"
           echo "python_root = $python_root"
           export CCACHE_BASEDIR=$GITHUB_WORKSPACE
           export CCACHE_DIR=$GITHUB_WORKSPACE/.ccache
@@ -107,7 +107,7 @@ jobs:
             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
             -DCMAKE_PREFIX_PATH=$SOFA_ROOT/lib/cmake \
             -DCMAKE_BUILD_TYPE=Release \
-            -DPython_EXECUTABLE=$(which python$PYTHON_VERSION) \
+            -DPython_EXECUTABLE=$(which python${{ env.PYTHON_VERSION }}) \
             -DPython_ROOT=$python_root \
             .
           ninja install
@@ -152,10 +152,10 @@ jobs:
           if [ -z "$GIT_BRANCH" ]; then exit 1; fi
           echo "GIT_BRANCH=$GIT_BRANCH" >> $GITHUB_ENV
 
-      - name: Set up Python $PYTHON_VERSION
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v2
         with:
-          python-version: $PYTHON_VERSION
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install requirements
         run: |
