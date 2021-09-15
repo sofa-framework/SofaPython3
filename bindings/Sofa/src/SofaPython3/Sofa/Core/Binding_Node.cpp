@@ -48,27 +48,28 @@ using sofapython3::PythonFactory;
 #include <SofaPython3/Sofa/Core/Binding_Node_doc.h>
 #include <SofaPython3/Sofa/Core/Binding_NodeIterator.h>
 #include <SofaPython3/Sofa/Core/Binding_PythonScriptEvent.h>
-
 using sofa::core::objectmodel::BaseObjectDescription;
 
 #include <queue>
 #include <sofa/core/objectmodel/Link.h>
 
+#include <SofaPython3/Config/futurefeatures.h>
+
+#include <pybind11/eval.h>
+
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
 
-
 using sofa::simulation::Node;
-
-namespace sofapython3 {
-
+namespace sofapython3
+{
 
 bool checkParamUsage(BaseObjectDescription& desc)
 {
     bool hasFailure = false;
     std::stringstream tmp;
     tmp <<"Unknown Attribute(s): " << msgendl;
-    for( auto it : desc.getAttributeMap() )
+    for( auto& it : desc.getAttributeMap() )
     {
         if (!it.second.isAccessed())
         {
@@ -215,7 +216,8 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         if(d)
             d->setPersistent(true);
     }
-    if(doInit)
+
+    if(doInit && sofapython3::config::futurefeatures::get("object_auto_init"))
     {
         object->init();
     }
