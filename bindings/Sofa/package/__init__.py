@@ -44,7 +44,7 @@ import SofaTypes
 
 from .prefab import *
 
-__all__=["constants", "Helper", "Core", "Simulation", "Types", "SofaTypes", "prefab"]
+__all__=["constants", "Helper", "Core", "Simulation", "Types", "SofaTypes", "prefab", "__futurefeatures__"]
 
 # Keep a list of the modules always imported in the Sofa-PythonEnvironment
 try:
