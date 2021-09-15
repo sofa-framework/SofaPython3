@@ -1,0 +1,118 @@
+name: ci-build
+
+on: 
+  workflow_dispatch:
+  issue_comment:
+    types: [created]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    env:
+      GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      ISSUE_BODY: "${{ github.event.issue.body }}"
+
+    steps:
+      - name: Parse comment
+        if: github.event.issue.pull_request
+        uses: khan/pull-request-comment-trigger@1.0.0
+        id: check
+        with:
+          trigger: '[ci-build]'
+
+      - name: Debug logs
+        if: steps.check.outputs.triggered == 'true'
+        run: |
+          echo "Trigger key detected."
+          echo "----------------------------------"
+          echo "  github.event.pull_request.base.ref = ${{ github.event.pull_request.base.ref }}"
+          echo "  github.event.pull_request.base.sha = ${{ github.event.pull_request.base.sha }}"
+          echo "  github.event.pull_request.head.ref = ${{ github.event.pull_request.head.ref }}"
+          echo "  github.event.pull_request.head.sha = ${{ github.event.pull_request.head.sha }}"
+          echo "  github.event.pull_request.number = ${{ github.event.pull_request.number }}"
+          echo "  github.event.pull_request.merge_commit_sha = ${{ github.event.pull_request.merge_commit_sha }}"
+          echo "----------------------------------"
+          echo "  github.event.issue.number = ${{ github.event.issue.number }}"
+          echo "  github.event.issue.pull_request  = ${{ github.event.issue.pull_request }}"
+          echo "  github.event.issue.pull_request.merge_commit_sha  = ${{ github.event.issue.pull_request.merge_commit_sha }}"
+          echo "  github.event.issue.pull_request.base.ref = ${{ github.event.pull_request.base.ref }}"
+          echo "  github.event.issue.pull_request.base.sha = ${{ github.event.pull_request.base.sha }}"
+          echo "  github.event.issue.pull_request.head.ref = ${{ github.event.pull_request.head.ref }}"
+          echo "  github.event.issue.pull_request.head.sha = ${{ github.event.pull_request.head.sha }}"
+          echo "  github.event.issue.pull_request.number = ${{ github.event.pull_request.number }}"
+          echo "----------------------------------"
+          echo "  github.event.number = ${{ github.event.number }}"
+          echo "  GITHUB_SHA = $GITHUB_SHA"
+          echo "  GITHUB_REF = $GITHUB_REF"
+          echo "  GITHUB_HEAD_REF = $GITHUB_HEAD_REF"
+          echo "  GITHUB_BASE_REF = $GITHUB_BASE_REF"
+          echo "----------------------------------"
+          echo "github.event"
+          echo "${{ toJSON(github.event) }}"
+          echo "----------------------------------"
+
+      - name: Trigger PR workflows
+        if: steps.check.outputs.triggered == 'true'
+        run: |
+          echo "-----------"
+          body="$(echo "$ISSUE_BODY" | sed ':a;N;$!ba;s/\r/\\r/g;s/\n/\\n/g;')"
+          echo "body = $body"
+          separator='\n'
+          if echo "$body" | grep -q '\n:rocket:$'; then
+            separator=' '
+          fi
+          echo "-----------"
+          curl \
+            -H "Authorization: token ${{ secrets.SOFA_REPO_WRITE_TOKEN }}" \
+            -X PATCH \
+            -d "{\"body\":\"$body$separator:rocket:\"}" \
+            https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.issue.number }}
+      
+      
+      #- name: update-pull-request
+      #  if: steps.check.outputs.triggered == 'true'
+      #  uses: tzkhan/pr-update-action@v2
+      #  with:
+      #    repo-token: "${{ secrets.GITHUB_TOKEN }}"
+      #    base-branch-regex: '[a-z\d-_.\\/]+'
+      #    body-update-action: 'suffix'
+      #    body-newline-count: 1
+      #    body-template: "[ci-build] triggered."
+
+      #- name: Clean assignees
+      #  if: github.event.assignee.login == 'sofabot'
+      #  run: |
+      #    echo "Removing sofabot from assignees"
+      #    echo "-------------"
+      #    git show-ref
+      #    echo "-------------"
+      #    curl --silent \
+      #      -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+      #      -X DELETE \
+      #      -d '{"assignees":["sofabot"]}' \
+      #      https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.number }}/assignees
+    
+      #- name: Trigger workflow "Ubuntu CI"
+      #  if: github.event.assignee.login == 'sofabot'
+      #  run: |
+      #    curl --silent \
+      #      -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+      #      -X POST \
+      #      -d '{"ref":"'$GITHUB_REF'"}' \
+      #      https://api.github.com/repos/${{ github.repository }}/actions/workflows/ubuntu.yml/dispatches
+            
+      #- name: Trigger workflow "Ubuntu CI"
+      #  if: github.event.assignee.login == 'sofabot'
+      #  uses: benc-uk/workflow-dispatch@v1
+      #  with:
+      #      workflow: "Ubuntu CI"
+      #      token: ${{ secrets.SOFA_REPO_WRITE_TOKEN }}
+
+      #- name: Trigger workflow "MacOS CI"
+      #  if: steps.check.outputs.triggered == 'true'
+      #  uses: benc-uk/workflow-dispatch@v1
+      #  with:
+      #      workflow: "MacOS CI"
+      #      token: ${{ secrets.SOFA_REPO_WRITE_TOKEN }}
+      #      ref: 'refs/pull/${{ github.event.issue.number }}/merge'
