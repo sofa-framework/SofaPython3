@@ -16,9 +16,11 @@ import Sofa.Config
 from contextlib import ContextDecorator
 
 ### Initialize the feature set.
-Sofa.Config.init("object_auto_init", False)
 # Add your own feature by un-commenting the following line
 #Sofa.Config.init("my_feature", False)
+
+def has_feature(name):
+    return Sofa.Config.get(name)
 
 def list_features():
     return Sofa.Config.list_features()
