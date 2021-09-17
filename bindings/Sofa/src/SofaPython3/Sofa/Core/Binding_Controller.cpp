@@ -41,7 +41,6 @@ using sofa::core::objectmodel::BaseObject;
 std::string Controller_Trampoline::getClassName() const
 {
     PythonEnvironment::gil acquire {"getClassName"};
-
     // Get the actual class name from python.
     return py::str(py::cast(this).get_type().attr("__name__"));
 }
