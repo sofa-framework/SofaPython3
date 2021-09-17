@@ -48,11 +48,7 @@ function(SP3_add_python_package)
 
     cmake_parse_arguments(A "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    set(OUTPUT_DIRECTORY lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY})
-    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-        set(OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY})
-    endif()
-
+    set(OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY})
 
     file(GLOB_RECURSE files RELATIVE ${A_SOURCE_DIRECTORY} ${A_SOURCE_DIRECTORY}/*)
     foreach(file_relative_path ${files})
@@ -187,7 +183,7 @@ function(SP3_add_python_module)
         ${A_TARGET}
         PROPERTIES
             OUTPUT_NAME ${MODULE_NAME}
-            LIBRARY_OUTPUT_DIRECTORY "${CMAKE_PROJECT_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
+            LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
     )
     get_target_property(TARGET_LIBRARY_OUTPUT_DIRECTORY ${A_TARGET} LIBRARY_OUTPUT_DIRECTORY)
 
@@ -207,7 +203,7 @@ function(SP3_add_python_module)
     # Get the relative path from this binding module to the install lib directory
     # For example, for lib/python3/site-packages/Sofa/Core.***.so, the relative path will be
     # "../../.."
-    file(RELATIVE_PATH from_target_to_lib "${TARGET_LIBRARY_OUTPUT_DIRECTORY}" "${CMAKE_PROJECT_BINARY_DIR}/lib")
+    file(RELATIVE_PATH from_target_to_lib "${TARGET_LIBRARY_OUTPUT_DIRECTORY}" "${CMAKE_BINARY_DIR}/lib")
     file(TO_CMAKE_PATH "${from_target_to_lib}" from_target_to_lib) # prettify this path
 
     # RPATH needed to find dependencies in <SofaPython3_install_dir>/lib
