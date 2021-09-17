@@ -20,6 +20,7 @@ jobs:
         id: check
         with:
           trigger: '[ci-build]'
+          reaction: rocket
 
       - name: Trigger PR workflows
         if: steps.check.outputs.triggered == 'true'
