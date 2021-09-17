@@ -45,6 +45,8 @@ public:
     void reinit() override;
     void handleEvent(sofa::core::objectmodel::Event* event) override;
 
+    std::string getClassName() const override;
+
 private:
     void callScriptMethod(const pybind11::object& self, sofa::core::objectmodel::Event* event,
         const std::string& methodName);

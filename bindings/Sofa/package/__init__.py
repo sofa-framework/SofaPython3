@@ -77,12 +77,10 @@ def formatStackForSofa(o):
         in filename3.py:103:functioname2()
               -> the line of code.
     """
-    ss='Python Stack: \n'
+    ss='At: '
     for entry in o:
-        ss+= ' in ' + str(entry[1]) + ':' + str(entry[2]) + ':'+ entry[3] + '()  \n'
-        ss+= '  -> '+ entry[4][0] + '  \n'
-        return ss
-
+        ss+= '\n  '+ str(entry[1]) + '(' + str(entry[2]) + '): '+ entry[3]
+    return ss + "\n"
 
 def getStackForSofa():
     """returns the current stack with a "informal" formatting. """
