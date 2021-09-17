@@ -21,6 +21,7 @@
 
 /// Neede to have automatic conversion from pybind types to stl container.
 #include <pybind11/stl.h>
+#include <pybind11/eval.h>
 
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/simulation/Simulation.h>
@@ -45,6 +46,9 @@ using sofa::core::ObjectFactory;
 #include <SofaPython3/PythonFactory.h>
 using sofapython3::PythonFactory;
 
+#include <SofaPython3/PythonEnvironment.h>
+using sofapython3::PythonEnvironment;
+
 #include <SofaPython3/Sofa/Core/Binding_Node.h>
 #include <SofaPython3/Sofa/Core/Binding_Node_doc.h>
 #include <SofaPython3/Sofa/Core/Binding_NodeIterator.h>
@@ -58,18 +62,16 @@ using sofa::core::objectmodel::BaseObjectDescription;
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
 
-
 using sofa::simulation::Node;
 
 namespace sofapython3 {
-
 
 bool checkParamUsage(BaseObjectDescription& desc)
 {
     bool hasFailure = false;
     std::stringstream tmp;
     tmp <<"Unknown Attribute(s): " << msgendl;
-    for( auto it : desc.getAttributeMap() )
+    for( auto& it : desc.getAttributeMap() )
     {
         if (!it.second.isAccessed())
         {
@@ -127,8 +129,6 @@ py::object getItem(Node& self, std::list<std::string>& path)
 std::string getLinkPath(Node* node){
     return ("@"+node->getPathName()).c_str();
 }
-
-
 
 py_shared_ptr<Node> __init__noname() {
     auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>("unnamed");
@@ -261,8 +261,10 @@ py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& k
 /// a warning for old scenes.
 py::object createObject(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
-    msg_deprecated(self) << "The Node.createObject method is deprecated since sofa 19.06."
-                            "To remove this warning message, use 'addObject'.";
+    msg_deprecated(self) << "The Node.createObject method is deprecated since sofa 19.06." << msgendl
+                         << "To remove this warning message, use 'addObject' instead of 'createObject'." <<  msgendl
+                         << msgendl
+                         << PythonEnvironment::getPythonCallingPointString() ;
     return addObjectKwargs(self, type,kwargs);
 }
 
@@ -296,8 +298,10 @@ Node* addChild(Node* self, Node* child)
 /// deprecated, use addChild instead. Keeping for compatibility reasons
 py::object createChild(Node* self, const std::string& name, const py::kwargs& kwargs)
 {
-    msg_deprecated(self) << "The Node.createChild method is deprecated since sofa 19.06."
-                            "To remove this warning message, use 'addChild'.";
+    msg_deprecated(self) << "The Node.createChild method is deprecated since sofa 19.06." << msgendl
+                         << "To remove this warning message, use 'addChild' instead of 'createChild'." << msgendl
+                         << msgendl
+                         << PythonEnvironment::getPythonCallingPointString() ;
     return addChildKwargs(self, name, kwargs);
 }
 
