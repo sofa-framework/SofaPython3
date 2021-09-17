@@ -292,6 +292,13 @@ class Test(unittest.TestCase):
             self.assertEqual(wa[2, 2], 8.0)
             numpy.testing.assert_array_equal(wa, v*4.0)
 
+    def test_set_value_from_string(self):
+        n = create_scene("rootNode")
+        n.gravity.value = [1.0,2.0,3.0]
+        self.assertEqual(list(n.gravity.value), [1.0,2.0,3.0])
+        n.gravity.value = "4.0 5.0 6.0"
+        self.assertEqual(list(n.gravity.value), [4.0,5.0,6.0])
+
     def test_DataString(self):
         n = create_scene("rootNode")
         self.assertTrue(isinstance(n.name, Sofa.Core.DataString))

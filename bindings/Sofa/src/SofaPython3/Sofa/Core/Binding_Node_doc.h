@@ -273,29 +273,52 @@ static auto getLinkPath =
 static auto children =
         R"(
         Field interface to acces the children of a node.
+        The returned object is a iteratable featuring the following operations:
+        len, remove_at, __contains__, get_at
 
         :Example:
         >>> n = Sofa.Core.Node("MyNode")
+        >>> n.addChild("child1")
         >>> for child in n.children:
         >>>     print(child.name)
+        >>>
+        >>> if "child1" in n.children:
+        >>>     print("Yes")
+        >>> print(len(n.children))
         )";
 
 static auto parents =
         R"(
         Field interface to acces the parents of a node.
+        The returned object is a iteratable featuring the following operations:
+        len, remove_at, __contains__, get_at
+
         :Example:
-        >>> n = Sofa.Core.Node("MyNode")
-        >>> for parent in n.parents:
+        >>> n = Sofa.Core.Node("parent1")
+        >>> c = n.addChild("child1")
+        >>> for parent in c.parents:
         >>>     print(parent.name)
+        >>>
+        >>> if "parent1" in c.parents:
+        >>>     print("Yes")
+        >>> print(len(n.parents))
         )";
 static auto objects =
         R"(
         Field interface to acces the objects of a node.
+        The returned object is a iteratable featuring the following operations:
+        len, remove_at, __contains__, get_at
 
         :Example:
         >>> n = Sofa.Core.Node("MyNode")
+        >>> n.addObject("MechanicalObject", name="object1")
+        >>> n.addObject("MechanicalObject", name="object2")
         >>> for object in n.objects:
         >>>     print(object.name)
+        >>>
+        >>> if "object2" in c.objects:
+        >>>     print("Yes")
+        >>> print(len(n.objects))
         )";
 static auto removeObject =
         R"(
