@@ -58,11 +58,16 @@ jobs:
           echo "-----------"
           body="$(echo "$ISSUE_BODY" | sed ':a;N;$!ba;s/\r/\\r/g;s/\n/\\n/g;')"
           echo "body = $body"
+          suffix='\n[]()'
+          if echo "$body" | grep -q '\\n\[\]()$'; then
+            body="$(echo "$body" | sed 's:\\n\[\]()$::g;')"
+            suffix=''
+          fi
           echo "-----------"
           curl \
             -H "Authorization: token ${{ secrets.SOFA_REPO_WRITE_TOKEN }}" \
             -X PATCH \
-            -d "{\"body\":\"$body\n[]()\"}" \
+            -d "{\"body\":\"$body$suffix\"}" \
             https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.issue.number }}
       
       
