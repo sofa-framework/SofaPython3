@@ -21,36 +21,36 @@ jobs:
         with:
           trigger: '[ci-build]'
 
-      - name: Debug logs
-        if: steps.check.outputs.triggered == 'true'
-        run: |
-          echo "Trigger key detected."
-          echo "----------------------------------"
-          echo "  github.event.pull_request.base.ref = ${{ github.event.pull_request.base.ref }}"
-          echo "  github.event.pull_request.base.sha = ${{ github.event.pull_request.base.sha }}"
-          echo "  github.event.pull_request.head.ref = ${{ github.event.pull_request.head.ref }}"
-          echo "  github.event.pull_request.head.sha = ${{ github.event.pull_request.head.sha }}"
-          echo "  github.event.pull_request.number = ${{ github.event.pull_request.number }}"
-          echo "  github.event.pull_request.merge_commit_sha = ${{ github.event.pull_request.merge_commit_sha }}"
-          echo "----------------------------------"
-          echo "  github.event.issue.number = ${{ github.event.issue.number }}"
-          echo "  github.event.issue.pull_request  = ${{ github.event.issue.pull_request }}"
-          echo "  github.event.issue.pull_request.merge_commit_sha  = ${{ github.event.issue.pull_request.merge_commit_sha }}"
-          echo "  github.event.issue.pull_request.base.ref = ${{ github.event.pull_request.base.ref }}"
-          echo "  github.event.issue.pull_request.base.sha = ${{ github.event.pull_request.base.sha }}"
-          echo "  github.event.issue.pull_request.head.ref = ${{ github.event.pull_request.head.ref }}"
-          echo "  github.event.issue.pull_request.head.sha = ${{ github.event.pull_request.head.sha }}"
-          echo "  github.event.issue.pull_request.number = ${{ github.event.pull_request.number }}"
-          echo "----------------------------------"
-          echo "  github.event.number = ${{ github.event.number }}"
-          echo "  GITHUB_SHA = $GITHUB_SHA"
-          echo "  GITHUB_REF = $GITHUB_REF"
-          echo "  GITHUB_HEAD_REF = $GITHUB_HEAD_REF"
-          echo "  GITHUB_BASE_REF = $GITHUB_BASE_REF"
-          echo "----------------------------------"
-          echo "github.event"
-          echo "${{ toJSON(github.event) }}"
-          echo "----------------------------------"
+      #- name: Debug logs
+      #  if: steps.check.outputs.triggered == 'true'
+      #  run: |
+      #    echo "Trigger key detected."
+      #    echo "----------------------------------"
+      #    echo "  github.event.pull_request.base.ref = ${{ github.event.pull_request.base.ref }}"
+      #    echo "  github.event.pull_request.base.sha = ${{ github.event.pull_request.base.sha }}"
+      #    echo "  github.event.pull_request.head.ref = ${{ github.event.pull_request.head.ref }}"
+      #    echo "  github.event.pull_request.head.sha = ${{ github.event.pull_request.head.sha }}"
+      #    echo "  github.event.pull_request.number = ${{ github.event.pull_request.number }}"
+      #    echo "  github.event.pull_request.merge_commit_sha = ${{ github.event.pull_request.merge_commit_sha }}"
+      #    echo "----------------------------------"
+      #    echo "  github.event.issue.number = ${{ github.event.issue.number }}"
+      #    echo "  github.event.issue.pull_request  = ${{ github.event.issue.pull_request }}"
+      #    echo "  github.event.issue.pull_request.merge_commit_sha  = ${{ github.event.issue.pull_request.merge_commit_sha }}"
+      #    echo "  github.event.issue.pull_request.base.ref = ${{ github.event.pull_request.base.ref }}"
+      #    echo "  github.event.issue.pull_request.base.sha = ${{ github.event.pull_request.base.sha }}"
+      #    echo "  github.event.issue.pull_request.head.ref = ${{ github.event.pull_request.head.ref }}"
+      #    echo "  github.event.issue.pull_request.head.sha = ${{ github.event.pull_request.head.sha }}"
+      #    echo "  github.event.issue.pull_request.number = ${{ github.event.pull_request.number }}"
+      #    echo "----------------------------------"
+      #    echo "  github.event.number = ${{ github.event.number }}"
+      #    echo "  GITHUB_SHA = $GITHUB_SHA"
+      #    echo "  GITHUB_REF = $GITHUB_REF"
+      #    echo "  GITHUB_HEAD_REF = $GITHUB_HEAD_REF"
+      #    echo "  GITHUB_BASE_REF = $GITHUB_BASE_REF"
+      #    echo "----------------------------------"
+      #    echo "github.event"
+      #    echo "${{ toJSON(github.event) }}"
+      #    echo "----------------------------------"
 
       - name: Trigger PR workflows
         if: steps.check.outputs.triggered == 'true'
@@ -58,15 +58,11 @@ jobs:
           echo "-----------"
           body="$(echo "$ISSUE_BODY" | sed ':a;N;$!ba;s/\r/\\r/g;s/\n/\\n/g;')"
           echo "body = $body"
-          separator='\n'
-          if echo "$body" | grep -q '\n:rocket:$'; then
-            separator=' '
-          fi
           echo "-----------"
           curl \
             -H "Authorization: token ${{ secrets.SOFA_REPO_WRITE_TOKEN }}" \
             -X PATCH \
-            -d "{\"body\":\"$body$separator:rocket:\"}" \
+            -d "{\"body\":\"$body\n[]()\"}" \
             https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.issue.number }}
       
       
