@@ -59,6 +59,15 @@ namespace sofapython3
     ForceField_Trampoline<TDOFType>::~ForceField_Trampoline() = default;
 
     template<class TDOFType>
+    std::string ForceField_Trampoline<TDOFType>::getClassName() const
+    {
+        PythonEnvironment::gil acquire {"getClassName"};
+
+        // Get the actual class name from python.
+        return py::str(py::cast(this).get_type().attr("__name__"));
+    }
+
+    template<class TDOFType>
     void ForceField_Trampoline<TDOFType>::init()
     {
         ForceField<TDOFType>::init();
