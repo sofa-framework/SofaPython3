@@ -466,16 +466,7 @@ std::string PythonEnvironment::getStackAsString()
 
 std::string PythonEnvironment::getPythonCallingPointString()
 {
-    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaRuntime"));
-    PyObject* pFunc = PyDict_GetItemString(pDict, "getPythonCallingPointAsString");
-    if (PyCallable_Check(pFunc))
-    {
-        PyObject* res = PyObject_CallFunction(pFunc, nullptr);
-        std::string tmp=PyBytes_AsString(PyObject_Str(res));
-        Py_DECREF(res) ;
-        return tmp;
-    }
-    return "Python Stack is empty.";
+    return py::cast<std::string>(py::eval("Sofa.getPythonCallingPointAsString()"));
 }
 
 sofa::helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAsFileInfo()

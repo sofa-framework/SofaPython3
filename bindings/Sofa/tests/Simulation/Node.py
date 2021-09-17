@@ -144,6 +144,30 @@ class Test(unittest.TestCase):
                 child.addObject("MechanicalObject", name="name2")
                 self.assertEqual(len(child.objects), 3)
 
+        def test_objects_property_contains_method(self):
+            root = Sofa.Core.Node("rootNode")
+            root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+            child = root.addChild(Sofa.Core.Node("child1"))
+            child.addObject("MechanicalObject", name="name1")
+            child.addObject("MechanicalObject", name="name2")
+            self.assertTrue("child1" in root.children)
+            self.assertFalse("child2" in root.children)
+            self.assertTrue("name1" in child.objects)
+            self.assertTrue("name2" in child.objects)
+            self.assertFalse("name3" in child.objects)
+
+        def test_objects_property_remove_at_method(self):
+            root = Sofa.Core.Node("rootNode")
+            root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+            child = root.addChild(Sofa.Core.Node("child1"))
+            child.addObject("MechanicalObject", name="name1")
+            child.addObject("MechanicalObject", name="name2")
+            self.assertTrue("name1" in child.objects)
+            self.assertTrue("name2" in child.objects)
+            child.objects.remove_at(1)
+            self.assertTrue("name1" in child.objects)
+            self.assertFalse("name2" in child.objects)
+
         def test_data_property(self):
                 root = Sofa.Core.Node("rootNode")
                 self.assertTrue(hasattr(root, "__data__"))

@@ -179,13 +179,6 @@ add_subdirectory(docs)
 
 SP3_add_python_package(
     SOURCE_DIRECTORY
-        ${CMAKE_CURRENT_SOURCE_DIR}/splib
-    TARGET_DIRECTORY
-        splib
-)
-
-SP3_add_python_package(
-    SOURCE_DIRECTORY
         ${CMAKE_CURRENT_SOURCE_DIR}/constants
     TARGET_DIRECTORY
         Sofa/constants
