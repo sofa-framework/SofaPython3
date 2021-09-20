@@ -310,7 +310,7 @@ function(SP3_add_python_module)
         set_target_properties(
             ${PROJECT_NAME}
             PROPERTIES
-            INSTALL_NAME_DIR "@rpath/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
+            INSTALL_NAME_DIR "@rpath/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
         )
     endif()
 
