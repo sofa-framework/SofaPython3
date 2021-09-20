@@ -221,17 +221,17 @@ void PythonEnvironment::Init()
         while(std::getline(ss, path, ':'))
         {
             if (FileSystem::exists(path))
-                addPythonModulePathsForPlugins(path);
+                addPythonModulePathsFromDirectory(path);
             else
                 msg_warning("SofaPython3") << "no such directory: '" + path + "'";
         }
     }
 
     // Add sites-packages wrt the plugin
-    addPythonModulePathsForPluginsByName("SofaPython3");
+    addPythonModulePathsFromPlugin("SofaPython3");
 
-    // Lastly, we (try to) add modules from the root of sofa
-    addPythonModulePathsFromSofaRoot();
+    // Lastly, we (try to) add modules from the root of SOFA
+    addPythonModulePathsFromDirectory( Utils::getSofaPathPrefix() );
 
     py::module::import("SofaRuntime");
     getStaticData()->m_sofamodule = py::module::import("Sofa");
@@ -313,42 +313,44 @@ void PythonEnvironment::addPythonModulePathsFromConfigFile(const std::string& pa
     }
 }
 
-void PythonEnvironment::addPythonModulePathsForPlugins(const std::string& pluginsDirectory)
+void PythonEnvironment::addPythonModulePathsFromDirectory(const std::string& directory)
 {
-    bool added = false;
+    if ( ! (FileSystem::exists(directory) && FileSystem::isDirectory(directory)) )
+    {
+        return;
+    }
 
-    std::vector<std::string> pythonDirs = {
-        pluginsDirectory,
-        pluginsDirectory + "/lib",
-        pluginsDirectory + "/python3"
+    std::vector<std::string> searchDirs = {
+        directory,
+        directory + "/lib",
+        directory + "/python3"
     };
 
-    /// Iterate in the pluginsDirectory and add each sub directory with a 'python' name
-    /// this is mostly for in-tree builds.
+    // Iterate in the pluginsDirectory and add each sub directory with a 'python' name
+    // this is mostly for in-tree builds.
     std::vector<std::string> files;
-    FileSystem::listDirectory(pluginsDirectory, files);
+    FileSystem::listDirectory(directory, files);
     for (std::vector<std::string>::iterator i = files.begin(); i != files.end(); ++i)
     {
-        const std::string pluginSubdir = pluginsDirectory + "/" + *i;
-        if (FileSystem::exists(pluginSubdir) && FileSystem::isDirectory(pluginSubdir))
+        const std::string subdir = directory + "/" + *i;
+        if (FileSystem::exists(subdir) && FileSystem::isDirectory(subdir))
         {
-            pythonDirs.push_back(pluginSubdir + "/python3");
+            searchDirs.push_back(subdir + "/python3");
         }
     }
 
-    /// For each of the directories in pythonDirs, search for a site-packages entry
-    for(std::string pythonDir : pythonDirs)
+    // For each of the directories in pythonDirs, search for a site-packages entry
+    for(std::string searchDir : searchDirs)
     {
         // Search for a subdir "site-packages"
-        if (FileSystem::exists(pythonDir+"/site-packages") && FileSystem::isDirectory(pythonDir+"/site-packages"))
+        if (FileSystem::exists(searchDir + "/site-packages") && FileSystem::isDirectory(searchDir + "/site-packages"))
         {
-            addPythonModulePath(pythonDir+"/site-packages");
-            added = true;
+            addPythonModulePath(searchDir + "/site-packages");
         }
     }
 }
 
-void PythonEnvironment::addPythonModulePathsForPluginsByName(const std::string& pluginName)
+void PythonEnvironment::addPythonModulePathsFromPlugin(const std::string& pluginName)
 {
     std::map<std::string, Plugin>& map = PluginManager::getInstance().getPluginMap();
     for( const auto& elem : map)
@@ -357,40 +359,36 @@ void PythonEnvironment::addPythonModulePathsForPluginsByName(const std::string& 
         if ( p.getModuleName() == pluginName )
         {
             std::string pluginLibraryPath = elem.first;
-            // moduleRoot should be 2 levels above the library (plugin_name/lib/plugin_name.so)
-            std::string moduleRoot = FileSystem::getParentDirectory(FileSystem::getParentDirectory(pluginLibraryPath));
 
-            addPythonModulePathsForPlugins(moduleRoot);
+            // moduleRoot can be 1 or 2 levels above the library directory
+            // like "plugin_name/lib/plugin_name.so"
+            // or "sofa_root/bin/Release/plugin_name.dll"
+            std::string moduleRoot = FileSystem::getParentDirectory(pluginLibraryPath);
+            int maxDepth = 0;
+            while(!FileSystem::exists(moduleRoot + "/lib") && maxDepth < 2)
+            {
+                moduleRoot = FileSystem::getParentDirectory(moduleRoot);
+                maxDepth++;
+            }
+
+            addPythonModulePathsFromDirectory(moduleRoot);
             return;
         }
     }
     msg_info("SofaPython3") << pluginName << " not found in PluginManager's map.";
 }
 
-void PythonEnvironment::addPythonModulePathsFromSofaRoot()
-{
-    // this will either use SOFA_ROOT (very often in install mode) 
-    // or if SOFA_ROOT is not set (very often in build-mode), using the root of the build-dir
-    // to find /lib/python3/site-packages
-    const auto sofaRoot = Utils::getSofaPathPrefix();
-
-    if (FileSystem::exists(sofaRoot + "/lib/python3/site-packages"))
-    {
-        addPythonModulePath(sofaRoot + "/lib/python3/site-packages");
-    }
-}
-
 void PythonEnvironment::addPluginManagerCallback()
 {
     PluginManager::getInstance().addOnPluginLoadedCallback(pluginLibraryPath,
         [](const std::string& pluginLibraryPath, const Plugin& plugin) {
-            // WARNING: loaded plugin must be organized like plugin_name/lib/plugin_name.so
+            // search for plugin with PluginRepository
             for ( auto path : sofa::helper::system::PluginRepository.getPaths() )
             {
                 std::string pluginRoot = FileSystem::cleanPath( path + "/" + plugin.getModuleName() );
                 if ( FileSystem::exists(pluginRoot) && FileSystem::isDirectory(pluginRoot) )
                 {
-                    addPythonModulePathsForPlugins(pluginRoot);
+                    addPythonModulePathsFromDirectory(pluginRoot);
                     return;
                 }
             }
