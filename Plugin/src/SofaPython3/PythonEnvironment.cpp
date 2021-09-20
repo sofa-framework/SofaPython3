@@ -227,7 +227,11 @@ void PythonEnvironment::Init()
         }
     }
 
+    // Add sites-packages wrt the plugin
     addPythonModulePathsForPluginsByName("SofaPython3");
+
+    // Lastly, we (try to) add modules from the root of sofa
+    addPythonModulePathsFromSofaRoot();
 
     py::module::import("SofaRuntime");
     getStaticData()->m_sofamodule = py::module::import("Sofa");
@@ -361,6 +365,19 @@ void PythonEnvironment::addPythonModulePathsForPluginsByName(const std::string& 
         }
     }
     msg_info("SofaPython3") << pluginName << " not found in PluginManager's map.";
+}
+
+void PythonEnvironment::addPythonModulePathsFromSofaRoot()
+{
+    // this will either use SOFA_ROOT (very often in install mode) 
+    // or if SOFA_ROOT is not set (very often in build-mode), using the root of the build-dir
+    // to find /lib/python3/site-packages
+    const auto sofaRoot = Utils::getSofaPathPrefix();
+
+    if (FileSystem::exists(sofaRoot + "/lib/python3/site-packages"))
+    {
+        addPythonModulePath(sofaRoot + "/lib/python3/site-packages");
+    }
 }
 
 void PythonEnvironment::addPluginManagerCallback()
