@@ -50,7 +50,7 @@ protected:
                       const std::vector<std::string> &arguments = std::vector<std::string>(0));
 
     /// add all the python test files in `dir` starting with `prefix`
-    void addTestDirectory (const std::string &dir, const std::string &testgroup = "", const std::string &prefix = "");
+    void addTestDirectory (const std::string &dir, const std::string &testgroup = "", const std::string &prefix = "", bool recursive=false);
 
 private:
 /// concatenate path and filename

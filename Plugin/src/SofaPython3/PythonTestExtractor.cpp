@@ -38,14 +38,30 @@ namespace sofapython3 {
 // extract the test suite from a module
 py::object PythonTestExtractor::getTestSuite(py::module& unittest, py::module& module, const std::vector<std::string>& arguments)
 {
-    py::object testSuite = py::list();
     py::module inspect = py::module::import("inspect");
+    py::module scenetest = py::module::import("Sofa.scenetestcase");
 
-    py::list classes = inspect.attr("getmembers")(module);
-    for(const auto n : classes)
+    py::list members = inspect.attr("getmembers")(module);
+    py::object testSuite = unittest.attr("TestSuite")();
+    for(const auto n : members)
     {
         std::string name = py::cast<std::string>(py::cast<py::tuple>(n)[0]);
         py::object obj = py::cast<py::tuple>(n)[1];
+
+        // Test if the current python object is a function. If this is the case, check if this one
+        // is named "createdScene". In that case add a new test to the suite.
+        if (py::cast<bool>(inspect.attr("isfunction")(obj)) == true)
+        {
+            if (py::cast<std::string>(obj.attr("__name__")) == "createScene")
+            {
+                py::object testcase = scenetest.attr("SceneTestCase")(obj);
+                testSuite.attr("addTest")(testcase);
+            }
+            continue;
+        }
+
+        // Test if the current python object is a function. If this is the case, check if this one
+        // is named "createdScene". In that case add a new test to the suite.
         if (py::cast<bool>(inspect.attr("isclass")(obj)) == true)
         {
             py::tuple bases = obj.attr("__bases__");
@@ -56,7 +72,9 @@ py::object PythonTestExtractor::getTestSuite(py::module& unittest, py::module& m
                     if (arguments.empty())
                         return unittest.attr("TestLoader")().attr("loadTestsFromTestCase")(obj);
 
+
                     testSuite = unittest.attr("TestSuite")();
+
                     py::list list;
                     for (auto& arg : arguments) {
                         list.append(py::str(arg));
@@ -87,13 +105,13 @@ std::vector<PythonTestData> PythonTestExtractor::extract () const
         std::string fullpath = (test.path + "/" + test.filename);
         SetDirectory localDir(fullpath.c_str());
         std::string basename = SetDirectory::GetFileNameWithoutExtension(
-            SetDirectory::GetFileName(test.filename.c_str()).c_str()
-        );
+                    SetDirectory::GetFileName(test.filename.c_str()).c_str()
+                    );
 
         try {
             py::module module = PythonEnvironment::importFromFile(
-                basename, SetDirectory::GetFileName(test.filename.c_str()), &globals
-            );
+                        basename, SetDirectory::GetFileName(test.filename.c_str()), &globals
+                        );
 
             std::list<std::string> testNames;
             py::list testSuite = getTestSuite(unittest, module, test.arguments);
@@ -115,8 +133,8 @@ std::vector<PythonTestData> PythonTestExtractor::extract () const
             msg_info("PythonTestExtractor") << "File '" << test.filename << "' loaded with " << testNames.size() << " unit tests.";
 
         } catch(const std::exception& e) {
-            msg_error("PythonTestExtractor") << "File skipped: " << (test.path+"/"+test.filename) << msgendl
-                                        << e.what();
+            msg_warning("PythonTestExtractor") << "File skipped: " << (test.path+"/"+test.filename) << msgendl
+                                               << e.what();
         }
     }
 
@@ -133,15 +151,24 @@ void PythonTestExtractor::addTestFile (const std::string & filename,
     p_tests.push_back({filename, path, testgroup, arguments});
 }
 
-void PythonTestExtractor::addTestDirectory (const std::string & dir, const std::string & testgroup, const std::string & prefix)
+void PythonTestExtractor::addTestDirectory (const std::string & dir, const std::string & testgroup, const std::string & prefix, bool recursive)
 {
     std::vector<std::string> files;
     sofa::helper::system::FileSystem::listDirectory(dir, files);
-    for(const std::string& file : files) {
-        if( sofa::helper::starts_with(prefix, file)
-            && (sofa::helper::ends_with(".py", file) || sofa::helper::ends_with(".py3", file)))
+    for(const std::string& file : files)
+    {
+        std::string childpath = (dir + "/" + file);
+        if( recursive && sofa::helper::system::FileSystem::isDirectory(childpath) )
         {
-            addTestFile(file, dir, testgroup);
+            addTestDirectory(childpath, testgroup+"_"+file, prefix, true);
+        }
+        else
+        {
+            if( sofa::helper::starts_with(prefix, file)
+                    && (sofa::helper::ends_with(".py", file) || sofa::helper::ends_with(".py3", file)))
+            {
+                addTestFile(file, dir, testgroup);
+            }
         }
     }
 }
