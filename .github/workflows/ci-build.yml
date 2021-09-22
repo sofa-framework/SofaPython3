@@ -1,0 +1,41 @@
+name: ci-build
+
+on: 
+  workflow_dispatch:
+  issue_comment:
+    types: [created]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    env:
+      GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      ISSUE_BODY: "${{ github.event.issue.body }}"
+
+    steps:
+      - name: Parse comment
+        if: github.event.issue.pull_request
+        uses: khan/pull-request-comment-trigger@1.0.0
+        id: check
+        with:
+          trigger: '[ci-build]'
+          reaction: rocket
+
+      - name: Trigger PR workflows
+        if: steps.check.outputs.triggered == 'true'
+        run: |
+          echo "-----------"
+          body="$(echo "$ISSUE_BODY" | sed ':a;N;$!ba;s:\r:\\r:g;s:\n:\\n:g;')"
+          echo "body = $body"
+          suffix='\n[]()'
+          if echo "$body" | grep -q '\\n\[\]()$'; then
+            body="$(echo "$body" | sed 's:\\n\[\]()$::g;')"
+            suffix=''
+          fi
+          echo "-----------"
+          curl \
+            -H "Authorization: token ${{ secrets.SOFA_REPO_WRITE_TOKEN }}" \
+            -X PATCH \
+            -d "{\"body\":\"$body$suffix\"}" \
+            https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.issue.number }}
