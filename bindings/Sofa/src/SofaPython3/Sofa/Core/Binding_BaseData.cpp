@@ -137,6 +137,9 @@ py::object __getattr__(py::object self, const std::string& s)
     if(s == "value")
         return PythonFactory::valueToPython_ro(py::cast<BaseData*>(self));
 
+    if(s == "link")
+        return py::cast((py::cast<BaseData*>(self))->getLinkPath());
+
     /// BaseData does not support dynamic attributes, if you think this is an important feature
     /// please request for its integration.
     throw py::attribute_error("There is no attribute '"+s+"'");
