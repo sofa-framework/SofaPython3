@@ -172,7 +172,9 @@ py::object getObject(Node &n, const std::string &name, const py::kwargs& kwargs)
     if(kwargs.size()!=0)
     {
         msg_deprecated(&n) << "Calling the method getObject() with extra arguments is not supported anymore."
-                           << "To remove this message please refer to the documentation of the getObject method";
+                           << "To remove this message please refer to the documentation of the getObject method"
+                           << msgendl
+                            << PythonEnvironment::getPythonCallingPointString() ;
     }
 
     BaseObject *object = n.getObject(name);
