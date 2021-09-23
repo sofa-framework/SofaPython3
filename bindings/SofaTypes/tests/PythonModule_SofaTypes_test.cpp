@@ -38,7 +38,7 @@ namespace
     PythonModule_SofaTypes_test()
     {
         const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
-        addTestDirectory(executable_directory+"/pyfiles", "SofaTypes_");
+        addTestDirectory(executable_directory+"/Bindings.SofaTypes.Tests.d/pyfiles", "SofaTypes_");
     }
   } python_tests;
 
