@@ -112,6 +112,7 @@ py::object writeableArray(BaseData* self)
 
 void __setattr__(py::object self, const std::string& s, py::object value)
 {
+    SOFA_UNUSED(s);
     BaseData* selfdata = py::cast<BaseData*>(self);
 
     if(py::isinstance<DataContainer>(value))
@@ -137,7 +138,7 @@ py::object __getattr__(py::object self, const std::string& s)
     if(s == "value")
         return PythonFactory::valueToPython_ro(py::cast<BaseData*>(self));
 
-    if(s == "link")
+    if(s == "linkpath")
         return py::cast((py::cast<BaseData*>(self))->getLinkPath());
 
     /// BaseData does not support dynamic attributes, if you think this is an important feature

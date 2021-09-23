@@ -441,8 +441,8 @@ void moduleAddBase(py::module &m)
     base.def("getLoggedMessagesAsString", &BindingBase::getLoggedMessagesAsString, sofapython3::doc::base::getLoggedMessagesAsString);
     base.def("countLoggedMessages", &BindingBase::countLoggedMessages, sofapython3::doc::base::countLoggedMessages);
     base.def("clearLoggedMessages", &BindingBase::clearLoggedMessages, sofapython3::doc::base::clearLoggedMessages);
-    base.def("getPathName", &BindingBase::getPathName, sofapython3::doc::base::setDataValues);
-    base.def("getPathName", &BindingBase::getLinkPath, sofapython3::doc::base::setDataValues);
+    base.def("getPathName", &BindingBase::getPathName, sofapython3::doc::base::getPathName);
+    base.def("getLinkPath", &BindingBase::getLinkPath, sofapython3::doc::base::getLinkPath);
     base.def("setDataValues", &BindingBase::setDataValues, sofapython3::doc::base::setDataValues);
 }
 
