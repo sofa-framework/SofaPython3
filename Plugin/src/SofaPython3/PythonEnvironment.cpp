@@ -484,7 +484,7 @@ std::string PythonEnvironment::getStackAsString()
 
 std::string PythonEnvironment::getPythonCallingPointString()
 {
-    return py::cast<std::string>(py::eval("Sofa.getPythonCallingPointAsString()"));
+    return py::cast<std::string>(getStaticData()->m_sofamodule.attr("getPythonCallingPointAsString")());
 }
 
 sofa::helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAsFileInfo()
