@@ -48,11 +48,11 @@ std::string toSofaParsableString(const py::handle& p)
     if(py::isinstance<py::str>(p))
         return py::str(p);
 
-    // If the object is a data field we take its value to copy them.
+    // If the object is a data field we link the data field
     if(py::isinstance<sofa::core::objectmodel::BaseData>(p))
     {
         sofa::core::objectmodel::BaseData* data = py::cast<sofa::core::objectmodel::BaseData*>(p);
-        return data->getValueString();
+        return data->getLinkPath();
     }
 
     // If the object is a numpy array we convert it to a list then to a sofa string.
