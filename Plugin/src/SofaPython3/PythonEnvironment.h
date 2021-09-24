@@ -30,7 +30,13 @@
 #pragma push_macro("slots")
 #undef slots
 /// This should come from python3.
-#include <Python.h>
+#if defined(WIN32) && defined(_DEBUG)
+    #undef _DEBUG // Prevent linking debug build of python
+    #include <Python.h>
+    #define _DEBUG 1
+#else
+    #include <Python.h>
+#endif
 #pragma pop_macro("slots")
 
 #include <sofa/simulation/SceneLoaderFactory.h>
