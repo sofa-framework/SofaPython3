@@ -104,12 +104,12 @@ void moduleAddBaseCamera(py::module &m)
     });
     
     c.def("rotateWorldAroundPoint", [](BaseCamera *self, py::list p1, py::list p2, py::list p3) {
-         sofa::defaulttype::Quat vec1;
-         sofa::defaulttype::Vec3 vec2;
-         sofa::defaulttype::Quat vec3;
-         vec1 = sofa::defaulttype::Quat(py::cast<double>(p1[0]),py::cast<double>(p1[1]),py::cast<double>(p1[2]),py::cast<double>(p1[3]));
-         vec2 = sofa::defaulttype::Vec3(py::cast<double>(p2[0]),py::cast<double>(p2[1]),py::cast<double>(p2[2]));
-         vec3 = sofa::defaulttype::Quat(py::cast<double>(p3[0]),py::cast<double>(p3[1]),py::cast<double>(p3[2]),py::cast<double>(p3[3]));
+         sofa::type::Quat<SReal> vec1;
+         sofa::type::Vec3 vec2;
+         sofa::type::Quat<SReal> vec3;
+         vec1 = sofa::type::Quat(py::cast<double>(p1[0]),py::cast<double>(p1[1]),py::cast<double>(p1[2]),py::cast<double>(p1[3]));
+         vec2 = sofa::type::Vec3(py::cast<double>(p2[0]),py::cast<double>(p2[1]),py::cast<double>(p2[2]));
+         vec3 = sofa::type::Quat(py::cast<double>(p3[0]),py::cast<double>(p3[1]),py::cast<double>(p3[2]),py::cast<double>(p3[3]));
          self->rotateWorldAroundPoint(vec1, vec2, vec3);
     });
     
