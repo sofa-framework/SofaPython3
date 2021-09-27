@@ -61,7 +61,7 @@ void DataEngine_Trampoline::doUpdate()
         py::object self = py::cast(this);
         if (py::hasattr(self, "update"))
         {
-            py::object fct = self.attr("update")();
+            py::object fct = self.attr("update");
             fct();
             return;
         }
