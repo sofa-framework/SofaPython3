@@ -37,13 +37,13 @@ import importlib
 import Sofa.constants
 import Sofa.Helper
 import Sofa.Core
-import Sofa.Config
+import Sofa.Lifetime
 import Sofa.Simulation
 import Sofa.Types
 import Sofa.Components
 import SofaTypes
 from .prefab import *
-from .future import __enable_feature__
+from .lifetime import __feature__
 
 __all__=["constants", "Helper", "Core", "Simulation", "Types", "SofaTypes", "prefab", "future"]
 

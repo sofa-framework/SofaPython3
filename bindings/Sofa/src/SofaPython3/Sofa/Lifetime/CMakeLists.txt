@@ -1,7 +1,7 @@
-project(Bindings.Sofa.Config)
+project(Bindings.Sofa.Lifetime)
 
 set(SOURCE_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Config.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Lifetime.cpp
     )
 
 if (NOT TARGET SofaPython3::Plugin)
@@ -17,10 +17,10 @@ find_package(SofaBaseUtils REQUIRED)
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
     PACKAGE      Bindings
-    MODULE       Config
+    MODULE       Lifetime
     DESTINATION  Sofa
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
-    DEPENDS      Sofa.Config SofaBaseUtils SofaBaseCollision SofaCore SofaHelper SofaSimulationCore SofaDefaultType SofaBaseVisual SofaPython3::Config SofaPython3::Plugin
+    DEPENDS      Sofa.Config SofaBaseUtils SofaBaseCollision SofaCore SofaHelper SofaSimulationCore SofaDefaultType SofaBaseVisual SofaPython3::Lifetime SofaPython3::Plugin
 )
 

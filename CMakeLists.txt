@@ -171,7 +171,7 @@ if (NOT SP3_COMPILED_AS_SUBPROJECT)
     message(STATUS "SOFA Framework:\n\tVersion: ${SofaFramework_VERSION}\n\tLocation: ${SOFA_ROOT_DIR}")
 endif()
 
-add_subdirectory(Config)
+add_subdirectory(Lifetime)
 add_subdirectory(Plugin)
 add_subdirectory(bindings)
 add_subdirectory(examples)

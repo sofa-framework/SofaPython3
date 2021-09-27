@@ -1,7 +1,7 @@
 project(Bindings.Sofa)
 
 set(SOFABINDINGS_MODULE_LIST
-    Config
+    Lifetime
     Components
     Core
     Helper

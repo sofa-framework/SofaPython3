@@ -17,30 +17,46 @@
 *******************************************************************************
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include <iostream>
 #include <map>
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-#include <SofaPython3/Config/futurefeatures.h>
+#include <stdexcept>
+#include <SofaPython3/lifetime/features.h>
 
-namespace py { using namespace pybind11; }
-
-namespace sofapython3
+namespace sofapython3::lifetime::features
 {
 
-/// The first parameter must be named the same as the module file to load.
-PYBIND11_MODULE(Config, ffmodule)
+std::map<std::string, bool> features;
+
+bool get(const std::string& name)
 {
-    ffmodule.doc() = R"doc(
-           Control the the activation of new features
-           ------------------------------------------
-           Sofa.Config.object_auto_init = True
-       )doc";
-    ffmodule.def("init", sofapython3::config::futurefeatures::init);
-    ffmodule.def("set", sofapython3::config::futurefeatures::set);
-    ffmodule.def("get", sofapython3::config::futurefeatures::get);
-    ffmodule.def("list_features", sofapython3::config::futurefeatures::list_features);
+    auto f = features.find(name);
+    if(f == features.end())
+        throw std::runtime_error("Missing attribute '"+name+"'");
+
+    return (f->second);
 }
 
-} ///namespace sofapython3
+void set(const std::string& name, bool value)
+{
+    auto f = features.find(name);
+    if(f == features.end())
+        throw std::runtime_error("Missing attribute '"+name+"'");
+
+    (f->second) = value;
+}
+
+void init(const std::string& name, bool value)
+{
+    features[name] = value;
+}
+
+
+std::vector<std::string> list_features()
+{
+    std::vector<std::string> v;
+    for(auto& it : features)
+        v.push_back(it.first);
+    return v;
+}
+
+}  //namespace sofapython3::futurefeatures
