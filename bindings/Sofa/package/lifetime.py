@@ -4,29 +4,29 @@ Activate/deactive some feature of sofa python
 Use that to control how some part of the binding should behave.
 
 Usage:
-    from Sofa.future import __enable_feature__
+    from Sofa.Lifetime import __feature__
 
-    with __enable_feature__("feature_name", True):
+    with __feature__("feature_name", True):
         do_something()
 
-    with __enable_feature__("feature_name", False):
+    with __feature__("feature_name", False):
             do_something()
 """
-import Sofa.Config
+import Sofa.Lifetime
 from contextlib import ContextDecorator
 
 ### Initialize the feature set.
 # Add your own feature by un-commenting the following line
-#Sofa.Config.init("my_feature", False)
-Sofa.Config.init("object_auto_init", False)
+#Sofa.Lifetime.init("my_feature", False)
+Sofa.Lifetime.init("object_auto_init", False)
 
 def has_feature(name):
-    return Sofa.Config.get(name)
+    return Sofa.Lifetime.get(name)
 
 def list_features():
-    return Sofa.Config.list_features()
+    return Sofa.Lifetime.list_features()
 
-class __enable_feature__(ContextDecorator):
+class __feature__(ContextDecorator):
         @staticmethod
         def list_features():
             return self.Config.list_feature()
@@ -38,9 +38,9 @@ class __enable_feature__(ContextDecorator):
 
         def __enter__(self):
             self.old_value=Sofa.Config.get(self.name)
-            Sofa.Config.set(self.name, self.new_value)
+            Sofa.Lifetime.set(self.name, self.new_value)
             return self
 
         def __exit__(self, *exc):
-            Sofa.Config.set(self.name, self.old_value)
+            Sofa.Lifetime.set(self.name, self.old_value)
             return False

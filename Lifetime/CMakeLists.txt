@@ -1,11 +1,11 @@
-project(Config VERSION 1.0)
+project(Lifetime VERSION 1.0)
 
 set(HEADER_FILES
-     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Config/futurefeatures.h
+     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/lifetime/features.h
 )
 
 set(SOURCE_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Config/futurefeatures.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/lifetime/features.cpp
 )
 
 find_package(SofaFramework REQUIRED)

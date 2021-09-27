@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-namespace sofapython3::config::futurefeatures
+namespace sofapython3::lifetime::features
 {
 
 /// Retrieve the value associated with the feature "name"

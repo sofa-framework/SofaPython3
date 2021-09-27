@@ -57,7 +57,7 @@ using sofa::core::objectmodel::BaseObjectDescription;
 #include <queue>
 #include <sofa/core/objectmodel/Link.h>
 
-#include <SofaPython3/Config/futurefeatures.h>
+#include <SofaPython3/lifetime/features.h>
 
 #include <pybind11/eval.h>
 
@@ -235,7 +235,7 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
             d->setPersistent(true);
     }
 
-    if(doInit && sofapython3::config::futurefeatures::get("object_auto_init"))
+    if(doInit && sofapython3::lifetime::features::get("object_auto_init"))
     {
         object->init();
     }
