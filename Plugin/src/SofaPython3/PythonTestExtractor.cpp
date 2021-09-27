@@ -34,6 +34,8 @@ using sofa::helper::system::PluginManager;
 using sofa::helper::system::SetDirectory;
 namespace py = pybind11;
 
+#include <list>
+
 namespace sofapython3 {
 // extract the test suite from a module
 py::object PythonTestExtractor::getTestSuite(py::module& unittest, py::module& module, const std::vector<std::string>& arguments)

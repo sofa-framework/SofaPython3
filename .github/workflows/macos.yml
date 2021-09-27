@@ -1,6 +1,9 @@
 name: MacOS CI
 
-on: [workflow_dispatch, pull_request]
+on: 
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
 
 jobs:
   build:

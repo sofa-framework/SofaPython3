@@ -162,6 +162,8 @@ void moduleAddBaseCamera(py::module &m)
          vec1 = sofa::type::Vec3(py::cast<double>(pos[0]), py::cast<double>(pos[1]), py::cast<double>(pos[2]));
          return(self->screenToWorldPoint(vec1));
     });
+    
+    c.def("setDefaultView", [](BaseCamera *self){self->setDefaultView();});
 }
 
 } /// namespace sofapython3

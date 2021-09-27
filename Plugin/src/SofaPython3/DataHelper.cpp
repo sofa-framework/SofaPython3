@@ -43,9 +43,17 @@ std::string toSofaParsableString(const py::handle& p)
         }
         return tmp.str();
     }
+
     //TODO(dmarchal) This conversion to string is so bad.
     if(py::isinstance<py::str>(p))
         return py::str(p);
+
+    // Insure compatibility with data field code returning value instead of data.
+    if(py::isinstance<sofa::core::objectmodel::BaseData>(p))
+    {
+        sofa::core::objectmodel::BaseData* data = py::cast<sofa::core::objectmodel::BaseData*>(p);
+        return data->getValueString();
+    }
     return py::repr(p);
 }
 

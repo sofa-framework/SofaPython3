@@ -93,14 +93,14 @@ def getPythonCallingPointAsString():
     """returns the last entry with an "informal" formatting. """
 
     ## we exclude the first level in the stack because it is the getStackForSofa() function itself.
-    ss=inspect.stack()[-1:]
+    ss=inspect.stack()[1:2]
     return formatStackForSofa(ss)
 
 
 def getPythonCallingPoint():
-    """returns the tupe with closest filename & line. """
+    """returns the tuple with closest filename & line. """
     ## we exclude the first level in the stack because it is the getStackForSofa() function itself.
-    ss=inspect.stack()[1]
+    ss=inspect.stack()[1:2]
     tmp=(os.path.abspath(ss[1]), ss[2])
     return tmp
 
