@@ -51,6 +51,8 @@ using sofa::core::objectmodel::MouseEvent;
 using sofa::core::objectmodel::ScriptEvent;
 using sofa::core::objectmodel::Event;
 
+#include <SofaPython3/PythonEnvironment.h>
+
 #include <sofa/core/topology/Topology.h>
 
 #include <sofa/defaulttype/DataTypeInfo.h>
@@ -344,10 +346,16 @@ void PythonFactory::fromPython(BaseData* d, const py::object& o)
     // To smooth the deprecation process we are still allowing it ...but prints a warning.
     if( !nfo.Text() && py::isinstance<py::str>(o) )
     {
-        msg_deprecated(d->getOwner()) << "Data field '" << d->getName() << "' is initialized from a string."
-                                      << " This behavior was allowed with SofaPython2 but have very poor performance so it is now "
-                                      << "deprecated with SofaPython3. Please fix your scene (as this behavior will be removed).";
-        d->read( py::cast<std::string>(o) );
+        std::string s = py::cast<std::string>(o);
+        if(s.size() > 1 && s[0] != '@')
+        {
+            msg_deprecated(d->getOwner()) << "Data field '" << d->getName() << "' is initialized from a string." << msgendl
+                                          << " This behavior was allowed with SofaPython2 but have very poor performance so it is now  "
+                                              << "deprecated with SofaPython3. Please fix your scene (as this behavior will be removed)." << msgendl
+                                          << msgendl
+                                          << PythonEnvironment::getPythonCallingPointString();
+        }
+        d->read( s );
         return;
     }
 

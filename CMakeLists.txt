@@ -184,6 +184,16 @@ SP3_add_python_package(
         Sofa/constants
 )
 
+## This is only to warn users that splib is now relocated in its own repository
+# it just contains a __init__.py rising an exception indicating to where to find the plugin.
+# If splib is available, then splib/__init__.py will be overriden by the one from the real splib.
+SP3_add_python_package(
+    SOURCE_DIRECTORY
+        ${CMAKE_CURRENT_SOURCE_DIR}/splib
+    TARGET_DIRECTORY
+        splib
+)
+
 sofa_create_package(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${PROJECT_VERSION}
@@ -198,10 +208,7 @@ install(FILES
 )
 
 if (SP3_LINK_TO_USER_SITE AND SP3_PYTHON_PACKAGES_LINK_DIRECTORY)
-    set(SP3_SITE_PACKAGES_OUTPUT_DIRECTORY "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}")
-    if(WIN32)
-        set(SP3_SITE_PACKAGES_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}")
-    endif()
+    set(SP3_SITE_PACKAGES_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}")
 
     file(GLOB directories RELATIVE "${SP3_SITE_PACKAGES_OUTPUT_DIRECTORY}" "${SP3_SITE_PACKAGES_OUTPUT_DIRECTORY}/*")
     
@@ -213,7 +220,7 @@ if (SP3_LINK_TO_USER_SITE AND SP3_PYTHON_PACKAGES_LINK_DIRECTORY)
         else()
             set(LINK_SOURCE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
         endif()
-        if(IS_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
+        if(IS_DIRECTORY ${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
             if(WIN32)
                 install(CODE "\
                 execute_process( \

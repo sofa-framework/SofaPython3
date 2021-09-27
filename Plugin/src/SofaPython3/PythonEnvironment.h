@@ -30,7 +30,13 @@
 #pragma push_macro("slots")
 #undef slots
 /// This should come from python3.
-#include <Python.h>
+#if defined(WIN32) && defined(_DEBUG)
+    #undef _DEBUG // Prevent linking debug build of python
+    #include <Python.h>
+    #define _DEBUG 1
+#else
+    #include <Python.h>
+#endif
 #pragma pop_macro("slots")
 
 #include <sofa/simulation/SceneLoaderFactory.h>
@@ -70,8 +76,8 @@ public:
 
     /// Add all the directories matching <pluginsDirectory>/*/python to sys.path
     /// NB: can also be used for projects <projectDirectory>/*/python
-    static void addPythonModulePathsForPlugins(const std::string& pluginsDirectory);    
-    static void addPythonModulePathsForPluginsByName(const std::string& pluginName);
+    static void addPythonModulePathsFromDirectory(const std::string& directory);
+    static void addPythonModulePathsFromPlugin(const std::string& pluginName);
 
     /// set the content of sys.argv.
     static void setArguments(const std::string& filename,

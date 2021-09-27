@@ -161,6 +161,34 @@ static auto hasObject =
         :type name: string
         :return: True if the node has an object with correspdonding name.
         )";
+static auto getObject =
+        R"(
+        Get a sofa component hold by a node.
+
+        :param n
+        :param name
+        :type n: Sofa.Simulation.Node
+        :type name: string
+        :return: the component with 'name', None otherwise
+
+        .. note::
+        The extra arguments allowed in the SofaPython (warning=True/False) binding are not supported SofaPython3.
+
+        .. code-block:: python
+            # SofaPython2:
+            if node.getObject("MyObject",warning=False):
+                pass
+
+            # SofaPython3:
+            if node.getObject("MyObject") != None:
+                pass
+
+            if node.hasObject("MyObject"):
+                pass
+
+            if "MyObject" in node.objects:
+                pass
+        )";
 
 static auto addChildKwargs =
         R"(

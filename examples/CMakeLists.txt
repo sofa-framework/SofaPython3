@@ -3,11 +3,8 @@ project(Examples)
 set(EXAMPLES_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
     ${CMAKE_CURRENT_SOURCE_DIR}/advanced_timer.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/BaseCamera.py
     ${CMAKE_CURRENT_SOURCE_DIR}/basic.py
     ${CMAKE_CURRENT_SOURCE_DIR}/basic-addGUI.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/easingScene.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/easingSceneMatplotlib.py
     ${CMAKE_CURRENT_SOURCE_DIR}/emptyController.py
     ${CMAKE_CURRENT_SOURCE_DIR}/emptyDataEngine.py
     ${CMAKE_CURRENT_SOURCE_DIR}/emptyForceField.py
@@ -17,7 +14,6 @@ set(EXAMPLES_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/liver.py
     ${CMAKE_CURRENT_SOURCE_DIR}/loadXMLfromPython.py
     ${CMAKE_CURRENT_SOURCE_DIR}/ReadTheDocs_Example.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/realTimeClockScene.py
     ${CMAKE_CURRENT_SOURCE_DIR}/additional-examples/ControllerScene.py
 )
 
