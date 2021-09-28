@@ -270,7 +270,8 @@ void executePython_(const T& emitter, std::function<void()> cb)
         std::stringstream tmp;
         tmp << "Unable to execute code." << msgendl
                      << "Python exception:" << msgendl
-                     << "  " << e.what();
+                     << "  " << e.what()
+                     << PythonEnvironment::getPythonCallingPointString();
         msg_error(emitter) << tmp.str();
     }
 }

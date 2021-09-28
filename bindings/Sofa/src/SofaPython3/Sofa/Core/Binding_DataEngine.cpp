@@ -59,14 +59,11 @@ void DataEngine_Trampoline::doUpdate()
 {
     PythonEnvironment::executePython(this, [this](){
         py::object self = py::cast(this);
-        if (py::hasattr(self, "update")) {
+        if (py::hasattr(self, "update"))
+        {
             py::object fct = self.attr("update");
-            try {
-                fct();
-                return;
-            } catch (std::exception& /*e*/) {
-                throw py::type_error(this->getName() + ": The DataEngine requires an update method with no parameter and no return type");
-            }
+            fct();
+            return;
         }
         throw py::type_error(this->getName() + " has no update() method.");
     });
