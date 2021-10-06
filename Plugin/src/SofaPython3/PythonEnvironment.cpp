@@ -233,9 +233,8 @@ void PythonEnvironment::Init()
     // Lastly, we (try to) add modules from the root of SOFA
     addPythonModulePathsFromDirectory( Utils::getSofaPathPrefix() );
 
-    py::module::import("SofaRuntime");
     getStaticData()->m_sofamodule = py::module::import("Sofa");
-
+    PyRun_SimpleString("import SofaRuntime");
 
     // python livecoding related
     PyRun_SimpleString("from Sofa.livecoding import onReimpAFile");
@@ -243,7 +242,7 @@ void PythonEnvironment::Init()
     // general sofa-python stuff
 
     // python modules are automatically reloaded at each scene loading
-    //setAutomaticModuleReload( true );
+    setAutomaticModuleReload( true );
 
     // Initialize pluginLibraryPath by reading PluginManager's map
     std::map<std::string, Plugin>& map = PluginManager::getInstance().getPluginMap();

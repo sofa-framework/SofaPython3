@@ -4,6 +4,7 @@ import unittest
 import Sofa.Types
 import Sofa.Simulation
 import SofaRuntime
+from Sofa.future import __enable_feature__
 
 class MyController(Sofa.Core.Controller):
         """This is my custom controller
@@ -42,14 +43,33 @@ class Test(unittest.TestCase):
                 self.assertTrue(o is not None)
                 self.assertTrue(root.child1.mechanical is not None)
 
-        def test_init(self):
+        def test_future_addObject_noInit(self):
+                """With __enable_feature__("object_auto_init") the MechanicalObject
+                   does not sets its rest_position if __noInit it passed as an argument"""
+                with __enable_feature__("object_auto_init", True):
+                    root = Sofa.Core.Node("rootNode")
+                    root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+                    c = root.addObject("MechanicalObject", name="MO", position=[0.0,1.0,2.0]*100, __noInit=True)
+                    self.assertEqual(len(c.rest_position.value), 0)
+                    c.init()
+                    self.assertEqual(len(c.rest_position.value), 100)
+
+        def test_future_addObject_defaultInit(self):
+                """With __enable_feature__("object_auto_init") the MechanicalObject
+                   does sets its its rest_position."""
+                with Sofa.future.__enable_feature__("object_auto_init", True):
+                    root = Sofa.Core.Node("rootNode")
+                    root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+                    c = root.addObject("MechanicalObject", name="MO", position=[0.0,1.0,2.0]*100)
+                    self.assertEqual(len(c.rest_position.value), 100)
+
+        def test_addObject_defaultInit(self):
+                """Without __enable_feature__("object_auto_init") the MechanicalObject
+                   does not sets its rest_position"""
                 root = Sofa.Core.Node("rootNode")
                 root.addObject("RequiredPlugin", name="SofaBaseMechanics")
-                c = root.addChild("child1")
-                c = c.addObject("MechanicalObject", name="MO", position=[0.0,1.0,2.0]*100)
-                root.init()
-                print("TYPE: "+str(len(c.position.value)))
-                self.assertEqual(len(c.position.value), 100)
+                c = root.addObject("MechanicalObject", name="MO", position=[0.0,1.0,2.0]*100)
+                self.assertEqual(len(c.rest_position.value), 0)
 
         def test_createObjectInvalid(self):
                 root = Sofa.Core.Node("rootNode")
