@@ -26,15 +26,10 @@ jobs:
           sofa_version: ${{ matrix.sofa_branch }}
           sofa_root: /opt/sofa
 
-      - name: Set env vars
-        id: set-env-vars
+      - name: Print sofa-setup-action outputs
         shell: bash
         run: |
-          echo github.event.number = ${{ github.event.number  }}
-          echo github.event.pull_request.number = ${{ github.event.pull_request.number }}
-          echo github.event.issue.number = ${{ github.event.issue.number }}
-          echo steps.sofa.outputs
-          echo ${{ steps.sofa.outputs }}
+          echo "steps.sofa.outputs = ${{ toJSON(steps.sofa.outputs) }}"
 
       - name: ccache cache files
         uses: actions/cache@v2
