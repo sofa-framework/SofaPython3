@@ -56,10 +56,10 @@ jobs:
           echo github.event.number = ${{ github.event.number  }}
           echo github.event.pull_request.number = ${{ github.event.pull_request.number }}
           echo github.event.issue.number = ${{ github.event.issue.number }}
-          echo sofa-setup-action.outputs.sofa_root = ${{ sofa-setup-action.outputs.sofa_root }}
-          echo sofa-setup-action.outputs.sofa_version = ${{ sofa-setup-action.outputs.sofa_version }}
-          echo sofa-setup-action.outputs.python_version = ${{ sofa-setup-action.outputs.python_version }}
-          echo sofa-setup-action.outputs.pybind11_version = ${{ sofa-setup-action.outputs.pybind11_version }}
+          echo steps.sofa-setup-action.outputs.sofa_root = ${{ steps.sofa-setup-action.outputs.sofa_root }}
+          echo steps.sofa-setup-action.outputs.sofa_version = ${{ steps.sofa-setup-action.outputs.sofa_version }}
+          echo steps.sofa-setup-action.outputs.python_version = ${{ steps.sofa-setup-action.outputs.python_version }}
+          echo steps.sofa-setup-action.outputs.pybind11_version = ${{ steps.sofa-setup-action.outputs.pybind11_version }}
 
       - name: ccache cache files
         uses: actions/cache@v2
