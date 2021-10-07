@@ -1,4 +1,4 @@
-name: Ubuntu CI
+name: CI
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-20.04, macos-10.15]
         sofa_branch: [master, v21.06]
 
     steps:
@@ -75,26 +75,34 @@ jobs:
           path: SofaPython3
 
       - name: Run test Binding.Sofa.Tests
+        if: ${{ always() }}
         run: |
           export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
+          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
           export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
           chmod +x SofaPython3/bin/Bindings.Sofa.Tests
           ./SofaPython3/bin/Bindings.Sofa.Tests
       - name: Run test Bindings.SofaRuntime.Tests
+        if: ${{ always() }}
         run: |
           export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
+          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
           export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
           chmod +x SofaPython3/bin/Bindings.SofaRuntime.Tests
           ./SofaPython3/bin/Bindings.SofaRuntime.Tests
       - name: Run test Bindings.SofaTypes.Tests
+        if: ${{ always() }}
         run: |
           export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
+          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
           export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
           chmod +x SofaPython3/bin/Bindings.SofaTypes.Tests
           ./SofaPython3/bin/Bindings.SofaTypes.Tests
       - name: Run test Bindings.Modules.Tests
+        if: ${{ always() }}
         run: |
           export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
+          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
           export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
           chmod +x SofaPython3/bin/Bindings.Modules.Tests
           ./SofaPython3/bin/Bindings.Modules.Tests
