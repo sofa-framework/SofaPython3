@@ -42,49 +42,69 @@ jobs:
           if [ -z "$GIT_BRANCH" ]; then exit 1; fi
           echo "GIT_BRANCH=$GIT_BRANCH" >> $GITHUB_ENV
 
-      - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v2
+      - name: Setup SOFA and deps
+        id: sofa-setup-action
+        uses: guparan/sofa-setup-action@v0.1
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          sofa_version: v20.12
+          sofa_root: /opt/sofa
 
-      - name: Install requirements
-        run: |
-          sudo apt install -qq libeigen3-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev
-          sudo apt install -qq ccache ninja-build
-          python3 -m pip install numpy scipy
+    - name: Set env vars
+      id: set-env-vars
+      shell: bash
+      run: |
+        echo github.event.number = ${{ github.event.number  }}
+        echo github.event.pull_request.number = ${{ github.event.pull_request.number }}
+        echo github.event.issue.number = ${{ github.event.issue.number }}
+        echo sofa-setup-action.outputs.sofa_root = ${{ sofa-setup-action.outputs.sofa_root }}
+        echo sofa-setup-action.outputs.sofa_version = ${{ sofa-setup-action.outputs.sofa_version }}
+        echo sofa-setup-action.outputs.python_version = ${{ sofa-setup-action.outputs.python_version }}
+        echo sofa-setup-action.outputs.pybind11_version = ${{ sofa-setup-action.outputs.pybind11_version }}
 
-      - name: pybind11 cache files
-        uses: actions/cache@v2
-        id: pybind11_cache
-        with:
-          path: /tmp/pybind11
-          key: pybind11_${{ env.GIT_BRANCH }}_${{ matrix.os }}_${{ hashFiles('.github/workflows/*.yml') }}
-
-      - name: Build pybind11
-        if: steps.pybind11_cache.outputs.cache-hit != 'true'
-        run: |
-          git clone -b v$PYBIND_VERSION --depth 1 https://github.com/pybind/pybind11.git /tmp/pybind11
-          cd /tmp/pybind11
-          cmake -DCMAKE_BUILD_TYPE=Release -DPYBIND11_TEST=OFF -DPYTHON_EXECUTABLE=$(which python${{ env.PYTHON_VERSION }}) .
-          make --silent
-
-      - name: Install pybind11
-        run: |
-          cd /tmp/pybind11
-          sudo make --silent install
-
-      - name: Download and install the latest SOFA ${{ matrix.sofa_branch }} binaries
-        shell: bash
-        run: |
-          mkdir -p /tmp/sofa_zip
-          mkdir -p /tmp/sofa_binaries
-          curl --output /tmp/sofa_zip/${SOFA_OS}.zip -L \
-            https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/CI_BRANCH=${{ matrix.sofa_branch }},CI_SCOPE=minimal/lastSuccessfulBuild/artifact/${SOFA_OS}/*zip*/${SOFA_OS}.zip
-          unzip -qq /tmp/sofa_zip/${SOFA_OS}.zip -d /tmp/sofa_zip
-          unzip -qq /tmp/sofa_zip/${SOFA_OS}/SOFA_*.zip -d /tmp/sofa_binaries
-          sudo mv /tmp/sofa_binaries/SOFA_* ${SOFA_ROOT}
-          sudo ls -la ${SOFA_ROOT}
-          rm -rf /tmp/sofa_*
+      #
+      # - name: Set up Python ${{ env.PYTHON_VERSION }}
+      #   uses: actions/setup-python@v2
+      #   with:
+      #     python-version: ${{ env.PYTHON_VERSION }}
+      #
+      # - name: Install requirements
+      #   run: |
+      #     sudo apt install -qq libeigen3-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev
+      #     sudo apt install -qq ccache ninja-build
+      #     python3 -m pip install numpy scipy
+      #
+      # - name: pybind11 cache files
+      #   uses: actions/cache@v2
+      #   id: pybind11_cache
+      #   with:
+      #     path: /tmp/pybind11
+      #     key: pybind11_${{ env.GIT_BRANCH }}_${{ matrix.os }}_${{ hashFiles('.github/workflows/*.yml') }}
+      #
+      # - name: Build pybind11
+      #   if: steps.pybind11_cache.outputs.cache-hit != 'true'
+      #   run: |
+      #     git clone -b v$PYBIND_VERSION --depth 1 https://github.com/pybind/pybind11.git /tmp/pybind11
+      #     cd /tmp/pybind11
+      #     cmake -DCMAKE_BUILD_TYPE=Release -DPYBIND11_TEST=OFF -DPYTHON_EXECUTABLE=$(which python${{ env.PYTHON_VERSION }}) .
+      #     make --silent
+      #
+      # - name: Install pybind11
+      #   run: |
+      #     cd /tmp/pybind11
+      #     sudo make --silent install
+      #
+      # - name: Download and install the latest SOFA ${{ matrix.sofa_branch }} binaries
+      #   shell: bash
+      #   run: |
+      #     mkdir -p /tmp/sofa_zip
+      #     mkdir -p /tmp/sofa_binaries
+      #     curl --output /tmp/sofa_zip/${SOFA_OS}.zip -L \
+      #       https://ci.inria.fr/sofa-ci-dev/job/nightly-generate-binaries/CI_BRANCH=${{ matrix.sofa_branch }},CI_SCOPE=minimal/lastSuccessfulBuild/artifact/${SOFA_OS}/*zip*/${SOFA_OS}.zip
+      #     unzip -qq /tmp/sofa_zip/${SOFA_OS}.zip -d /tmp/sofa_zip
+      #     unzip -qq /tmp/sofa_zip/${SOFA_OS}/SOFA_*.zip -d /tmp/sofa_binaries
+      #     sudo mv /tmp/sofa_binaries/SOFA_* ${SOFA_ROOT}
+      #     sudo ls -la ${SOFA_ROOT}
+      #     rm -rf /tmp/sofa_*
 
       - name: ccache cache files
         uses: actions/cache@v2
@@ -92,7 +112,7 @@ jobs:
           path: .ccache
           key: ccache_${{ env.GIT_BRANCH }}_${{ matrix.os }}_${{ hashFiles('.github/workflows/*.yml') }}
 
-      - name: Build
+      - name: Build and install
         env:
           CCACHE_COMPRESS: true
           CCACHE_COMPRESSLEVEL: 6
@@ -123,7 +143,7 @@ jobs:
           name: SofaPython3_${{ env.GIT_BRANCH }}_SOFA-${{ matrix.sofa_branch }}_${{ env.SOFA_OS }}
           path: install
 
-      - name: Install SP3
+      - name: Install artifact
         uses: actions/download-artifact@v2
         with:
           name: SofaPython3_${{ env.GIT_BRANCH }}_SOFA-${{ matrix.sofa_branch }}_${{ env.SOFA_OS }}
