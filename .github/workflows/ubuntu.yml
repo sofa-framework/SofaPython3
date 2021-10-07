@@ -44,7 +44,7 @@ jobs:
 
       - name: Setup SOFA and deps
         id: sofa-setup-action
-        uses: guparan/sofa-setup-action@v0.1
+        uses: guparan/sofa-setup-action@master
         with:
           sofa_version: v20.12
           sofa_root: /opt/sofa
