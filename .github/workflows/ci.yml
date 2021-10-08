@@ -7,7 +7,7 @@ on:
 
 jobs:
   run:
-    name: Running with SOFA ${{ matrix.sofa_branch }}
+    name: Run on ${{ matrix.os }} with SOFA ${{ matrix.sofa_branch }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
