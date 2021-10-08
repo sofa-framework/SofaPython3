@@ -84,7 +84,7 @@ class ThermoMecaController(Sofa.Core.Controller):
     def onAnimateEndEvent(self, event):
         time = self.getContext().getTime()
 
-        self.temperatures = self.ThermalObject.position.array()#.copy()
+        self.temperatures = self.ThermalObject.position.array()
 
         if time > 0.5 :
 
