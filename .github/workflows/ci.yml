@@ -42,7 +42,7 @@ jobs:
           echo "steps.sofa.outputs = ${{ toJSON(steps.sofa.outputs) }}"
 
       - name: ccache cache files
-        if: runner.os != 'Windows'
+        if: ${{ runner.os != 'Windows' }}
         uses: actions/cache@v2
         with:
           path: .ccache
