@@ -42,6 +42,7 @@ jobs:
           echo 'steps.sofa.outputs = ${{ toJSON(steps.sofa.outputs) }}'
 
       - name: Install requirements
+        shell: bash
         run: |
           if [[ "$RUNNER_OS" == "Linux" ]]; then
             sudo apt-get -qq install libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev
