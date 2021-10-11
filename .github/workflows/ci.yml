@@ -39,7 +39,7 @@ jobs:
       - name: Print sofa-setup-action outputs
         shell: bash
         run: |
-          echo "steps.sofa.outputs = ${{ toJSON(steps.sofa.outputs) }}"
+          echo 'steps.sofa.outputs = ${{ toJSON(steps.sofa.outputs) }}'
 
       - name: ccache cache files
         if: ${{ runner.os != 'Windows' }}
@@ -100,11 +100,15 @@ jobs:
         shell: bash
         run: |
           if [[ "$RUNNER_OS" == "Windows" ]]; then
+            export PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$GITHUB_WORKSPACE/SofaPython3/bin:$PATH
+            export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
             echo "-------------- env --------------"
             env
             echo "-------------- PATH --------------"
             cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} && \
               echo %PATH% "
+            echo "----------------------------------"
+            ./SofaPython3/bin/Bindings.Sofa.Tests
           else
             export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
             export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
