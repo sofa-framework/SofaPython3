@@ -41,6 +41,26 @@ jobs:
         run: |
           echo 'steps.sofa.outputs = ${{ toJSON(steps.sofa.outputs) }}'
 
+      - name: Install requirements
+        run: |
+          if [[ "$RUNNER_OS" == "Linux" ]]; then
+            sudo apt-get -qq install libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev
+            sudo apt-get -qq install libeigen3-dev 
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            brew install boost
+            brew install eigen
+          elif [[ "$RUNNER_OS" == "Windows" ]]; then
+            cmd //c 'choco install -y --no-progress boost-msvc-14.2'
+            cmd //c 'setx /M BOOST_ROOT C:\local\boost_1_74_0'
+            cmd //c 'setx /M Boost_ROOT C:\local\boost_1_74_0'
+            
+            curl -L "https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.zip" --output "C:/eigen.zip"
+            unzip -qq "C:/eigen.zip" -d "C:/eigen" && rm "C:/eigen.zip"
+            ls -la "C:/eigen"
+            cmd //c 'setx /M EIGEN3_ROOT C:\eigen'
+            cmd //c 'setx /M Eigen3_ROOT C:\eigen'
+          fi
+
       - name: ccache cache files
         if: ${{ runner.os != 'Windows' }}
         uses: actions/cache@v2
