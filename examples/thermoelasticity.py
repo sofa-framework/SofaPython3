@@ -28,6 +28,7 @@ def createScene(root):
     root.addObject('RequiredPlugin', pluginName="SofaSimpleFem SofaSparseSolver SofaEngine SofaImplicitOdeSolver SofaLoader SofaOpenglVisual SofaBoundaryCondition SofaGeneralLoader SofaGeneralSimpleFem SofaGeneralEngine CImgPlugin SofaTopologyMapping") 
 
     root.addObject('RegularGridTopology', name="gridGenerator", nx="16", ny="6", nz="6", xmin="0", xmax="1", ymin="0", ymax="0.2", zmin="0", zmax="0.2")
+    root.addObject("OglColorMap", legendTitle="A-dimensional temperature", min=0, max=1, showLegend=True, colorScheme="Blue to Red")
 
 
     tetraTopo = root.addChild('TetraTopology')
@@ -48,7 +49,7 @@ def createScene(root):
     meca.addObject("FixedConstraint", name="FixedBoundaryCondition", indices="@../BoundaryCondition.indices")
 
     #initialization of the vector multiplying the local Young's modulus (need to activate updateStiffness=True)
-    initVector = list(np.full((1, 576), 1.0)[0])
+    initVector = np.full((1, 576), 1.0)
     meca.addObject("TetrahedronFEMForceField", name="LinearElasticity", youngModulus="3e5", poissonRatio="0.4", computeVonMisesStress="1", showVonMisesStressPerElement=True, localStiffnessFactor=initVector, updateStiffness=True)
 
 
@@ -63,7 +64,7 @@ def createScene(root):
     thermo.addObject("TetrahedronDiffusionFEMForceField", name="DiffusionForceField", template="Vec1d", constantDiffusionCoefficient="0.05", tagMechanics="3dgeometry", mstate="@Temperatures")
 
     thermoVisu = thermo.addChild("Visu")
-    thermoVisu.addObject("TextureInterpolation", template="Vec1d", name="EngineInterpolation", input_states="@../Temperatures.position",  input_coordinates="@../../Mechanics/MO.position",  min_value="0.0",  max_value="1.0",  manual_scale="1" , drawPotentiels="0",  showIndicesScale="5e-05")
+    thermoVisu.addObject("TextureInterpolation", template="Vec1d", name="EngineInterpolation", input_states="@../Temperatures.position",  input_coordinates="@../../Mechanics/MO.position",  min_value="0.",  max_value="1.",  manual_scale="1" , drawPotentiels="0",  showIndicesScale="5e-05")
     thermoVisu.addObject("OglModel", template="Vec3d", name="oglPotentiel",  texcoords="@EngineInterpolation.output_coordinates" ,texturename="textures/heatColor.bmp", scale3d="1 1 1", material="Default Diffuse 1 1 1 1 0.5 Ambient 1 1 1 1 0.3 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material ")
     thermoVisu.addObject("IdentityMapping", input="@../../Mechanics/MO", output="@oglPotentiel")
 
