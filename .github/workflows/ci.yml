@@ -24,7 +24,7 @@ jobs:
         run: |
           # Set env vars
           SOFA_ROOT=/opt/sofa
-          if [[ "$SOFA_OS" == "Windows" ]]; then
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
             SOFA_ROOT='C:\dev\sofa'
           fi
           echo "SOFA_ROOT=$SOFA_ROOT" | tee -a $GITHUB_ENV
@@ -58,12 +58,13 @@ jobs:
           python_root="$(find $RUNNER_TOOL_CACHE -maxdepth 3 -type d -path '**/Python/${{ steps.sofa.outputs.python_version }}*/x64')"
           echo "RUNNER_TOOL_CACHE = $RUNNER_TOOL_CACHE"
           echo "python_root = $python_root"
-          if [[ "${{ steps.sofa.outputs.sofa_os }}" == "Windows" ]]; then
-            cmake \
-              -GNinja \
-              -DCMAKE_PREFIX_PATH="${{ steps.sofa.outputs.sofa_root }}" \
-              -DCMAKE_BUILD_TYPE=Release
-              .
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} && \
+              cmake \
+                -GNinja \
+                -DCMAKE_PREFIX_PATH="${{ steps.sofa.outputs.sofa_root }}" \
+                -DCMAKE_BUILD_TYPE=Release
+                . "
           else
             export CCACHE_BASEDIR=$GITHUB_WORKSPACE
             export CCACHE_DIR=$GITHUB_WORKSPACE/.ccache
@@ -98,11 +99,19 @@ jobs:
         if: ${{ always() }}
         shell: bash
         run: |
-          export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
-          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
-          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
-          chmod +x SofaPython3/bin/Bindings.Sofa.Tests
-          ./SofaPython3/bin/Bindings.Sofa.Tests
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            echo "-------------- env --------------"
+            env
+            echo "-------------- PATH --------------"
+            cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} && \
+              echo %PATH% "
+          else
+            export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
+            export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
+            export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
+            chmod +x SofaPython3/bin/Bindings.Sofa.Tests
+            ./SofaPython3/bin/Bindings.Sofa.Tests
+          fi
 
       - name: Run test Bindings.SofaRuntime.Tests
         if: ${{ always() }}
