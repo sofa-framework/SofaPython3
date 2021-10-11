@@ -59,8 +59,8 @@ jobs:
             curl -L "https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.zip" --output "C:/eigen.zip"
             unzip -qq "C:/eigen.zip" -d "C:/eigen" && rm "C:/eigen.zip"
             ls -la "C:/eigen"
-            cmd //c 'setx /M EIGEN3_ROOT C:\eigen'
-            cmd //c 'setx /M Eigen3_ROOT C:\eigen'
+            cmd //c 'setx /M EIGEN3_ROOT C:\eigen\eigen-3.3.7'
+            cmd //c 'setx /M Eigen3_ROOT C:\eigen\eigen-3.3.7'
           fi
 
       - name: ccache cache files
