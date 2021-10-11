@@ -4,7 +4,7 @@ Activate/deactive some feature of sofa python
 Use that to control how some part of the binding should behave.
 
 Usage:
-    from Sofa.Lifetime import __feature__
+    from Sofa.Lifecycle import __feature__
 
     with __feature__("feature_name", True):
         do_something()
@@ -12,18 +12,18 @@ Usage:
     with __feature__("feature_name", False):
             do_something()
 """
-import Sofa.Lifetime
+import Sofa.Lifecycle
 from contextlib import ContextDecorator
 
 ### Initialize the feature set.
 # Add your own feature by un-commenting the following line
-#Sofa.Lifetime.init("my_feature", False)
+#Sofa.Lifecycle.init("my_feature", False)
 
 def has_feature(name):
-    return Sofa.Lifetime.get(name)
+    return Sofa.Lifecycle.get(name)
 
 def list_features():
-    return Sofa.Lifetime.list_features()
+    return Sofa.Lifecycle.list_features()
 
 class __feature__(ContextDecorator):
         @staticmethod
@@ -37,9 +37,9 @@ class __feature__(ContextDecorator):
 
         def __enter__(self):
             self.old_value=Sofa.Config.get(self.name)
-            Sofa.Lifetime.set(self.name, self.new_value)
+            Sofa.Lifecycle.set(self.name, self.new_value)
             return self
 
         def __exit__(self, *exc):
-            Sofa.Lifetime.set(self.name, self.old_value)
+            Sofa.Lifecycle.set(self.name, self.old_value)
             return False

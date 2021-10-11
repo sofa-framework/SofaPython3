@@ -37,7 +37,7 @@ import importlib
 import Sofa.constants
 import Sofa.Helper
 import Sofa.Core
-import Sofa.Lifetime
+import Sofa.Lifecycle
 import Sofa.Simulation
 import Sofa.Types
 import Sofa.Components

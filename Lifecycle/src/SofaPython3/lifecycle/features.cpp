@@ -20,9 +20,9 @@
 #include <iostream>
 #include <map>
 #include <stdexcept>
-#include <SofaPython3/lifetime/features.h>
+#include <SofaPython3/lifecycle/features.h>
 
-namespace sofapython3::lifetime::features
+namespace sofapython3::lifecycle::features
 {
 
 std::map<std::string, bool> features;

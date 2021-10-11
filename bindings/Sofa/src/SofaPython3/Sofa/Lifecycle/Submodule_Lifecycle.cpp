@@ -17,27 +17,30 @@
 *******************************************************************************
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 
-#include <sofa/config.h>
-#include <string>
-#include <vector>
+#include <iostream>
+#include <map>
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#include <SofaPython3/lifecycle/features.h>
 
-namespace sofapython3::lifetime::features
+namespace py { using namespace pybind11; }
+
+namespace sofapython3
 {
 
-/// Retrieve the value associated with the feature "name"
-/// raise an exception if "name" is not existing.
-SOFA_EXPORT_DYNAMIC_LIBRARY bool get(const std::string& name);
+/// The first parameter must be named the same as the module file to load.
+PYBIND11_MODULE(Lifecycle, ffmodule)
+{
+    ffmodule.doc() = R"doc(
+           Control the the activation of new features
+           ------------------------------------------
+           Sofa.Lifecycle.object_auto_init = True
+       )doc";
+    ffmodule.def("init", sofapython3::lifecycle::features::init);
+    ffmodule.def("set", sofapython3::lifecycle::features::set);
+    ffmodule.def("get", sofapython3::lifecycle::features::get);
+    ffmodule.def("list_features", sofapython3::lifecycle::features::list_features);
+}
 
-/// Change the value associated with the feature "name"
-/// raise an exception if "name" is not existing.
-SOFA_EXPORT_DYNAMIC_LIBRARY void set(const std::string& name, bool value);
-
-/// Create and set a new value for feature with "name"
-SOFA_EXPORT_DYNAMIC_LIBRARY void init(const std::string& name, bool value);
-
-/// Returns the list of registered features names
-SOFA_EXPORT_DYNAMIC_LIBRARY std::vector<std::string> list_features();
-
-} ///namespace  sofapython3::futurefeatures
+} ///namespace sofapython3
