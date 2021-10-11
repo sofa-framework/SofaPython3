@@ -55,6 +55,7 @@ jobs:
           CCACHE_MAXSIZE: "500M"
         shell: bash
         run: |
+          ls -la "${{ steps.sofa.outputs.sofa_root }}"
           python_root="$(find $RUNNER_TOOL_CACHE -maxdepth 3 -type d -path '**/Python/${{ steps.sofa.outputs.python_version }}*/x64')"
           echo "RUNNER_TOOL_CACHE = $RUNNER_TOOL_CACHE"
           echo "python_root = $python_root"
@@ -62,7 +63,7 @@ jobs:
             cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} && \
               cmake \
                 -GNinja \
-                -DCMAKE_PREFIX_PATH="${{ steps.sofa.outputs.sofa_root }}" \
+                -DCMAKE_PREFIX_PATH="${{ steps.sofa.outputs.sofa_root }}\lib\cmake" \
                 -DCMAKE_BUILD_TYPE=Release
                 . "
           else
