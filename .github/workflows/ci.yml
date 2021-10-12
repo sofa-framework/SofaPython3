@@ -74,14 +74,20 @@ jobs:
           echo "python_root = $python_root"
           cd "$BUILD_DIR"
           if [[ "$RUNNER_OS" == "Windows" ]]; then
-            cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} && \
-              cd $BUILD_DIR && \
+            cmd //c " \
+              ${{ steps.sofa.outputs.vs_vsdevcmd }} \
+              && \
+              cd $BUILD_DIR \
+              && \
               cmake \
                 -GNinja \
                 -DCMAKE_PREFIX_PATH="${{ steps.sofa.outputs.sofa_root }}\lib\cmake" \
                 -DCMAKE_BUILD_TYPE=Release \
                 -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR" \
-                ../src"
+                ../src \
+              && \
+              ninja install \
+            "
           else
             export CCACHE_BASEDIR=$SRC_DIR
             export CCACHE_DIR=$GITHUB_WORKSPACE/.ccache
@@ -96,17 +102,18 @@ jobs:
               -DPython_EXECUTABLE=$(which python${{ steps.sofa.outputs.python_version }}) \
               -DPython_ROOT=$python_root \
               ../src
+            ninja install
+            echo ${CCACHE_BASEDIR}
+            ccache -s
           fi
           echo '------ ls -la "$SRC_DIR" ------'
           ls -la "$SRC_DIR"
           echo '------ ls -la "$BUILD_DIR" ------'
           ls -la "$BUILD_DIR"
-          echo '------ cat "$BUILD_DIR/CMakeCache.txt" ------'
-          cat "$BUILD_DIR/CMakeCache.txt"
-          echo "--------------------------------"
-          ninja install
-          #echo ${CCACHE_BASEDIR}
-          #ccache -s
+          echo '------ ls -la "$INSTALL_DIR" ------'
+          ls -la "$INSTALL_DIR"
+          #echo '------ cat "$BUILD_DIR/CMakeCache.txt" ------'
+          #cat "$BUILD_DIR/CMakeCache.txt"
 
       - name: Create artifact
         uses: actions/upload-artifact@v2
