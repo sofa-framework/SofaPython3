@@ -29,6 +29,15 @@ jobs:
             SOFA_ROOT='C:\sofa'
           fi
           echo "SOFA_ROOT=$SOFA_ROOT" | tee -a $GITHUB_ENV
+          
+          SRC_DIR=$GITHUB_WORKSPACE
+          BUILD_DIR="$(cd $GITHUB_WORKSPACE/.. && mkdir build && cd build && pwd -W 2>/dev/null || pwd)"
+          INSTALL_DIR="$(cd $GITHUB_WORKSPACE/.. && mkdir install && cd install && pwd -W 2>/dev/null || pwd)"
+          ARTIFACT_DIR="$(cd $GITHUB_WORKSPACE/.. && mkdir artifact && cd artifact && pwd -W 2>/dev/null || pwd)"
+          echo "SRC_DIR=$SRC_DIR" | tee -a $GITHUB_ENV
+          echo "BUILD_DIR=$BUILD_DIR" | tee -a $GITHUB_ENV
+          echo "INSTALL_DIR=$INSTALL_DIR" | tee -a $GITHUB_ENV
+          echo "ARTIFACT_DIR=$ARTIFACT_DIR" | tee -a $GITHUB_ENV
 
       - name: Setup SOFA and deps
         id: sofa
@@ -60,16 +69,16 @@ jobs:
           python_root="$(find $RUNNER_TOOL_CACHE -maxdepth 3 -type d -path '**/Python/${{ steps.sofa.outputs.python_version }}*/x64')"
           echo "RUNNER_TOOL_CACHE = $RUNNER_TOOL_CACHE"
           echo "python_root = $python_root"
-          mkdir build
-          cd build
+          cd "$BUILD_DIR"
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} && \
-              cd $GITHUB_WORKSPACE/build && \
+              cd $BUILD_DIR && \
               cmake \
                 -GNinja \
                 -DCMAKE_PREFIX_PATH="${{ steps.sofa.outputs.sofa_root }}\lib\cmake" \
-                -DCMAKE_BUILD_TYPE=Release
-                .. "
+                -DCMAKE_BUILD_TYPE=Release \
+                -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR" \
+                .."
           else
             export CCACHE_BASEDIR=$GITHUB_WORKSPACE
             export CCACHE_DIR=$GITHUB_WORKSPACE/.ccache
@@ -80,16 +89,17 @@ jobs:
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
               -DCMAKE_PREFIX_PATH=${{ steps.sofa.outputs.sofa_root }}/lib/cmake \
               -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR" \
               -DPython_EXECUTABLE=$(which python${{ steps.sofa.outputs.python_version }}) \
               -DPython_ROOT=$python_root \
               ..
           fi
-          echo '------ ls -la "$GITHUB_WORKSPACE" ------'
-          ls -la "$GITHUB_WORKSPACE"
-          echo '------ ls -la "$GITHUB_WORKSPACE/build" ------'
-          ls -la "$GITHUB_WORKSPACE/build"
-          echo '------ cat "$GITHUB_WORKSPACE/build/CMakeCache.txt" ------'
-          cat "$GITHUB_WORKSPACE/build/CMakeCache.txt"
+          echo '------ ls -la "$SRC_DIR" ------'
+          ls -la "$SRC_DIR"
+          echo '------ ls -la "$BUILD_DIR" ------'
+          ls -la "$BUILD_DIR"
+          echo '------ cat "$BUILD_DIR/CMakeCache.txt" ------'
+          cat "$BUILD_DIR/CMakeCache.txt"
           echo "--------------------------------"
           ninja install
           #echo ${CCACHE_BASEDIR}
@@ -99,21 +109,21 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: SofaPython3_${{ steps.sofa.outputs.run_branch }}_SOFA-${{ matrix.sofa_branch }}_${{ steps.sofa.outputs.sofa_os }}
-          path: build/install
+          path: ${{ env.INSTALL_DIR }}
 
       - name: Install artifact
         uses: actions/download-artifact@v2
         with:
           name: SofaPython3_${{ steps.sofa.outputs.run_branch }}_SOFA-${{ matrix.sofa_branch }}_${{ steps.sofa.outputs.sofa_os }}
-          path: SofaPython3
+          path: ${{ env.ARTIFACT_DIR }}
 
       - name: Run test Binding.Sofa.Tests
         if: ${{ always() }}
         shell: bash
         run: |
           if [[ "$RUNNER_OS" == "Windows" ]]; then
-            export PATH=$GITHUB_WORKSPACE/SofaPython3/lib:$GITHUB_WORKSPACE/SofaPython3/bin:$PATH
-            export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
+            export PATH=$ARTIFACT_DIR/lib:$ARTIFACT_DIR/bin:$PATH
+            export PYTHONPATH=$ARTIFACT_DIR/lib/python3/site-packages:$PYTHONPATH
             echo "-------------- env --------------"
             env
             echo "-------------- PATH --------------"
@@ -122,9 +132,9 @@ jobs:
             echo "----------------------------------"
             ./SofaPython3/bin/Bindings.Sofa.Tests
           else
-            export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
-            export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
-            export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
+            export LD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
+            export DYLD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
+            export PYTHONPATH=$ARTIFACT_DIR/lib/python3/site-packages:$PYTHONPATH
             chmod +x SofaPython3/bin/Bindings.Sofa.Tests
             ./SofaPython3/bin/Bindings.Sofa.Tests
           fi
@@ -133,9 +143,9 @@ jobs:
         if: ${{ always() }}
         shell: bash
         run: |
-          export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
-          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
-          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
+          export LD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
+          export DYLD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
+          export PYTHONPATH=$ARTIFACT_DIR/lib/python3/site-packages:$PYTHONPATH
           chmod +x SofaPython3/bin/Bindings.SofaRuntime.Tests
           ./SofaPython3/bin/Bindings.SofaRuntime.Tests
 
@@ -143,9 +153,9 @@ jobs:
         if: ${{ always() }}
         shell: bash
         run: |
-          export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
-          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
-          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
+          export LD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
+          export DYLD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
+          export PYTHONPATH=$ARTIFACT_DIR/lib/python3/site-packages:$PYTHONPATH
           chmod +x SofaPython3/bin/Bindings.SofaTypes.Tests
           ./SofaPython3/bin/Bindings.SofaTypes.Tests
 
@@ -153,8 +163,8 @@ jobs:
         if: ${{ always() }}
         shell: bash
         run: |
-          export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
-          export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/SofaPython3/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
-          export PYTHONPATH=$GITHUB_WORKSPACE/SofaPython3/lib/python3/site-packages:$PYTHONPATH
+          export LD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
+          export DYLD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
+          export PYTHONPATH=$ARTIFACT_DIR/lib/python3/site-packages:$PYTHONPATH
           chmod +x SofaPython3/bin/Bindings.Modules.Tests
           ./SofaPython3/bin/Bindings.Modules.Tests
