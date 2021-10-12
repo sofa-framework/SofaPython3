@@ -17,7 +17,7 @@ find_package(SofaBaseUtils REQUIRED)
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
     PACKAGE      Bindings
-    MODULE       Lifecycle
+    MODULE       __Lifecycle__
     DESTINATION  Sofa
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}

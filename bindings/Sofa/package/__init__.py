@@ -43,7 +43,7 @@ import Sofa.Types
 import Sofa.Components
 import SofaTypes
 from .prefab import *
-from .lifetime import __feature__
+from .Lifecycle import __new_feature__
 
 __all__=["constants", "Helper", "Core", "Simulation", "Types", "SofaTypes", "prefab", "future"]
 
@@ -108,7 +108,6 @@ def getPythonCallingPoint():
 def sendMessageFromException(e):
     exc_type, exc_value, exc_tb = sys.exc_info()
     sofaExceptHandler(exc_type, exc_value, exc_tb)
-
 
 def sofaFormatHandler(type, value, tb):
     global oldexcepthook

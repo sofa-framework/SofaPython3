@@ -30,12 +30,12 @@ namespace sofapython3
 {
 
 /// The first parameter must be named the same as the module file to load.
-PYBIND11_MODULE(Lifecycle, ffmodule)
+PYBIND11_MODULE(__Lifecycle__, ffmodule)
 {
     ffmodule.doc() = R"doc(
            Control the the activation of new features
            ------------------------------------------
-           Sofa.Lifecycle.object_auto_init = True
+           Sofa.__Lifecycle__.object_auto_init = True
        )doc";
     ffmodule.def("init", sofapython3::lifecycle::features::init);
     ffmodule.def("set", sofapython3::lifecycle::features::set);
