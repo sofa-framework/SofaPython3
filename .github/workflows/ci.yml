@@ -60,13 +60,16 @@ jobs:
           python_root="$(find $RUNNER_TOOL_CACHE -maxdepth 3 -type d -path '**/Python/${{ steps.sofa.outputs.python_version }}*/x64')"
           echo "RUNNER_TOOL_CACHE = $RUNNER_TOOL_CACHE"
           echo "python_root = $python_root"
+          mkdir build
+          cd build
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} && \
+              cd $GITHUB_WORKSPACE/build && \
               cmake \
                 -GNinja \
                 -DCMAKE_PREFIX_PATH="${{ steps.sofa.outputs.sofa_root }}\lib\cmake" \
                 -DCMAKE_BUILD_TYPE=Release
-                . "
+                .. "
           else
             export CCACHE_BASEDIR=$GITHUB_WORKSPACE
             export CCACHE_DIR=$GITHUB_WORKSPACE/.ccache
@@ -79,8 +82,15 @@ jobs:
               -DCMAKE_BUILD_TYPE=Release \
               -DPython_EXECUTABLE=$(which python${{ steps.sofa.outputs.python_version }}) \
               -DPython_ROOT=$python_root \
-              .
+              ..
           fi
+          echo '------ ls -la "$GITHUB_WORKSPACE" ------'
+          ls -la "$GITHUB_WORKSPACE"
+          echo '------ ls -la "$GITHUB_WORKSPACE/build" ------'
+          ls -la "$GITHUB_WORKSPACE/build"
+          echo '------ cat "$GITHUB_WORKSPACE/build/CMakeCache.txt" ------'
+          cat "$GITHUB_WORKSPACE/build/CMakeCache.txt"
+          echo "--------------------------------"
           ninja install
           #echo ${CCACHE_BASEDIR}
           #ccache -s
@@ -89,7 +99,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: SofaPython3_${{ steps.sofa.outputs.run_branch }}_SOFA-${{ matrix.sofa_branch }}_${{ steps.sofa.outputs.sofa_os }}
-          path: install
+          path: build/install
 
       - name: Install artifact
         uses: actions/download-artifact@v2
