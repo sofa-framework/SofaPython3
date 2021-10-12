@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
+        with:
+          path: src
         
       - name: Set env vars
         shell: bash
@@ -30,10 +32,11 @@ jobs:
           fi
           echo "SOFA_ROOT=$SOFA_ROOT" | tee -a $GITHUB_ENV
           
-          SRC_DIR=$GITHUB_WORKSPACE
-          BUILD_DIR="$(cd $GITHUB_WORKSPACE/.. && mkdir build && cd build && pwd -W 2>/dev/null || pwd)"
-          INSTALL_DIR="$(cd $GITHUB_WORKSPACE/.. && mkdir install && cd install && pwd -W 2>/dev/null || pwd)"
-          ARTIFACT_DIR="$(cd $GITHUB_WORKSPACE/.. && mkdir artifact && cd artifact && pwd -W 2>/dev/null || pwd)"
+          mkdir -p "$GITHUB_WORKSPACE/build" "$GITHUB_WORKSPACE/install" "$GITHUB_WORKSPACE/artifact"
+               SRC_DIR="$(cd $GITHUB_WORKSPACE/src && pwd -W 2>/dev/null || pwd)"
+             BUILD_DIR="$(cd $GITHUB_WORKSPACE/build && pwd -W 2>/dev/null || pwd)"
+           INSTALL_DIR="$(cd $GITHUB_WORKSPACE/install && pwd -W 2>/dev/null || pwd)"
+          ARTIFACT_DIR="$(cd $GITHUB_WORKSPACE/artifact && pwd -W 2>/dev/null || pwd)"
           echo "SRC_DIR=$SRC_DIR" | tee -a $GITHUB_ENV
           echo "BUILD_DIR=$BUILD_DIR" | tee -a $GITHUB_ENV
           echo "INSTALL_DIR=$INSTALL_DIR" | tee -a $GITHUB_ENV
@@ -78,9 +81,9 @@ jobs:
                 -DCMAKE_PREFIX_PATH="${{ steps.sofa.outputs.sofa_root }}\lib\cmake" \
                 -DCMAKE_BUILD_TYPE=Release \
                 -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR" \
-                .."
+                ../src"
           else
-            export CCACHE_BASEDIR=$GITHUB_WORKSPACE
+            export CCACHE_BASEDIR=$SRC_DIR
             export CCACHE_DIR=$GITHUB_WORKSPACE/.ccache
             ccache -z
             cmake \
@@ -92,7 +95,7 @@ jobs:
               -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR" \
               -DPython_EXECUTABLE=$(which python${{ steps.sofa.outputs.python_version }}) \
               -DPython_ROOT=$python_root \
-              ..
+              ../src
           fi
           echo '------ ls -la "$SRC_DIR" ------'
           ls -la "$SRC_DIR"
