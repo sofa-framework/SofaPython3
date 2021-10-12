@@ -120,54 +120,42 @@ jobs:
           name: SofaPython3_${{ steps.sofa.outputs.run_branch }}_SOFA-${{ matrix.sofa_branch }}_${{ steps.sofa.outputs.sofa_os }}
           path: ${{ env.ARTIFACT_DIR }}
 
+      - name: Set env vars for tests
+        shell: bash
+        run: |
+          # Set env vars for tests
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            echo "$(cd $ARTIFACT_DIR/lib && pwd -W)" >> $GITHUB_PATH
+            echo "$(cd $ARTIFACT_DIR/bin && pwd -W)" >> $GITHUB_PATH
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            echo "DYLD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
+          else
+            echo "LD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
+          fi
+          echo "PYTHONPATH=$ARTIFACT_DIR/lib/python3/site-packages:$PYTHONPATH" | tee -a $GITHUB_ENV
+          # Add execution right on the tests
+          chmod +x $ARTIFACT_DIR/bin/*.Tests
+
       - name: Run test Binding.Sofa.Tests
         if: ${{ always() }}
         shell: bash
         run: |
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            export PATH=$ARTIFACT_DIR/lib:$ARTIFACT_DIR/bin:$PATH
-            export PYTHONPATH=$ARTIFACT_DIR/lib/python3/site-packages:$PYTHONPATH
-            echo "-------------- env --------------"
-            env
-            echo "-------------- PATH --------------"
-            cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} && \
-              echo %PATH% "
-            echo "----------------------------------"
-            ./SofaPython3/bin/Bindings.Sofa.Tests
-          else
-            export LD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
-            export DYLD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
-            export PYTHONPATH=$ARTIFACT_DIR/lib/python3/site-packages:$PYTHONPATH
-            chmod +x SofaPython3/bin/Bindings.Sofa.Tests
-            ./SofaPython3/bin/Bindings.Sofa.Tests
-          fi
+          $ARTIFACT_DIR/bin/Bindings.Sofa.Tests
 
       - name: Run test Bindings.SofaRuntime.Tests
         if: ${{ always() }}
         shell: bash
         run: |
-          export LD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
-          export DYLD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
-          export PYTHONPATH=$ARTIFACT_DIR/lib/python3/site-packages:$PYTHONPATH
-          chmod +x SofaPython3/bin/Bindings.SofaRuntime.Tests
-          ./SofaPython3/bin/Bindings.SofaRuntime.Tests
+          $ARTIFACT_DIR/bin/Bindings.SofaRuntime.Tests
 
       - name: Run test Bindings.SofaTypes.Tests
         if: ${{ always() }}
         shell: bash
         run: |
-          export LD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
-          export DYLD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
-          export PYTHONPATH=$ARTIFACT_DIR/lib/python3/site-packages:$PYTHONPATH
-          chmod +x SofaPython3/bin/Bindings.SofaTypes.Tests
-          ./SofaPython3/bin/Bindings.SofaTypes.Tests
+          $ARTIFACT_DIR/bin/Bindings.SofaTypes.Tests
 
       - name: Run test Bindings.Modules.Tests
         if: ${{ always() }}
         shell: bash
         run: |
-          export LD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH
-          export DYLD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH
-          export PYTHONPATH=$ARTIFACT_DIR/lib/python3/site-packages:$PYTHONPATH
-          chmod +x SofaPython3/bin/Bindings.Modules.Tests
-          ./SofaPython3/bin/Bindings.Modules.Tests
+          $ARTIFACT_DIR/bin/Bindings.Modules.Tests
