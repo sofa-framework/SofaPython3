@@ -27,10 +27,13 @@ jobs:
         run: |
           # Set env vars
           SOFA_ROOT=/opt/sofa
+          EXECUTABLE_EXTENSION=''
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             SOFA_ROOT='C:\sofa'
+            EXECUTABLE_EXTENSION='.exe'
           fi
           echo "SOFA_ROOT=$SOFA_ROOT" | tee -a $GITHUB_ENV
+          echo "EXECUTABLE_EXTENSION=$EXECUTABLE_EXTENSION" | tee -a $GITHUB_ENV
           
           mkdir -p "$GITHUB_WORKSPACE/build" "$GITHUB_WORKSPACE/install" "$GITHUB_WORKSPACE/artifact"
                SRC_DIR="$(cd $GITHUB_WORKSPACE/src && pwd -W 2>/dev/null || pwd)"
@@ -84,6 +87,7 @@ jobs:
                 -DCMAKE_PREFIX_PATH="${{ steps.sofa.outputs.sofa_root }}\lib\cmake" \
                 -DCMAKE_BUILD_TYPE=Release \
                 -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR" \
+                -DPython_ROOT=$python_root \
                 ../src \
               && \
               ninja install \
@@ -141,28 +145,32 @@ jobs:
           fi
           echo "PYTHONPATH=$ARTIFACT_DIR/lib/python3/site-packages:$PYTHONPATH" | tee -a $GITHUB_ENV
           # Add execution right on the tests
-          chmod +x $ARTIFACT_DIR/bin/*.Tests
+          chmod +x $ARTIFACT_DIR/bin/*.Tests$EXECUTABLE_EXTENSION
 
       - name: Run test Binding.Sofa.Tests
         if: ${{ always() }}
         shell: bash
         run: |
-          $ARTIFACT_DIR/bin/Bindings.Sofa.Tests
+          cd $ARTIFACT_DIR
+          ./bin/Bindings.Sofa.Tests$EXECUTABLE_EXTENSION
 
       - name: Run test Bindings.SofaRuntime.Tests
         if: ${{ always() }}
         shell: bash
         run: |
-          $ARTIFACT_DIR/bin/Bindings.SofaRuntime.Tests
+          cd $ARTIFACT_DIR
+          ./bin/Bindings.SofaRuntime.Tests$EXECUTABLE_EXTENSION
 
       - name: Run test Bindings.SofaTypes.Tests
         if: ${{ always() }}
         shell: bash
         run: |
-          $ARTIFACT_DIR/bin/Bindings.SofaTypes.Tests
+          cd $ARTIFACT_DIR
+          ./bin/Bindings.SofaTypes.Tests$EXECUTABLE_EXTENSION
 
       - name: Run test Bindings.Modules.Tests
         if: ${{ always() }}
         shell: bash
         run: |
-          $ARTIFACT_DIR/bin/Bindings.Modules.Tests
+          cd $ARTIFACT_DIR
+          ./bin/Bindings.Modules.Tests$EXECUTABLE_EXTENSION
