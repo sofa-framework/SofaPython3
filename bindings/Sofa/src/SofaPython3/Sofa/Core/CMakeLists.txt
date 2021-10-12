@@ -85,5 +85,5 @@ SP3_add_python_module(
     DESTINATION  Sofa
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
-    DEPENDS      SofaBaseUtils SofaBaseCollision SofaCore SofaHelper SofaSimulationCore SofaDefaultType SofaBaseVisual SofaPython3::Lifecycle SofaPython3::Plugin
+    DEPENDS      SofaBaseUtils SofaBaseCollision Sofa.Core Sofa.Helper Sofa.SimulationCore Sofa.DefaultType SofaBaseVisual SofaPython3::Lifecycle SofaPython3::Plugin
 )

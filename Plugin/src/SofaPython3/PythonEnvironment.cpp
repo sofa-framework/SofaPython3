@@ -257,18 +257,39 @@ void PythonEnvironment::Init()
     }
 }
 
-void PythonEnvironment::executePython(std::function<void()> cb)
+// Single implementation for the three different versions
+template<class T>
+void executePython_(const T& emitter, std::function<void()> cb)
 {
     sofapython3::PythonEnvironment::gil acquire;
 
     try{
         cb();
-    }catch(std::exception& e)
+    }catch(py::error_already_set& e)
     {
-        msg_error("SofaPython3") << e.what() ;
+        std::stringstream tmp;
+        tmp << "Unable to execute code." << msgendl
+                     << "Python exception:" << msgendl
+                     << "  " << e.what()
+                     << PythonEnvironment::getPythonCallingPointString();
+        msg_error(emitter) << tmp.str();
     }
 }
 
+void PythonEnvironment::executePython(const std::string& emitter, std::function<void()> cb)
+{
+    return executePython_(emitter, cb);
+}
+
+void PythonEnvironment::executePython(std::function<void()> cb)
+{
+    return executePython_("SofaPython3::executePython", cb);
+}
+
+void PythonEnvironment::executePython(const sofa::core::objectmodel::Base* b, std::function<void()> cb)
+{
+    return executePython_(b, cb);
+}
 
 void PythonEnvironment::Release()
 {

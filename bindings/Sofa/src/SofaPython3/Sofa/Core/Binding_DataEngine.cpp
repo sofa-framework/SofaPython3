@@ -50,24 +50,23 @@ std::string DataEngine_Trampoline::getClassName() const
 
 void DataEngine_Trampoline::init()
 {
-    PythonEnvironment::gil acquire;
-    PYBIND11_OVERLOAD(void, DataEngine, init, );
+    PythonEnvironment::executePython(this, [this](){
+        PYBIND11_OVERLOAD(void, DataEngine, init, );
+    });
 }
 
 void DataEngine_Trampoline::doUpdate()
 {
-    PythonEnvironment::gil acquire;
-    py::object self = py::cast(this);
-    if (py::hasattr(self, "update")) {
-        py::object fct = self.attr("update");
-        try {
+    PythonEnvironment::executePython(this, [this](){
+        py::object self = py::cast(this);
+        if (py::hasattr(self, "update"))
+        {
+            py::object fct = self.attr("update");
             fct();
             return;
-        } catch (std::exception& /*e*/) {
-            throw py::type_error(this->getName() + ": The DataEngine requires an update method with no parameter and no return type");
         }
-    }
-    throw py::type_error(this->getName() + " has no update() method.");
+        throw py::type_error(this->getName() + " has no update() method.");
+    });
 }
 
 void moduleAddDataEngine(pybind11::module &m)
