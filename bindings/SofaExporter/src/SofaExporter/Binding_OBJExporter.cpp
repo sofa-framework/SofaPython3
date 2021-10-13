@@ -18,41 +18,30 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <pybind11/eval.h>
-namespace py = pybind11;
-
-#include <SofaExporter/Binding_STLExporter.h>
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaExporter/Binding_OBJExporter.h>
+#include <SofaExporter/Binding_OBJExporter_doc.h>
 
-namespace sofapython3
+#include <SofaPython3/PythonFactory.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
+#include <SofaExporter/OBJExporter.h>
+
+using  sofa::component::exporter::OBJExporter;
+
+namespace py { using namespace pybind11; }
+
+namespace sofapython3 {
+
+void moduleAddOBJExporter(py::module &m)
 {
+    PythonFactory::registerType<OBJExporter>([](sofa::core::objectmodel::Base* object)
+    {
+        return py::cast(dynamic_cast<OBJExporter*>(object));
+    });
 
-PYBIND11_MODULE(SofaExporter, m) {
-    m.doc() = R"doc(
-              Binding for the SofaExporter plugin
-              -----------------------------------
+    py::class_<OBJExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<OBJExporter>> p(m, "OBJExporter");
 
-              Provides python bindings for the SofaExporter module
-
-              Example of use:
-
-              .. code-block:: python
-
-                import SofaExporter
-
-              .. autosummary::
-                  :toctree: _autosummary/_autosummary
-
-                  SofaExporter.STLExporter
-                  SofaExporter.OBJExporter
-
-              )doc";
-
-    py::module::import("Sofa.Core");
-
-    moduleAddSTLExporter(m);
-    moduleAddOBJExporter(m);
+    p.def("write", &OBJExporter::write, sofapython3::doc::SofaExporter::OBJExporter::write::docstring);
 }
 
-}  // namespace sofapython3
-
+} // namespace sofapython3
