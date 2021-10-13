@@ -26,24 +26,29 @@ jobs:
         shell: bash
         run: |
           # Set env vars
-          SOFA_ROOT=/opt/sofa
           EXECUTABLE_EXTENSION=''
           if [[ "$RUNNER_OS" == "Windows" ]]; then
-            SOFA_ROOT='C:\sofa'
             EXECUTABLE_EXTENSION='.exe'
           fi
-          echo "SOFA_ROOT=$SOFA_ROOT" | tee -a $GITHUB_ENV
           echo "EXECUTABLE_EXTENSION=$EXECUTABLE_EXTENSION" | tee -a $GITHUB_ENV
           
-          mkdir -p "$GITHUB_WORKSPACE/build" "$GITHUB_WORKSPACE/install" "$GITHUB_WORKSPACE/artifact"
-               SRC_DIR="$(cd $GITHUB_WORKSPACE/src && pwd -W 2>/dev/null || pwd)"
-             BUILD_DIR="$(cd $GITHUB_WORKSPACE/build && pwd -W 2>/dev/null || pwd)"
-           INSTALL_DIR="$(cd $GITHUB_WORKSPACE/install && pwd -W 2>/dev/null || pwd)"
+          mkdir -p "$GITHUB_WORKSPACE/sofa" "$GITHUB_WORKSPACE/build" "$GITHUB_WORKSPACE/install" "$GITHUB_WORKSPACE/artifact"
+             SOFA_ROOT="$(cd $GITHUB_WORKSPACE/sofa     && pwd -W 2>/dev/null || pwd)"
+               SRC_DIR="$(cd $GITHUB_WORKSPACE/src      && pwd -W 2>/dev/null || pwd)"
+             BUILD_DIR="$(cd $GITHUB_WORKSPACE/build    && pwd -W 2>/dev/null || pwd)"
+           INSTALL_DIR="$(cd $GITHUB_WORKSPACE/install  && pwd -W 2>/dev/null || pwd)"
           ARTIFACT_DIR="$(cd $GITHUB_WORKSPACE/artifact && pwd -W 2>/dev/null || pwd)"
+          echo "SOFA_ROOT=$SOFA_ROOT" | tee -a $GITHUB_ENV
           echo "SRC_DIR=$SRC_DIR" | tee -a $GITHUB_ENV
           echo "BUILD_DIR=$BUILD_DIR" | tee -a $GITHUB_ENV
           echo "INSTALL_DIR=$INSTALL_DIR" | tee -a $GITHUB_ENV
           echo "ARTIFACT_DIR=$ARTIFACT_DIR" | tee -a $GITHUB_ENV
+          
+          echo "CCACHE_COMPRESS=true" | tee -a $GITHUB_ENV
+          echo "CCACHE_COMPRESSLEVEL=6" | tee -a $GITHUB_ENV
+          echo "CCACHE_MAXSIZE=500M" | tee -a $GITHUB_ENV
+          echo "CCACHE_BASEDIR=$SRC_DIR" | tee -a $GITHUB_ENV
+          echo "CCACHE_DIR=$GITHUB_WORKSPACE/.ccache" | tee -a $GITHUB_ENV
 
       - name: Setup SOFA and deps
         id: sofa
@@ -61,40 +66,25 @@ jobs:
         if: ${{ runner.os != 'Windows' }}
         uses: actions/cache@v2
         with:
-          path: .ccache
-          key: ccache_${{ steps.sofa.outputs.run_branch }}_${{ matrix.os }}_${{ hashFiles('.github/workflows/*.yml') }}
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache_${{ steps.sofa.outputs.run_branch }}_${{ matrix.os }}
 
       - name: Build and install
-        env:
-          CCACHE_COMPRESS: true
-          CCACHE_COMPRESSLEVEL: 6
-          CCACHE_MAXSIZE: "500M"
         shell: bash
         run: |
-          ls -la "${{ steps.sofa.outputs.sofa_root }}"
-          python_root="$(find $RUNNER_TOOL_CACHE -maxdepth 3 -type d -path '**/Python/${{ steps.sofa.outputs.python_version }}*/x64')"
-          echo "RUNNER_TOOL_CACHE = $RUNNER_TOOL_CACHE"
-          echo "python_root = $python_root"
-          cd "$BUILD_DIR"
           if [[ "$RUNNER_OS" == "Windows" ]]; then
-            cmd //c " \
-              ${{ steps.sofa.outputs.vs_vsdevcmd }} \
-              && \
-              cd $BUILD_DIR \
-              && \
-              cmake \
-                -GNinja \
-                -DCMAKE_PREFIX_PATH="${{ steps.sofa.outputs.sofa_root }}\lib\cmake" \
-                -DCMAKE_BUILD_TYPE=Release \
-                -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR" \
-                -DPython_ROOT=$python_root \
-                ../src \
-              && \
-              ninja install \
-            "
+            cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} \
+              && cd /d $BUILD_DIR \
+              && cmake \
+                  -GNinja \
+                  -DCMAKE_PREFIX_PATH="${{ steps.sofa.outputs.sofa_root }}/lib/cmake" \
+                  -DCMAKE_BUILD_TYPE=Release \
+                  -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR" \
+                  -DPython_ROOT=$PYTHON_ROOT \
+                  ../src \
+              && ninja install"
           else
-            export CCACHE_BASEDIR=$SRC_DIR
-            export CCACHE_DIR=$GITHUB_WORKSPACE/.ccache
+            cd "$BUILD_DIR"
             ccache -z
             cmake \
               -GNinja \
@@ -103,8 +93,7 @@ jobs:
               -DCMAKE_PREFIX_PATH=${{ steps.sofa.outputs.sofa_root }}/lib/cmake \
               -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR" \
-              -DPython_EXECUTABLE=$(which python${{ steps.sofa.outputs.python_version }}) \
-              -DPython_ROOT=$python_root \
+              -DPython_ROOT=$PYTHON_ROOT \
               ../src
             ninja install
             echo ${CCACHE_BASEDIR}
@@ -116,8 +105,6 @@ jobs:
           ls -la "$BUILD_DIR"
           echo '------ ls -la "$INSTALL_DIR" ------'
           ls -la "$INSTALL_DIR"
-          #echo '------ cat "$BUILD_DIR/CMakeCache.txt" ------'
-          #cat "$BUILD_DIR/CMakeCache.txt"
 
       - name: Create artifact
         uses: actions/upload-artifact@v2
