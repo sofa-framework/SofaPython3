@@ -95,6 +95,14 @@ class Test(unittest.TestCase):
         self.assertEqual(link_input.getOwnerBase().getName(), "BarycentricMapping")
         self.assertEqual(link_output.getOwnerBase().getName(), "BarycentricMapping")
 
+    def test_baselink_attributes_forwarding(self):
+        root = create_scene("root")
+        c1 = root.addObject("MechanicalObject", name="t1", position=[[-1,-2,-3],[-4,-5,-6]])
+        f1 = root.addObject("RestShapeSpringsForceField", name="forcefield", mstate="@t1")
+        self.assertEqual(len(f1.mstate.position), 2)
+        f1.mstate.position = [[1.0,2.0,3.0]]
+        self.assertEqual(len(f1.mstate.position), 1)
+
     @unittest.skip # Segmentation fault on MacOS
     def test_read(self):
         root = create_scene("root")
