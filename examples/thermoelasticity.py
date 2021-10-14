@@ -65,7 +65,7 @@ def createScene(root):
 
     thermoVisu = thermo.addChild("Visu")
     thermoVisu.addObject("TextureInterpolation", template="Vec1d", name="EngineInterpolation", input_states="@../Temperatures.position",  input_coordinates="@../../Mechanics/MO.position",  min_value="0.",  max_value="1.",  manual_scale="1" , drawPotentiels="0",  showIndicesScale="5e-05")
-    thermoVisu.addObject("OglModel", template="Vec3d", name="oglPotentiel",  texcoords="@EngineInterpolation.output_coordinates" ,texturename="textures/heatColor.bmp", scale3d="1 1 1", material="Default Diffuse 1 1 1 1 0.5 Ambient 1 1 1 1 0.3 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material ")
+    thermoVisu.addObject("OglModel", template="Vec3d", name="oglPotentiel", handleDynamicTopology="0", texcoords="@EngineInterpolation.output_coordinates" ,texturename="textures/heatColor.bmp", scale3d="1 1 1", material="Default Diffuse 1 1 1 1 0.5 Ambient 1 1 1 1 0.3 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material ")
     thermoVisu.addObject("IdentityMapping", input="@../../Mechanics/MO", output="@oglPotentiel")
 
     # Add the controller
