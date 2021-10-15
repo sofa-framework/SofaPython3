@@ -25,37 +25,40 @@ jobs:
       - name: Set env vars
         shell: bash
         run: |
-          # Set env vars
+          # Set executable extension
           EXE=''
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             EXE='.exe'
           fi
           echo "EXE=$EXE" | tee -a $GITHUB_ENV
           
+          # Define pybind11 specs
           PYBIND11_VERSION=2.4.3
-          PYBIND11_INSTALL_DIR="/tmp/deps_cache_is_for_windows_only"
+          PYBIND11_INSTALL_PATH="/tmp/deps_cache_is_for_windows_only"
           if [[ "$RUNNER_OS" == "Windows" ]]; then
-            PYBIND11_INSTALL_DIR="C:/pybind11"
+            PYBIND11_INSTALL_PATH="C:/pybind11"
           fi
           echo "PYBIND11_VERSION=$PYBIND11_VERSION" | tee -a $GITHUB_ENV
-          echo "PYBIND11_INSTALL_DIR=$PYBIND11_INSTALL_DIR" | tee -a $GITHUB_ENV
+          echo "PYBIND11_INSTALL_PATH=$PYBIND11_INSTALL_PATH" | tee -a $GITHUB_ENV
           
+          # Setup workspace + set all path env vars + set SOFA_ROOT
           mkdir -p "$GITHUB_WORKSPACE/sofa" "$GITHUB_WORKSPACE/build" "$GITHUB_WORKSPACE/install" "$GITHUB_WORKSPACE/artifact"
-             SOFA_ROOT="$(cd $GITHUB_WORKSPACE/sofa     && pwd -W 2>/dev/null || pwd)"
-               SRC_DIR="$(cd $GITHUB_WORKSPACE/src      && pwd -W 2>/dev/null || pwd)"
-             BUILD_DIR="$(cd $GITHUB_WORKSPACE/build    && pwd -W 2>/dev/null || pwd)"
-           INSTALL_DIR="$(cd $GITHUB_WORKSPACE/install  && pwd -W 2>/dev/null || pwd)"
-          ARTIFACT_DIR="$(cd $GITHUB_WORKSPACE/artifact && pwd -W 2>/dev/null || pwd)"
+              SOFA_ROOT="$(cd $GITHUB_WORKSPACE/sofa     && pwd -W 2>/dev/null || pwd)"
+               SRC_PATH="$(cd $GITHUB_WORKSPACE/src      && pwd -W 2>/dev/null || pwd)"
+             BUILD_PATH="$(cd $GITHUB_WORKSPACE/build    && pwd -W 2>/dev/null || pwd)"
+           INSTALL_PATH="$(cd $GITHUB_WORKSPACE/install  && pwd -W 2>/dev/null || pwd)"
+          ARTIFACT_PATH="$(cd $GITHUB_WORKSPACE/artifact && pwd -W 2>/dev/null || pwd)"
           echo "SOFA_ROOT=$SOFA_ROOT" | tee -a $GITHUB_ENV
-          echo "SRC_DIR=$SRC_DIR" | tee -a $GITHUB_ENV
-          echo "BUILD_DIR=$BUILD_DIR" | tee -a $GITHUB_ENV
-          echo "INSTALL_DIR=$INSTALL_DIR" | tee -a $GITHUB_ENV
-          echo "ARTIFACT_DIR=$ARTIFACT_DIR" | tee -a $GITHUB_ENV
+          echo "SRC_PATH=$SRC_PATH" | tee -a $GITHUB_ENV
+          echo "BUILD_PATH=$BUILD_PATH" | tee -a $GITHUB_ENV
+          echo "INSTALL_PATH=$INSTALL_PATH" | tee -a $GITHUB_ENV
+          echo "ARTIFACT_PATH=$ARTIFACT_PATH" | tee -a $GITHUB_ENV
           
+          # Set ccache env vars
           echo "CCACHE_COMPRESS=true" | tee -a $GITHUB_ENV
           echo "CCACHE_COMPRESSLEVEL=6" | tee -a $GITHUB_ENV
           echo "CCACHE_MAXSIZE=500M" | tee -a $GITHUB_ENV
-          echo "CCACHE_BASEDIR=$SRC_DIR" | tee -a $GITHUB_ENV
+          echo "CCACHE_BASEDIR=$SRC_PATH" | tee -a $GITHUB_ENV
           echo "CCACHE_DIR=$GITHUB_WORKSPACE/.ccache" | tee -a $GITHUB_ENV
 
       - name: Setup SOFA and deps
@@ -74,15 +77,15 @@ jobs:
         uses: actions/cache@v2
         id: pybind11_cache
         with:
-          path: ${{ env.PYBIND11_INSTALL_DIR }}
-          key: pybind11_${{ steps.sofa.outputs.run_branch }}_${{ runner.os }}_${{ env.PYBIND11_VERSION }}_${{ hashFiles('src/.github/workflows/*.yml') }}
+          path: ${{ env.PYBIND11_INSTALL_PATH }}
+          key: pybind11-${{ env.PYBIND11_VERSION }}_${{ runner.os }}_python-${{ steps.sofa.outputs.python_root }}_${{ hashFiles('src/.github/workflows/*.yml') }}
       
       - name: Install pybind11
         shell: bash
         run: |
           # Build and install pybind11
           if [[ "$RUNNER_OS" == "Windows" ]]; then
-            if ! ls -a "$PYBIND11_INSTALL_DIR"/* >/dev/null 2>&1; then
+            if ! ls -a "$PYBIND11_INSTALL_PATH"/* >/dev/null 2>&1; then
               # directory does not exist or is empty
               git clone -b v$PYBIND11_VERSION --depth 1 https://github.com/pybind/pybind11.git "${{ runner.temp }}/pybind11_tmp"
               cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} && \
@@ -91,12 +94,13 @@ jobs:
                   -GNinja \
                   -DCMAKE_BUILD_TYPE=Release \
                   -DPYBIND11_TEST=OFF \
-                  -DCMAKE_INSTALL_PREFIX=$PYBIND11_INSTALL_DIR \
+                  -DCMAKE_INSTALL_PREFIX=$PYBIND11_INSTALL_PATH \
+                  -DPython_ROOT=${{ steps.sofa.outputs.python_root }} \
                   . && \
                   ninja install"
             fi          
-            echo "pybind11_ROOT=$PYBIND11_INSTALL_DIR" | tee -a $GITHUB_ENV
-            echo "$PYBIND11_INSTALL_DIR" >> $GITHUB_PATH
+            echo "pybind11_ROOT=$PYBIND11_INSTALL_PATH" | tee -a $GITHUB_ENV
+            echo "$PYBIND11_INSTALL_PATH" >> $GITHUB_PATH
           else
             git clone -b v${PYBIND11_VERSION} --depth 1 https://github.com/pybind/pybind11.git "${{ runner.temp }}/pybind11_tmp"
             cd "${{ runner.temp }}/pybind11_tmp"
@@ -104,7 +108,7 @@ jobs:
               -GNinja \
               -DCMAKE_BUILD_TYPE=Release \
               -DPYBIND11_TEST=OFF \
-              -DPYTHON_EXECUTABLE=$(which python${{ env.PYTHON_VERSION }}) \
+              -DPython_ROOT=${{ steps.sofa.outputs.python_root }} \
               .
             sudo ninja install
           fi
@@ -121,17 +125,17 @@ jobs:
         run: |
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} \
-              && cd /d $BUILD_DIR \
+              && cd /d $BUILD_PATH \
               && cmake \
                   -GNinja \
                   -DCMAKE_PREFIX_PATH="${{ steps.sofa.outputs.sofa_root }}/lib/cmake" \
                   -DCMAKE_BUILD_TYPE=Release \
-                  -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR" \
-                  -DPython_ROOT=$PYTHON_ROOT \
+                  -DCMAKE_INSTALL_PREFIX="$INSTALL_PATH" \
+                  -DPython_ROOT=${{ steps.sofa.outputs.python_root }} \
                   ../src \
               && ninja install"
           else
-            cd "$BUILD_DIR"
+            cd "$BUILD_PATH"
             ccache -z
             cmake \
               -GNinja \
@@ -139,72 +143,72 @@ jobs:
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
               -DCMAKE_PREFIX_PATH=${{ steps.sofa.outputs.sofa_root }}/lib/cmake \
               -DCMAKE_BUILD_TYPE=Release \
-              -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR" \
-              -DPython_ROOT=$PYTHON_ROOT \
+              -DCMAKE_INSTALL_PREFIX="$INSTALL_PATH" \
+              -DPython_ROOT=${{ steps.sofa.outputs.python_root }} \
               ../src
             ninja install
             echo ${CCACHE_BASEDIR}
             ccache -s
           fi
-          echo '------ ls -la "$SRC_DIR" ------'
-          ls -la "$SRC_DIR"
-          echo '------ ls -la "$BUILD_DIR" ------'
-          ls -la "$BUILD_DIR"
-          echo '------ ls -la "$INSTALL_DIR" ------'
-          ls -la "$INSTALL_DIR"
+          echo '------ ls -la "$SRC_PATH" ------'
+          ls -la "$SRC_PATH"
+          echo '------ ls -la "$BUILD_PATH" ------'
+          ls -la "$BUILD_PATH"
+          echo '------ ls -la "$INSTALL_PATH" ------'
+          ls -la "$INSTALL_PATH"
 
       - name: Create artifact
         uses: actions/upload-artifact@v2
         with:
-          name: SofaPython3_${{ steps.sofa.outputs.run_branch }}_SOFA-${{ matrix.sofa_branch }}_${{ steps.sofa.outputs.sofa_os }}
-          path: ${{ env.INSTALL_DIR }}
+          name: SofaPython3_${{ steps.sofa.outputs.run_branch }}_${{ runner.os }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}
+          path: ${{ env.INSTALL_PATH }}
 
       - name: Install artifact
         uses: actions/download-artifact@v2
         with:
-          name: SofaPython3_${{ steps.sofa.outputs.run_branch }}_SOFA-${{ matrix.sofa_branch }}_${{ steps.sofa.outputs.sofa_os }}
-          path: ${{ env.ARTIFACT_DIR }}
+          name: SofaPython3_${{ steps.sofa.outputs.run_branch }}_${{ runner.os }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}
+          path: ${{ env.ARTIFACT_PATH }}
 
       - name: Set env vars for tests
         shell: bash
         run: |
           # Set env vars for tests
           if [[ "$RUNNER_OS" == "Windows" ]]; then
-            echo "$(cd $ARTIFACT_DIR/lib && pwd -W)" >> $GITHUB_PATH
-            echo "$(cd $ARTIFACT_DIR/bin && pwd -W)" >> $GITHUB_PATH
+            echo "$(cd $ARTIFACT_PATH/lib && pwd -W)" >> $GITHUB_PATH
+            echo "$(cd $ARTIFACT_PATH/bin && pwd -W)" >> $GITHUB_PATH
           elif [[ "$RUNNER_OS" == "macOS" ]]; then
-            echo "DYLD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
+            echo "DYLD_LIBRARY_PATH=$ARTIFACT_PATH/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           else
-            echo "LD_LIBRARY_PATH=$ARTIFACT_DIR/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
+            echo "LD_LIBRARY_PATH=$ARTIFACT_PATH/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           fi
-          echo "PYTHONPATH=$ARTIFACT_DIR/lib/python3/site-packages:$PYTHONPATH" | tee -a $GITHUB_ENV
+          echo "PYTHONPATH=$ARTIFACT_PATH/lib/python3/site-packages:$PYTHONPATH" | tee -a $GITHUB_ENV
           # Add execution right on the tests
-          chmod +x $ARTIFACT_DIR/bin/*.Tests$EXE
+          chmod +x $ARTIFACT_PATH/bin/*.Tests$EXE
 
       - name: Run test Binding.Sofa.Tests
         if: ${{ always() }}
         shell: bash
         run: |
-          cd $ARTIFACT_DIR
+          cd $ARTIFACT_PATH
           ./bin/Bindings.Sofa.Tests$EXE
 
       - name: Run test Bindings.SofaRuntime.Tests
         if: ${{ always() }}
         shell: bash
         run: |
-          cd $ARTIFACT_DIR
+          cd $ARTIFACT_PATH
           ./bin/Bindings.SofaRuntime.Tests$EXE
 
       - name: Run test Bindings.SofaTypes.Tests
         if: ${{ always() }}
         shell: bash
         run: |
-          cd $ARTIFACT_DIR
+          cd $ARTIFACT_PATH
           ./bin/Bindings.SofaTypes.Tests$EXE
 
       - name: Run test Bindings.Modules.Tests
         if: ${{ always() }}
         shell: bash
         run: |
-          cd $ARTIFACT_DIR
+          cd $ARTIFACT_PATH
           ./bin/Bindings.Modules.Tests$EXE
