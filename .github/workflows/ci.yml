@@ -184,6 +184,12 @@ jobs:
           echo "PYTHONPATH=$ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
           # Add execution right on the tests
           chmod +x $ARTIFACT_PATH/bin/*.Tests$EXE
+          echo '----------------------'
+          echo "PATH = $PATH"
+          echo "SOFA_ROOT = $SOFA_ROOT"
+          echo '----------------------'
+          ls -la "$SOFA_ROOT"
+          echo '----------------------'
 
       - name: Run test Binding.Sofa.Tests
         if: ${{ always() }}
