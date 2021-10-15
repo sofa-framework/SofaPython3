@@ -181,7 +181,7 @@ jobs:
           else
             echo "LD_LIBRARY_PATH=$ARTIFACT_PATH/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           fi
-          echo "PYTHONPATH=$ARTIFACT_PATH/lib/python3/site-packages:$PYTHONPATH" | tee -a $GITHUB_ENV
+          echo "PYTHONPATH=$ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
           # Add execution right on the tests
           chmod +x $ARTIFACT_PATH/bin/*.Tests$EXE
 
