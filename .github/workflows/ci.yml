@@ -63,7 +63,7 @@ jobs:
 
       - name: Setup SOFA and deps
         id: sofa
-        uses: guparan/sofa-setup-action@master
+        uses: sofa-framework/sofa-setup-action@master
         with:
           sofa_version: ${{ matrix.sofa_branch }}
           sofa_root: ${{ env.SOFA_ROOT }}
@@ -73,7 +73,7 @@ jobs:
         run: |
           echo 'steps.sofa.outputs = ${{ toJSON(steps.sofa.outputs) }}'
         
-      - name: pybind11 cache files
+      - name: Setup cache for pybind11 files
         uses: actions/cache@v2
         id: pybind11_cache
         with:
@@ -113,7 +113,7 @@ jobs:
             sudo ninja install
           fi
 
-      - name: ccache cache files
+      - name: Setup cache for ccache files
         if: ${{ runner.os != 'Windows' }}
         uses: actions/cache@v2
         with:
