@@ -13,12 +13,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-18.04, macos-10.15, windows-2016]
-        sofa_branch: [master, v21.06]        
-        # TODO: conditionnal matrix.os
-        #   v21.06 => ubuntu-18.04
-        #   master => ubuntu-latest
-        #   ...
+        os: [ubuntu-20.04, macos-10.15, windows-2019]
+        sofa_branch: [master]
+        include:
+          - sofa_branch: v21.06
+            os: ubuntu-18.04
+          - sofa_branch: v21.06
+            os: macos-10.15
+          - sofa_branch: v21.06
+            os: windows-2016
 
     steps:
       - name: Checkout source code
