@@ -199,14 +199,8 @@ jobs:
           echo "SOFA_ROOT = $SOFA_ROOT"
           echo '--------- ls SOFA_ROOT ---------'
           ls -la "$SOFA_ROOT"
-          echo '--------- ls ARTIFACT_PATH ---------'
-          ls -la "$ARTIFACT_PATH"
-          echo '--------- ls ARTIFACT_PATH/lib ---------'
-          ls -la "$ARTIFACT_PATH/lib"
-          echo '--------- ls ARTIFACT_PATH/lib/python3 ---------'
-          ls -la "$ARTIFACT_PATH/lib/python3"
-          echo '--------- ls ARTIFACT_PATH/lib/python3/site-packages ---------'
-          ls -la "$ARTIFACT_PATH/lib/python3/site-packages"
+          echo '--------- ls -R -la ARTIFACT_PATH ---------'
+          ls -R -la "$ARTIFACT_PATH"
           echo '----------------------'
 
       - name: Run test Binding.Sofa.Tests
