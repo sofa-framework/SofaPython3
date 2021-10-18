@@ -16,8 +16,11 @@ jobs:
         os: [ubuntu-20.04, macos-10.15, windows-2019]
         sofa_branch: [master]
         include:
-          - sofa_branch: v21.06
-            os: ubuntu-18.04
+          # SofaPython3 master needs Ubuntu >= 20.04 (because std::filesystem)
+          # SOFA v21.06 needs Ubuntu 18.04 (because the GLIBC on 18.04 is incompatible with the GLIBC on 20.04)
+          # => on Ubuntu, SofaPython3 master cannot be built anymore with SOFA v21.06
+          #- sofa_branch: v21.06
+          #  os: ubuntu-18.04
           - sofa_branch: v21.06
             os: macos-10.15
           - sofa_branch: v21.06
@@ -194,8 +197,16 @@ jobs:
           echo '----------------------'
           echo "PATH = $PATH"
           echo "SOFA_ROOT = $SOFA_ROOT"
-          echo '----------------------'
+          echo '--------- ls SOFA_ROOT ---------'
           ls -la "$SOFA_ROOT"
+          echo '--------- ls ARTIFACT_PATH ---------'
+          ls -la "$ARTIFACT_PATH"
+          echo '--------- ls ARTIFACT_PATH/lib ---------'
+          ls -la "$ARTIFACT_PATH/lib"
+          echo '--------- ls ARTIFACT_PATH/lib/python3 ---------'
+          ls -la "$ARTIFACT_PATH/lib/python3"
+          echo '--------- ls ARTIFACT_PATH/lib/python3/site-packages ---------'
+          ls -la "$ARTIFACT_PATH/lib/python3/site-packages"
           echo '----------------------'
 
       - name: Run test Binding.Sofa.Tests
