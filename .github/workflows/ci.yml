@@ -51,14 +51,12 @@ jobs:
           echo "PYBIND11_VERSION=$PYBIND11_VERSION" | tee -a $GITHUB_ENV
           echo "PYBIND11_INSTALL_PATH=$PYBIND11_INSTALL_PATH" | tee -a $GITHUB_ENV
           
-          # Setup workspace + set all path env vars + set SOFA_ROOT
-          mkdir -p "$GITHUB_WORKSPACE/sofa" "$GITHUB_WORKSPACE/build" "$GITHUB_WORKSPACE/install" "$GITHUB_WORKSPACE/artifact"
-              SOFA_ROOT="$(cd $GITHUB_WORKSPACE/sofa     && pwd -W 2>/dev/null || pwd)"
+          # Setup workspace + set all path env vars
+          mkdir -p "$GITHUB_WORKSPACE/build" "$GITHUB_WORKSPACE/install" "$GITHUB_WORKSPACE/artifact"
                SRC_PATH="$(cd $GITHUB_WORKSPACE/src      && pwd -W 2>/dev/null || pwd)"
              BUILD_PATH="$(cd $GITHUB_WORKSPACE/build    && pwd -W 2>/dev/null || pwd)"
            INSTALL_PATH="$(cd $GITHUB_WORKSPACE/install  && pwd -W 2>/dev/null || pwd)"
           ARTIFACT_PATH="$(cd $GITHUB_WORKSPACE/artifact && pwd -W 2>/dev/null || pwd)"
-          echo "SOFA_ROOT=$SOFA_ROOT" | tee -a $GITHUB_ENV
           echo "SRC_PATH=$SRC_PATH" | tee -a $GITHUB_ENV
           echo "BUILD_PATH=$BUILD_PATH" | tee -a $GITHUB_ENV
           echo "INSTALL_PATH=$INSTALL_PATH" | tee -a $GITHUB_ENV
@@ -76,7 +74,7 @@ jobs:
         uses: sofa-framework/sofa-setup-action@master
         with:
           sofa_version: ${{ matrix.sofa_branch }}
-          sofa_root: ${{ env.SOFA_ROOT }}
+          sofa_root: ${{ env.GITHUB_WORKSPACE }}/sofa
 
       - name: Print sofa-setup-action outputs
         shell: bash
@@ -209,7 +207,6 @@ jobs:
         run: |
           echo '----------------------'
           echo "PATH = $PATH"
-          echo '----------------------'
           echo "SOFA_ROOT = $SOFA_ROOT"
           echo '----------------------'
           echo "PYTHONPATH = $PYTHONPATH"
