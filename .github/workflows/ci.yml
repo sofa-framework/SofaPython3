@@ -207,6 +207,16 @@ jobs:
         if: ${{ always() }}
         shell: bash
         run: |
+          echo '----------------------'
+          echo "PATH = $PATH"
+          echo '----------------------'
+          echo "SOFA_ROOT = $SOFA_ROOT"
+          echo '----------------------'
+          echo "PYTHONPATH = $PYTHONPATH"
+          echo '----------------------'
+          which python
+          python -c "import sys; print(sys.path)"
+          echo '----------------------'
           cd $ARTIFACT_PATH
           ./bin/Bindings.Sofa.Tests$EXE
 
