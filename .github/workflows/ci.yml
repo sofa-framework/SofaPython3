@@ -74,7 +74,7 @@ jobs:
         uses: sofa-framework/sofa-setup-action@master
         with:
           sofa_version: ${{ matrix.sofa_branch }}
-          sofa_root: ${{ env.GITHUB_WORKSPACE }}/sofa
+          sofa_root: ${{ github.workspace }}/sofa
 
       - name: Print sofa-setup-action outputs
         shell: bash
