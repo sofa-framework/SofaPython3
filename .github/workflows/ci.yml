@@ -136,7 +136,7 @@ jobs:
               && cd /d $BUILD_PATH \
               && cmake \
                   -GNinja \
-                  -DCMAKE_PREFIX_PATH="${{ steps.sofa.outputs.sofa_root }}/lib/cmake" \
+                  -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake" \
                   -DCMAKE_BUILD_TYPE=Release \
                   -DCMAKE_INSTALL_PREFIX="$INSTALL_PATH" \
                   -DPython_ROOT=${{ steps.sofa.outputs.python_root }} \
@@ -149,7 +149,7 @@ jobs:
               -GNinja \
               -DCMAKE_C_COMPILER_LAUNCHER=ccache \
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
-              -DCMAKE_PREFIX_PATH=${{ steps.sofa.outputs.sofa_root }}/lib/cmake \
+              -DCMAKE_PREFIX_PATH=$SOFA_ROOT/lib/cmake \
               -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_INSTALL_PREFIX="$INSTALL_PATH" \
               -DPython_ROOT=${{ steps.sofa.outputs.python_root }} \
@@ -185,10 +185,9 @@ jobs:
             echo "$(cd $ARTIFACT_PATH/lib && pwd -W)" >> $GITHUB_PATH
             echo "$(cd $ARTIFACT_PATH/bin && pwd -W)" >> $GITHUB_PATH
           elif [[ "$RUNNER_OS" == "macOS" ]]; then
-            echo "DYLD_LIBRARY_PATH=$ARTIFACT_PATH/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
-          else
-            echo "LD_LIBRARY_PATH=$ARTIFACT_PATH/lib:${{ steps.sofa.outputs.sofa_root }}/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
+            echo "DYLD_LIBRARY_PATH=$ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           fi
+          echo "LD_LIBRARY_PATH=$ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           echo "PYTHONPATH=$ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
           # Add execution right on the tests
           chmod +x $ARTIFACT_PATH/bin/*.Tests$EXE
