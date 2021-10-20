@@ -15,16 +15,16 @@ jobs:
       matrix:
         os: [ubuntu-20.04, macos-10.15, windows-2019]
         sofa_branch: [master]
-        include:
+        #include:
           # SofaPython3 master needs Ubuntu >= 20.04 (because std::filesystem)
           # SOFA v21.06 needs Ubuntu 18.04 (because the GLIBC on 18.04 is incompatible with the GLIBC on 20.04)
           # => on Ubuntu, SofaPython3 master cannot be built anymore with SOFA v21.06
           #- sofa_branch: v21.06
           #  os: ubuntu-18.04
-          - sofa_branch: v21.06
-            os: macos-10.15
-          - sofa_branch: v21.06
-            os: windows-2016
+          #- sofa_branch: v21.06
+          #  os: macos-10.15
+          #- sofa_branch: v21.06
+          #  os: windows-2016
 
     steps:
       - name: Checkout source code
@@ -192,27 +192,20 @@ jobs:
           # Add execution right on the tests
           chmod +x $ARTIFACT_PATH/bin/*.Tests$EXE
           echo '----------------------'
-          echo "PATH = $PATH"
           echo "SOFA_ROOT = $SOFA_ROOT"
-          echo '--------- ls SOFA_ROOT ---------'
-          ls -la "$SOFA_ROOT"
-          echo '--------- ls -R -la ARTIFACT_PATH ---------'
-          ls -R -la "$ARTIFACT_PATH"
+          echo "PATH = $PATH"
+          echo "PYTHONPATH = $PYTHONPATH"
           echo '----------------------'
+          which python
+          python -c "import sys; print(sys.path)"
+          #echo '--------- ls -R -la ARTIFACT_PATH ---------'
+          #ls -R -la "$ARTIFACT_PATH"
+          #echo '----------------------'
 
       - name: Run test Binding.Sofa.Tests
         if: ${{ always() }}
         shell: bash
         run: |
-          echo '----------------------'
-          echo "PATH = $PATH"
-          echo "SOFA_ROOT = $SOFA_ROOT"
-          echo '----------------------'
-          echo "PYTHONPATH = $PYTHONPATH"
-          echo '----------------------'
-          which python
-          python -c "import sys; print(sys.path)"
-          echo '----------------------'
           cd $ARTIFACT_PATH
           ./bin/Bindings.Sofa.Tests$EXE
 
