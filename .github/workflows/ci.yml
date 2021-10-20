@@ -103,7 +103,10 @@ jobs:
                   -DCMAKE_BUILD_TYPE=Release \
                   -DPYBIND11_TEST=OFF \
                   -DCMAKE_INSTALL_PREFIX=$PYBIND11_INSTALL_PATH \
-                  -DPython_ROOT=${{ steps.sofa.outputs.python_root }} \
+                  -DPYTHON_ROOT=$PYTHON_ROOT \
+                  -DPython_ROOT=$PYTHON_ROOT \
+                  -DPYTHON_EXECUTABLE=$PYTHON_ROOT/python3.exe \
+                  -DPython_EXECUTABLE=$PYTHON_ROOT/python3.exe \
                   . && \
                   ninja install"
             fi          
@@ -116,7 +119,10 @@ jobs:
               -GNinja \
               -DCMAKE_BUILD_TYPE=Release \
               -DPYBIND11_TEST=OFF \
-              -DPython_ROOT=${{ steps.sofa.outputs.python_root }} \
+              -DPYTHON_ROOT=$PYTHON_ROOT \
+              -DPython_ROOT=$PYTHON_ROOT \
+              -DPYTHON_EXECUTABLE=$PYTHON_ROOT/python \
+              -DPython_EXECUTABLE=$PYTHON_ROOT/python \
               .
             sudo ninja install
           fi
@@ -139,7 +145,10 @@ jobs:
                   -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake" \
                   -DCMAKE_BUILD_TYPE=Release \
                   -DCMAKE_INSTALL_PREFIX="$INSTALL_PATH" \
-                  -DPython_ROOT=${{ steps.sofa.outputs.python_root }} \
+                  -DPYTHON_ROOT=$PYTHON_ROOT \
+                  -DPython_ROOT=$PYTHON_ROOT \
+                  -DPYTHON_EXECUTABLE=$PYTHON_ROOT/python3.exe \
+                  -DPython_EXECUTABLE=$PYTHON_ROOT/python3.exe \
                   ../src \
               && ninja install"
           else
@@ -152,7 +161,10 @@ jobs:
               -DCMAKE_PREFIX_PATH=$SOFA_ROOT/lib/cmake \
               -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_INSTALL_PREFIX="$INSTALL_PATH" \
-              -DPython_ROOT=${{ steps.sofa.outputs.python_root }} \
+              -DPYTHON_ROOT=$PYTHON_ROOT \
+              -DPython_ROOT=$PYTHON_ROOT \
+              -DPYTHON_EXECUTABLE=$PYTHON_ROOT/python \
+              -DPython_EXECUTABLE=$PYTHON_ROOT/python \
               ../src
             ninja install
             echo ${CCACHE_BASEDIR}
