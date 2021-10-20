@@ -105,8 +105,8 @@ jobs:
                   -DCMAKE_INSTALL_PREFIX=$PYBIND11_INSTALL_PATH \
                   -DPYTHON_ROOT=$PYTHON_ROOT \
                   -DPython_ROOT=$PYTHON_ROOT \
-                  -DPYTHON_EXECUTABLE=$PYTHON_ROOT/python3.exe \
-                  -DPython_EXECUTABLE=$PYTHON_ROOT/python3.exe \
+                  -DPYTHON_EXECUTABLE=$PYTHON_ROOT/python.exe \
+                  -DPython_EXECUTABLE=$PYTHON_ROOT/python.exe \
                   . && \
                   ninja install"
             fi          
@@ -147,8 +147,8 @@ jobs:
                   -DCMAKE_INSTALL_PREFIX="$INSTALL_PATH" \
                   -DPYTHON_ROOT=$PYTHON_ROOT \
                   -DPython_ROOT=$PYTHON_ROOT \
-                  -DPYTHON_EXECUTABLE=$PYTHON_ROOT/python3.exe \
-                  -DPython_EXECUTABLE=$PYTHON_ROOT/python3.exe \
+                  -DPYTHON_EXECUTABLE=$PYTHON_ROOT/python.exe \
+                  -DPython_EXECUTABLE=$PYTHON_ROOT/python.exe \
                   ../src \
               && ninja install"
           else
@@ -203,6 +203,10 @@ jobs:
           echo "PYTHONPATH=$ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
           # Add execution right on the tests
           chmod +x $ARTIFACT_PATH/bin/*.Tests$EXE
+
+      - name: Check env vars for tests
+        shell: bash
+        run: |
           echo '----------------------'
           echo "SOFA_ROOT = $SOFA_ROOT"
           echo "PATH = $PATH"
