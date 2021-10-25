@@ -1,6 +1,6 @@
 project(Bindings.Modules)
 
-set(MODULEBINDINGS_MODULE_LIST SofaBaseTopology SofaDeformable)
+set(MODULEBINDINGS_MODULE_LIST SofaBaseTopology SofaDeformable SofaSimulationCore)
 
 find_package(Sofa.GL QUIET)
 if(Sofa.GL_FOUND)

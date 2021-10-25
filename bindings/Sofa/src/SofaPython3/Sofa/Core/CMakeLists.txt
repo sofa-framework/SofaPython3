@@ -10,6 +10,7 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseObject_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseCamera.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseContext.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseState.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ContactListener.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ContactListener_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Context.h
@@ -17,10 +18,16 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Controller_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataEngine.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataEngine_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ExecParams.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_OdeSolver.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_OdeSolver_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_MechanicalParams.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_MechanicalParams_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_MultiVecId.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_NodeIterator.h
@@ -39,6 +46,7 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseData_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseCamera_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Topology.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_VecId.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseMeshTopology.h
 )
 
@@ -49,6 +57,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseObject.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseCamera.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseContext.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseState.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ContactListener.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Context.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Controller.cpp
@@ -57,8 +66,12 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataString.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataLink.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataVectorString.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ExecParams.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_OdeSolver.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_MechanicalParams.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_MultiVecId.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_NodeIterator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Prefab.cpp
@@ -66,6 +79,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_PythonScriptEvent.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseLink.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Topology.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_VecId.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseMeshTopology.cpp
 )
 

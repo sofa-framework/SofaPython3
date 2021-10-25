@@ -28,18 +28,24 @@ using sofa::helper::logging::Message;
 #include <SofaPython3/Sofa/Core/Binding_DataDict.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseData.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseCamera.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseState.h>
 #include <SofaPython3/Sofa/Core/Binding_ForceField.h>
 #include <SofaPython3/Sofa/Core/Binding_ContactListener.h>
 #include <SofaPython3/Sofa/Core/Binding_Context.h>
 #include <SofaPython3/Sofa/Core/Binding_Controller.h>
 #include <SofaPython3/Sofa/Core/Binding_DataEngine.h>
+#include <SofaPython3/Sofa/Core/Binding_ExecParams.h>
 #include <SofaPython3/Sofa/Core/Binding_ObjectFactory.h>
+#include <SofaPython3/Sofa/Core/Binding_OdeSolver.h>
+#include <SofaPython3/Sofa/Core/Binding_MechanicalParams.h>
+#include <SofaPython3/Sofa/Core/Binding_MultiVecId.h>
 #include <SofaPython3/Sofa/Core/Binding_Node.h>
 #include <SofaPython3/Sofa/Core/Binding_NodeIterator.h>
 #include <SofaPython3/Sofa/Core/Binding_Prefab.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseLink.h>
 #include <SofaPython3/Sofa/Core/Binding_PythonScriptEvent.h>
 #include <SofaPython3/Sofa/Core/Binding_Topology.h>
+#include <SofaPython3/Sofa/Core/Binding_VecId.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseMeshTopology.h>
 
 #include <SofaPython3/Sofa/Core/Data/Binding_DataString.h>
@@ -126,17 +132,23 @@ PYBIND11_MODULE(Core, core)
     moduleAddDataVectorString(core);
     moduleAddBaseObject(core);
     moduleAddBaseCamera(core);
+    moduleAddBaseState(core);
     moduleAddContactListener(core);
     moduleAddContext(core);
     moduleAddController(core);
     moduleAddDataEngine(core);
+    moduleAddExecParams(core);
     moduleAddForceField(core);
     moduleAddObjectFactory(core);
+    moduleAddOdeSolver(core);
+    moduleAddMechanicalParams(core);
+    moduleAddMultiVecId(core);
     moduleAddNode(core);
     moduleAddNodeIterator(core);
     moduleAddPrefab(core);
     moduleAddBaseLink(core);
     moduleAddTopology(core);
+    moduleAddVecId(core);
     moduleAddBaseMeshTopology(core);
 }
 
