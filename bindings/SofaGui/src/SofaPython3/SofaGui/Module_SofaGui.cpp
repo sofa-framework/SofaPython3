@@ -22,6 +22,14 @@
 
 #include <SofaGui/initSofaGui.h>
 #include <sofa/core/init.h>
+#include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/Utils.h>
+#include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem;
+
+#if SOFAGUI_HAVE_SOFAGUIQT
+#include <sofa/gui/qt/qt.conf.h>
+#endif // SOFAGUI_HAVE_SOFAGUIQT
 
 #include "Binding_BaseGui.h"
 #include "Binding_GUIManager.h"
@@ -55,6 +63,26 @@ PYBIND11_MODULE(Gui, m) {
                     :members:
              )doc";
 
+#if SOFAGUI_HAVE_SOFAGUIQT
+    std::string sofaPrefixAbsolute = sofa::helper::Utils::getSofaPathPrefix();
+    std::string inputFilepath = FileSystem::cleanPath(sofaPrefixAbsolute + "/bin/qt.conf");
+    bool success = sofa::gui::qt::loadQtConfWithCustomPrefix(inputFilepath, sofaPrefixAbsolute);
+    if(success)
+    {
+        msg_info("Sofa.Gui") << "Loaded qt.conf from " << inputFilepath << " customized with Prefix = " << sofaPrefixAbsolute;
+    }
+    else
+    {
+        msg_warning("Sofa.Gui") << "Failed loading and/or customizing qt.conf from " << inputFilepath;
+
+        std::cout << "qt_resource_data:" << std::endl;
+        for (int i = 0 ; i < qt_resource_data.size() ; ++i) {
+           std::cout << qt_resource_data[i];
+        }
+        std::cout << std::endl;
+    }
+#endif // SOFAGUI_HAVE_SOFAGUIQT
+
     // This is needed to make sure the GuiMain library (libSofaGuiMain.so) is correctly
     // linked since the GUIs are statically created during the load of the library.
     sofa::gui::initSofaGui();
@@ -63,4 +91,5 @@ PYBIND11_MODULE(Gui, m) {
     moduleAddBaseGui(m);
     moduleAddGuiManager(m);
 }
-}
+
+} // namespace sofapython3

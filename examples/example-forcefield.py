@@ -36,7 +36,7 @@ def createScene(node):
         node.addObject("OglLineAxis")
         node.addObject("DefaultAnimationLoop", name="loop")
         node.addObject("EulerImplicitSolver")
-        node.addObject("CGLinearSolver", tolerance=1e-12, threshold=1e-12)
+        node.addObject("CGLinearSolver", tolerance=1e-12, threshold=1e-12, iterations=25)
 
         o = node.addChild("Object")
         c = o.addObject("MechanicalObject", name="mechanical", position=[0.0,0.0,0.0, 1.0,0.0,0.0])

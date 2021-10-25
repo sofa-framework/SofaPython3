@@ -1,6 +1,9 @@
 name: Ubuntu CI
 
-on: [workflow_dispatch, pull_request]
+on: 
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
 
 jobs:
   build:
@@ -9,11 +12,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-18.04]
-        sofa_branch: [master, v21.06]
+        os: [ubuntu-20.04]
+        sofa_branch: [master]
     env:
       SOFA_ROOT: /opt/sofa
       SOFA_OS: Linux
+      PYTHON_VERSION: 3.8
+      PYBIND_VERSION: 2.4.3
 
     steps:
       - name: Checkout source code
@@ -37,10 +42,10 @@ jobs:
           if [ -z "$GIT_BRANCH" ]; then exit 1; fi
           echo "GIT_BRANCH=$GIT_BRANCH" >> $GITHUB_ENV
 
-      - name: Set up Python 3.7
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v2
         with:
-          python-version: '3.7'
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install requirements
         run: |
@@ -58,9 +63,9 @@ jobs:
       - name: Build pybind11
         if: steps.pybind11_cache.outputs.cache-hit != 'true'
         run: |
-          git clone -b v2.4.3 --depth 1 https://github.com/pybind/pybind11.git /tmp/pybind11
+          git clone -b v$PYBIND_VERSION --depth 1 https://github.com/pybind/pybind11.git /tmp/pybind11
           cd /tmp/pybind11
-          cmake -DCMAKE_BUILD_TYPE=Release -DPYBIND11_TEST=OFF -DPYTHON_EXECUTABLE=$(which python3.7) .
+          cmake -DCMAKE_BUILD_TYPE=Release -DPYBIND11_TEST=OFF -DPYTHON_EXECUTABLE=$(which python${{ env.PYTHON_VERSION }}) .
           make --silent
 
       - name: Install pybind11
@@ -94,7 +99,7 @@ jobs:
           CCACHE_MAXSIZE: "500M"
         run: |
           echo "RUNNER_TOOL_CACHE = $RUNNER_TOOL_CACHE"
-          python_root="$(find $RUNNER_TOOL_CACHE -maxdepth 3 -type d -path '**/Python/3.7*/x64')"
+          python_root="$(find $RUNNER_TOOL_CACHE -maxdepth 3 -type d -path '**/Python/${{ env.PYTHON_VERSION }}*/x64')"
           echo "python_root = $python_root"
           export CCACHE_BASEDIR=$GITHUB_WORKSPACE
           export CCACHE_DIR=$GITHUB_WORKSPACE/.ccache
@@ -105,7 +110,7 @@ jobs:
             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
             -DCMAKE_PREFIX_PATH=$SOFA_ROOT/lib/cmake \
             -DCMAKE_BUILD_TYPE=Release \
-            -DPython_EXECUTABLE=$(which python3.7) \
+            -DPython_EXECUTABLE=$(which python${{ env.PYTHON_VERSION }}) \
             -DPython_ROOT=$python_root \
             .
           ninja install
@@ -125,7 +130,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-18.04]
+        os: [ubuntu-20.04]
         sofa_branch: [master, v21.06]
     env:
       SOFA_ROOT: /opt/sofa
@@ -150,10 +155,10 @@ jobs:
           if [ -z "$GIT_BRANCH" ]; then exit 1; fi
           echo "GIT_BRANCH=$GIT_BRANCH" >> $GITHUB_ENV
 
-      - name: Set up Python 3.7
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v2
         with:
-          python-version: '3.7'
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install requirements
         run: |

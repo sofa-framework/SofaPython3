@@ -20,39 +20,31 @@
 
 #pragma once
 
-#include <pybind11/pybind11.h>
-#include <sofa/core/behavior/BaseController.h>
+namespace sofapython3::doc::SofaExporter::OBJExporter::write {
 
-namespace sofapython3 {
+static auto docstring =
+        R"(
+        Exports an OBJ file
+        ---------------------------------------
 
-/**
- * Empty controller shell that allows pybind11 to bind the init and reinit methods (since BaseController doesn't have
- * them)
- */
-class Controller : public sofa::core::behavior::BaseController {
-public:
-    SOFA_CLASS(Controller, sofa::core::behavior::BaseController);
-    void init() override {};
-    void reinit() override {};
-};
+        Will export a binary or ascii file depending on the binary flag of OBJExporter
+        Will auto-number the exported files
 
-class Controller_Trampoline : public Controller
-{
-public:
-    SOFA_CLASS(Controller_Trampoline, Controller);
+        Example of use:
+          .. code-block:: python
 
-    void init() override;
-    void reinit() override;
-    void handleEvent(sofa::core::objectmodel::Event* event) override;
+             import Sofa
+             import SofaExporter
 
-    std::string getClassName() const override;
+             # Create a new node
+             n = Sofa.Core.Node("root"")
 
-private:
-    void callScriptMethod(const pybind11::object& self, sofa::core::objectmodel::Event* event,
-        const std::string& methodName);
-};
+             # Add STLExporter
+             n.addObject("OBJExporter", name="exporter", ...)
 
-void moduleAddController(pybind11::module &m);
+             # writes down the stl file
+             n.exporter.write()
 
-} /// namespace sofapython3
+        )";
 
+}

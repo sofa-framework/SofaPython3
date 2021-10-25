@@ -30,7 +30,13 @@
 #pragma push_macro("slots")
 #undef slots
 /// This should come from python3.
-#include <Python.h>
+#if defined(WIN32) && defined(_DEBUG)
+    #undef _DEBUG // Prevent linking debug build of python
+    #include <Python.h>
+    #define _DEBUG 1
+#else
+    #include <Python.h>
+#endif
 #pragma pop_macro("slots")
 
 #include <sofa/simulation/SceneLoaderFactory.h>
@@ -57,6 +63,11 @@ public:
                                      const std::string& path,
                                      pybind11::object* globals = nullptr);
 
+    /// Add a new callback in PluginManager to auto-add future
+    /// loaded plugins to sys.path
+    static void addPluginManagerCallback();
+    static void removePluginManagerCallback();
+
     /// Add a path to sys.path, the list of search path for Python modules.
     static void addPythonModulePath(const std::string& path);
 
@@ -65,8 +76,8 @@ public:
 
     /// Add all the directories matching <pluginsDirectory>/*/python to sys.path
     /// NB: can also be used for projects <projectDirectory>/*/python
-    static void addPythonModulePathsForPlugins(const std::string& pluginsDirectory);    
-    static void addPythonModulePathsForPluginsByName(const std::string& pluginName);
+    static void addPythonModulePathsFromDirectory(const std::string& directory);
+    static void addPythonModulePathsFromPlugin(const std::string& pluginName);
 
     /// set the content of sys.argv.
     static void setArguments(const std::string& filename,
@@ -93,7 +104,11 @@ public:
     /// excluding a module from automatic reload
     static void excludeModuleFromReload( const std::string& moduleName );
 
-    static void executePython(std::function<void()>);
+    /// execute a function 'f' after acquiring the GIL and having installed
+    /// an handler to catch python exception.
+    static void executePython(std::function<void()> f);
+    static void executePython(const sofa::core::objectmodel::Base* emitter, std::function<void()> f);
+    static void executePython(const std::string& emitter, std::function<void()> cb);
 
     /// to be able to react when a scene is loaded
     struct SceneLoaderListerner : public SceneLoader::Listener
@@ -134,6 +149,7 @@ public:
 
 private:
     static PythonEnvironmentData* getStaticData() ;
+    static std::string pluginLibraryPath;
 };
 
 } // namespace sofapython3

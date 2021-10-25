@@ -18,12 +18,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/helper/AdvancedTimer.h>
-#include <stack>
-using sofa::helper::AdvancedTimer;
-
 #include "Submodule_Timer.h"
 #include "Submodule_Timer_doc.h"
+
+#include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/AdvancedTimer.h>
+using sofa::helper::AdvancedTimer;
 
 #include <stack>
 

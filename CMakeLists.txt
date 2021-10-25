@@ -34,11 +34,8 @@ include(SofaPython3Tools)
 # OPTIONS
 include(CMakeDependentOption)
 
-if (SP3_COMPILED_AS_SOFA_SUBPROJECT)
-    option(SP3_BUILD_TEST "Compile the automatic tests for SofaPython3, along with the gtest library." ${SOFA_BUILD_TESTS})
-else()
-    option(SP3_BUILD_TEST "Compile the automatic tests for SofaPython3, along with the gtest library." ON)
-endif()
+# If SOFA_BUILD_TESTS exists and is OFF, then this option will be auto-disabled
+cmake_dependent_option(SP3_BUILD_TEST "Compile the automatic tests for SofaPython3, along with the gtest library." ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
 if(SP3_BUILD_TEST)
     # TODO: remove this when SOFA's GTest handles threads correctly
     find_package(Threads REQUIRED)
@@ -181,16 +178,19 @@ add_subdirectory(docs)
 
 SP3_add_python_package(
     SOURCE_DIRECTORY
-        ${CMAKE_CURRENT_SOURCE_DIR}/splib
-    TARGET_DIRECTORY
-        splib
-)
-
-SP3_add_python_package(
-    SOURCE_DIRECTORY
         ${CMAKE_CURRENT_SOURCE_DIR}/constants
     TARGET_DIRECTORY
         Sofa/constants
+)
+
+## This is only to warn users that splib is now relocated in its own repository
+# it just contains a __init__.py rising an exception indicating to where to find the plugin.
+# If splib is available, then splib/__init__.py will be overriden by the one from the real splib.
+SP3_add_python_package(
+    SOURCE_DIRECTORY
+        ${CMAKE_CURRENT_SOURCE_DIR}/splib
+    TARGET_DIRECTORY
+        splib
 )
 
 sofa_create_package(
@@ -207,16 +207,24 @@ install(FILES
 )
 
 if (SP3_LINK_TO_USER_SITE AND SP3_PYTHON_PACKAGES_LINK_DIRECTORY)
-    file(GLOB directories RELATIVE "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}" "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/*")
+    set(SP3_SITE_PACKAGES_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}")
+
+    file(GLOB directories RELATIVE "${SP3_SITE_PACKAGES_OUTPUT_DIRECTORY}" "${SP3_SITE_PACKAGES_OUTPUT_DIRECTORY}/*")
+    
     # Create the site-package link directory if it doesn't exists yet
     install(DIRECTORY DESTINATION ${SP3_PYTHON_PACKAGES_LINK_DIRECTORY})
     foreach(directory ${directories})
-        if(IS_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
+        if(SP3_COMPILED_AS_SOFA_SUBPROJECT)
+            set(LINK_SOURCE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/plugins/SofaPython3/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
+        else()
+            set(LINK_SOURCE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
+        endif()
+        if(IS_DIRECTORY ${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
             if(WIN32)
                 install(CODE "\
                 execute_process( \
                     COMMAND ${CMAKE_COMMAND} -E copy_directory \
-                    ${CMAKE_INSTALL_PREFIX}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory}/ \
+                    ${LINK_SOURCE_DIRECTORY}/ \
                     ${SP3_PYTHON_PACKAGES_LINK_DIRECTORY}/${directory}   \
                 )"
             )
@@ -224,7 +232,7 @@ if (SP3_LINK_TO_USER_SITE AND SP3_PYTHON_PACKAGES_LINK_DIRECTORY)
                 install(CODE "\
                     execute_process( \
                         COMMAND ${CMAKE_COMMAND} -E create_symlink \
-                        ${CMAKE_INSTALL_PREFIX}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory}/ \
+                        ${LINK_SOURCE_DIRECTORY}/ \
                         ${SP3_PYTHON_PACKAGES_LINK_DIRECTORY}/${directory}   \
                     )"
                 )

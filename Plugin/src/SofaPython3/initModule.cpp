@@ -52,6 +52,7 @@ void initExternalModule()
         PythonEnvironment::Init();
         first = false;
     }
+    PythonEnvironment::addPluginManagerCallback();
 }
 
 const char* getModuleName()

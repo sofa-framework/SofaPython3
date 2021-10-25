@@ -126,16 +126,8 @@ void BindingBase::SetAttr(py::object self, const std::string& s, py::object valu
         return;
     }
 
-    /// We are falling back to dynamically adding the objet into the object dict.
-    py::dict t = self.attr("__dict__");
-    if(!t.is_none())
-    {
-        t[s.c_str()] = value;
-        return;
-    }
-
-    /// Well this should never happen unless there is no __dict__
-    throw py::attribute_error("Unable to set attribute '"+s+"', unknow data type");
+    // If it's not a data or a link, rely on object implementation of __setattr__
+    py::module::import("builtins").attr("object").attr("__setattr__")(self, s, value);
 }
 
 void BindingBase::SetAttr(Base& self, const std::string& s, py::object value)
@@ -237,7 +229,7 @@ void BindingBase::SetDataFromArray(BaseData* data, const py::array& value)
             else if(srcinfo.format=="f")
                 return copyScalar<float>(data, nfo, src);
             else
-                std::cout << "SetAttrFromArray :: unsupported fileformat" << std::endl ;
+                throw std::runtime_error("SetAttrFromArray :: unsupported fileformat");
         }
 
     }

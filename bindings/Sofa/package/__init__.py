@@ -77,12 +77,10 @@ def formatStackForSofa(o):
         in filename3.py:103:functioname2()
               -> the line of code.
     """
-    ss='Python Stack: \n'
+    ss='At: '
     for entry in o:
-        ss+= ' in ' + str(entry[1]) + ':' + str(entry[2]) + ':'+ entry[3] + '()  \n'
-        ss+= '  -> '+ entry[4][0] + '  \n'
-        return ss
-
+        ss+= '\n  '+ str(entry[1]) + '(' + str(entry[2]) + '): '+ entry[3]
+    return ss + "\n"
 
 def getStackForSofa():
     """returns the current stack with a "informal" formatting. """
@@ -95,14 +93,14 @@ def getPythonCallingPointAsString():
     """returns the last entry with an "informal" formatting. """
 
     ## we exclude the first level in the stack because it is the getStackForSofa() function itself.
-    ss=inspect.stack()[-1:]
+    ss=inspect.stack()[1:2]
     return formatStackForSofa(ss)
 
 
 def getPythonCallingPoint():
-    """returns the tupe with closest filename & line. """
+    """returns the tuple with closest filename & line. """
     ## we exclude the first level in the stack because it is the getStackForSofa() function itself.
-    ss=inspect.stack()[1]
+    ss=inspect.stack()[1:2]
     tmp=(os.path.abspath(ss[1]), ss[2])
     return tmp
 

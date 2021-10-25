@@ -31,6 +31,7 @@ using std::string;
 
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
+#include <sofa/helper/logging/MessageDispatcher.h>
 using sofa::helper::logging::MessageDispatcher;
 using sofa::helper::logging::MainPerComponentLoggingMessageHandler;
 
@@ -53,7 +54,7 @@ static struct PythonModule_Sofa_tests : public PythonTestExtractor
     PythonModule_Sofa_tests()
     {
         const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
-        addTestDirectory(executable_directory+"/SofaRuntime", "SofaRuntime_");
+        addTestDirectory(executable_directory+"/Bindings.SofaRuntime.Tests.d/SofaRuntime", "SofaRuntime_");
     }
 } python_tests;
 

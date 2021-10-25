@@ -21,38 +21,9 @@
 #pragma once
 
 #include <pybind11/pybind11.h>
-#include <sofa/core/behavior/BaseController.h>
 
 namespace sofapython3 {
 
-/**
- * Empty controller shell that allows pybind11 to bind the init and reinit methods (since BaseController doesn't have
- * them)
- */
-class Controller : public sofa::core::behavior::BaseController {
-public:
-    SOFA_CLASS(Controller, sofa::core::behavior::BaseController);
-    void init() override {};
-    void reinit() override {};
-};
-
-class Controller_Trampoline : public Controller
-{
-public:
-    SOFA_CLASS(Controller_Trampoline, Controller);
-
-    void init() override;
-    void reinit() override;
-    void handleEvent(sofa::core::objectmodel::Event* event) override;
-
-    std::string getClassName() const override;
-
-private:
-    void callScriptMethod(const pybind11::object& self, sofa::core::objectmodel::Event* event,
-        const std::string& methodName);
-};
-
-void moduleAddController(pybind11::module &m);
+void moduleAddOBJExporter(pybind11::module &m);
 
 } /// namespace sofapython3
-

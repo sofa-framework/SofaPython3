@@ -22,6 +22,7 @@
 namespace py = pybind11;
 
 #include <SofaExporter/Binding_STLExporter.h>
+#include <SofaExporter/Binding_OBJExporter.h>
 
 namespace sofapython3
 {
@@ -43,12 +44,14 @@ PYBIND11_MODULE(SofaExporter, m) {
                   :toctree: _autosummary/_autosummary
 
                   SofaExporter.STLExporter
+                  SofaExporter.OBJExporter
 
               )doc";
 
     py::module::import("Sofa.Core");
 
     moduleAddSTLExporter(m);
+    moduleAddOBJExporter(m);
 }
 
 }  // namespace sofapython3

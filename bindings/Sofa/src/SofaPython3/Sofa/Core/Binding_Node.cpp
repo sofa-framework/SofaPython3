@@ -21,6 +21,7 @@
 
 /// Neede to have automatic conversion from pybind types to stl container.
 #include <pybind11/stl.h>
+#include <pybind11/eval.h>
 
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/simulation/Simulation.h>
@@ -45,6 +46,9 @@ using sofa::core::ObjectFactory;
 #include <SofaPython3/PythonFactory.h>
 using sofapython3::PythonFactory;
 
+#include <SofaPython3/PythonEnvironment.h>
+using sofapython3::PythonEnvironment;
+
 #include <SofaPython3/Sofa/Core/Binding_Node.h>
 #include <SofaPython3/Sofa/Core/Binding_Node_doc.h>
 #include <SofaPython3/Sofa/Core/Binding_NodeIterator.h>
@@ -58,18 +62,16 @@ using sofa::core::objectmodel::BaseObjectDescription;
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
 
-
 using sofa::simulation::Node;
 
 namespace sofapython3 {
-
 
 bool checkParamUsage(BaseObjectDescription& desc)
 {
     bool hasFailure = false;
     std::stringstream tmp;
     tmp <<"Unknown Attribute(s): " << msgendl;
-    for( auto it : desc.getAttributeMap() )
+    for( auto& it : desc.getAttributeMap() )
     {
         if (!it.second.isAccessed())
         {
@@ -128,8 +130,6 @@ std::string getLinkPath(Node* node){
     return ("@"+node->getPathName()).c_str();
 }
 
-
-
 py_shared_ptr<Node> __init__noname() {
     auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>("unnamed");
     return std::move(dag_node);
@@ -167,6 +167,22 @@ py::object hasObject(Node &n, const std::string &name)
     return py::cast(false);
 }
 
+py::object getObject(Node &n, const std::string &name, const py::kwargs& kwargs)
+{
+    if(kwargs.size()!=0)
+    {
+        msg_deprecated(&n) << "Calling the method getObject() with extra arguments is not supported anymore."
+                           << "To remove this message please refer to the documentation of the getObject method"
+                           << msgendl
+                            << PythonEnvironment::getPythonCallingPointString() ;
+    }
+
+    BaseObject *object = n.getObject(name);
+    if (object)
+        return PythonFactory::toPython(object);
+    return py::none();
+}
+
 /// Implement the addObject function.
 py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
@@ -174,7 +190,7 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
     {
         std::string name = py::str(kwargs["name"]);
         if (sofapython3::isProtectedKeyword(name))
-            throw py::value_error("addObject: Cannot call addObject with name " + name + ": Protected keyword");
+            throw py::value_error("Cannot call addObject with name " + name + ": Protected keyword");
     }
     /// Prepare the description to hold the different python attributes as data field's
     /// arguments then create the object.
@@ -220,7 +236,7 @@ py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& k
     {
         BaseObject* obj = py::cast<BaseObject*>(callable);
 
-        self->addObject(obj);    
+        self->addObject(obj);
         return py::cast(obj);
     }
 
@@ -230,7 +246,6 @@ py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& k
         self->addChild(node);
         return py::cast(node);
     }
-
     if(py::isinstance<py::str>(callable))
     {
         py::str type = callable;
@@ -261,8 +276,10 @@ py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& k
 /// a warning for old scenes.
 py::object createObject(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
-    msg_deprecated(self) << "The Node.createObject method is deprecated since sofa 19.06."
-                            "To remove this warning message, use 'addObject'.";
+    msg_deprecated(self) << "The Node.createObject method is deprecated since sofa 19.06." << msgendl
+                         << "To remove this warning message, use 'addObject' instead of 'createObject'." <<  msgendl
+                         << msgendl
+                         << PythonEnvironment::getPythonCallingPointString() ;
     return addObjectKwargs(self, type,kwargs);
 }
 
@@ -296,8 +313,10 @@ Node* addChild(Node* self, Node* child)
 /// deprecated, use addChild instead. Keeping for compatibility reasons
 py::object createChild(Node* self, const std::string& name, const py::kwargs& kwargs)
 {
-    msg_deprecated(self) << "The Node.createChild method is deprecated since sofa 19.06."
-                            "To remove this warning message, use 'addChild'.";
+    msg_deprecated(self) << "The Node.createChild method is deprecated since sofa 19.06." << msgendl
+                         << "To remove this warning message, use 'addChild' instead of 'createChild'." << msgendl
+                         << msgendl
+                         << PythonEnvironment::getPythonCallingPointString() ;
     return addChildKwargs(self, name, kwargs);
 }
 
@@ -326,24 +345,41 @@ py::object removeChildByName(Node& n, const std::string name)
 
 NodeIterator* property_children(Node* node)
 {
-    return new NodeIterator(node, [](Node* n) -> size_t { return n->child.size(); },
-    [](Node* n, unsigned int index) -> Base::SPtr { return n->child[index]; });
+    return new NodeIterator(node,
+                            [](Node* n) -> size_t { return n->child.size(); },
+                            [](Node* n, unsigned int index) -> Base::SPtr { return n->child[index]; },
+                            [](const Node* n, const std::string& name) { return n->getChild(name); },
+                            [](Node* n, unsigned int index) { n->removeChild(n->child[index]); }
+                            );
 }
 
 NodeIterator* property_parents(Node* node)
 {
-    return new NodeIterator(node, [](Node* n) -> size_t { return n->getNbParents(); },
-    [](Node* n, unsigned int index) -> Node::SPtr {
-    auto p = n->getParents();
-    return static_cast<Node*>(p[index]);
-});
+    return new NodeIterator(node,
+                            [](Node* n) -> size_t { return n->getNbParents(); },
+                            [](Node* n, unsigned int index) -> Node::SPtr {
+                                auto p = n->getParents();
+                                return static_cast<Node*>(p[index]);
+                                },
+                            [](const Node* n, const std::string& name) -> sofa::core::Base* {
+                                    const auto& parents = n->getParents();
+                                    return *std::find_if(parents.begin(),
+                                                     parents.end(),
+                                                     [name](BaseNode* child){ return child->getName() == name; });
+                                },
+                            [](Node*, unsigned int) {
+                                throw std::runtime_error("Removing a parent is not a supported operation. Please detach the node from the corresponding graph node.");
+                            });
 }
 
 NodeIterator* property_objects(Node* node)
 {
-    return new NodeIterator(node, [](Node* n) -> size_t { return n->object.size(); },
-    [](Node* n, unsigned int index) -> Base::SPtr { return (n->object[index]);
-});
+    return new NodeIterator(node,
+                            [](Node* n) -> size_t { return n->object.size(); },
+                            [](Node* n, unsigned int index) -> Base::SPtr { return (n->object[index]);},
+                            [](const Node* n, const std::string& name) { return n->getObject(name); },
+                            [](Node* n, unsigned int index) { n->removeObject(n->object[index]);}
+                            );
 }
 
 py::object __getattr__(Node& self, const std::string& name)
@@ -486,6 +522,7 @@ void moduleAddNode(py::module &m) {
     p.def("addObject", &addObject, sofapython3::doc::sofa::core::Node::addObject, py::keep_alive<0, 2>());
     p.def("createObject", &createObject, sofapython3::doc::sofa::core::Node::createObject);
     p.def("hasObject", &hasObject, sofapython3::doc::sofa::core::Node::hasObject);
+    p.def("getObject", &getObject, sofapython3::doc::sofa::core::Node::getObject);
     p.def("addChild", &addChildKwargs, sofapython3::doc::sofa::core::Node::addChildKwargs);
     p.def("addChild", &addChild, sofapython3::doc::sofa::core::Node::addChild);
     p.def("createChild", &createChild, sofapython3::doc::sofa::core::Node::createChild);

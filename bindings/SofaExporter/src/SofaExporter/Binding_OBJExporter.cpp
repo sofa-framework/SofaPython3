@@ -18,41 +18,30 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#pragma once
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaExporter/Binding_OBJExporter.h>
+#include <SofaExporter/Binding_OBJExporter_doc.h>
 
-#include <pybind11/pybind11.h>
-#include <sofa/core/behavior/BaseController.h>
+#include <SofaPython3/PythonFactory.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
+#include <SofaExporter/OBJExporter.h>
+
+using  sofa::component::exporter::OBJExporter;
+
+namespace py { using namespace pybind11; }
 
 namespace sofapython3 {
 
-/**
- * Empty controller shell that allows pybind11 to bind the init and reinit methods (since BaseController doesn't have
- * them)
- */
-class Controller : public sofa::core::behavior::BaseController {
-public:
-    SOFA_CLASS(Controller, sofa::core::behavior::BaseController);
-    void init() override {};
-    void reinit() override {};
-};
-
-class Controller_Trampoline : public Controller
+void moduleAddOBJExporter(py::module &m)
 {
-public:
-    SOFA_CLASS(Controller_Trampoline, Controller);
+    PythonFactory::registerType<OBJExporter>([](sofa::core::objectmodel::Base* object)
+    {
+        return py::cast(dynamic_cast<OBJExporter*>(object));
+    });
 
-    void init() override;
-    void reinit() override;
-    void handleEvent(sofa::core::objectmodel::Event* event) override;
+    py::class_<OBJExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<OBJExporter>> p(m, "OBJExporter");
 
-    std::string getClassName() const override;
+    p.def("write", &OBJExporter::write, sofapython3::doc::SofaExporter::OBJExporter::write::docstring);
+}
 
-private:
-    void callScriptMethod(const pybind11::object& self, sofa::core::objectmodel::Event* event,
-        const std::string& methodName);
-};
-
-void moduleAddController(pybind11::module &m);
-
-} /// namespace sofapython3
-
+} // namespace sofapython3

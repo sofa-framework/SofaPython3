@@ -29,8 +29,12 @@
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager;
 
+#include <sofa/helper/logging/Messaging.h>
+
 using sofa::helper::system::SetDirectory;
 namespace py = pybind11;
+
+#include <list>
 
 namespace sofapython3 {
 // extract the test suite from a module

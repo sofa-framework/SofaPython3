@@ -24,6 +24,8 @@
 
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
+#include <sofa/helper/logging/MessageDispatcher.h>
+using sofa::helper::logging::MessageDispatcher;
 
 
 /// static build of the test list
@@ -36,8 +38,8 @@ static struct Tests : public sofapython3::PythonTestExtractor
         MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
 
         const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
-        addTestDirectory(executable_directory+"/SofaDeformable", "SofaDeformable_");
-        addTestDirectory(executable_directory+"/SofaSimulationCore", "SofaSimulationCore_");
+        addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaDeformable", "SofaDeformable_");
+        addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaSimulationCore", "SofaSimulationCore_");
     }
 } python_tests;
 
