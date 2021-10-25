@@ -179,13 +179,13 @@ jobs:
       - name: Create artifact
         uses: actions/upload-artifact@v2
         with:
-          name: SofaPython3_${{ steps.sofa.outputs.run_branch }}_${{ runner.os }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}
+          name: SofaPython3-${{ steps.sofa.outputs.run_branch }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
           path: ${{ env.INSTALL_PATH }}
 
       - name: Install artifact
         uses: actions/download-artifact@v2
         with:
-          name: SofaPython3_${{ steps.sofa.outputs.run_branch }}_${{ runner.os }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}
+          name: SofaPython3-${{ steps.sofa.outputs.run_branch }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
           path: ${{ env.ARTIFACT_PATH }}
 
       - name: Set env vars for tests
@@ -208,7 +208,6 @@ jobs:
         run: |
           echo '----------------------'
           echo "SOFA_ROOT = $SOFA_ROOT"
-          echo "PATH = $PATH"
           echo "PYTHONPATH = $PYTHONPATH"
           echo '----------------------'
           which python
