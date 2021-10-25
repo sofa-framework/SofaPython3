@@ -59,6 +59,11 @@ public:
     static void Init();
     static void Release();
 
+    static bool isInitialized()
+    {
+        return s_isInitialized;
+    };
+
     static pybind11::module importFromFile(const std::string& module,
                                      const std::string& path,
                                      pybind11::object* globals = nullptr);
@@ -146,6 +151,7 @@ public:
 private:
     static PythonEnvironmentData* getStaticData() ;
     static std::string pluginLibraryPath;
+    static inline bool s_isInitialized{false};
 };
 
 } // namespace sofapython3

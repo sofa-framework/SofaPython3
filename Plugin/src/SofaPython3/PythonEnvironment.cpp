@@ -233,7 +233,15 @@ void PythonEnvironment::Init()
     // Lastly, we (try to) add modules from the root of SOFA
     addPythonModulePathsFromDirectory( Utils::getSofaPathPrefix() );
 
-    py::module::import("SofaRuntime");
+    try
+    {
+        py::module::import("SofaRuntime");
+    }
+    catch (pybind11::error_already_set)
+    {
+        msg_error("SofaPython3") << "Could not import SofaRuntime module, initializing python3 for SOFA is not possible";
+        return;
+    }
     getStaticData()->m_sofamodule = py::module::import("Sofa");
 
 
@@ -255,6 +263,8 @@ void PythonEnvironment::Init()
             pluginLibraryPath = elem.first;
         }
     }
+
+    s_isInitialized = true;
 }
 
 void PythonEnvironment::executePython(std::function<void()> cb)
