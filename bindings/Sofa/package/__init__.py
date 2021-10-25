@@ -44,7 +44,7 @@ if sofa_root:
 else:
     print("Warning: environment variable SOFA_ROOT is empty. Trying to guess it.")
     # try a guess from <sofa_root>/plugins/SofaPython3/lib/python3/site-packages/Sofa
-    sofa_root_guess = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + '/../../../..') 
+    sofa_root_guess = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + '/../../../../../..') 
     if os.path.isdir(os.path.abspath(sofa_root_guess + '/lib' )):
         print("Guessed SOFA_ROOT: " + sofa_root_guess)
         sofa_root = sofa_root_guess
