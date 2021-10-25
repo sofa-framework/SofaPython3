@@ -230,22 +230,12 @@ void PythonEnvironment::Init()
     // Add sites-packages wrt the plugin
     addPythonModulePathsFromPlugin("SofaPython3");
 
-    std::cout << "a" << std::endl;
-
     // Lastly, we (try to) add modules from the root of SOFA
     addPythonModulePathsFromDirectory( Utils::getSofaPathPrefix() );
 
-    std::cout << "b" << std::endl;
-    PyRun_SimpleString("print('----------------------')");
-    PyRun_SimpleString("import os; print(os.environ['PATH'])");
-    PyRun_SimpleString("print('----------------------')");
-    PyRun_SimpleString("import sys; print(sys.path)");
-    PyRun_SimpleString("print('----------------------')");
     py::module::import("SofaRuntime");
-    std::cout << "b1" << std::endl;
     getStaticData()->m_sofamodule = py::module::import("Sofa");
 
-    std::cout << "b2" << std::endl;
 
     // python livecoding related
     PyRun_SimpleString("from Sofa.livecoding import onReimpAFile");
@@ -254,8 +244,6 @@ void PythonEnvironment::Init()
 
     // python modules are automatically reloaded at each scene loading
     //setAutomaticModuleReload( true );
-
-    std::cout << "c" << std::endl;
 
     // Initialize pluginLibraryPath by reading PluginManager's map
     std::map<std::string, Plugin>& map = PluginManager::getInstance().getPluginMap();
@@ -267,8 +255,6 @@ void PythonEnvironment::Init()
             pluginLibraryPath = elem.first;
         }
     }
-
-    std::cout << "d" << std::endl;
 }
 
 // Single implementation for the three different versions
