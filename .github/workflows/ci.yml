@@ -34,13 +34,6 @@ jobs:
       - name: Set env vars
         shell: bash
         run: |
-          # Set executable extension
-          EXE=''
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            EXE='.exe'
-          fi
-          echo "EXE=$EXE" | tee -a $GITHUB_ENV
-          
           # Define pybind11 specs
           PYBIND11_VERSION=2.4.3
           PYBIND11_INSTALL_PATH="/tmp/deps_cache_is_for_windows_only"
@@ -201,7 +194,7 @@ jobs:
           echo "LD_LIBRARY_PATH=$ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           echo "PYTHONPATH=$ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
           # Add execution right on the tests
-          chmod +x $ARTIFACT_PATH/bin/*.Tests$EXE
+          chmod +x $ARTIFACT_PATH/bin/*.Tests${{ steps.sofa.outputs.exe }}
 
       - name: Check env vars for tests
         shell: bash
@@ -221,25 +214,25 @@ jobs:
         shell: bash
         run: |
           cd $ARTIFACT_PATH
-          ./bin/Bindings.Sofa.Tests$EXE
+          ./bin/Bindings.Sofa.Tests${{ steps.sofa.outputs.exe }}
 
       - name: Run test Bindings.SofaRuntime.Tests
         if: ${{ always() }}
         shell: bash
         run: |
           cd $ARTIFACT_PATH
-          ./bin/Bindings.SofaRuntime.Tests$EXE
+          ./bin/Bindings.SofaRuntime.Tests${{ steps.sofa.outputs.exe }}
 
       - name: Run test Bindings.SofaTypes.Tests
         if: ${{ always() }}
         shell: bash
         run: |
           cd $ARTIFACT_PATH
-          ./bin/Bindings.SofaTypes.Tests$EXE
+          ./bin/Bindings.SofaTypes.Tests${{ steps.sofa.outputs.exe }}
 
       - name: Run test Bindings.Modules.Tests
         if: ${{ always() }}
         shell: bash
         run: |
           cd $ARTIFACT_PATH
-          ./bin/Bindings.Modules.Tests$EXE
+          ./bin/Bindings.Modules.Tests${{ steps.sofa.outputs.exe }}
