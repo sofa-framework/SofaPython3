@@ -7,6 +7,7 @@ import Sofa
 def create_scene(rootName="root"):
     root = Sofa.Core.Node(rootName)
     root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+    root.addObject("RequiredPlugin", name="SofaDeformable")
     return root
 
 class Test(unittest.TestCase):
