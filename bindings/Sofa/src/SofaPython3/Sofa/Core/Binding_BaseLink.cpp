@@ -76,7 +76,7 @@ py::object __getattr__(py::object self, const std::string& s)
     {
         return BindingBase::__getattr__(base, s);
     }
-    throw std::runtime_error("Unable to find attribute on an empty link. X");
+    throw std::runtime_error("Unable to find attribute on an empty link.");
 }
 
 void __setattr__(py::object self, const std::string& s, py::object value)
