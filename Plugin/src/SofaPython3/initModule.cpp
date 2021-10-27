@@ -37,6 +37,7 @@ SOFAPYTHON3_API const char* getModuleVersion();
 SOFAPYTHON3_API const char* getModuleLicense();
 SOFAPYTHON3_API const char* getModuleDescription();
 SOFAPYTHON3_API const char* getModuleComponentList();
+SOFAPYTHON3_API bool moduleIsInitialized();
 
 void initExternalModule()
 {
@@ -78,6 +79,11 @@ const char* getModuleDescription()
 const char* getModuleComponentList()
 {
     return "";
+}
+
+bool moduleIsInitialized()
+{
+    return PythonEnvironment::isInitialized();
 }
 
 }
