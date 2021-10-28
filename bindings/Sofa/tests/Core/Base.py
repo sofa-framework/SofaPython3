@@ -116,7 +116,7 @@ class Test(unittest.TestCase):
 
     def test_getClassName(self):
         root = create_scene("root")
-        self.assertEqual(root.getClassName(), "DAGNode")
+        self.assertEqual(root.getClassName(), "Node")
 
     def test_getTemplateName(self):
         root = create_scene("root")

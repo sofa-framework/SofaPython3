@@ -233,7 +233,15 @@ void PythonEnvironment::Init()
     // Lastly, we (try to) add modules from the root of SOFA
     addPythonModulePathsFromDirectory( Utils::getSofaPathPrefix() );
 
-    py::module::import("SofaRuntime");
+    try
+    {
+        py::module::import("SofaRuntime");
+    }
+    catch (pybind11::error_already_set)
+    {
+        msg_error("SofaPython3") << "Could not import SofaRuntime module, initializing python3 for SOFA is not possible";
+        return;
+    }
     getStaticData()->m_sofamodule = py::module::import("Sofa");
 
 
@@ -255,20 +263,43 @@ void PythonEnvironment::Init()
             pluginLibraryPath = elem.first;
         }
     }
+
+    s_isInitialized = true;
 }
 
-void PythonEnvironment::executePython(std::function<void()> cb)
+// Single implementation for the three different versions
+template<class T>
+void executePython_(const T& emitter, std::function<void()> cb)
 {
     sofapython3::PythonEnvironment::gil acquire;
 
     try{
         cb();
-    }catch(std::exception& e)
+    }catch(py::error_already_set& e)
     {
-        msg_error("SofaPython3") << e.what() ;
+        std::stringstream tmp;
+        tmp << "Unable to execute code." << msgendl
+                     << "Python exception:" << msgendl
+                     << "  " << e.what()
+                     << PythonEnvironment::getPythonCallingPointString();
+        msg_error(emitter) << tmp.str();
     }
 }
 
+void PythonEnvironment::executePython(const std::string& emitter, std::function<void()> cb)
+{
+    return executePython_(emitter, cb);
+}
+
+void PythonEnvironment::executePython(std::function<void()> cb)
+{
+    return executePython_("SofaPython3::executePython", cb);
+}
+
+void PythonEnvironment::executePython(const sofa::core::objectmodel::Base* b, std::function<void()> cb)
+{
+    return executePython_(b, cb);
+}
 
 void PythonEnvironment::Release()
 {

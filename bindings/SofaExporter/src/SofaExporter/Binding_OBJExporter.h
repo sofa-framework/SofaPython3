@@ -18,41 +18,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <pybind11/eval.h>
-namespace py = pybind11;
+#pragma once
 
-#include <SofaExporter/Binding_STLExporter.h>
-#include <SofaExporter/Binding_OBJExporter.h>
+#include <pybind11/pybind11.h>
 
-namespace sofapython3
-{
+namespace sofapython3 {
 
-PYBIND11_MODULE(SofaExporter, m) {
-    m.doc() = R"doc(
-              Binding for the SofaExporter plugin
-              -----------------------------------
+void moduleAddOBJExporter(pybind11::module &m);
 
-              Provides python bindings for the SofaExporter module
-
-              Example of use:
-
-              .. code-block:: python
-
-                import SofaExporter
-
-              .. autosummary::
-                  :toctree: _autosummary/_autosummary
-
-                  SofaExporter.STLExporter
-                  SofaExporter.OBJExporter
-
-              )doc";
-
-    py::module::import("Sofa.Core");
-
-    moduleAddSTLExporter(m);
-    moduleAddOBJExporter(m);
-}
-
-}  // namespace sofapython3
-
+} /// namespace sofapython3

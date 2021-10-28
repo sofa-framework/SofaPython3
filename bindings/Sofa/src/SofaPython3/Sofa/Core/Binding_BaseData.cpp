@@ -151,6 +151,11 @@ void setParent(BaseData* self, BaseData* parent)
     self->setParent(parent);
 }
 
+void setParentFromLinkPath(BaseData* self, const std::string& parent)
+{
+    self->setParent(parent);
+}
+
 bool hasParent(BaseData *self)
 {
     return (self->getParent() != nullptr);
@@ -200,6 +205,7 @@ void moduleAddBaseData(py::module& m)
     data.def("isPersistent", &BaseData::isPersistent, sofapython3::doc::baseData::isPersistent);
     data.def("setPersistent", &BaseData::setPersistent, sofapython3::doc::baseData::setPersistent);
     data.def("setParent", setParent, sofapython3::doc::baseData::setParent);
+    data.def("setParent", setParentFromLinkPath, sofapython3::doc::baseData::setParent);
     data.def("hasParent", hasParent, sofapython3::doc::baseData::hasParent);
     data.def("read", &BaseData::read, sofapython3::doc::baseData::read);
     data.def("updateIfDirty", updateIfDirty, sofapython3::doc::baseData::updateIfDirty);

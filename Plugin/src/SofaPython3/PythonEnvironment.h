@@ -59,6 +59,11 @@ public:
     static void Init();
     static void Release();
 
+    static bool isInitialized()
+    {
+        return s_isInitialized;
+    };
+
     static pybind11::module importFromFile(const std::string& module,
                                      const std::string& path,
                                      pybind11::object* globals = nullptr);
@@ -104,7 +109,11 @@ public:
     /// excluding a module from automatic reload
     static void excludeModuleFromReload( const std::string& moduleName );
 
-    static void executePython(std::function<void()>);
+    /// execute a function 'f' after acquiring the GIL and having installed
+    /// an handler to catch python exception.
+    static void executePython(std::function<void()> f);
+    static void executePython(const sofa::core::objectmodel::Base* emitter, std::function<void()> f);
+    static void executePython(const std::string& emitter, std::function<void()> cb);
 
     /// to be able to react when a scene is loaded
     struct SceneLoaderListerner : public SceneLoader::Listener
@@ -146,6 +155,7 @@ public:
 private:
     static PythonEnvironmentData* getStaticData() ;
     static std::string pluginLibraryPath;
+    static inline bool s_isInitialized{false};
 };
 
 } // namespace sofapython3
