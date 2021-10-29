@@ -50,7 +50,7 @@ jobs:
         id: pybind11_cache
         with:
           path: ${{ env.PYBIND11_INSTALL_PATH }}
-          key: pybind11-${{ env.PYBIND11_VERSION }}_${{ runner.os }}_python-${{ steps.sofa.outputs.python_root }}_${{ hashFiles('src/.github/workflows/*.yml') }}
+          key: pybind11-${{ env.PYBIND11_VERSION }}_${{ runner.os }}_python-${{ steps.sofa.outputs.python_version }}_${{ hashFiles('src/.github/workflows/*.yml') }}
       
       - name: Install pybind11
         shell: bash
