@@ -1,4 +1,4 @@
-name: Build and test
+name: CI
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
   push:
 
 jobs:
-  run:
+  build-and-test:
     name: Run on ${{ matrix.os }} with SOFA ${{ matrix.sofa_branch }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -22,7 +22,7 @@ jobs:
         with:
           sofa_root: ${{ github.workspace }}/sofa
           sofa_version: ${{ matrix.sofa_branch }}
-
+      
       - name: Checkout source code
         uses: actions/checkout@v2
         with:
@@ -85,14 +85,14 @@ jobs:
               .
             sudo ninja install
           fi
-
+      
       - name: Setup cache for ccache files
         if: ${{ runner.os != 'Windows' }}
         uses: actions/cache@v2
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache_${{ runner.os }}
-
+      
       - name: Build and install
         shell: bash
         run: |
@@ -133,15 +133,15 @@ jobs:
       - name: Create artifact
         uses: actions/upload-artifact@v2
         with:
-          name: SofaPython3-${{ steps.sofa.outputs.run_branch }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
+          name: SofaPython3_${{ steps.sofa.outputs.run_branch }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
           path: ${{ env.WORKSPACE_INSTALL_PATH }}
 
       - name: Install artifact
         uses: actions/download-artifact@v2
         with:
-          name: SofaPython3-${{ steps.sofa.outputs.run_branch }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
+          name: SofaPython3_${{ steps.sofa.outputs.run_branch }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
           path: ${{ env.WORKSPACE_ARTIFACT_PATH }}
-
+      
       - name: Set env vars for tests
         shell: bash
         run: |
@@ -156,7 +156,7 @@ jobs:
           echo "PYTHONPATH=$WORKSPACE_ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
           # Add execution right on the tests
           chmod +x $WORKSPACE_ARTIFACT_PATH/bin/*.Tests${{ steps.sofa.outputs.exe }}
-
+      
       - name: Check environment for tests
         shell: bash
         run: |
@@ -176,29 +176,60 @@ jobs:
           python -c "import sys; print('sys.version = ' + str(sys.version)); print('sys.path = ' + str(sys.path))"
 
       - name: Run test Binding.Sofa.Tests
-        if: ${{ always() }}
+        if: always()
         shell: bash
         run: |
           cd $WORKSPACE_ARTIFACT_PATH
           ./bin/Bindings.Sofa.Tests${{ steps.sofa.outputs.exe }}
-
+      
       - name: Run test Bindings.SofaRuntime.Tests
-        if: ${{ always() }}
+        if: always()
         shell: bash
         run: |
           cd $WORKSPACE_ARTIFACT_PATH
           ./bin/Bindings.SofaRuntime.Tests${{ steps.sofa.outputs.exe }}
-
+      
       - name: Run test Bindings.SofaTypes.Tests
-        if: ${{ always() }}
+        if: always()
         shell: bash
         run: |
           cd $WORKSPACE_ARTIFACT_PATH
           ./bin/Bindings.SofaTypes.Tests${{ steps.sofa.outputs.exe }}
-
+      
       - name: Run test Bindings.Modules.Tests
-        if: ${{ always() }}
+        if: always()
         shell: bash
         run: |
           cd $WORKSPACE_ARTIFACT_PATH
           ./bin/Bindings.Modules.Tests${{ steps.sofa.outputs.exe }}
+
+  deploy:
+    name: Deploy artifacts
+    if: always() && startsWith(github.ref, 'refs/heads/') # we are on a branch (not a PR)
+    needs: [build-and-test]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Get artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+
+      - name: Zip artifacts
+        shell: bash
+        run: |
+          cd $GITHUB_WORKSPACE/artifacts
+          for artifact in *; do
+            zip $artifact.zip -r $artifact/*
+          done
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          fail_on_unmatched_files: true
+          files: |
+            artifacts/SofaPython3_*_Linux.zip
+            artifacts/SofaPython3_*_Windows.zip
+            artifacts/SofaPython3_*_macOS.zip
+    
