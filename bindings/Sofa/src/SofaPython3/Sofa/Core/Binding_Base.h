@@ -64,6 +64,7 @@ public:
     static pybind11::object countLoggedMessages(sofa::core::objectmodel::Base& self);
     static pybind11::object clearLoggedMessages(sofa::core::objectmodel::Base& self);
     static std::string getPathName(sofa::core::objectmodel::Base& self);
+    static std::string getLinkPath(sofa::core::objectmodel::Base& self);
 };
 
 

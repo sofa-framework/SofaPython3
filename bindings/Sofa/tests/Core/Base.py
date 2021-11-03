@@ -123,7 +123,11 @@ class Test(unittest.TestCase):
         c = root.addObject("MechanicalObject", name="t")
         self.assertEqual(c.getTemplateName(),"Vec3d")
 
-
+    def test_getLinkPath(self):
+        root = create_scene("root")
+        obj = root.addObject("MechanicalObject", name="obj")
+        self.assertEqual(obj.getPathName(),"/obj")
+        self.assertEqual(obj.getLinkPath(),"@/obj")
 
     def test_addExistingDataAsParentOfNewData(self):
         # TODO(@marques-bruno)
