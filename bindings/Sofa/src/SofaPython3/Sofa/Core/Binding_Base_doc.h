@@ -1,29 +1,22 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2021 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 #pragma once
 
@@ -70,11 +63,48 @@ static auto findData =
         :type name: string
         :return: the data field
         )";
+static auto getLinkPath =
+        R"(
+        returns the path name as a parsable string.
+        eg:
+            if object.getPathName() is "/child1/object"
+            then the linkPath is @"/child1/object"
+        )";
+static auto getPathName =
+        R"(
+        returns the path name as a string.
+        .. code-block:: python
+            a = Sofa.Core.Node("root")
+            b.addObject("Camera", name="camera")
+            b.getPathName() # should returns "/root/camera"
+        ```
+        )";
+static auto setDataValues =
+        R"(
+        Set values for a the given data field, multiple pairs of args are allowed.
+        )";
 static auto getDataFields =
         R"(
         Accessor to the vector containing all the fields of this object
         :return: A vector containing the data fields
         )";
+
+static auto getLoggedMessagesAsString =
+        R"(
+        Returns a single string with all the messages logged in the internal buffer of a sofa object.
+        Return empty string if there is no messages.
+        )";
+
+static auto countLoggedMessages =
+        R"(
+        Returns the number of messages in the object's logs.
+        )";
+
+static auto clearLoggedMessages =
+        R"(
+        Remove all logged messages in the object's logs.
+        )";
+
 
 static auto findLink =
         R"(
@@ -106,8 +136,22 @@ static auto addData =
         :type name: string
         :type value: object
         :type help: string
-        :type groupe: string
+        :type group: string
         :type type: string
+        )";
+
+static auto addLink =
+        R"(
+        Create a Link to a SOFA component and adds it to the base.
+        Note that this method should only be called if the field was not initialized with the initLink method
+        :param self: the base itself
+        :param name: the name of the link to be added
+        :param value: the value from which the data can be created (either a pathname or a SofaBase)
+        :param help: help message that describes the link to be created
+        :type self: object
+        :type name: string
+        :type value: object
+        :type help: string
         )";
 
 static auto addDataInitialized =

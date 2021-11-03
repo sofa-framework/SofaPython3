@@ -18,13 +18,13 @@ set(PYTHON_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/ForceField.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/DataEngine.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/MyRestShapeForceField.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/PythonRestShapeForceField.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseLink.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Helper/Message.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Types/RGBAColor.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Types/Vec3.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Types/BoundingBox.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Simulation/Node.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/Simulation/Simulation.py
     ${CMAKE_CURRENT_SOURCE_DIR}/bench_datacontainer.py
     ${CMAKE_CURRENT_SOURCE_DIR}/bench_node.py
     ${CMAKE_CURRENT_SOURCE_DIR}/benchmark.py
@@ -36,34 +36,40 @@ find_package(SofaFramework REQUIRED)
 
 enable_testing()
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaHelper SofaPython3::Plugin SofaPython3::Bindings.Sofa SofaPython3::Bindings.SofaTypes SofaPython3::Bindings.SofaRuntime)
+target_link_libraries(${PROJECT_NAME} SofaGTestMain Sofa.Helper SofaPython3::Plugin)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "PYTHON_TESTFILES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\"")
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "Bindings/Tests")
 
-set_target_properties(
-    ${PROJECT_NAME}
-    PROPERTIES
-        INSTALL_RPATH_USE_LINK_PATH TRUE
-        INSTALL_RPATH "$ORIGIN/../lib"
+# This will set rpaths relative to all SOFA core AND relocatable dependencies
+sofa_auto_set_target_rpath(
+    TARGETS ${PROJECT_NAME}
+    RELOCATABLE "plugins"
 )
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 
-SP3_configure_directory(${CMAKE_CURRENT_SOURCE_DIR}/Components ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Components)
-install(DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Components DESTINATION ${RUNTIME_OUTPUT_DIRECTORY})
-
-SP3_configure_directory(${CMAKE_CURRENT_SOURCE_DIR}/Core ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Core)
-install(DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Core DESTINATION ${RUNTIME_OUTPUT_DIRECTORY})
-
-SP3_configure_directory(${CMAKE_CURRENT_SOURCE_DIR}/Helper ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Helper)
-install(DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Helper DESTINATION ${RUNTIME_OUTPUT_DIRECTORY})
-
-SP3_configure_directory(${CMAKE_CURRENT_SOURCE_DIR}/Simulation ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Simulation)
-install(DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Simulation DESTINATION ${RUNTIME_OUTPUT_DIRECTORY})
-
-SP3_configure_directory(${CMAKE_CURRENT_SOURCE_DIR}/Types ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Types)
-install(DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/Types DESTINATION ${RUNTIME_OUTPUT_DIRECTORY})
+set(DIR_BINDING_LIST
+    Components
+    Core
+    Helper
+    Simulation
+    Types
+    )
+get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+foreach(dir_binding ${DIR_BINDING_LIST})
+    if (_isMultiConfig) # MSVC
+        foreach(config_type ${CMAKE_CONFIGURATION_TYPES})
+            SP3_configure_directory(${CMAKE_CURRENT_SOURCE_DIR}/${dir_binding} ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/${config_type}/${PROJECT_NAME}.d/${dir_binding})
+            install(DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/${config_type}/${PROJECT_NAME}.d/${dir_binding} DESTINATION ${RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.d)
+        endforeach()
+    else()
+        SP3_configure_directory(${CMAKE_CURRENT_SOURCE_DIR}/${dir_binding} ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.d/${dir_binding})
+        install(DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.d/${dir_binding} DESTINATION ${RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.d)
+    endif()
+endforeach()
 
 install(
     TARGETS ${PROJECT_NAME}
     EXPORT BindingsTargets
+    RUNTIME DESTINATION ${RUNTIME_OUTPUT_DIRECTORY}
 )

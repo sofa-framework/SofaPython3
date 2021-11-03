@@ -24,39 +24,38 @@ set(SOURCE_FILES
 )
 
 if(SP3_BUILD_TEST)
-    list(APPEND HEADER_FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonTest.h
-    )
-    list(APPEND SOURCE_FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonTest.cpp
-    )
+    find_package(Sofa.Testing REQUIRED)
+    if(Sofa.Testing_FOUND)
+        list(APPEND HEADER_FILES
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonTest.h
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonTestExtractor.h
+        )
+        list(APPEND SOURCE_FILES
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonTest.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonTestExtractor.cpp
+        )
+    else()
+        message(WARNING "Sofa.Testing has not been found, SofaPython3 tests cannot be built.")
+    endif(Sofa.Testing_FOUND)
 endif(SP3_BUILD_TEST)
 
 find_package(pybind11 CONFIG REQUIRED)
 find_package(SofaFramework REQUIRED)
-find_package(SofaSimulation REQUIRED)
-find_package(SofaGeneral REQUIRED)
+find_package(SofaSimulationGraph REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAPYTHON3")
-target_compile_definitions(${PROJECT_NAME} PUBLIC "-DSOFA_HAVE_SOFAPYTHON3")
 
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaDefaultType SofaSimulationCore SofaSimulationGraph Sofa.Helper)
+target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::module pybind11::embed)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore SofaSimulationGraph SofaHelper)
-target_link_libraries(${PROJECT_NAME} PUBLIC  pybind11::module pybind11::embed)
+if(SP3_BUILD_TEST AND Sofa.Testing_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Testing)
+endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME SofaPython3)
-set_target_properties(${target} PROPERTIES VERSION "${SOFAPYTHON3_VERSION}")
-
-set_target_properties(
-    ${PROJECT_NAME}
-    PROPERTIES
-        INSTALL_RPATH_USE_LINK_PATH TRUE
-)
 
 if (${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
     # Sized deallocaion is not enabled by default under clang after c++14
@@ -75,34 +74,20 @@ if (CMAKE_SYSTEM_NAME STREQUAL Windows )
     target_compile_definitions(${PROJECT_NAME} PUBLIC "-DHAVE_SNPRINTF")
 endif()
 
-# Install header files
-foreach(header ${HEADER_FILES})
-    file(RELATIVE_PATH relative_path "${CMAKE_CURRENT_SOURCE_DIR}/src" "${header}")
-    get_filename_component(relative_directory ${relative_path} DIRECTORY)
-
-    install(FILES "${header}" DESTINATION "include/${relative_directory}" COMPONENT headers)
-endforeach()
-
-configure_package_config_file(
-        "${CMAKE_CURRENT_SOURCE_DIR}/PluginConfig.cmake.in"
-        "${CMAKE_BINARY_DIR}/cmake/SofaPython3/PluginConfig.cmake"
-        INSTALL_DESTINATION
-            "${LIBRARY_OUTPUT_DIRECTORY}/cmake/SofaPython3"
+set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES
+        CXX_VISIBILITY_PRESET "hidden"
+        CUDA_VISIBILITY_PRESET "hidden"
 )
 
-install(FILES "${CMAKE_BINARY_DIR}/cmake/SofaPython3/PluginConfig.cmake" DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/cmake/SofaPython3")
-
-install(TARGETS ${PROJECT_NAME}
-    EXPORT PluginTargets
-    RUNTIME DESTINATION "${RUNTIME_OUTPUT_DIRECTORY}" COMPONENT applications
-    LIBRARY DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}" COMPONENT libraries
-    ARCHIVE DESTINATION "${ARCHIVE_OUTPUT_DIRECTORY}" COMPONENT libraries
-)
-
-install(
-    EXPORT PluginTargets
-    NAMESPACE SofaPython3::
-    DESTINATION "${LIBRARY_OUTPUT_DIRECTORY}/cmake/SofaPython3"
-    COMPONENT headers
-)
-
+sofa_create_component_in_package_with_targets(
+    COMPONENT_NAME ${PROJECT_NAME}
+    COMPONENT_VERSION ${SofaPython3_VERSION}
+    PACKAGE_NAME SofaPython3
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "."
+    OPTIMIZE_BUILD_DIR FALSE
+    RELOCATABLE ".."
+    )

@@ -1,33 +1,27 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 
 /// Neede to have automatic conversion from pybind types to stl container.
 #include <pybind11/stl.h>
+#include <pybind11/eval.h>
 
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/simulation/Simulation.h>
@@ -39,11 +33,11 @@ namespace simpleapi = sofa::simpleapi;
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaSimulationGraph/DAGNode.h>
 using sofa::core::ExecParams;
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
 #include <SofaPython3/DataHelper.h>
 
 #include <sofa/core/ObjectFactory.h>
@@ -52,28 +46,32 @@ using sofa::core::ObjectFactory;
 #include <SofaPython3/PythonFactory.h>
 using sofapython3::PythonFactory;
 
-#include "Binding_Node.h"
-#include "Binding_NodeIterator.h"
-#include "Binding_Context.h"
+#include <SofaPython3/PythonEnvironment.h>
+using sofapython3::PythonEnvironment;
+
+#include <SofaPython3/Sofa/Core/Binding_Node.h>
+#include <SofaPython3/Sofa/Core/Binding_Node_doc.h>
+#include <SofaPython3/Sofa/Core/Binding_NodeIterator.h>
+#include <SofaPython3/Sofa/Core/Binding_PythonScriptEvent.h>
 
 using sofa::core::objectmodel::BaseObjectDescription;
 
 #include <queue>
 #include <sofa/core/objectmodel/Link.h>
 
-#include "Binding_Node_doc.h"
-#include "Binding_PythonScriptEvent.h"
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
 
-namespace sofapython3
-{
+using sofa::simulation::Node;
 
+namespace sofapython3 {
 
 bool checkParamUsage(BaseObjectDescription& desc)
 {
     bool hasFailure = false;
     std::stringstream tmp;
     tmp <<"Unknown Attribute(s): " << msgendl;
-    for( auto it : desc.getAttributeMap() )
+    for( auto& it : desc.getAttributeMap() )
     {
         if (!it.second.isAccessed())
         {
@@ -132,24 +130,55 @@ std::string getLinkPath(Node* node){
     return ("@"+node->getPathName()).c_str();
 }
 
-
-
-Node::SPtr __init__noname()
-{
-    return sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>("unnamed");
+py_shared_ptr<Node> __init__noname() {
+    auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>("unnamed");
+    return std::move(dag_node);
 }
 
-Node::SPtr __init__(const std::string& name)
-{
-    return sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>(name);
+py_shared_ptr<Node> __init__(const std::string& name) {
+    auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>(name);
+    return std::move(dag_node);
 }
 
 /// Method: init (beware this is not the python __init__, this is sofa's init())
-void init(Node& self) { self.init(ExecParams::defaultInstance()); }
+void init(Node& self) { self.init(sofa::core::execparams::defaultInstance()); }
 
-py::object addObject(Node& self, BaseObject* object)
+py::object addObject(Node& self, BaseObject * object)
 {
-    if(self.addObject(object))
+    try {
+        if (self.addObject(object))
+            return PythonFactory::toPython(object);
+    } catch (...) {
+        throw py::type_error("Trying to add an object that isn't derived from sofa::core::objectmodel::BaseObject.");
+    }
+    return py::none();
+}
+
+void removeObject(Node& self, BaseObject* object)
+{
+    self.removeObject(object);
+}
+
+py::object hasObject(Node &n, const std::string &name)
+{
+    BaseObject *object = n.getObject(name);
+    if (object)
+        return py::cast(true);
+    return py::cast(false);
+}
+
+py::object getObject(Node &n, const std::string &name, const py::kwargs& kwargs)
+{
+    if(kwargs.size()!=0)
+    {
+        msg_deprecated(&n) << "Calling the method getObject() with extra arguments is not supported anymore."
+                           << "To remove this message please refer to the documentation of the getObject method"
+                           << msgendl
+                            << PythonEnvironment::getPythonCallingPointString() ;
+    }
+
+    BaseObject *object = n.getObject(name);
+    if (object)
         return PythonFactory::toPython(object);
     return py::none();
 }
@@ -161,7 +190,7 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
     {
         std::string name = py::str(kwargs["name"]);
         if (sofapython3::isProtectedKeyword(name))
-            throw py::value_error("addObject: Cannot call addObject with name " + name + ": Protected keyword");
+            throw py::value_error("Cannot call addObject with name " + name + ": Protected keyword");
     }
     /// Prepare the description to hold the different python attributes as data field's
     /// arguments then create the object.
@@ -207,7 +236,7 @@ py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& k
     {
         BaseObject* obj = py::cast<BaseObject*>(callable);
 
-        self->addObject(obj);    
+        self->addObject(obj);
         return py::cast(obj);
     }
 
@@ -217,7 +246,6 @@ py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& k
         self->addChild(node);
         return py::cast(node);
     }
-
     if(py::isinstance<py::str>(callable))
     {
         py::str type = callable;
@@ -248,8 +276,10 @@ py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& k
 /// a warning for old scenes.
 py::object createObject(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
-    msg_deprecated(self) << "The Node.createObject method is deprecated since sofa 19.06."
-                            "To remove this warning message, use 'addObject'.";
+    msg_deprecated(self) << "The Node.createObject method is deprecated since sofa 19.06." << msgendl
+                         << "To remove this warning message, use 'addObject' instead of 'createObject'." <<  msgendl
+                         << msgendl
+                         << PythonEnvironment::getPythonCallingPointString() ;
     return addObjectKwargs(self, type,kwargs);
 }
 
@@ -283,8 +313,10 @@ Node* addChild(Node* self, Node* child)
 /// deprecated, use addChild instead. Keeping for compatibility reasons
 py::object createChild(Node* self, const std::string& name, const py::kwargs& kwargs)
 {
-    msg_deprecated(self) << "The Node.createChild method is deprecated since sofa 19.06."
-                            "To remove this warning message, use 'addChild'.";
+    msg_deprecated(self) << "The Node.createChild method is deprecated since sofa 19.06." << msgendl
+                         << "To remove this warning message, use 'addChild' instead of 'createChild'." << msgendl
+                         << msgendl
+                         << PythonEnvironment::getPythonCallingPointString() ;
     return addChildKwargs(self, name, kwargs);
 }
 
@@ -313,24 +345,41 @@ py::object removeChildByName(Node& n, const std::string name)
 
 NodeIterator* property_children(Node* node)
 {
-    return new NodeIterator(node, [](Node* n) -> size_t { return n->child.size(); },
-    [](Node* n, unsigned int index) -> Base::SPtr { return n->child[index]; });
+    return new NodeIterator(node,
+                            [](Node* n) -> size_t { return n->child.size(); },
+                            [](Node* n, unsigned int index) -> Base::SPtr { return n->child[index]; },
+                            [](const Node* n, const std::string& name) { return n->getChild(name); },
+                            [](Node* n, unsigned int index) { n->removeChild(n->child[index]); }
+                            );
 }
 
 NodeIterator* property_parents(Node* node)
 {
-    return new NodeIterator(node, [](Node* n) -> size_t { return n->getNbParents(); },
-    [](Node* n, unsigned int index) -> Node::SPtr {
-    auto p = n->getParents();
-    return static_cast<Node*>(p[index]);
-});
+    return new NodeIterator(node,
+                            [](Node* n) -> size_t { return n->getNbParents(); },
+                            [](Node* n, unsigned int index) -> Node::SPtr {
+                                auto p = n->getParents();
+                                return static_cast<Node*>(p[index]);
+                                },
+                            [](const Node* n, const std::string& name) -> sofa::core::Base* {
+                                    const auto& parents = n->getParents();
+                                    return *std::find_if(parents.begin(),
+                                                     parents.end(),
+                                                     [name](BaseNode* child){ return child->getName() == name; });
+                                },
+                            [](Node*, unsigned int) {
+                                throw std::runtime_error("Removing a parent is not a supported operation. Please detach the node from the corresponding graph node.");
+                            });
 }
 
 NodeIterator* property_objects(Node* node)
 {
-    return new NodeIterator(node, [](Node* n) -> size_t { return n->object.size(); },
-    [](Node* n, unsigned int index) -> Base::SPtr { return (n->object[index]);
-});
+    return new NodeIterator(node,
+                            [](Node* n) -> size_t { return n->object.size(); },
+                            [](Node* n, unsigned int index) -> Base::SPtr { return (n->object[index]);},
+                            [](const Node* n, const std::string& name) { return n->getObject(name); },
+                            [](Node* n, unsigned int index) { n->removeObject(n->object[index]);}
+                            );
 }
 
 py::object __getattr__(Node& self, const std::string& name)
@@ -398,7 +447,7 @@ py::object getMass(Node *self)
 {
     sofa::core::behavior::BaseMass* mass = self->mass.get();
     if (mass) {
-        return PythonFactory::toPython(mass);
+        return PythonFactory::toPython(sofa::core::castToBase(mass));
     }
     return py::none();
 }
@@ -408,7 +457,7 @@ py::object getForceField(Node *self, unsigned int index)
 {
     sofa::core::behavior::BaseForceField* ff = self->forceField.get(index);
     if (ff) {
-        return PythonFactory::toPython(ff);
+        return PythonFactory::toPython(sofa::core::castToBase(ff));
     }
     return py::none();
 }
@@ -418,7 +467,7 @@ py::object getMechanicalState(Node *self)
 {
     sofa::core::behavior::BaseMechanicalState* state = self->mechanicalState.get();
     if (state) {
-        return PythonFactory::toPython(state);
+        return PythonFactory::toPython(sofa::core::castToBase(state));
     }
     return py::none();
 }
@@ -428,7 +477,7 @@ py::object getMechanicalMapping(Node *self)
 {
     sofa::core::BaseMapping* mapping = self->mechanicalMapping.get();
     if (mapping) {
-        return PythonFactory::toPython(mapping);
+        return PythonFactory::toPython(sofa::core::castToBase(mapping));
     }
     return py::none();
 }
@@ -445,7 +494,7 @@ py::object getRoot(Node* self)
 void sendEvent(Node* self, py::object pyUserData, char* eventName)
 {
     sofapython3::PythonScriptEvent event(self, eventName, pyUserData);
-    self->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
+    self->propagateEvent(sofa::core::execparams::defaultInstance(), &event);
 }
 
 void moduleAddNode(py::module &m) {
@@ -453,16 +502,16 @@ void moduleAddNode(py::module &m) {
     /// typing system.
     py::class_<sofa::core::objectmodel::BaseNode,
             sofa::core::objectmodel::Base,
-            sofa::core::objectmodel::BaseNode::SPtr>(m, "BaseNode");
+            py_shared_ptr<sofa::core::objectmodel::BaseNode>>(m, "BaseNode");
 
     py::class_<Node, sofa::core::objectmodel::BaseNode,
-            sofa::core::objectmodel::Context, Node::SPtr>
+            sofa::core::objectmodel::Context, py_shared_ptr<Node>>
             p(m, "Node", sofapython3::doc::sofa::core::Node::Class);
 
     PythonFactory::registerType<sofa::simulation::graph::DAGNode>(
                 [](sofa::core::objectmodel::Base* object)
     {
-        return py::cast(static_cast<Node*>(object->toBaseNode()));
+        return py::cast(dynamic_cast<Node*>(object->toBaseNode()));
     });
 
     p.def(py::init(&__init__noname), sofapython3::doc::sofa::core::Node::init);
@@ -470,8 +519,10 @@ void moduleAddNode(py::module &m) {
     p.def("init", &init, sofapython3::doc::sofa::core::Node::initSofa );
     p.def("add", &addKwargs, sofapython3::doc::sofa::core::Node::addKwargs);
     p.def("addObject", &addObjectKwargs, sofapython3::doc::sofa::core::Node::addObjectKwargs);
-    p.def("addObject", &addObject, sofapython3::doc::sofa::core::Node::addObject);
+    p.def("addObject", &addObject, sofapython3::doc::sofa::core::Node::addObject, py::keep_alive<0, 2>());
     p.def("createObject", &createObject, sofapython3::doc::sofa::core::Node::createObject);
+    p.def("hasObject", &hasObject, sofapython3::doc::sofa::core::Node::hasObject);
+    p.def("getObject", &getObject, sofapython3::doc::sofa::core::Node::getObject);
     p.def("addChild", &addChildKwargs, sofapython3::doc::sofa::core::Node::addChildKwargs);
     p.def("addChild", &addChild, sofapython3::doc::sofa::core::Node::addChild);
     p.def("createChild", &createChild, sofapython3::doc::sofa::core::Node::createChild);
@@ -486,7 +537,7 @@ void moduleAddNode(py::module &m) {
     p.def_property_readonly("objects", &property_objects, sofapython3::doc::sofa::core::Node::objects);
     p.def("__getattr__", &__getattr__);
     p.def("__getitem__", &__getitem__);
-    p.def("removeObject", &Node::removeObject, sofapython3::doc::sofa::core::Node::removeObject);
+    p.def("removeObject", &removeObject, sofapython3::doc::sofa::core::Node::removeObject);
     p.def("getRootPath", &Node::getRootPath, sofapython3::doc::sofa::core::Node::getRootPath);
     p.def("moveChild", &moveChild, sofapython3::doc::sofa::core::Node::moveChild);
     p.def("isInitialized", &Node::isInitialized, sofapython3::doc::sofa::core::Node::isInitialized);

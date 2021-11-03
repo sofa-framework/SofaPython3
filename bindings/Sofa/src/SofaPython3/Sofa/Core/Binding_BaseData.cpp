@@ -1,51 +1,46 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2021 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 #include <pybind11/numpy.h>
 #include <pybind11/eval.h>
 
 #include <sofa/defaulttype/DataTypeInfo.h>
-using sofa::defaulttype::AbstractTypeInfo;
 
 #include <sofa/core/objectmodel/BaseData.h>
-using sofa::core::objectmodel::BaseData;
-
 #include <sofa/core/objectmodel/BaseObject.h>
-using  sofa::core::objectmodel::BaseObject;
 
-#include <sofa/core/objectmodel/BaseNode.h>
-using  sofa::core::objectmodel::BaseNode;
-
-#include "Binding_Base.h"
-#include "Binding_BaseData.h"
-#include "Data/Binding_DataContainer.h"
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseData.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseData_doc.h>
+#include <SofaPython3/Sofa/Core/Data/Binding_DataContainer.h>
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/PythonFactory.h>
-#include "Binding_BaseData_doc.h"
+
+/// Bind the python's attribute error
+namespace pybind11 { PYBIND11_RUNTIME_EXCEPTION(attribute_error, PyExc_AttributeError) }
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
+
+using namespace sofa::core::objectmodel;
+using sofa::defaulttype::AbstractTypeInfo;
+
 namespace sofapython3
 {
 
@@ -117,6 +112,7 @@ py::object writeableArray(BaseData* self)
 
 void __setattr__(py::object self, const std::string& s, py::object value)
 {
+    SOFA_UNUSED(s);
     BaseData* selfdata = py::cast<BaseData*>(self);
 
     if(py::isinstance<DataContainer>(value))
@@ -142,6 +138,9 @@ py::object __getattr__(py::object self, const std::string& s)
     if(s == "value")
         return PythonFactory::valueToPython_ro(py::cast<BaseData*>(self));
 
+    if(s == "linkpath")
+        return py::cast((py::cast<BaseData*>(self))->getLinkPath());
+
     /// BaseData does not support dynamic attributes, if you think this is an important feature
     /// please request for its integration.
     throw py::attribute_error("There is no attribute '"+s+"'");
@@ -152,14 +151,14 @@ void setParent(BaseData* self, BaseData* parent)
     self->setParent(parent);
 }
 
-bool hasParent(BaseData *self)
+void setParentFromLinkPath(BaseData* self, const std::string& parent)
 {
-    return !self->getLinkPath().empty();
+    self->setParent(parent);
 }
 
-py::str getAsACreateObjectParameter(BaseData *self)
+bool hasParent(BaseData *self)
 {
-    return self->getLinkPath();
+    return (self->getParent() != nullptr);
 }
 
 void updateIfDirty(BaseData* self)
@@ -206,8 +205,8 @@ void moduleAddBaseData(py::module& m)
     data.def("isPersistent", &BaseData::isPersistent, sofapython3::doc::baseData::isPersistent);
     data.def("setPersistent", &BaseData::setPersistent, sofapython3::doc::baseData::setPersistent);
     data.def("setParent", setParent, sofapython3::doc::baseData::setParent);
+    data.def("setParent", setParentFromLinkPath, sofapython3::doc::baseData::setParent);
     data.def("hasParent", hasParent, sofapython3::doc::baseData::hasParent);
-    data.def("getAsACreateObjectParameter", getAsACreateObjectParameter, sofapython3::doc::baseData::getAsACreateObjectParameter);
     data.def("read", &BaseData::read, sofapython3::doc::baseData::read);
     data.def("updateIfDirty", updateIfDirty, sofapython3::doc::baseData::updateIfDirty);
     data.def("isDirty", isDirty, sofapython3::doc::baseData::isDirty);

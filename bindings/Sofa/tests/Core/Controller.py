@@ -15,23 +15,19 @@ class MyController(Sofa.Core.Controller):
         def __init__(self, *args, **kwargs):
             ## These are needed (and the normal way to override from a python class)
             Sofa.Core.Controller.__init__(self, *args, **kwargs)
-            print(" Python::__init__::"+str(self.name))
             self.inited = 0
             self.iterations = 0
 
         def __del__(self):
-                print(" Python::__del__")
+                pass
         
         def init(self):
-                print(" Python::init() at "+str(self))
                 self.inited += 1
 
         def onEvent(self, kwargs):
-                print(" Handling event " + str(kwargs))
+                pass
 
         def onAnimateBeginEvent(self, kwargs):
-                print(" Python::onAnimationBeginEvent() ("+str(kwargs) + ")")
-                print(kwargs["dt"])
                 self.iterations+=1
 
 

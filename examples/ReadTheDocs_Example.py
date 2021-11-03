@@ -8,7 +8,7 @@ import Sofa.Core
 import SofaRuntime
 
 ## Register all the common component in the factory. 
-SofaRuntime.importPlugin("SofaAllCommonComponents")
+SofaRuntime.importPlugin("SofaComponentAll")
 
 def createScene(rootNode):
         rootNode.addObject("OglGrid", nbSubdiv=10, size=1000)
@@ -72,7 +72,7 @@ def createScene(rootNode):
         sphere.addObject('UncoupledConstraintCorrection')
 
         sphere.addObject('EulerImplicitSolver', name='odesolver')
-        sphere.addObject('CGLinearSolver', name='Solver')
+        sphere.addObject('CGLinearSolver', name='Solver', iterations=25, tolerance=1e-5, threshold=1e-5)
 
         collision = sphere.addChild('collision')
         collision.addObject('MeshObjLoader', name="loader", filename="mesh/ball.obj",

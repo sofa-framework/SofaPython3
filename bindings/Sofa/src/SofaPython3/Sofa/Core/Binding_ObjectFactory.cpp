@@ -1,32 +1,26 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
-
-#include "Binding_ObjectFactory.h"
-#include "Binding_ObjectFactory_doc.h"
+#include <sofa/core/ObjectFactory.h>
+#include <SofaPython3/Sofa/Core/Binding_ObjectFactory.h>
+#include <SofaPython3/Sofa/Core/Binding_ObjectFactory_doc.h>
 #include <numeric>
 #include <sstream>
 #include <pybind11/stl.h>
@@ -141,17 +135,49 @@ std::set<std::string> getLocationsOfEntry(const ObjectFactory::ClassEntry &entry
     return locations;
 }
 
+std::string className(const ObjectFactory::ClassEntry &e) { return e.className; }
+
+py::list aliases(const ObjectFactory::ClassEntry &self)
+{
+    py::list list;
+    for (auto alias : self.aliases)
+        list.append(alias);
+    return list;
+}
+
+std::string description(const ObjectFactory::ClassEntry &e) { return e.description; }
+
+std::string authors(const ObjectFactory::ClassEntry &e) { return e.authors; }
+
+std::string license(const ObjectFactory::ClassEntry &e) { return e.license; }
+
+std::string defaultTemplate(const ObjectFactory::ClassEntry &e) { return e.defaultTemplate; }
+
+py::dict dataAlias(const ObjectFactory::ClassEntry &self)
+{
+    py::dict dict;
+    for (auto alias : self.m_dataAlias)
+    {
+        py::list aliases;
+        for (auto a : alias.second)
+            aliases.append(a);
+        dict[alias.first.c_str()] = aliases;
+    }
+    return dict;
+}
+
+
 void moduleAddObjectFactory(py::module &m) {
     py::class_<ObjectFactory> factory (m, "ObjectFactory", sofapython3::doc::objectmodel::ObjectFactoryClass);
 
     py::class_<ObjectFactory::ClassEntry> entry(m, sofapython3::doc::objectmodel::ClassEntryClass);
-    entry.def_readonly("className", &ObjectFactory::ClassEntry::className);
-    entry.def_readonly("aliases", &ObjectFactory::ClassEntry::aliases);
-    entry.def_readonly("description", &ObjectFactory::ClassEntry::description);
-    entry.def_readonly("authors", &ObjectFactory::ClassEntry::authors);
-    entry.def_readonly("license", &ObjectFactory::ClassEntry::license);
-    entry.def_readonly("defaultTemplate", &ObjectFactory::ClassEntry::defaultTemplate);
-    entry.def_readonly("dataAlias", &ObjectFactory::ClassEntry::m_dataAlias);
+    entry.def_property_readonly("className", &className);
+    entry.def_property_readonly("aliases", &aliases);
+    entry.def_property_readonly("description", &description);
+    entry.def_property_readonly("authors", &authors);
+    entry.def_property_readonly("license", &license);
+    entry.def_property_readonly("defaultTemplate", &defaultTemplate);
+    entry.def_property_readonly("dataAlias", &dataAlias);
     entry.def_property_readonly("templates", &getTemplates);
     entry.def_property_readonly("targets", &getTargetsOfEntry);
     entry.def_property_readonly("locations", &getLocationsOfEntry);

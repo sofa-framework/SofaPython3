@@ -1,5 +1,24 @@
-#include "Prefab.h"
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
+#include <SofaPython3/Prefab.h>
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/PythonFactory.h>
 #include <SofaPython3/PythonEnvironment.h>
@@ -15,25 +34,23 @@ using sofa::simulation::VisualInitVisitor;
 #include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation;
 
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
+
 namespace sofapython3
 {
 using sofa::core::objectmodel::Event;
 
 void Prefab::init()
 {
-    std::cout << "prefab::init" << std::endl;
+    Inherit1::init(sofa::core::execparams::defaultInstance());
+    m_is_initialized = true;
     reinit();
-    Inherit1::init(sofa::core::ExecParams::defaultInstance());
 }
 
 void PrefabFileEventListener::fileHasChanged(const std::string &filename)
 {
     PythonEnvironment::gil acquire ;
-    //std::string file=filepath;
-    //SP_CALL_FILEFUNC(const_cast<char*>("onReimpAFile"),
-    //                 const_cast<char*>("s"),
-    //                 const_cast<char*>(file.data()));
-
     py::dict local;
     local["filename"] = filename;
     py::eval("onReimpAFile(filename)", py::globals(), local);
@@ -44,25 +61,21 @@ void PrefabFileEventListener::fileHasChanged(const std::string &filename)
 
 void Prefab::reinit()
 {
-    std::cout << "prefab::reinit" << std::endl;
     clearLoggedMessages();
 
     /// remove everything in the node.
-    execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
-    std::cout << "prefab::doReInit" << std::endl;
+    execute<sofa::simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
+
     doReInit();
 
-    std::cout << "simulation->initNode" << std::endl;
     /// Beurk beurk beurk
     sofa::simulation::getSimulation()->initNode(this);
-    std::cout << "VisualInitVisitor" << std::endl;
-    execute<VisualInitVisitor>(nullptr);
-
-    m_componentstate = sofa::core::objectmodel::ComponentState::Valid;
+    execute<VisualInitVisitor>(sofa::core::execparams::defaultInstance());
 }
 
 void Prefab::doReInit()
 {
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 Prefab::Prefab()
@@ -78,27 +91,23 @@ Prefab::~Prefab()
 }
 
 
-void Prefab::addPrefabParameter(const std::string& name, py::object value, const std::string& help, std::string type)
+void Prefab::addPrefabParameter(const std::string& name, const std::string& help, const std::string& type, py::object defaultValue)
 {
-    sofa::core::objectmodel::BaseData* data = findData(name);
-    if(data == nullptr)
+    if(!findData(name) && !findLink(name))
     {
-        sofa::core::objectmodel::BaseData* data = sofapython3::addData(py::cast(this), name, value, py::object(), help, "Prefab's properties", type);
+        sofa::core::objectmodel::BaseData* data = sofapython3::addData(py::cast(this), name, py::none(), defaultValue, help, "Prefab's properties", type);
+        data->setRequired(true);
         m_datacallback.addInputs({data});
-        return;
     }
-    //PythonFactory::fromPython(data, value);
 }
 
 void Prefab::setSourceTracking(const std::string& filename)
 {
-    std::cout << "Activating source tracking to " << filename << std::endl;
     FileMonitor::addFile(filename, &m_filelistener);
 }
 
 void Prefab::breakPrefab()
 {
-    std::cout << "Breaking prefab" << std::endl;
     FileMonitor::removeListener(&m_filelistener);
     for (auto& data : this->getDataFields())
         if (data->getGroup() == "Prefab's properties")

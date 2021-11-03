@@ -3,30 +3,29 @@
 import unittest
 import Sofa
 
+def create_scene(rootName="root"):
+    root = Sofa.Core.Node(rootName)
+    root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+    return root
 
 class Test(unittest.TestCase):
     def __init__(self, a):
         unittest.TestCase.__init__(self, a)
 
     def test_createObjectWithParam(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         c = root.addObject("MechanicalObject", name="t", position=[
                            [0, 0, 0], [1, 1, 1], [2, 2, 2]])
         self.assertTrue(c is not None)
 
     def test_createObjectWithInvalidParamName(self):
         # This one should raise an error because of 'v' should rise a type error.
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         self.assertRaises(TypeError, root.addObject, "MechanicalObject", name="tt", v=[
                           [0, 0, 0], [1, 1, 1], [2, 2, 2]])
 
-    def test_createObjectWithInvalidParamValue(self):
-        # This one should raise an error because of 'position=xx' should rise a type error.
-        root = Sofa.Core.Node("rootNode")
-        root.addObject("MechanicalObject", name="tt", position="xmoi")
-
     def test_data_property(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         c = root.addObject("MechanicalObject", name="t", position=[
                            [0, 0, 0], [1, 1, 1], [2, 2, 2]])
         self.assertTrue(hasattr(c, "__data__"))
@@ -37,13 +36,13 @@ class Test(unittest.TestCase):
         self.assertTrue(isinstance(c.__data__, Sofa.Core.DataDict))
 
     def test_context(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         c = root.addObject("MechanicalObject", name="t", position=[
                            [0, 0, 0], [1, 1, 1], [2, 2, 2]])
         self.assertTrue(c.getContext() is not None)
 
     def test_slave_master(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         c_master = root.addObject("MechanicalObject", name="t_master", position=[
                                   [0, 0, 0], [1, 1, 1], [2, 2, 2]])
         c_slave = root.addObject("MechanicalObject", name="t_slave", position=[
@@ -54,33 +53,33 @@ class Test(unittest.TestCase):
         self.assertEqual(c_slave.getSlaves(), [])
 
     def test_getTarget(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         c = root.addObject("MechanicalObject", name="t")
         self.assertEqual(c.getTarget(), 'SofaBaseMechanics')
 
     def test_getName(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         c = root.addObject("MechanicalObject", name="t")
         self.assertEqual(c.getName(), "t")
 
     def test_getCategories(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         c = root.addObject("MechanicalObject", name="t")
         self.assertEqual(c.getCategories(), ["MechanicalState"])
 
     def test_getPathName(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         c = root.addObject("MechanicalObject", name="t")
         self.assertEqual(c.getPathName(), "/t")
 
     def test_getLinkPath(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         c = root.addObject("MechanicalObject", name="t")
         self.assertEqual(c.getLinkPath(), "@/t")
         self.assertEqual(c.getAsACreateObjectParameter(), "@/t")
 
     def test_setSrc(self):
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         c = root.addObject("Binding_BaseObject_MockComponent", name="t")
         loader = root.addObject(
             "Binding_BaseObject_MockComponent", name="loader")
@@ -92,9 +91,8 @@ class Test(unittest.TestCase):
         # Test several binded functions using the Binding_BaseObject_MockComponent
         t = ["bwdInit", "cleanup", "computeBBox",
              "storeResetState", "reset", "init", "reinit"]
-        root = Sofa.Core.Node("rootNode")
+        root = create_scene("rootNode")
         c = root.addObject("Binding_BaseObject_MockComponent", name="t")
         for name in t:
-            print(name)
             getattr(c, name)()
             self.assertEqual(c.test.value, name)

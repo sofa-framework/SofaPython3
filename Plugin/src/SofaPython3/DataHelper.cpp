@@ -1,29 +1,22 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 
 #include <sofa/core/objectmodel/BaseNode.h>
@@ -34,6 +27,8 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/DataCache.h>
 #include <SofaPython3/PythonFactory.h>
+
+using sofa::core::objectmodel::BaseLink;
 
 namespace sofapython3
 {
@@ -48,9 +43,25 @@ std::string toSofaParsableString(const py::handle& p)
         }
         return tmp.str();
     }
+
     //TODO(dmarchal) This conversion to string is so bad.
     if(py::isinstance<py::str>(p))
         return py::str(p);
+
+    // If the object is a data field we link the data field
+    if(py::isinstance<sofa::core::objectmodel::BaseData>(p))
+    {
+        sofa::core::objectmodel::BaseData* data = py::cast<sofa::core::objectmodel::BaseData*>(p);
+        return data->getValueString();
+    }
+
+    // If the object is a numpy array we convert it to a list then to a sofa string.
+    if(py::isinstance<py::array>(p))
+    {
+        py::object o = p.attr("tolist")();
+        return toSofaParsableString(o);
+    }
+
     return py::repr(p);
 }
 
@@ -62,21 +73,6 @@ void fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& d
     {
         desc.setAttribute(py::str(kv.first), toSofaParsableString(kv.second));
     }
-}
-
-PythonTrampoline::~PythonTrampoline(){}
-void PythonTrampoline::setInstance(py::object s)
-{
-    s.inc_ref();
-
-    // TODO(bruno-marques) ici ça crash dans SOFA.
-    //--ref_counter;
-
-    pyobject = std::shared_ptr<PyObject>( s.ptr(), [](PyObject* ob)
-    {
-            // runSofa Sofa/tests/pyfiles/ScriptController.py => CRASH
-            // Py_DECREF(ob);
-});
 }
 
 std::ostream& operator<<(std::ostream& out, const py::buffer_info& p)
@@ -539,12 +535,11 @@ BaseData* addData(py::object py_self, const std::string& name, py::object value,
     BaseData* data;
 
     bool isSet = true;
-    if (value.is(py::none()))
+    if (value.is_none())
     {
         value = defaultValue;
         isSet = false;
     }
-
 
     // create the data from the link passed as a string to the object
     if (py::isinstance<py::str>(value) &&
@@ -562,7 +557,7 @@ BaseData* addData(py::object py_self, const std::string& name, py::object value,
         self->addData(data, name);
     }
     // create the data from another data (use as parent)
-    else if (py::isinstance<BaseData>(value) || py::isinstance<BaseData*>(value))
+    else if (!value.is_none() && (py::isinstance<BaseData>(value) || py::isinstance<BaseData*>(value)))
     {
         data = deriveTypeFromParent(py::cast<BaseData*>(value));
         if (!data)
@@ -575,7 +570,7 @@ BaseData* addData(py::object py_self, const std::string& name, py::object value,
         data = PythonFactory::createInstance(type);
         if (!data)
         {
-            sofa::helper::vector<std::string> validTypes;
+            sofa::type::vector<std::string> validTypes;
             PythonFactory::uniqueKeys(std::back_inserter(validTypes));
             std::string typesString = "[";
             for (const auto& i : validTypes)
@@ -585,7 +580,8 @@ BaseData* addData(py::object py_self, const std::string& name, py::object value,
             throw py::type_error(std::string("Invalid Type string: available types are\n") + typesString);
         }
         self->addData(data, name);
-        PythonFactory::fromPython(data, value);
+        if (!value.is_none())
+            PythonFactory::fromPython(data, value);
     }
     data->setName(name);
     data->setGroup(group.c_str());
@@ -597,5 +593,30 @@ BaseData* addData(py::object py_self, const std::string& name, py::object value,
     return data;
 }
 
+BaseLink* addLink(py::object py_self, const std::string& name, py::object value, const std::string& help)
+{
+    Base* self = py::cast<Base*>(py_self);
+    if (isProtectedKeyword(name))
+        throw py::value_error("addLink: Cannot call addLink with name " + name + ": Protected keyword");
 
+    checkAmbiguousCreation(py_self, name, "link");
+
+    BaseLink::InitLink<Base> initlink(self, name, help);
+
+    BaseLink* link = new sofa::core::objectmodel::SingleLink<Base, Base, BaseLink::FLAG_MULTILINK>(initlink);
+    if (py::isinstance<std::string>(value))
+    {
+        auto linkpath = py::cast<std::string>(value);
+        if (linkpath[0] != '@')
+            linkpath = "@" + linkpath;
+        if (!link->read(linkpath))
+            throw py::value_error("addLink: Cannot read link path " + linkpath + ": is link valid?");
+    }
+    else if (py::isinstance<Base*>(value))
+        link->setLinkedBase(py::cast<Base*>(value));
+
+//    self->addLink(link);
+    return link;
 }
+
+}  // namespace sofapython3

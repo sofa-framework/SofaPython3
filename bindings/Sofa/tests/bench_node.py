@@ -10,8 +10,6 @@ sys.path.append("./SofaRuntime/package")
 import Sofa.Core
 import SofaRuntime
 
-SofaRuntime.importPlugin("SofaAllCommonComponents")
-
 it=1000
 
 root = Sofa.Core.Node("rootNode")

@@ -1,43 +1,40 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2021 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
-
-#include "Binding_BaseContext.h"
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseContext.h>
 #include <SofaPython3/PythonFactory.h>
 #include <sofa/core/BaseState.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/BaseMass.h>
 
+namespace py { using namespace pybind11; }
+
 using namespace sofa::core::objectmodel;
 namespace sofapython3 {
 
 void moduleAddBaseContext(py::module& m) {
-    py::class_<BaseContext, Base, BaseContext::SPtr> c (m, "BaseContext");
+    py::class_<BaseContext, Base, py_shared_ptr<BaseContext>> c (m, "BaseContext");
 
     py::enum_<BaseContext::SearchDirection>(c, "SearchDirection")
         .value("SearchUp",      BaseContext::SearchDirection::SearchUp)
@@ -59,8 +56,8 @@ void moduleAddBaseContext(py::module& m) {
     c.def("getState", &BaseContext::getState, "Mechanical Degrees-of-Freedom");
     c.def("getMechanicalState", &BaseContext::getMechanicalState, "Mechanical Degrees-of-Freedom");
     c.def("getTopology", &BaseContext::getTopology, "Topology");
-    c.def("getMeshTopology", &BaseContext::getMeshTopology, "Mesh Topology (unified interface for both static and dynamic topologies)");
-    c.def("getMeshTopologyLink", &BaseContext::getMeshTopologyLink, "Mesh Topology (unified interface for both static and dynamic topologies)");
+    c.def("getMeshTopology", &BaseContext::getMeshTopology, py::arg("SearchDirection") = BaseContext::SearchDirection::SearchUp, "Mesh Topology (unified interface for both static and dynamic topologies)");
+    c.def("getMeshTopologyLink", &BaseContext::getMeshTopologyLink, py::arg("SearchDirection") = BaseContext::SearchDirection::SearchUp, "Mesh Topology (unified interface for both static and dynamic topologies)");
     c.def("getMass", &BaseContext::getMass, "Mass");
 
     c.def("__str__", [](const BaseContext & context) {std::ostringstream s; s << context; return s.str();}, "Get a string representation of the context.");

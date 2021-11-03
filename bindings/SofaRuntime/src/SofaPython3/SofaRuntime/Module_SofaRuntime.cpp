@@ -1,35 +1,25 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 #include <pybind11/eval.h>
 namespace py = pybind11;
-
-#include <sofa/simulation/Node.h>
-using sofa::simulation::Node;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
@@ -65,14 +55,20 @@ using sofapython3::SceneLoaderPY3;
 #include <SofaSimulationCommon/init.h>
 #include <SofaSimulationGraph/init.h>
 
-#include <sofa/helper/system/FileRepository.h>
-
-#include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaPython3/Sofa/Core/Binding_Node.h>
-
 #include "Timer/Submodule_Timer.h"
 
-#include <SofaPython3/DataHelper.h>
+#include <sofa/helper/logging/MessageDispatcher.h>
+#include <sofa/helper/logging/ConsoleMessageHandler.h>
+#include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
+using sofa::helper::logging::MessageDispatcher;
+using sofa::helper::logging::MainPerComponentLoggingMessageHandler;
+using sofa::helper::logging::MainConsoleMessageHandler;
+
+#include <sofa/core/init.h>
+#include <sofa/helper/init.h>
+#include <sofa/simulation/init.h>
+#include <SofaSimulationGraph/init.h>
+#include <SofaSimulationCommon/init.h>
 
 namespace sofapython3
 {
@@ -134,9 +130,16 @@ PYBIND11_MODULE(SofaRuntime, m) {
                 .. code-block:: python
 
                    import SofaRuntime
-                   SofaRuntime.importPlugin("SofaAllCommonComponents")
+                   SofaRuntime.importPlugin("SofaSparseSolver")
 
               )doc";
+
+    // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
+    sofa::core::init();
+    sofa::helper::init();
+    sofa::simulation::core::init();
+    sofa::simulation::graph::init();
+    sofa::simulation::common::init();
 
     // Add the plugin directory to PluginRepository
     const std::string& pluginDir = Utils::getExecutableDirectory();
@@ -157,6 +160,12 @@ PYBIND11_MODULE(SofaRuntime, m) {
     {
         return simpleapi::importPlugin(name);
     }, "import a sofa plugin into the current environment");
+
+    m.def("init", []() {
+        MessageDispatcher::clearHandlers();
+        MessageDispatcher::addHandler(&MainConsoleMessageHandler::getInstance());
+        MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance());
+    });
 
     m.add_object("DataRepository", py::cast(&sofa::helper::system::DataRepository));
     m.add_object("PluginRepository", py::cast(&sofa::helper::system::PluginRepository));

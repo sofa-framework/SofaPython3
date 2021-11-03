@@ -1,0 +1,6 @@
+# This runs very slowly, so compute only a few iterations
+iterations "advanced_timer.py" "10"
+timeout "advanced_timer.py" "80"
+
+# Ignore additional examples
+ignore "additional-examples/.*"

@@ -8,8 +8,6 @@ import timeit
 import Sofa.Core
 import SofaRuntime
 
-SofaRuntime.importPlugin("SofaAllCommonComponents")
-                        
 def oldSofa(obj):
         ol = obj.position.tolist()
         for i in range(len(ol)):
@@ -22,6 +20,7 @@ ones = numpy.ones((1000,3), dtype=numpy.float64)
 aList = zeros.tolist()
 
 root = Sofa.Core.Node("root")
+root.addObject("RequiredPlugin", name="SofaBaseMechanics")
 obj = root.createObject("MechanicalObject", name="test", position=aList)
 print("A counter: ", obj.position.getCounter())
 obj.position += ones

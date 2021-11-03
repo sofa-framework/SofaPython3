@@ -10,6 +10,8 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseObject_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseCamera.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseContext.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ContactListener.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ContactListener_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Context.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Controller.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Controller_doc.h
@@ -17,8 +19,6 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataEngine_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField_doc.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Visitor.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Visitor_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node.h
@@ -29,15 +29,17 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataContainer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataContainer_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataString.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataLink.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataString_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataVectorString.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataVectorString_doc.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Core.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_PythonScriptEvent.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseLink.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseLink_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseData_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseCamera_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Topology.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseMeshTopology.h
 )
 
 set(SOURCE_FILES
@@ -47,14 +49,15 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseObject.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseCamera.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseContext.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ContactListener.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Context.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Controller.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataEngine.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataContainer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataString.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataLink.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataVectorString.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Visitor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_NodeIterator.cpp
@@ -62,6 +65,8 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Core.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_PythonScriptEvent.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseLink.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Topology.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseMeshTopology.cpp
 )
 
 if (NOT TARGET SofaPython3::Plugin)
@@ -69,14 +74,16 @@ if (NOT TARGET SofaPython3::Plugin)
 endif()
 
 find_package(SofaFramework REQUIRED)
-find_package(SofaBase REQUIRED)
-find_package(SofaSimulation REQUIRED)
+find_package(SofaBaseCollision REQUIRED)
+find_package(SofaBaseVisual REQUIRED)
+find_package(SofaBaseUtils REQUIRED)
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
-    PACKAGE_NAME Sofa
-    MODULE_NAME  Core
+    PACKAGE      Bindings
+    MODULE       Core
+    DESTINATION  Sofa
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
-    DEPENDS      SofaCore SofaSimulationCore SofaSimulationGraph SofaBaseVisual SofaPython3::Plugin
+    DEPENDS      SofaBaseUtils SofaBaseCollision Sofa.Core Sofa.Helper Sofa.SimulationCore Sofa.DefaultType SofaBaseVisual SofaPython3::Plugin
 )

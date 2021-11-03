@@ -1,33 +1,25 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2021 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 
 #include <iostream>
-#include <pybind11/embed.h>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::objectmodel::BaseObjectDescription;
@@ -36,10 +28,16 @@ using sofa::core::ObjectFactory;
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message;
 
+#include <sofa/simulation/Node.h>
+using sofa::simulation::Node;
+
 #include <SofaPython3/DataHelper.h>
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
-#include <SofaPython3/Sofa/Core/Binding_Node.h>
-#include "Submodule_Components.h"
+
+#include <sofa/core/init.h>
+#include <sofa/helper/init.h>
+#include <sofa/simulation/init.h>
 
 namespace py = pybind11;
 using namespace py::literals;
@@ -59,6 +57,11 @@ public:
 
 PYBIND11_MODULE(Components, m)
 {
+    // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
+    sofa::core::init();
+    sofa::helper::init();
+    sofa::simulation::core::init();
+
     py::class_<FCreator> mm(m, "Creator");
     mm.def("__call__", [](FCreator& s, const py::args& args, const py::kwargs& kwargs){
         if(args.size() != 1)
@@ -72,13 +75,13 @@ PYBIND11_MODULE(Components, m)
             throw py::type_error(std::string("Invalid first argument. Expecting 'Node' but got ") + py::cast<std::string>(py::str(pynode)));
         }
 
-        auto node = py::cast<sofa::simulation::Node*>(pynode);
+        auto node = py::cast<py_shared_ptr<sofa::simulation::Node>>(pynode);
 
         /// Prepare the description to hold the different python attributes as data field's
         /// arguments then create the object.
         BaseObjectDescription desc {s.name.c_str(), s.name.c_str()};
         fillBaseObjectdescription(desc, kwargs);
-        auto object = ObjectFactory::getInstance()->createObject(node, &desc);
+        auto object = py_shared_ptr<sofa::core::objectmodel::BaseObject>(ObjectFactory::getInstance()->createObject(node.get(), &desc));
 
         /// After calling createObject the returned value can be either a nullptr
         /// or non-null but with error message or non-null.

@@ -1,29 +1,22 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 #pragma once
 
@@ -153,10 +146,48 @@ static auto addObject =
         :type object: Sofa.Simulation.BaseObject*
         )";
 
-
 static auto createObject =
         R"(
         Deprecated, see addObject
+        )";
+
+static auto hasObject =
+        R"(
+        Check if there is a component with provided name.
+
+        :param n
+        :param name
+        :type n: Sofa.Simulation.Node
+        :type name: string
+        :return: True if the node has an object with correspdonding name.
+        )";
+static auto getObject =
+        R"(
+        Get a sofa component hold by a node.
+
+        :param n
+        :param name
+        :type n: Sofa.Simulation.Node
+        :type name: string
+        :return: the component with 'name', None otherwise
+
+        .. note::
+        The extra arguments allowed in the SofaPython (warning=True/False) binding are not supported SofaPython3.
+
+        .. code-block:: python
+            # SofaPython2:
+            if node.getObject("MyObject",warning=False):
+                pass
+
+            # SofaPython3:
+            if node.getObject("MyObject") != None:
+                pass
+
+            if node.hasObject("MyObject"):
+                pass
+
+            if "MyObject" in node.objects:
+                pass
         )";
 
 static auto addChildKwargs =
@@ -195,7 +226,7 @@ static auto getChild =
         :param name
         :type n: Sofa.Simulation.Node
         :type name: string
-        :return: the child of the same name
+        :return: the child with 'name', None otherwise
         )";
 
 static auto removeChild =
@@ -242,29 +273,52 @@ static auto getLinkPath =
 static auto children =
         R"(
         Field interface to acces the children of a node.
+        The returned object is a iteratable featuring the following operations:
+        len, remove_at, __contains__, get_at
 
         :Example:
         >>> n = Sofa.Core.Node("MyNode")
+        >>> n.addChild("child1")
         >>> for child in n.children:
         >>>     print(child.name)
+        >>>
+        >>> if "child1" in n.children:
+        >>>     print("Yes")
+        >>> print(len(n.children))
         )";
 
 static auto parents =
         R"(
         Field interface to acces the parents of a node.
+        The returned object is a iteratable featuring the following operations:
+        len, remove_at, __contains__, get_at
+
         :Example:
-        >>> n = Sofa.Core.Node("MyNode")
-        >>> for parent in n.parents:
+        >>> n = Sofa.Core.Node("parent1")
+        >>> c = n.addChild("child1")
+        >>> for parent in c.parents:
         >>>     print(parent.name)
+        >>>
+        >>> if "parent1" in c.parents:
+        >>>     print("Yes")
+        >>> print(len(n.parents))
         )";
 static auto objects =
         R"(
         Field interface to acces the objects of a node.
+        The returned object is a iteratable featuring the following operations:
+        len, remove_at, __contains__, get_at
 
         :Example:
         >>> n = Sofa.Core.Node("MyNode")
+        >>> n.addObject("MechanicalObject", name="object1")
+        >>> n.addObject("MechanicalObject", name="object2")
         >>> for object in n.objects:
         >>>     print(object.name)
+        >>>
+        >>> if "object2" in c.objects:
+        >>>     print("Yes")
+        >>> print(len(n.objects))
         )";
 static auto removeObject =
         R"(
