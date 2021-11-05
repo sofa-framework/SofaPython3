@@ -1,0 +1,235 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+
+jobs:
+  build-and-test:
+    name: Run on ${{ matrix.os }} with SOFA ${{ matrix.sofa_branch }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-10.15, windows-2019]
+        sofa_branch: [master, v21.06]
+
+    steps:
+      - name: Setup SOFA and environment
+        id: sofa
+        uses: sofa-framework/sofa-setup-action@v3.0
+        with:
+          sofa_root: ${{ github.workspace }}/sofa
+          sofa_version: ${{ matrix.sofa_branch }}
+      
+      - name: Checkout source code
+        uses: actions/checkout@v2
+        with:
+          path: ${{ env.WORKSPACE_SRC_PATH }}
+        
+      - name: Set env vars for pybind11 installation
+        shell: bash
+        run: |
+          # Define pybind11 specs
+          PYBIND11_VERSION=2.4.3
+          PYBIND11_INSTALL_PATH="/tmp/deps_cache_is_for_windows_only"
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            PYBIND11_INSTALL_PATH="C:/pybind11"
+          fi
+          echo "PYBIND11_VERSION=$PYBIND11_VERSION" | tee -a $GITHUB_ENV
+          echo "PYBIND11_INSTALL_PATH=$PYBIND11_INSTALL_PATH" | tee -a $GITHUB_ENV
+        
+      - name: Setup cache for pybind11 files
+        uses: actions/cache@v2
+        id: pybind11_cache
+        with:
+          path: ${{ env.PYBIND11_INSTALL_PATH }}
+          key: pybind11-${{ env.PYBIND11_VERSION }}_${{ runner.os }}_python-${{ steps.sofa.outputs.python_version }}_${{ hashFiles('src/.github/workflows/*.yml') }}
+      
+      - name: Install pybind11
+        shell: bash
+        run: |
+          # Build and install pybind11
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            if ! ls -a "$PYBIND11_INSTALL_PATH"/* >/dev/null 2>&1; then
+              # directory does not exist or is empty
+              git clone -b v$PYBIND11_VERSION --depth 1 https://github.com/pybind/pybind11.git "${{ runner.temp }}/pybind11_tmp"
+              cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} && \
+                cd /d ${{ runner.temp }}/pybind11_tmp && \
+                cmake \
+                  -GNinja \
+                  -DCMAKE_BUILD_TYPE=Release \
+                  -DPYBIND11_TEST=OFF \
+                  -DCMAKE_INSTALL_PREFIX=$PYBIND11_INSTALL_PATH \
+                  -DPYTHON_ROOT=$PYTHON_ROOT \
+                  -DPython_ROOT=$PYTHON_ROOT \
+                  -DPYTHON_EXECUTABLE=$PYTHON_ROOT/python.exe \
+                  -DPython_EXECUTABLE=$PYTHON_ROOT/python.exe \
+                  . && \
+                  ninja install"
+            fi          
+            echo "pybind11_ROOT=$PYBIND11_INSTALL_PATH" | tee -a $GITHUB_ENV
+            echo "$PYBIND11_INSTALL_PATH" >> $GITHUB_PATH
+          else
+            git clone -b v${PYBIND11_VERSION} --depth 1 https://github.com/pybind/pybind11.git "${{ runner.temp }}/pybind11_tmp"
+            cd "${{ runner.temp }}/pybind11_tmp"
+            cmake \
+              -GNinja \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DPYBIND11_TEST=OFF \
+              -DPYTHON_ROOT=$PYTHON_ROOT \
+              -DPython_ROOT=$PYTHON_ROOT \
+              -DPYTHON_EXECUTABLE=$PYTHON_ROOT/python \
+              -DPython_EXECUTABLE=$PYTHON_ROOT/python \
+              .
+            sudo ninja install
+          fi
+      
+      - name: Setup cache for ccache files
+        if: ${{ runner.os != 'Windows' }}
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache_${{ runner.os }}
+      
+      - name: Build and install
+        shell: bash
+        run: |
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} \
+              && cd /d $WORKSPACE_BUILD_PATH \
+              && cmake \
+                  -GNinja \
+                  -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake" \
+                  -DCMAKE_BUILD_TYPE=Release \
+                  -DCMAKE_INSTALL_PREFIX="$WORKSPACE_INSTALL_PATH" \
+                  -DPYTHON_ROOT=$PYTHON_ROOT \
+                  -DPython_ROOT=$PYTHON_ROOT \
+                  -DPYTHON_EXECUTABLE=$PYTHON_ROOT/python.exe \
+                  -DPython_EXECUTABLE=$PYTHON_ROOT/python.exe \
+                  ../src \
+              && ninja install"
+          else
+            cd "$WORKSPACE_BUILD_PATH"
+            ccache -z
+            cmake \
+              -GNinja \
+              -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+              -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+              -DCMAKE_PREFIX_PATH=$SOFA_ROOT/lib/cmake \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_INSTALL_PREFIX="$WORKSPACE_INSTALL_PATH" \
+              -DPYTHON_ROOT=$PYTHON_ROOT \
+              -DPython_ROOT=$PYTHON_ROOT \
+              -DPYTHON_EXECUTABLE=$PYTHON_ROOT/python \
+              -DPython_EXECUTABLE=$PYTHON_ROOT/python \
+              ../src
+            ninja install
+            echo ${CCACHE_BASEDIR}
+            ccache -s
+          fi
+
+      - name: Create artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: SofaPython3_${{ steps.sofa.outputs.run_branch }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
+          path: ${{ env.WORKSPACE_INSTALL_PATH }}
+
+      - name: Install artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: SofaPython3_${{ steps.sofa.outputs.run_branch }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}
+          path: ${{ env.WORKSPACE_ARTIFACT_PATH }}
+      
+      - name: Set env vars for tests
+        shell: bash
+        run: |
+          # Set env vars for tests
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            echo "$(cd $WORKSPACE_ARTIFACT_PATH/lib && pwd -W)" >> $GITHUB_PATH
+            echo "$(cd $WORKSPACE_ARTIFACT_PATH/bin && pwd -W)" >> $GITHUB_PATH
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            echo "DYLD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
+          fi
+          echo "LD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
+          echo "PYTHONPATH=$WORKSPACE_ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
+          # Add execution right on the tests
+          chmod +x $WORKSPACE_ARTIFACT_PATH/bin/*.Tests${{ steps.sofa.outputs.exe }}
+      
+      - name: Check environment for tests
+        shell: bash
+        run: |
+          echo '------ ls -la "$WORKSPACE_SRC_PATH" ------'
+          ls -la "$WORKSPACE_SRC_PATH"
+          echo '------ ls -la "$WORKSPACE_BUILD_PATH" ------'
+          ls -la "$WORKSPACE_BUILD_PATH"
+          echo '------ ls -la "$WORKSPACE_INSTALL_PATH" ------'
+          ls -la "$WORKSPACE_INSTALL_PATH"
+          echo '------ ls -la "$WORKSPACE_ARTIFACT_PATH" ------'
+          ls -la "$WORKSPACE_ARTIFACT_PATH"
+          echo '----------------------'
+          echo "SOFA_ROOT = $SOFA_ROOT"
+          echo "PYTHONPATH = $PYTHONPATH"
+          echo '----------------------'
+          echo "which python = $(which python)"
+          python -c "import sys; print('sys.version = ' + str(sys.version)); print('sys.path = ' + str(sys.path))"
+
+      - name: Run test Binding.Sofa.Tests
+        if: always()
+        shell: bash
+        run: |
+          cd $WORKSPACE_ARTIFACT_PATH
+          ./bin/Bindings.Sofa.Tests${{ steps.sofa.outputs.exe }}
+      
+      - name: Run test Bindings.SofaRuntime.Tests
+        if: always()
+        shell: bash
+        run: |
+          cd $WORKSPACE_ARTIFACT_PATH
+          ./bin/Bindings.SofaRuntime.Tests${{ steps.sofa.outputs.exe }}
+      
+      - name: Run test Bindings.SofaTypes.Tests
+        if: always()
+        shell: bash
+        run: |
+          cd $WORKSPACE_ARTIFACT_PATH
+          ./bin/Bindings.SofaTypes.Tests${{ steps.sofa.outputs.exe }}
+      
+      - name: Run test Bindings.Modules.Tests
+        if: always()
+        shell: bash
+        run: |
+          cd $WORKSPACE_ARTIFACT_PATH
+          ./bin/Bindings.Modules.Tests${{ steps.sofa.outputs.exe }}
+
+  deploy:
+    name: Deploy artifacts
+    if: always() && startsWith(github.ref, 'refs/heads/') # we are on a branch (not a PR)
+    needs: [build-and-test]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Get artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+
+      - name: Zip artifacts
+        shell: bash
+        run: |
+          cd $GITHUB_WORKSPACE/artifacts
+          for artifact in *; do
+            zip $artifact.zip -r $artifact/*
+          done
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          fail_on_unmatched_files: true
+          files: |
+            artifacts/SofaPython3_*_Linux.zip
+            artifacts/SofaPython3_*_Windows.zip
+            artifacts/SofaPython3_*_macOS.zip
+    
