@@ -38,7 +38,6 @@ static struct Tests : public sofapython3::PythonTestExtractor
         MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
 
         const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
-        addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaBaseTopology", "SofaBaseTopology_");
         addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaDeformable", "SofaDeformable_");
     }
 } python_tests;
