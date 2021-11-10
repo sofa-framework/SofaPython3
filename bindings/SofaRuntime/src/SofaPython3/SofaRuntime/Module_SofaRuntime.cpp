@@ -38,13 +38,13 @@ using sofa::helper::system::PluginRepository;
 using sofa::simulation::SceneLoaderFactory;
 using sofa::simulation::SceneLoader;
 
-//
+
 #include <pybind11/stl.h>
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 #include <sofa/core/CategoryLibrary.h>
 using sofa::core::CategoryLibrary;
-//
+
 
 
 #include <SofaPython3/SceneLoaderPY3.h>
@@ -91,21 +91,21 @@ public:
     }
 };
 
-static std::vector<std::string>  getCategories(std::string className)
+static std::vector<std::string>  getCategories(const std::string& className)
 {
     std::vector<std::string> categories;
     ObjectFactory* factory = ObjectFactory::getInstance();
 
     if (factory->hasCreator(className))
     {
-        ObjectFactory::ClassEntry entry = factory->getEntry(className);
-        ObjectFactory::CreatorMap::iterator it2 = entry.creatorMap.begin();
+        ObjectFactory::ClassEntry& entry = factory->getEntry(className);
+        ObjectFactory::CreatorMap::iterator it = entry.creatorMap.begin();
 
-        if( it2 != entry.creatorMap.end())
+        if( it != entry.creatorMap.end())
         {
-                ObjectFactory::Creator::SPtr c = it2->second;
-                const sofa::core::objectmodel::BaseClass* objClass = c->getClass();
-                CategoryLibrary::getCategories(objClass,categories);
+            ObjectFactory::Creator::SPtr c = it->second;
+            const sofa::core::objectmodel::BaseClass* objClass = c->getClass();
+            CategoryLibrary::getCategories(objClass,categories);
         }
     }
     return categories ;
