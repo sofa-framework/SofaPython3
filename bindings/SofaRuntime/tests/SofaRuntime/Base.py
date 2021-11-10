@@ -8,7 +8,7 @@ class Test(unittest.TestCase):
         import SofaRuntime
         SofaRuntime.importPlugin('SofaComponentAll')
 
-    def test_getcategoriesmethode(self):
+    def test_getcategoriesmethod(self):
         import SofaRuntime
         SofaRuntime.importPlugin("SofaComponentAll")
         t = SofaRuntime.getCategories("MeshObjLoader")
