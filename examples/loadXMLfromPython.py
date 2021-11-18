@@ -23,6 +23,7 @@ def createScene(root):
 	tf = tempfile.NamedTemporaryFile(mode="w+t", suffix=".scn", delete=False)
 	tf.write(scene)
 	tf.flush()
+	tf.close()
 	loaded_node = Sofa.Simulation.load(tf.name)
 	root.addChild(loaded_node)
 	os.remove(tf.name)
