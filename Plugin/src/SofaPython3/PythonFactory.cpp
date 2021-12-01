@@ -53,8 +53,8 @@ using sofa::core::objectmodel::Event;
 
 #include <sofa/defaulttype/DataTypeInfo.h>
 
-/// Bind the python's attribute error
-namespace pybind11 { PYBIND11_RUNTIME_EXCEPTION(attribute_error, PyExc_AttributeError) }
+SOFAPYTHON3_BIND_ATTRIBUTE_ERROR()
+
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
 
