@@ -133,7 +133,7 @@ namespace sofapython3
     void ForceField_Trampoline<TDOFType>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* dfId)
     {
         MultiMatrixAccessor::MatrixRef mref = dfId->getMatrix(this->mstate);
-        sofa::defaulttype::BaseMatrix* mat = mref.matrix;
+        sofa::linearalgebra::BaseMatrix* mat = mref.matrix;
 
         size_t offset = mref.offset;
         // nNodes is the number of nodes (positions) of the object whose K matrix we're computing
