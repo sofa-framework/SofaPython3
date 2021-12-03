@@ -19,29 +19,29 @@
 ******************************************************************************/
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaExporter/Binding_OBJExporter.h>
-#include <SofaExporter/Binding_OBJExporter_doc.h>
+#include <SofaExporter/Binding_VisualModelOBJExporter.h>
+#include <SofaExporter/Binding_VisualModelOBJExporter_doc.h>
 
 #include <SofaPython3/PythonFactory.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
-#include <SofaExporter/OBJExporter.h>
+#include <SofaExporter/VisualModelOBJExporter.h>
 
-using  sofa::component::exporter::OBJExporter;
+using  sofa::component::exporter::VisualModelOBJExporter;
 
 namespace py { using namespace pybind11; }
 
 namespace sofapython3 {
 
-void moduleAddOBJExporter(py::module &m)
+void moduleAddVisualModelOBJExporter(py::module &m)
 {
-    PythonFactory::registerType<OBJExporter>([](sofa::core::objectmodel::Base* object)
+    PythonFactory::registerType<VisualModelOBJExporter>([](sofa::core::objectmodel::Base* object)
     {
-        return py::cast(dynamic_cast<OBJExporter*>(object));
+        return py::cast(dynamic_cast<VisualModelOBJExporter*>(object));
     });
 
-    py::class_<OBJExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<OBJExporter>> p(m, "OBJExporter");
+    py::class_<VisualModelOBJExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<VisualModelOBJExporter>> p(m, "VisualModelOBJExporter");
 
-    p.def("write", &OBJExporter::write, sofapython3::doc::SofaExporter::OBJExporter::write::docstring);
+    p.def("write", &VisualModelOBJExporter::write, sofapython3::doc::SofaExporter::VisualModelOBJExporter::write::docstring);
 }
 
 } // namespace sofapython3

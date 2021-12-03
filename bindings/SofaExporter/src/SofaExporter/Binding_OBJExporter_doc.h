@@ -20,14 +20,14 @@
 
 #pragma once
 
-namespace sofapython3::doc::SofaExporter::OBJExporter::write {
+namespace sofapython3::doc::SofaExporter::VisualModelOBJExporter::write {
 
 static auto docstring =
         R"(
         Exports an OBJ file
         ---------------------------------------
 
-        Will export a binary or ascii file depending on the binary flag of OBJExporter
+        Will export a binary or ascii file depending on the binary flag of VisualModelOBJExporter
         Will auto-number the exported files
 
         Example of use:
@@ -40,7 +40,7 @@ static auto docstring =
              n = Sofa.Core.Node("root"")
 
              # Add STLExporter
-             n.addObject("OBJExporter", name="exporter", ...)
+             n.addObject("VisualModelOBJExporter", name="exporter", ...)
 
              # writes down the stl file
              n.exporter.write()

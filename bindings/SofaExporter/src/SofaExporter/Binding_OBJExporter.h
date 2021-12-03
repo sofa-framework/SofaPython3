@@ -24,6 +24,6 @@
 
 namespace sofapython3 {
 
-void moduleAddOBJExporter(pybind11::module &m);
+void moduleAddVisualModelOBJExporter(pybind11::module &m);
 
 } /// namespace sofapython3
