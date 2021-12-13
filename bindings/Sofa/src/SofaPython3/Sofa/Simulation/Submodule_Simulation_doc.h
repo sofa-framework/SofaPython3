@@ -51,6 +51,7 @@ static auto Class =
             Sofa.Simulation.reset
             Sofa.Simulation.load
             Sofa.Simulation.unload
+            Sofa.Simulation.step
         )";
 static auto print =
         R"(
@@ -84,5 +85,13 @@ static auto load =
 static auto unload =
         R"(
         Unload a scene from a Node.
+        )";
+
+static auto step =
+        R"(
+        Advance the simulation by one time step (by default).
+
+        n_steps: specifies number of steps to advance the simulation by. The simulation visual is not updated between steps. Default is 1.
+        dt: specifies the time delta between two simulation steps. Default is 0 -> uses the dt from the simulation node.
         )";
 }
