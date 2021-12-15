@@ -18,30 +18,33 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaExporter/Binding_OBJExporter.h>
-#include <SofaExporter/Binding_OBJExporter_doc.h>
+#pragma once
 
-#include <SofaPython3/PythonFactory.h>
-#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
-#include <SofaExporter/OBJExporter.h>
+namespace sofapython3::doc::SofaExporter::VisualModelOBJExporter::write {
 
-using  sofa::component::exporter::OBJExporter;
+static auto docstring =
+        R"(
+        Exports an OBJ file
+        ---------------------------------------
 
-namespace py { using namespace pybind11; }
+        Will export a binary or ascii file depending on the binary flag of VisualModelOBJExporter
+        Will auto-number the exported files
 
-namespace sofapython3 {
+        Example of use:
+          .. code-block:: python
 
-void moduleAddOBJExporter(py::module &m)
-{
-    PythonFactory::registerType<OBJExporter>([](sofa::core::objectmodel::Base* object)
-    {
-        return py::cast(dynamic_cast<OBJExporter*>(object));
-    });
+             import Sofa
+             import SofaExporter
 
-    py::class_<OBJExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<OBJExporter>> p(m, "OBJExporter");
+             # Create a new node
+             n = Sofa.Core.Node("root"")
 
-    p.def("write", &OBJExporter::write, sofapython3::doc::SofaExporter::OBJExporter::write::docstring);
+             # Add STLExporter
+             n.addObject("VisualModelOBJExporter", name="exporter", ...)
+
+             # writes down the stl file
+             n.exporter.write()
+
+        )";
+
 }
-
-} // namespace sofapython3

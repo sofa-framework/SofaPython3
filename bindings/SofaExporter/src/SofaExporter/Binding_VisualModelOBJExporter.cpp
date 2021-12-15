@@ -18,33 +18,33 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#pragma once
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaExporter/Binding_VisualModelOBJExporter.h>
+#include <SofaExporter/Binding_VisualModelOBJExporter_doc.h>
 
-namespace sofapython3::doc::SofaExporter::OBJExporter::write {
+#include <SofaPython3/PythonFactory.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
+#include <SofaExporter/VisualModelOBJExporter.h>
 
-static auto docstring =
-        R"(
-        Exports an OBJ file
-        ---------------------------------------
+using  sofa::component::exporter::VisualModelOBJExporter;
 
-        Will export a binary or ascii file depending on the binary flag of OBJExporter
-        Will auto-number the exported files
+namespace py { using namespace pybind11; }
 
-        Example of use:
-          .. code-block:: python
+namespace sofapython3 {
 
-             import Sofa
-             import SofaExporter
+void moduleAddVisualModelOBJExporter(py::module &m)
+{
+    PythonFactory::registerType<VisualModelOBJExporter>([](sofa::core::objectmodel::Base* object)
+    {
+        return py::cast(dynamic_cast<VisualModelOBJExporter*>(object));
+    });
 
-             # Create a new node
-             n = Sofa.Core.Node("root"")
+    py::class_<VisualModelOBJExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<VisualModelOBJExporter>> p(m, "VisualModelOBJExporter");
 
-             # Add STLExporter
-             n.addObject("OBJExporter", name="exporter", ...)
+    p.def("write", &VisualModelOBJExporter::write, sofapython3::doc::SofaExporter::VisualModelOBJExporter::write::docstring);
 
-             # writes down the stl file
-             n.exporter.write()
-
-        )";
-
+    SOFA_ATTRIBUTE_DISABLED("v21.12", "PR#2505", "The OBJExporter class has been renamed in VisualModelOBJExporter.")
+    py::class_<VisualModelOBJExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<VisualModelOBJExporter>> p_deprecated(m, "OBJExporter");
 }
+
+} // namespace sofapython3
