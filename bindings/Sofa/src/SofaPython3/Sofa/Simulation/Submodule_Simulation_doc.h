@@ -51,7 +51,7 @@ static auto Class =
             Sofa.Simulation.reset
             Sofa.Simulation.load
             Sofa.Simulation.unload
-            Sofa.Simulation.step
+            Sofa.Simulation.animateNSteps
         )";
 static auto print =
         R"(
@@ -87,7 +87,7 @@ static auto unload =
         Unload a scene from a Node.
         )";
 
-static auto step =
+static auto animateNSteps =
         R"(
         Advance the simulation by one time step (by default).
 
