@@ -51,8 +51,10 @@
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-
 #include <sofa/core/ExecParams.h>
+#include <sofa/core/CategoryLibrary.h>
+#include <pybind11/stl.h>
+
 
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
@@ -133,69 +135,11 @@ py::object getTarget(BaseObject *self)
 
 py::object getCategories(BaseObject *self)
 {
-    const sofa::core::objectmodel::BaseClass* mclass=self->getClass();
     std::vector<std::string> categories;
-    if (mclass->hasParent(sofa::core::objectmodel::ContextObject::GetClass()))
-        categories.push_back("ContextObject");
-    if (mclass->hasParent(sofa::core::visual::VisualModel::GetClass()))
-        categories.push_back("VisualModel");
-    if (mclass->hasParent(sofa::core::BehaviorModel::GetClass()))
-        categories.push_back("BehaviorModel");
-    if (mclass->hasParent(sofa::core::CollisionModel::GetClass()))
-        categories.push_back("CollisionModel");
-    if (mclass->hasParent(sofa::core::behavior::BaseMechanicalState::GetClass()))
-        categories.push_back("MechanicalState");
-    // A Mass is a technically a ForceField, but we don't want it to appear in the ForceField category
-    if (mclass->hasParent(sofa::core::behavior::BaseForceField::GetClass()) && !mclass->hasParent(sofa::core::behavior::BaseMass::GetClass()))
-        categories.push_back("ForceField");
-    if (mclass->hasParent(sofa::core::behavior::BaseInteractionForceField::GetClass()))
-        categories.push_back("InteractionForceField");
-    if (mclass->hasParent(sofa::core::behavior::BaseProjectiveConstraintSet::GetClass()))
-        categories.push_back("ProjectiveConstraintSet");
-    if (mclass->hasParent(sofa::core::behavior::BaseConstraintSet::GetClass()))
-        categories.push_back("ConstraintSet");
-    if (mclass->hasParent(sofa::core::BaseMapping::GetClass()))
-        categories.push_back("Mapping");
-    if (mclass->hasParent(sofa::core::DataEngine::GetClass()))
-        categories.push_back("Engine");
-    if (mclass->hasParent(sofa::core::topology::TopologicalMapping::GetClass()))
-        categories.push_back("TopologicalMapping");
-    if (mclass->hasParent(sofa::core::behavior::BaseMass::GetClass()))
-        categories.push_back("Mass");
-    if (mclass->hasParent(sofa::core::behavior::OdeSolver::GetClass()))
-        categories.push_back("OdeSolver");
-    if (mclass->hasParent(sofa::core::behavior::ConstraintSolver::GetClass()))
-        categories.push_back("ConstraintSolver");
-    if (mclass->hasParent(sofa::core::behavior::BaseConstraintCorrection::GetClass()))
-        categories.push_back("ConstraintSolver");
-    if (mclass->hasParent(sofa::core::behavior::LinearSolver::GetClass()))
-        categories.push_back("LinearSolver");
-    if (mclass->hasParent(sofa::core::behavior::BaseAnimationLoop::GetClass()))
-        categories.push_back("AnimationLoop");
-    // Just like Mass and ForceField, we don't want TopologyObject to appear in the Topology category
-    if (mclass->hasParent(sofa::core::topology::Topology::GetClass()) && !mclass->hasParent(sofa::core::topology::BaseTopologyObject::GetClass()))
-        categories.push_back("Topology");
-    if (mclass->hasParent(sofa::core::topology::BaseTopologyObject::GetClass()))
-        categories.push_back("TopologyObject");
-    if (mclass->hasParent(sofa::core::behavior::BaseController::GetClass()))
-        categories.push_back("Controller");
-    if (mclass->hasParent(sofa::core::loader::BaseLoader::GetClass()))
-        categories.push_back("Loader");
-    if (mclass->hasParent(sofa::core::collision::CollisionAlgorithm::GetClass()))
-        categories.push_back("CollisionAlgorithm");
-    if (mclass->hasParent(sofa::core::collision::Pipeline::GetClass()))
-        categories.push_back("CollisionAlgorithm");
-    if (mclass->hasParent(sofa::core::collision::Intersection::GetClass()))
-        categories.push_back("CollisionAlgorithm");
-    if (mclass->hasParent(sofa::core::objectmodel::ConfigurationSetting::GetClass()))
-        categories.push_back("ConfigurationSetting");
-    if (categories.empty())
-        categories.push_back("Miscellaneous");
-
-    py::list list;
-    for (unsigned int i=0; i<categories.size(); ++i)
-        list.append(py::cast(categories[i].c_str())) ;
-    return list;
+    const sofa::core::objectmodel::BaseClass* c=self->getClass();
+    sofa::core::CategoryLibrary::getCategories(c, categories);
+    py::list l = py::cast(categories);
+    return std::move(l);
 }
 
 std::string getAsACreateObjectParameter(BaseObject *self)
