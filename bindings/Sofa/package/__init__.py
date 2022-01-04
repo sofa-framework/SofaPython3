@@ -48,6 +48,7 @@ else:
     if os.path.isdir(os.path.abspath(sofa_root_guess + '/lib' )):
         print("Guessed SOFA_ROOT: " + sofa_root_guess)
         sofa_root = sofa_root_guess
+        os.environ["SOFA_ROOT"] = sofa_root
     else:
         print("Warning: cannot guess SOFA_ROOT", 
         "Loading SOFA libraries will likely fail and/or SOFA won't find its resources.")
@@ -63,6 +64,7 @@ else:
     if os.path.isdir(os.path.abspath(sofapython3_root_guess + '/lib' )):
         print("Guessed SOFAPYTHON3_ROOT: " + sofapython3_root_guess)
         sofapython3_root = sofapython3_root_guess
+        os.environ["SOFAPYTHON3_ROOT"] = sofapython3_root
     else:
         print("Warning: cannot guess SOFAPYTHON3_ROOT", 
         "Loading SofaPython3 modules will likely fail.")
