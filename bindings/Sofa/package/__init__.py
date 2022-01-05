@@ -53,23 +53,24 @@ else:
         print("Warning: cannot guess SOFA_ROOT", 
         "Loading SOFA libraries will likely fail and/or SOFA won't find its resources.")
 
-# check if SOFAPYTHON3_ROOT has been (well) set
-sofapython3_root = os.environ.get('SOFAPYTHON3_ROOT')
-if sofapython3_root:
-    print("Using environment variable SOFAPYTHON3_ROOT: " + sofapython3_root)
-else:
-    print("Warning: environment variable SOFAPYTHON3_ROOT is empty. Trying to guess it.")
-    # try a guess from <sofapython3_root>/lib/python3/site-packages/Sofa
-    sofapython3_root_guess = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + '/../../../..') 
-    if os.path.isdir(os.path.abspath(sofapython3_root_guess + '/lib' )):
-        print("Guessed SOFAPYTHON3_ROOT: " + sofapython3_root_guess)
-        sofapython3_root = sofapython3_root_guess
-        os.environ["SOFAPYTHON3_ROOT"] = sofapython3_root
-    else:
-        print("Warning: cannot guess SOFAPYTHON3_ROOT", 
-        "Loading SofaPython3 modules will likely fail.")
-
 if sofa_root and sys.platform == 'win32':
+
+    # check if SOFAPYTHON3_ROOT has been (well) set, only useful for Windows
+    sofapython3_root = os.environ.get('SOFAPYTHON3_ROOT')
+    if sofapython3_root:
+        print("Using environment variable SOFAPYTHON3_ROOT: " + sofapython3_root)
+    else:
+        print("Warning: environment variable SOFAPYTHON3_ROOT is empty. Trying to guess it.")
+        # try a guess from <sofapython3_root>/lib/python3/site-packages/Sofa
+        sofapython3_root_guess = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + '/../../../..') 
+        if os.path.isdir(os.path.abspath(sofapython3_root_guess + '/lib' )):
+            print("Guessed SOFAPYTHON3_ROOT: " + sofapython3_root_guess)
+            sofapython3_root = sofapython3_root_guess
+            os.environ["SOFAPYTHON3_ROOT"] = sofapython3_root
+        else:
+            print("Warning: cannot guess SOFAPYTHON3_ROOT", 
+            "Loading SofaPython3 modules will likely fail.")
+
     # Windows-only: starting from python 3.8, python wont read the env. variable PATH to get SOFA's dlls. 
     # os.add_dll_directory() is the new way to add paths for python to get external libraries.
     sofa_bin_path = sofa_root + "\\bin"
