@@ -48,7 +48,6 @@ class Test(unittest.TestCase):
     def test_get_springs(self):
         self.assertEqual(len(self.root.spring_ff.spring_ff.getSprings()), 9)
         for spring in self.root.spring_ff.spring_ff.getSprings():
-            self.assertEqual(spring.index1, spring.index2)
             self.assertEqual(spring.springStiffness, 1.0)
             self.assertEqual(spring.dampingFactor, 0)
             self.assertEqual(spring.restLength, 1.)
@@ -58,16 +57,12 @@ class Test(unittest.TestCase):
         self.root.spring_ff.spring_ff.removeSpring(1)
         springs = self.root.spring_ff.spring_ff.getSprings()
         self.assertEqual(len(springs), 8)
-        self.assertEqual([springs[0].index1, springs[0].index2], [0, 0])
-        self.assertEqual([springs[1].index1, springs[1].index2], [2, 2])
 
     def test_remove_many_springs(self):
         self.assertEqual(len(self.root.spring_ff.spring_ff.getSprings()), 9)
         self.root.spring_ff.spring_ff.removeSprings([1, 2, 3])
         springs = self.root.spring_ff.spring_ff.getSprings()
         self.assertEqual(len(springs), 6)
-        self.assertEqual([springs[0].index1, springs[0].index2], [0, 0])
-        self.assertEqual([springs[1].index1, springs[1].index2], [4, 4])
 
     def test_clear(self):
         self.assertEqual(len(self.root.spring_ff.spring_ff.getSprings()), 9)
