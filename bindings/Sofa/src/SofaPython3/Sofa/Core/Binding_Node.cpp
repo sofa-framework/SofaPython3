@@ -197,7 +197,7 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
     }
     /// Prepare the description to hold the different python attributes as data field's
     /// arguments then create the object.
-    const auto resolvedName = sofa::core::NameHelper::getInstance().resolveName(type, name);
+    const auto resolvedName = self->getNameHelper().resolveName(type, name);
     BaseObjectDescription desc {resolvedName.c_str(), type.c_str()};
     fillBaseObjectdescription(desc, kwargs);
     auto object = ObjectFactory::getInstance()->createObject(self, &desc);
