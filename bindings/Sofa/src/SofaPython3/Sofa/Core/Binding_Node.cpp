@@ -24,7 +24,7 @@
 #include <pybind11/eval.h>
 
 #include <sofa/simulation/Simulation.h>
-#include <sofa/core/NameHelper.h>
+#include <sofa/core/ComponentNameHelper.h>
 
 #include <sofa/core/objectmodel/BaseData.h>
 using sofa::core::objectmodel::BaseData;
