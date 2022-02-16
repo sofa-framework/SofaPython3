@@ -53,8 +53,6 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/CategoryLibrary.h>
-#include <pybind11/stl.h>
-
 
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
