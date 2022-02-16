@@ -54,7 +54,6 @@
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/CategoryLibrary.h>
 
-
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
 
