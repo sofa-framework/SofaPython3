@@ -3,13 +3,13 @@ project(Bindings.SofaExporter)
 set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaExporter/Binding_STLExporter.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaExporter/Binding_STLExporter_doc.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaExporter/Binding_OBJExporter.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaExporter/Binding_OBJExporter_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaExporter/Binding_VisualModelOBJExporter.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaExporter/Binding_VisualModelOBJExporter_doc.h
 )
 
 set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaExporter/Binding_STLExporter.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaExporter/Binding_OBJExporter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaExporter/Binding_VisualModelOBJExporter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaExporter/Module_SofaExporter.cpp
 )
 

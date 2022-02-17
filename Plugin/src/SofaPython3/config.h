@@ -38,3 +38,15 @@
 #else
 	#define SOFAPYTHON3_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
+
+// define own pybind version macro, much easier to test/read
+#define PYBIND11_SOFA_VERSION (PYBIND11_VERSION_MAJOR * 10000 \
+    + PYBIND11_VERSION_MINOR * 100 \
+    + PYBIND11_VERSION_PATCH)
+// pybind11 already bind the attributeError starting from 2.8.1 version.
+// so if the version is >= 2.8.1, macro does nothing, otherwise bind attribute_error
+#if PYBIND11_SOFA_VERSION >= 20801
+#define SOFAPYTHON3_BIND_ATTRIBUTE_ERROR()
+#else
+#define SOFAPYTHON3_BIND_ATTRIBUTE_ERROR() namespace pybind11 { PYBIND11_RUNTIME_EXCEPTION(attribute_error, PyExc_AttributeError) }
+#endif // PYBIND11_SOFA_VERSION >= 20801

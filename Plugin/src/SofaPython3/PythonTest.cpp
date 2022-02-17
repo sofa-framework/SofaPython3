@@ -25,7 +25,7 @@ using namespace pybind11::literals; // to bring in the `_a` literal
 #include <pybind11/embed.h>
 namespace py = pybind11;
 
-#include <sofa/helper/testing/BaseTest.h>
+#include <sofa/testing/BaseTest.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/system/FileSystem.h>
 
