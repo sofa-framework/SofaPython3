@@ -197,8 +197,7 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
     }
     /// Prepare the description to hold the different python attributes as data field's
     /// arguments then create the object.
-    const auto resolvedName = self->getNameHelper().resolveName(type, name);
-    BaseObjectDescription desc {resolvedName.c_str(), type.c_str()};
+    BaseObjectDescription desc {nullptr, type.c_str()};
     fillBaseObjectdescription(desc, kwargs);
     auto object = ObjectFactory::getInstance()->createObject(self, &desc);
 
@@ -211,6 +210,12 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         for(auto& s : desc.getErrors())
             tmp << s << msgendl ;
         throw py::value_error(tmp.str());
+    }
+
+    if (name.empty())
+    {
+        const auto resolvedName = self->getNameHelper().resolveName(object->getClassName(), name);
+        object->setName(resolvedName);
     }
 
     checkParamUsage(desc);
