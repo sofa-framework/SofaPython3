@@ -23,8 +23,10 @@
 #include <pybind11/stl.h>
 #include <pybind11/eval.h>
 
-#include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/simulation/Simulation.h>
+#include <sofa/core/ComponentNameHelper.h>
+
+#include <sofa/core/objectmodel/BaseData.h>
 using sofa::core::objectmodel::BaseData;
 
 #include <SofaSimulationGraph/SimpleApi.h>
@@ -186,15 +188,16 @@ py::object getObject(Node &n, const std::string &name, const py::kwargs& kwargs)
 /// Implement the addObject function.
 py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
+    std::string name {};
     if (kwargs.contains("name"))
     {
-        std::string name = py::str(kwargs["name"]);
+        name = py::str(kwargs["name"]);
         if (sofapython3::isProtectedKeyword(name))
             throw py::value_error("Cannot call addObject with name " + name + ": Protected keyword");
     }
     /// Prepare the description to hold the different python attributes as data field's
     /// arguments then create the object.
-    BaseObjectDescription desc {type.c_str(), type.c_str()};
+    BaseObjectDescription desc {nullptr, type.c_str()};
     fillBaseObjectdescription(desc, kwargs);
     auto object = ObjectFactory::getInstance()->createObject(self, &desc);
 
@@ -207,6 +210,12 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         for(auto& s : desc.getErrors())
             tmp << s << msgendl ;
         throw py::value_error(tmp.str());
+    }
+
+    if (name.empty())
+    {
+        const auto resolvedName = self->getNameHelper().resolveName(object->getClassName(), name);
+        object->setName(resolvedName);
     }
 
     checkParamUsage(desc);

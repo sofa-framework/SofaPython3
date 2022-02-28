@@ -93,8 +93,8 @@ class Test(unittest.TestCase):
         self.assertEqual(link_input.getLinkedBase(0).getName(),"t1")
         link_output = mm.findLink("output")
         self.assertEqual(link_output.getLinkedBase(0).getName(),"t2")
-        self.assertEqual(link_input.getOwnerBase().getName(), "BarycentricMapping")
-        self.assertEqual(link_output.getOwnerBase().getName(), "BarycentricMapping")
+        self.assertEqual(link_input.getOwnerBase().getName(), mm.getName())
+        self.assertEqual(link_output.getOwnerBase().getName(), mm.getName())
 
     def test_baselink_attributes_forwarding(self):
         root = create_scene("root")
