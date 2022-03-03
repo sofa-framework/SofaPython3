@@ -38,12 +38,13 @@ jobs:
         shell: bash
         run: |
           PROJECT_NAME="${GITHUB_REPOSITORY#*/}"
+          echo "PROJECT_NAME=$PROJECT_NAME" | tee -a $GITHUB_ENV
+          
           ARTIFACT_VERSION="${{ steps.sofa.outputs.run_branch }}"
           if [[ "${{ github.event.inputs.is_nightly }}" == "true" ]]; then
             ARTIFACT_VERSION="${ARTIFACT_VERSION}-nightly"
           fi
           ARTIFACT_NAME="${PROJECT_NAME}_${ARTIFACT_VERSION}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}"
-          echo "PROJECT_NAME=$PROJECT_NAME" | tee -a $GITHUB_ENV
           echo "ARTIFACT_NAME=$ARTIFACT_NAME" | tee -a $GITHUB_ENV
         
       - name: Set env vars for pybind11 installation
@@ -233,13 +234,15 @@ jobs:
         with:
           path: artifacts
 
-      - name: Zip artifacts
+      - name: Zip artifacts and set env vars
         shell: bash
         run: |
           cd $GITHUB_WORKSPACE/artifacts
           for artifact in *; do
             zip $artifact.zip -r $artifact/*
           done
+          PROJECT_NAME="${GITHUB_REPOSITORY#*/}"
+          echo "PROJECT_NAME=$PROJECT_NAME" | tee -a $GITHUB_ENV
 
       - name: Upload release
         uses: softprops/action-gh-release@v1
@@ -248,7 +251,7 @@ jobs:
           tag_name: release-${{ github.ref_name }}
           fail_on_unmatched_files: true
           files: |
-            artifacts/${{ env.ARTIFACT_NAME }}_*_Linux.zip
-            artifacts/${{ env.ARTIFACT_NAME }}_*_Windows.zip
-            artifacts/${{ env.ARTIFACT_NAME }}_*_macOS.zip
+            artifacts/${{ env.PROJECT_NAME }}_*_Linux.zip
+            artifacts/${{ env.PROJECT_NAME }}_*_Windows.zip
+            artifacts/${{ env.PROJECT_NAME }}_*_macOS.zip
     
