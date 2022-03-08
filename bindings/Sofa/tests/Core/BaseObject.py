@@ -55,7 +55,7 @@ class Test(unittest.TestCase):
     def test_getTarget(self):
         root = create_scene("rootNode")
         c = root.addObject("MechanicalObject", name="t")
-        self.assertEqual(c.getTarget(), 'SofaBaseMechanics')
+        self.assertEqual(c.getTarget(), 'Sofa.Component.Container')
 
     def test_getName(self):
         root = create_scene("rootNode")
