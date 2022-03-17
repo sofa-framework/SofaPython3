@@ -214,7 +214,7 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
 
     if (name.empty())
     {
-        const auto resolvedName = self->getNameHelper().resolveName(object->getClassName(), name);
+        const auto resolvedName = self->getNameHelper().resolveName(object->getClassName(), name, sofa::core::ComponentNameHelper::Convention::python);
         object->setName(resolvedName);
     }
 
