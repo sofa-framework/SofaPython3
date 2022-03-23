@@ -18,6 +18,7 @@ find_package(SofaExporter REQUIRED)
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
     MODULE       SofaExporter
+    DESTINATION  .
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
     DEPENDS      SofaExporter SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
