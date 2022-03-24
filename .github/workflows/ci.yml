@@ -29,6 +29,7 @@ jobs:
           sofa_root: ${{ github.workspace }}/sofa
           sofa_version: ${{ matrix.sofa_branch }}
           sofa_scope: 'standard'
+          python_version: '3.8'
         
       - name: Remove SofaPython3 from SOFA binaries if any
         shell: bash
