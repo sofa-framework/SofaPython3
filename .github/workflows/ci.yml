@@ -38,11 +38,6 @@ jobs:
           if [ -d "$SOFA_ROOT/plugins/SofaPython3" ]; then
             rm -rf $SOFA_ROOT/plugins/SofaPython3
           fi
-      
-      - name: Checkout source code
-        uses: actions/checkout@v2
-        with:
-          path: ${{ env.WORKSPACE_SRC_PATH }}
 
       - name: Install pybind11
         shell: bash
@@ -55,6 +50,11 @@ jobs:
             pybind11_DIR="$(pybind11-config --cmakedir)"
           fi
           echo "pybind11_DIR=$pybind11_DIR" | tee -a $GITHUB_ENV
+      
+      - name: Checkout source code
+        uses: actions/checkout@v2
+        with:
+          path: ${{ env.WORKSPACE_SRC_PATH }}
       
       - name: Setup cache for ccache files
         if: ${{ runner.os != 'Windows' }}
