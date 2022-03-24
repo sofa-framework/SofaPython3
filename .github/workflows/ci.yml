@@ -24,7 +24,7 @@ jobs:
     steps:
       - name: Setup SOFA and environment
         id: sofa
-        uses: sofa-framework/sofa-setup-action@v3
+        uses: guparan/sofa-setup-action@add_qt_install
         with:
           sofa_root: ${{ github.workspace }}/sofa
           sofa_version: ${{ matrix.sofa_branch }}
@@ -55,63 +55,67 @@ jobs:
           ARTIFACT_NAME="${PROJECT_NAME}_${ARTIFACT_VERSION}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}"
           echo "ARTIFACT_NAME=$ARTIFACT_NAME" | tee -a $GITHUB_ENV
         
-      - name: Set env vars for pybind11 installation
-        shell: bash
-        run: |
-          # Define pybind11 specs
-          PYBIND11_VERSION=2.4.3
-          PYBIND11_INSTALL_PATH="/tmp/deps_cache_is_for_windows_only"
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            PYBIND11_INSTALL_PATH="C:/pybind11"
-          fi
-          echo "PYBIND11_VERSION=$PYBIND11_VERSION" | tee -a $GITHUB_ENV
-          echo "PYBIND11_INSTALL_PATH=$PYBIND11_INSTALL_PATH" | tee -a $GITHUB_ENV
+     # - name: Set env vars for pybind11 installation
+     #   shell: bash
+     #   run: |
+     #     # Define pybind11 specs
+     #     PYBIND11_VERSION=2.4.3
+     #     PYBIND11_INSTALL_PATH="/tmp/deps_cache_is_for_windows_only"
+     #     if [[ "$RUNNER_OS" == "Windows" ]]; then
+     #       PYBIND11_INSTALL_PATH="C:/pybind11"
+     #     fi
+     #     echo "PYBIND11_VERSION=$PYBIND11_VERSION" | tee -a $GITHUB_ENV
+     #     echo "PYBIND11_INSTALL_PATH=$PYBIND11_INSTALL_PATH" | tee -a $GITHUB_ENV
         
-      - name: Setup cache for pybind11 files
-        uses: actions/cache@v2
-        id: pybind11_cache
-        with:
-          path: ${{ env.PYBIND11_INSTALL_PATH }}
-          key: pybind11-${{ env.PYBIND11_VERSION }}_${{ runner.os }}_python-${{ steps.sofa.outputs.python_version }}_${{ hashFiles('src/.github/workflows/*.yml') }}
+     # - name: Setup cache for pybind11 files
+     #   uses: actions/cache@v2
+     #   id: pybind11_cache
+     #   with:
+     #     path: ${{ env.PYBIND11_INSTALL_PATH }}
+     #     key: pybind11-${{ env.PYBIND11_VERSION }}_${{ runner.os }}_python-${{ steps.sofa.outputs.python_version }}_${{ hashFiles('src/.github/workflows/*.yml') }}
       
       - name: Install pybind11
         shell: bash
         run: |
           # Build and install pybind11
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            if ! ls -a "$PYBIND11_INSTALL_PATH"/* >/dev/null 2>&1; then
-              # directory does not exist or is empty
-              git clone -b v$PYBIND11_VERSION --depth 1 https://github.com/pybind/pybind11.git "${{ runner.temp }}/pybind11_tmp"
-              cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} && \
-                cd /d ${{ runner.temp }}/pybind11_tmp && \
-                cmake \
-                  -GNinja \
-                  -DCMAKE_BUILD_TYPE=Release \
-                  -DPYBIND11_TEST=OFF \
-                  -DCMAKE_INSTALL_PREFIX=$PYBIND11_INSTALL_PATH \
-                  -DPYTHON_ROOT=$PYTHON_ROOT \
-                  -DPython_ROOT=$PYTHON_ROOT \
-                  -DPYTHON_EXECUTABLE=$PYTHON_ROOT/python.exe \
-                  -DPython_EXECUTABLE=$PYTHON_ROOT/python.exe \
-                  . && \
-                  ninja install"
-            fi          
-            echo "pybind11_ROOT=$PYBIND11_INSTALL_PATH" | tee -a $GITHUB_ENV
-            echo "$PYBIND11_INSTALL_PATH" >> $GITHUB_PATH
-          else
-            git clone -b v${PYBIND11_VERSION} --depth 1 https://github.com/pybind/pybind11.git "${{ runner.temp }}/pybind11_tmp"
-            cd "${{ runner.temp }}/pybind11_tmp"
-            cmake \
-              -GNinja \
-              -DCMAKE_BUILD_TYPE=Release \
-              -DPYBIND11_TEST=OFF \
-              -DPYTHON_ROOT=$PYTHON_ROOT \
-              -DPython_ROOT=$PYTHON_ROOT \
-              -DPYTHON_EXECUTABLE=$PYTHON_ROOT/python \
-              -DPython_EXECUTABLE=$PYTHON_ROOT/python \
-              .
-            sudo ninja install
-          fi
+          #if [[ "$RUNNER_OS" == "Windows" ]]; then
+          #  if ! ls -a "$PYBIND11_INSTALL_PATH"/* >/dev/null 2>&1; then
+          #    # directory does not exist or is empty
+          #    git clone -b v$PYBIND11_VERSION --depth 1 https://github.com/pybind/pybind11.git "${{ runner.temp }}/pybind11_tmp"
+          #    cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} && \
+          #      cd /d ${{ runner.temp }}/pybind11_tmp && \
+          #      cmake \
+          #        -GNinja \
+          #        -DCMAKE_BUILD_TYPE=Release \
+          #        -DPYBIND11_TEST=OFF \
+          #        -DCMAKE_INSTALL_PREFIX=$PYBIND11_INSTALL_PATH \
+          #        -DPYTHON_ROOT=$PYTHON_ROOT \
+          #        -DPython_ROOT=$PYTHON_ROOT \
+          #        -DPYTHON_EXECUTABLE=$PYTHON_ROOT/python.exe \
+          #        -DPython_EXECUTABLE=$PYTHON_ROOT/python.exe \
+          #        . && \
+          #        ninja install"
+          #  fi          
+          #  echo "pybind11_ROOT=$PYBIND11_INSTALL_PATH" | tee -a $GITHUB_ENV
+          #  echo "$PYBIND11_INSTALL_PATH" >> $GITHUB_PATH
+          #else
+          #  git clone -b v${PYBIND11_VERSION} --depth 1 https://github.com/pybind/pybind11.git "${{ runner.temp }}/pybind11_tmp"
+          #  cd "${{ runner.temp }}/pybind11_tmp"
+          #  cmake \
+          #    -GNinja \
+          #    -DCMAKE_BUILD_TYPE=Release \
+          #    -DPYBIND11_TEST=OFF \
+          #    -DPYTHON_ROOT=$PYTHON_ROOT \
+          #    -DPython_ROOT=$PYTHON_ROOT \
+          #    -DPYTHON_EXECUTABLE=$PYTHON_ROOT/python \
+          #    -DPython_EXECUTABLE=$PYTHON_ROOT/python \
+          #    .
+          #  sudo ninja install
+          #fi
+          ${{ steps.sofa.outputs.python_exe }} -m pip install pybind11==2.6.2
+          which pybind11-config && pybind11_ROOT="$(pybind11-config --cmakedir)" || true
+          which pybind11-config-3.8 && pybind11_ROOT="$(pybind11-config-3.8 --cmakedir)" || true
+          echo "pybind11_ROOT=$pybind11_ROOT" | tee -a $GITHUB_ENV
       
       - name: Setup cache for ccache files
         if: ${{ runner.os != 'Windows' }}
@@ -144,7 +148,7 @@ jobs:
               -GNinja \
               -DCMAKE_C_COMPILER_LAUNCHER=ccache \
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
-              -DCMAKE_PREFIX_PATH=$SOFA_ROOT/lib/cmake \
+              -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake" \
               -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_INSTALL_PREFIX="$WORKSPACE_INSTALL_PATH" \
               -DPYTHON_ROOT=$PYTHON_ROOT \
