@@ -338,6 +338,12 @@ function(SP3_add_python_module)
         install(
             TARGETS ${A_TARGET}
             EXPORT ${A_PACKAGE}Targets
+        )
+    endif()
+
+    if (DESTINATION)
+        install(
+            TARGETS ${A_TARGET}
             RUNTIME DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT applications
             LIBRARY DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
             ARCHIVE DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries

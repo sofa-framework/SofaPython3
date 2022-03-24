@@ -48,7 +48,7 @@ add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAPYTHON3")
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaDefaultType SofaSimulationCore SofaSimulationGraph Sofa.Helper)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core Sofa.DefaultType Sofa.SimulationCore SofaSimulationGraph Sofa.Helper)
 target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::module pybind11::embed)
 
 if(SP3_BUILD_TEST AND Sofa.Testing_FOUND)
