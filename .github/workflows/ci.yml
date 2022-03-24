@@ -28,7 +28,14 @@ jobs:
         with:
           sofa_root: ${{ github.workspace }}/sofa
           sofa_version: ${{ matrix.sofa_branch }}
-          sofa_scope: 'minimal'
+          sofa_scope: 'standard'
+        
+      - name: Remove SofaPython3 from SOFA binaries if any
+        shell: bash
+        run: |
+          if [ -d "$SOFA_ROOT/plugins/SofaPython3" ]; then
+            rm -rf $SOFA_ROOT/plugins/SofaPython3
+          fi
       
       - name: Checkout source code
         uses: actions/checkout@v2
@@ -251,7 +258,7 @@ jobs:
               RELEASE_NAME="$RELEASE_NAME-nightly"
               RELEASE_TAGNAME="$RELEASE_TAGNAME-nightly"
           fi
-          RELEASE_DATE="$(date)"
+          RELEASE_DATE="$(date +'%Y-%m-%d (at %T)')"
           echo "RELEASE_NAME=$RELEASE_NAME" | tee -a $GITHUB_ENV
           echo "RELEASE_TAGNAME=$RELEASE_TAGNAME" | tee -a $GITHUB_ENV
           echo "RELEASE_DATE=$RELEASE_DATE" | tee -a $GITHUB_ENV
