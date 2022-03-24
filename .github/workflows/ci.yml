@@ -244,15 +244,27 @@ jobs:
           done
           PROJECT_NAME="${GITHUB_REPOSITORY#*/}"
           echo "PROJECT_NAME=$PROJECT_NAME" | tee -a $GITHUB_ENV
+          
+          RELEASE_NAME="${{ github.ref_name }}"
+          RELEASE_TAGNAME="release-${{ github.ref_name }}"
+          if [[ "${{ github.event.inputs.is_nightly }}" == "true" ]]; then
+              RELEASE_NAME="$RELEASE_NAME-nightly"
+              RELEASE_TAGNAME="$RELEASE_TAGNAME-nightly"
+          fi
+          RELEASE_DATE="$(date)"
+          echo "RELEASE_NAME=$RELEASE_NAME" | tee -a $GITHUB_ENV
+          echo "RELEASE_TAGNAME=$RELEASE_TAGNAME" | tee -a $GITHUB_ENV
+          echo "RELEASE_DATE=$RELEASE_DATE" | tee -a $GITHUB_ENV
 
       - name: Upload release
         uses: softprops/action-gh-release@v1
         with:
-          name: ${{ github.ref_name }}
-          tag_name: release-${{ github.ref_name }}
+          name: ${{ env.RELEASE_NAME }}
+          tag_name: ${{ env.RELEASE_TAGNAME }}
           fail_on_unmatched_files: true
+          body: |
+            Last updated on ${{ env.RELEASE_DATE }}
           files: |
             artifacts/${{ env.PROJECT_NAME }}_*_Linux.zip
             artifacts/${{ env.PROJECT_NAME }}_*_Windows.zip
             artifacts/${{ env.PROJECT_NAME }}_*_macOS.zip
-    
