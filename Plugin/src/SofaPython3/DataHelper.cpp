@@ -413,7 +413,7 @@ py::array resetArrayFor(BaseData* d)
 py::array getPythonArrayFor(BaseData* d)
 {
     auto& memcache = getObjectCache();
-    if(memcache.find(d) == memcache.end())
+    if(d->isDirty() || memcache.find(d) == memcache.end())
     {
         auto capsule = py::capsule(new Base::SPtr(d->getOwner()));
 
