@@ -294,6 +294,8 @@ size_t getSize(BaseData* self)
 
 py::buffer_info toBufferInfo(BaseData& m)
 {
+    scoped_read_access guard(&m);
+
     const AbstractTypeInfo& nfo { *m.getValueTypeInfo() };
     auto itemNfo = nfo.BaseType();
 
