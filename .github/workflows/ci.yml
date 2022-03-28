@@ -122,11 +122,12 @@ jobs:
         run: |
           # Set env vars for tests
           if [[ "$RUNNER_OS" == "Windows" ]]; then
-            echo "$(cd $WORKSPACE_ARTIFACT_PATH/lib && pwd -W)" >> $GITHUB_PATH
-            echo "$(cd $WORKSPACE_ARTIFACT_PATH/bin && pwd -W)" >> $GITHUB_PATH
-            echo "$(cd $PYTHON_ROOT && pwd -W)" >> $GITHUB_PATH
-            echo "$(cd $PYTHON_ROOT/Lib && pwd -W)" >> $GITHUB_PATH
-            echo "$(cd $PYTHON_ROOT/Scripts && pwd -W)" >> $GITHUB_PATH
+            echo "$WORKSPACE_ARTIFACT_PATH/lib" >> $GITHUB_PATH
+            echo "$WORKSPACE_ARTIFACT_PATH/bin" >> $GITHUB_PATH
+            echo "$PYTHON_ROOT" >> $GITHUB_PATH
+            echo "$PYTHON_ROOT/Lib" >> $GITHUB_PATH
+            echo "$PYTHON_ROOT/Scripts" >> $GITHUB_PATH
+            echo "PYTHONHOME=$PYTHON_ROOT" | tee -a $GITHUB_ENV
           elif [[ "$RUNNER_OS" == "macOS" ]]; then
             echo "DYLD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           fi
