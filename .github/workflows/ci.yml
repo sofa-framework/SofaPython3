@@ -20,7 +20,7 @@ jobs:
       matrix:
         os: [ubuntu-20.04, macos-10.15, windows-2019]
         sofa_branch: [master]
-        python_version: [3.7, 3.8, 3.9, 3.10]
+        python_version: ['3.7', '3.8', '3.9', '3.10']
 
     steps:
       - name: Setup SOFA and environment
@@ -30,7 +30,7 @@ jobs:
           sofa_root: ${{ github.workspace }}/sofa
           sofa_version: ${{ matrix.sofa_branch }}
           sofa_scope: 'standard'
-          python_version: ${{ matrix.python_version }}
+          python_version: '${{ matrix.python_version }}'
         
       - name: Remove SofaPython3 from SOFA binaries (if any)
         shell: bash
