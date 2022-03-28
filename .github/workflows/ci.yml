@@ -13,14 +13,14 @@ on:
 
 jobs:
   build-and-test:
-    name: Run on ${{ matrix.os }} with SOFA ${{ matrix.sofa_branch }}
+    name: Run on ${{ matrix.os }} with SOFA ${{ matrix.sofa_branch }} and python ${{ matrix.python_version }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04, macos-10.15, windows-2019]
         sofa_branch: [master]
-        python_version: [3.7] #, 3.8, 3.9, 3.10]
+        python_version: [3.7, 3.8, 3.9, 3.10]
 
     steps:
       - name: Setup SOFA and environment
@@ -102,7 +102,7 @@ jobs:
           if [[ "${{ github.event.inputs.is_nightly }}" == "true" ]]; then
             ARTIFACT_VERSION="${ARTIFACT_VERSION}-nightly"
           fi
-          ARTIFACT_NAME="${PROJECT_NAME}_${ARTIFACT_VERSION}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}"
+          ARTIFACT_NAME="${PROJECT_NAME}_${ARTIFACT_VERSION}_python-${{ matrix.python_version }}_for-SOFA-${{ matrix.sofa_branch }}_${{ runner.os }}"
           echo "ARTIFACT_NAME=$ARTIFACT_NAME" | tee -a $GITHUB_ENV
 
       - name: Create artifact
