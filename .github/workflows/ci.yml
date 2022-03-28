@@ -128,6 +128,16 @@ jobs:
             echo "$PYTHON_ROOT/Lib" >> $GITHUB_PATH
             echo "$PYTHON_ROOT/Scripts" >> $GITHUB_PATH
             echo "PYTHONHOME=$PYTHON_ROOT" | tee -a $GITHUB_ENV
+            echo '----------------------'
+            ls -la "${{ runner.tool_cache }}/Python"
+            echo '----------------------'
+            runner_python_basedir="$(cd "${{ runner.tool_cache }}/Python" && pwd -W 2>/dev/null || pwd)"
+            for python_dir in "$runner_python_basedir"/*; do
+              if [[ "$python_dir" != */"${{ matrix.python_version }}"* ]]; then
+                echo "Removing (not ${{ matrix.python_version }}): $python_dir"
+                rm -rf "$python_dir"
+              fi
+            done
           elif [[ "$RUNNER_OS" == "macOS" ]]; then
             echo "DYLD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           fi
