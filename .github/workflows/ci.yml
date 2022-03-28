@@ -36,8 +36,12 @@ jobs:
         shell: bash
         run: |
           # TODO: remove this step when SOFA "standard" no longer contains SP3
+          ls -la "$SOFA_ROOT/plugins"
           if [ -d "$SOFA_ROOT/plugins/SofaPython3" ]; then
-            rm -rf $SOFA_ROOT/plugins/SofaPython3
+            echo "Removing $SOFA_ROOT/plugins/SofaPython3"
+            rm -rf $SOFA_ROOT/plugins/SofaPython3*
+            rm -rf $SOFA_ROOT/bin/SofaPython3*
+            rm -rf $SOFA_ROOT/lib/SofaPython3*
           fi
 
       - name: Install pybind11
