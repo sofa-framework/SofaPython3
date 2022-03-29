@@ -218,6 +218,8 @@ jobs:
         with:
           tag_name: ${{ env.RELEASE_TAGNAME }}
           delete_release: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create new release
         if: success() || failure()
