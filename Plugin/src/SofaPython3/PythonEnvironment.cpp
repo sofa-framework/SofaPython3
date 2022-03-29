@@ -168,7 +168,7 @@ void PythonEnvironment::Init()
 
     if ( !Py_IsInitialized() )
     {
-        msg_info("SofaPython3") << "Intializing python";
+        msg_info("SofaPython3") << "Initializing python";
         py::initialize_interpreter();
         // the first gil aquisition should happen right after the python interpreter
         // is initialized.
