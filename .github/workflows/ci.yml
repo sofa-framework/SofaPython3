@@ -25,25 +25,13 @@ jobs:
     steps:
       - name: Setup SOFA and environment
         id: sofa
-        uses: guparan/sofa-setup-action@add_qt_install
+        uses: guparan/sofa-setup-action@ci_improve_workflow
         with:
           sofa_root: ${{ github.workspace }}/sofa
           sofa_version: ${{ matrix.sofa_branch }}
           sofa_scope: 'standard'
           sofa_with_sofapython3: 'false'
           python_version: '${{ matrix.python_version }}'
-
-      - name: Install pybind11
-        shell: bash
-        run: |
-          ${{ steps.sofa.outputs.python_exe }} -m pip install pybind11==2.6.2
-          pybind11_DIR="pybind11-dir-not-found"
-          if [ -e "$(command -v pybind11-config-3.8)" ]; then
-            pybind11_DIR="$(pybind11-config-3.8 --cmakedir)"
-          elif [ -e "$(command -v pybind11-config)" ]; then
-            pybind11_DIR="$(pybind11-config --cmakedir)"
-          fi
-          echo "pybind11_DIR=$pybind11_DIR" | tee -a $GITHUB_ENV
       
       - name: Checkout source code
         uses: actions/checkout@v2
@@ -200,7 +188,7 @@ jobs:
               RELEASE_NAME="$RELEASE_NAME-nightly"
               RELEASE_TAGNAME="$RELEASE_TAGNAME-nightly"
           fi
-          RELEASE_DATE="$(date +'%Y-%m-%d (at %T)')"
+          RELEASE_DATE="$(date +'%Y-%m-%d (at %T UTC)')"
           echo "RELEASE_NAME=$RELEASE_NAME" | tee -a $GITHUB_ENV
           echo "RELEASE_TAGNAME=$RELEASE_TAGNAME" | tee -a $GITHUB_ENV
           echo "RELEASE_DATE=$RELEASE_DATE" | tee -a $GITHUB_ENV
