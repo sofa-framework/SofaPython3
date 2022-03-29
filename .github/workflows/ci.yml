@@ -213,7 +213,14 @@ jobs:
           echo "RELEASE_TAGNAME=$RELEASE_TAGNAME" | tee -a $GITHUB_ENV
           echo "RELEASE_DATE=$RELEASE_DATE" | tee -a $GITHUB_ENV
 
-      - name: Upload release
+      - name: Delete old release
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          tag_name: ${{ env.RELEASE_TAGNAME }}
+          delete_release: true
+
+      - name: Create new release
+        if: success() || failure()
         uses: softprops/action-gh-release@v1
         with:
           name: ${{ env.RELEASE_NAME }}
