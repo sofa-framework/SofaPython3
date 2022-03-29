@@ -145,19 +145,6 @@ void PythonEnvironment::Init()
     std::string pythonVersion = Py_GetVersion();
     msg_info("SofaPython3") << "Initializing with python version " << pythonVersion;
 
-    msg_info("SofaPython3") << "Py_GetBuildInfo = " << Py_GetBuildInfo();
-    msg_info("SofaPython3") << "Py_GetCompiler = "  << Py_GetCompiler();
-    msg_info("SofaPython3") << "Py_GetCopyright = " << Py_GetCopyright();
-    msg_info("SofaPython3") << "Py_GetPlatform = "  << Py_GetPlatform();
-
-    msg_info("SofaPython3") << "Py_GetPrefix = "  << Py_GetPrefix();
-    msg_info("SofaPython3") << "Py_GetExecPrefix = "  << Py_GetExecPrefix();
-    msg_info("SofaPython3") << "Py_GetPath = "  << Py_GetPath();
-
-    msg_info("SofaPython3") << "Py_GetProgramName = "  << Py_GetProgramName();
-    msg_info("SofaPython3") << "Py_GetPythonHome = "  << Py_GetPythonHome();
-    msg_info("SofaPython3") << "Py_GetProgramFullPath = "  << Py_GetProgramFullPath();
-
     if( !SceneLoaderFactory::getInstance()->getEntryFileExtension("py3") )
     {
         msg_info("SofaPython3") << "Registering a scene loader for [.py, .py3, .pyscn, .py3scn] files." ;

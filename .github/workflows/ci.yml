@@ -36,13 +36,10 @@ jobs:
         shell: bash
         run: |
           # TODO: remove this step when SOFA "standard" no longer contains SP3
-          ls -la "$SOFA_ROOT/plugins"
-          if [ -d "$SOFA_ROOT/plugins/SofaPython3" ]; then
-            echo "Removing $SOFA_ROOT/plugins/SofaPython3"
-            rm -rf $SOFA_ROOT/plugins/SofaPython3*
-            rm -rf $SOFA_ROOT/bin/SofaPython3*
-            rm -rf $SOFA_ROOT/lib/SofaPython3*
-          fi
+          echo "Removing SofaPython3 from SOFA binaries (if any)"
+          rm -rf $SOFA_ROOT/plugins/SofaPython3*
+          rm -rf $SOFA_ROOT/bin/SofaPython3*
+          rm -rf $SOFA_ROOT/lib/SofaPython3*
 
       - name: Install pybind11
         shell: bash
@@ -128,20 +125,6 @@ jobs:
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             echo "$WORKSPACE_ARTIFACT_PATH/lib" >> $GITHUB_PATH
             echo "$WORKSPACE_ARTIFACT_PATH/bin" >> $GITHUB_PATH
-            echo "$PYTHON_ROOT" >> $GITHUB_PATH
-            echo "$PYTHON_ROOT/Lib" >> $GITHUB_PATH
-            echo "$PYTHON_ROOT/Scripts" >> $GITHUB_PATH
-            echo "PYTHONHOME=$PYTHON_ROOT" | tee -a $GITHUB_ENV
-            echo '----------------------'
-            ls -la "${{ runner.tool_cache }}/Python"
-            echo '----------------------'
-            runner_python_basedir="$(cd "${{ runner.tool_cache }}/Python" && pwd -W 2>/dev/null || pwd)"
-            for python_dir in "$runner_python_basedir"/*; do
-              if [[ "$python_dir" != */"${{ matrix.python_version }}"* ]]; then
-                echo "Removing (not ${{ matrix.python_version }}): $python_dir"
-                rm -rf "$python_dir"
-              fi
-            done
           elif [[ "$RUNNER_OS" == "macOS" ]]; then
             echo "DYLD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           fi
