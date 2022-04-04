@@ -34,6 +34,8 @@ public:
     SOFA_CLASS(Controller, sofa::core::behavior::BaseController);
     void init() override {};
     void reinit() override {};
+    void bwdInit() override {};
+    void storeResetState() override {};
 };
 
 class Controller_Trampoline : public Controller
@@ -43,6 +45,8 @@ public:
 
     void init() override;
     void reinit() override;
+    void bwdInit() override;
+    void storeResetState() override;
     void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     std::string getClassName() const override;

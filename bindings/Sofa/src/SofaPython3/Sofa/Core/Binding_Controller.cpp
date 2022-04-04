@@ -59,6 +59,20 @@ void Controller_Trampoline::reinit()
     });
 }
 
+void Controller_Trampoline::bwdInit()
+{
+    PythonEnvironment::executePython(this, [this](){
+        PYBIND11_OVERLOAD(void, Controller, bwdInit, );
+    });
+}
+
+void Controller_Trampoline::storeResetState()
+{
+    PythonEnvironment::executePython(this, [this](){
+        PYBIND11_OVERLOAD(void, Controller, storeResetState, );
+    });
+}
+
 /// If a method named "methodName" exists in the python controller,
 /// methodName is called, with the Event's dict as argument
 void Controller_Trampoline::callScriptMethod(
