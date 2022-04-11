@@ -131,8 +131,10 @@ SOFAPYTHON3_API py::module PythonEnvironment::importFromFile(const std::string& 
     if (globals == nullptr)
         globals = &globs;
     py::eval<py::eval_statements>(            // tell eval we're passing multiple statements
-                                              "import imp\n"
-                                              "new_module = imp.load_module(module_name, open(path), path, ('py', 'U', imp.PY_SOURCE))\n",
+                                              "import importlib.util \n"
+                                              "spec = importlib.util.spec_from_file_location(module_name, path) \n"
+                                              "new_module = importlib.util.module_from_spec(spec) \n"
+                                              "spec.loader.exec_module(new_module)",
                                               *globals,
                                               locals);
     py::module m =  py::cast<py::module>(locals["new_module"]);
@@ -251,7 +253,7 @@ void PythonEnvironment::Init()
     // general sofa-python stuff
 
     // python modules are automatically reloaded at each scene loading
-    //setAutomaticModuleReload( true );
+    setAutomaticModuleReload( true );
 
     // Initialize pluginLibraryPath by reading PluginManager's map
     std::map<std::string, Plugin>& map = PluginManager::getInstance().getPluginMap();
