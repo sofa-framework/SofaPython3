@@ -235,17 +235,8 @@ void PythonEnvironment::Init()
     // Lastly, we (try to) add modules from the root of SOFA
     addPythonModulePathsFromDirectory( Utils::getSofaPathPrefix() );
 
-    try
-    {
-        py::module::import("SofaRuntime");
-    }
-    catch (pybind11::error_already_set)
-    {
-        msg_error("SofaPython3") << "Could not import SofaRuntime module, initializing python3 for SOFA is not possible";
-        return;
-    }
     getStaticData()->m_sofamodule = py::module::import("Sofa");
-
+    PyRun_SimpleString("import SofaRuntime");
 
     // python livecoding related
     PyRun_SimpleString("from Sofa.livecoding import onReimpAFile");
