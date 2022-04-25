@@ -18,7 +18,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "config.h"
+#include <SofaPython3/config.h>
 
 #include "PythonEnvironment.h"
 using sofapython3::PythonEnvironment;

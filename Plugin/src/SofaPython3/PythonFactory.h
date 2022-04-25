@@ -25,7 +25,7 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <pybind11/pybind11.h>
-#include "config.h"
+#include <SofaPython3/config.h>
 
 /////////////////////////////// DECLARATION //////////////////////////////
 namespace sofapython3

@@ -81,6 +81,8 @@ set_target_properties(
         CUDA_VISIBILITY_PRESET "hidden"
 )
 
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+
 sofa_create_component_in_package_with_targets(
     COMPONENT_NAME ${PROJECT_NAME}
     COMPONENT_VERSION ${SofaPython3_VERSION}
