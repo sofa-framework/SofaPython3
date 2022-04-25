@@ -1,6 +1,7 @@
 project(Plugin VERSION 1.0)
 
 set(HEADER_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/config.h.in
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/initModule.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonEnvironment.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SceneLoaderPY3.h
@@ -41,10 +42,6 @@ endif(SP3_BUILD_TEST)
 find_package(pybind11 CONFIG REQUIRED)
 find_package(SofaFramework REQUIRED)
 find_package(SofaSimulationGraph REQUIRED)
-
-string(REPLACE "." "" PYBIND11_SOFA_VERSION ${pybind11_VERSION})
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/config.h.in" "${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/config.h")
-
     
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
