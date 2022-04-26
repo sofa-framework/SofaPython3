@@ -44,7 +44,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/eval.h>
 
-#include "config.h"
+#include <SofaPython3/config.h>
 
 namespace sofapython3
 {

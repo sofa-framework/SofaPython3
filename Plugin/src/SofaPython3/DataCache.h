@@ -21,7 +21,7 @@
 #pragma once
 
 #include <pybind11/numpy.h>
-#include "config.h"
+#include <SofaPython3/config.h>
 
 ////////////////////////// FORWARD DECLARATION ///////////////////////////
 namespace sofa {

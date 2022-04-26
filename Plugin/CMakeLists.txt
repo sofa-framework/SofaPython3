@@ -1,7 +1,7 @@
 project(Plugin VERSION 1.0)
 
 set(HEADER_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/config.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/config.h.in
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/initModule.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonEnvironment.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SceneLoaderPY3.h
@@ -80,6 +80,8 @@ set_target_properties(
         CXX_VISIBILITY_PRESET "hidden"
         CUDA_VISIBILITY_PRESET "hidden"
 )
+
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 
 sofa_create_component_in_package_with_targets(
     COMPONENT_NAME ${PROJECT_NAME}
