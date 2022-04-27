@@ -26,8 +26,13 @@ foreach(sofabindings_module ${SOFABINDINGS_MODULE_LIST})
 	target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.${sofabindings_module})
 endforeach()
 
-install(TARGETS ${PROJECT_NAME} EXPORT BindingsTargets)
-
 if(SP3_BUILD_TEST)
     add_subdirectory(tests)
 endif()
+
+sofa_create_component_in_package_with_targets(
+    COMPONENT_NAME ${PROJECT_NAME}
+    COMPONENT_VERSION ${SofaPython3_VERSION}
+    PACKAGE_NAME SofaPython3
+    TARGETS ${PROJECT_NAME}
+    )
