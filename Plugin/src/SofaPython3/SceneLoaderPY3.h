@@ -27,7 +27,7 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/simulation/Node.h>
 
-#include "config.h"
+#include <SofaPython3/config.h>
 
 namespace sofapython3
 {

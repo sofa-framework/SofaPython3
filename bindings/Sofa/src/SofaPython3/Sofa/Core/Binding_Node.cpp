@@ -529,12 +529,12 @@ void moduleAddNode(py::module &m) {
     p.def("add", &addKwargs, sofapython3::doc::sofa::core::Node::addKwargs);
     p.def("addObject", &addObjectKwargs, sofapython3::doc::sofa::core::Node::addObjectKwargs);
     p.def("addObject", &addObject, sofapython3::doc::sofa::core::Node::addObject, py::keep_alive<0, 2>());
-    p.def("createObject", &createObject, sofapython3::doc::sofa::core::Node::createObject);
+    p.def("createObject", &createObject, sofapython3::doc::sofa::core::Node::createObject, py::keep_alive<0, 2>());
     p.def("hasObject", &hasObject, sofapython3::doc::sofa::core::Node::hasObject);
     p.def("getObject", &getObject, sofapython3::doc::sofa::core::Node::getObject);
     p.def("addChild", &addChildKwargs, sofapython3::doc::sofa::core::Node::addChildKwargs);
-    p.def("addChild", &addChild, sofapython3::doc::sofa::core::Node::addChild);
-    p.def("createChild", &createChild, sofapython3::doc::sofa::core::Node::createChild);
+    p.def("addChild", &addChild, sofapython3::doc::sofa::core::Node::addChild, py::keep_alive<0, 2>());
+    p.def("createChild", &createChild, sofapython3::doc::sofa::core::Node::createChild, py::keep_alive<0, 2>());
     p.def("getChild", &getChild, sofapython3::doc::sofa::core::Node::getChild);
     p.def("removeChild", &removeChild, sofapython3::doc::sofa::core::Node::removeChild);
     p.def("removeChild", &removeChildByName, sofapython3::doc::sofa::core::Node::removeChildWithName);
