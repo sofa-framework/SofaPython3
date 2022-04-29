@@ -130,8 +130,10 @@ SOFAPYTHON3_API py::module PythonEnvironment::importFromFile(const std::string& 
     py::object globs = py::globals();
     if (globals == nullptr)
         globals = &globs;
+
     py::eval<py::eval_statements>(            // tell eval we're passing multiple statements
                                               "import importlib.util \n"
+                                              "importlib.machinery.SOURCE_SUFFIXES.append('pyscn') \n"
                                               "spec = importlib.util.spec_from_file_location(module_name, path) \n"
                                               "new_module = importlib.util.module_from_spec(spec) \n"
                                               "spec.loader.exec_module(new_module)",
