@@ -64,6 +64,13 @@ void Controller_Trampoline::reinit()
 void Controller_Trampoline::callScriptMethod(
         const py::object& self, Event* event, const std::string & methodName)
 {
+    if(f_printLog.getValue())
+    {
+        std::string name = std::string("on")+event->getClassName();
+        std::string eventStr = py::str(PythonFactory::toPython(event));
+        msg_info() << name << " " << eventStr;
+    }
+
     if( py::hasattr(self, methodName.c_str()) )
     {
         py::object fct = self.attr(methodName.c_str());
