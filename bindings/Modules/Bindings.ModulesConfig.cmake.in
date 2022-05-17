@@ -9,6 +9,8 @@ find_package(SofaPython3 QUIET REQUIRED COMPONENTS Plugin Bindings.Sofa)
 find_package(SofaBaseTopology QUIET REQUIRED)
 # Required by Bindings.Modules.SofaDeformable
 find_package(SofaDeformable QUIET REQUIRED)
+# Required by Bindings.Modules.SofaLinearSolver
+find_package(Sofa.Component.LinearSolver.Iterative REQUIRED)
 
 # If we are importing this config file and the target is not yet there this is indicating that
 # target is an imported one. So we include it
