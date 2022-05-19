@@ -237,7 +237,13 @@ void PythonEnvironment::Init()
     // Lastly, we (try to) add modules from the root of SOFA
     addPythonModulePathsFromDirectory( Utils::getSofaPathPrefix() );
 
-    getStaticData()->m_sofamodule = py::module::import("Sofa");
+    try
+    {
+        getStaticData()->m_sofamodule = py::module::import("Sofa");
+    } catch (py::error_already_set& e)
+    {
+        msg_error("SofaPython3") << "Unable to import module Sofa. Python exception:\n " << e.what();
+    }
     PyRun_SimpleString("import SofaRuntime");
 
     // python livecoding related
