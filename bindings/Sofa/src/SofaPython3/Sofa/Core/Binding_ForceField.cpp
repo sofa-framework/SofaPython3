@@ -52,6 +52,7 @@ namespace sofapython3
     using sofa::defaulttype::Vec3dTypes;
     using sofa::defaulttype::Vec2dTypes;
     using sofa::defaulttype::Vec1dTypes;
+    using sofa::defaulttype::Vec6dTypes;
     using sofa::defaulttype::Rigid3dTypes;
     using sofa::defaulttype::Rigid2dTypes;
 
@@ -232,6 +233,9 @@ namespace sofapython3
             }
             matrix.compress();
 
+            if (matrix.getColsValue().empty() || matrix.rowBegin.empty() || matrix.colsIndex.empty())
+                return {};
+
             return EigenMatrixMap(matrix.rows(), matrix.cols(), matrix.getColsValue().size(),
                                 (typename EigenMatrixMap::StorageIndex*)matrix.rowBegin.data(),
                                 (typename EigenMatrixMap::StorageIndex*)matrix.colsIndex.data(),
@@ -249,6 +253,7 @@ void moduleAddForceField(py::module &m) {
     declare_forcefield<Vec3dTypes>(m);
     declare_forcefield<Vec2dTypes>(m);
     declare_forcefield<Vec1dTypes>(m);
+    declare_forcefield<Vec6dTypes>(m);
     declare_forcefield<Rigid3dTypes>(m);
     declare_forcefield<Rigid2dTypes>(m);
 }

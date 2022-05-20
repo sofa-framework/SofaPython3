@@ -22,13 +22,13 @@ def createScene(root):
     root.addObject('SparseLDLSolver', applyPermutation="false", template="CompressedRowSparseMatrixd")
 
     root.addObject('MechanicalObject', name="DoFs")
-    root.addObject('MeshMatrixMass', name="mass", totalMass="320")
+    mass = root.addObject('MeshMatrixMass', name="mass", totalMass="320")
     root.addObject('RegularGridTopology', name="grid", nx="4", ny="4", nz="20", xmin="-9", xmax="-6", ymin="0", ymax="3", zmin="0", zmax="19")
     root.addObject('BoxROI', name="box", box="-10 -1 -0.0001  -5 4 0.0001")
     root.addObject('FixedConstraint', indices="@box.indices")
-    FEM = root.addObject('HexahedronFEMForceField', name="FEM", youngModulus="4000", poissonRatio="0.3", method="large")
+    root.addObject('HexahedronFEMForceField', name="FEM", youngModulus="4000", poissonRatio="0.3", method="large")
 
-    root.addObject(MatrixAccessController('MatrixAccessor', name='matrixAccessor', force_field=FEM))
+    root.addObject(MatrixAccessController('MatrixAccessor', name='matrixAccessor', mass=mass))
 
     return root
 
@@ -38,23 +38,23 @@ class MatrixAccessController(Sofa.Core.Controller):
 
     def __init__(self, *args, **kwargs):
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
-        self.force_field = kwargs.get("force_field")
+        self.mass = kwargs.get("mass")
 
     def onAnimateEndEvent(self, event):
-        stiffness_matrix = self.force_field.assembleKMatrix()
+        mass_matrix = self.mass.assembleMMatrix()
 
         print('====================================')
         print('Stiffness matrix')
         print('====================================')
-        print('dtype: ' + str(stiffness_matrix.dtype))
-        print('shape: ' + str(stiffness_matrix.shape))
-        print('ndim: ' + str(stiffness_matrix.ndim))
-        print('nnz: ' + str(stiffness_matrix.nnz))
-        print('norm: ' + str(sparse.linalg.norm(stiffness_matrix)))
+        print('dtype: ' + str(mass_matrix.dtype))
+        print('shape: ' + str(mass_matrix.shape))
+        print('ndim: ' + str(mass_matrix.ndim))
+        print('nnz: ' + str(mass_matrix.nnz))
+        print('norm: ' + str(sparse.linalg.norm(mass_matrix)))
 
         if exportCSV:
-            np.savetxt('stiffness.csv', stiffness_matrix.toarray(), delimiter=',')
+            np.savetxt('mass.csv', mass_matrix.toarray(), delimiter=',')
         if showImage:
-            plt.imshow(stiffness_matrix.toarray(), interpolation='nearest', cmap='gist_gray')
+            plt.imshow(mass_matrix.toarray(), interpolation='nearest', cmap='gist_gray')
             plt.show()
 
