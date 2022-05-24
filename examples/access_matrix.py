@@ -13,7 +13,7 @@ def createScene(root):
     root.addObject('DefaultVisualManagerLoop')
 
     root.addObject('EulerImplicitSolver', rayleighStiffness="0.1", rayleighMass="0.1")
-    linear_solver = root.addObject('SparseLDLSolver', applyPermutation="false", template="CompressedRowSparseMatrixd")
+    linear_solver = root.addObject('SparseLDLSolver', applyPermutation="false", template="CompressedRowSparseMatrixMat3x3d")
 
     root.addObject('MechanicalObject', name="DoFs")
     root.addObject('UniformMass', name="mass", totalMass="320")
