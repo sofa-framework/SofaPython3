@@ -173,13 +173,13 @@ void PythonEnvironment::Init()
     if ( !Py_IsInitialized() )
     {
         msg_info("SofaPython3") << "Initializing python";
-        executePython([]{ py::initialize_interpreter(); });
+        py::initialize_interpreter();
         // the first gil aquisition should happen right after the python interpreter
         // is initialized.
         static const PyThreadState* init = PyEval_SaveThread(); (void) init;
     }
 
-    executePython([]{ PyEval_InitThreads(); });
+    PyEval_InitThreads();
     gil lock;
 
     // Required for sys.path, used in addPythonModulePath().
