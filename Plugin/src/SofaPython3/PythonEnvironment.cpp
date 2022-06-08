@@ -180,7 +180,6 @@ void PythonEnvironment::Init()
     }
 
     PyEval_InitThreads();
-    gil lock;
 
     // Required for sys.path, used in addPythonModulePath().
     executePython([]{ PyRun_SimpleString("import sys");});
@@ -311,16 +310,14 @@ void PythonEnvironment::Release()
 void PythonEnvironment::addPythonModulePath(const std::string& path)
 {
     PythonEnvironmentData* data = getStaticData() ;
-    if (  data->addedPath.find(path)==data->addedPath.end()) {
+    if (  data->addedPath.find(path)==data->addedPath.end())
+    {
         // note not to insert at first 0 place
         // an empty string must be at first so modules can be found in the current directory first.
 
-        {
-            gil lock;
-            executePython([&]{ PyRun_SimpleString(std::string("sys.path.insert(1,\""+path+"\")").c_str());});
-        }
+        executePython([&]{ PyRun_SimpleString(std::string("sys.path.insert(1,\""+path+"\")").c_str());});
 
-        msg_info("SofaPython3") << "Added '" + path + "' to sys.path";
+        msg_info("SofaPython3")<< "Added '" + path + "' to sys.path";
         data->addedPath.insert(path);
     }
 }
@@ -546,7 +543,6 @@ void PythonEnvironment::setArguments(const std::string& filename, const std::vec
 
 void PythonEnvironment::SceneLoaderListerner::rightBeforeLoadingScene()
 {
-    gil lock;
     // unload python modules to force importing their eventual modifications
     executePython([]{ PyRun_SimpleString("SofaRuntime.unloadModules()");});
 }
@@ -561,7 +557,6 @@ void PythonEnvironment::setAutomaticModuleReload( bool b )
 
 void PythonEnvironment::excludeModuleFromReload( const std::string& moduleName )
 {
-    gil lock;
     executePython([&]{ PyRun_SimpleString( std::string( "try: SofaRuntime.__SofaPythonEnvironment_modulesExcludedFromReload.append('" + moduleName + "')\nexcept:pass" ).c_str() );});
 }
 
