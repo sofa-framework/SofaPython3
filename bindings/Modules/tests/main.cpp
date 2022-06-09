@@ -39,6 +39,7 @@ static struct Tests : public sofapython3::PythonTestExtractor
 
         const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
         addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaDeformable", "SofaDeformable_");
+        addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaLinearSolver", "SofaLinearSolver_");
     }
 } python_tests;
 
