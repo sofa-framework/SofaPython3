@@ -55,9 +55,10 @@ class SOFAPYTHON3_API Prefab : public BasePrefab
 {
 public:
     SOFA_CLASS(Prefab, BasePrefab);
-    void init();
+    void initPrefab();
     void reinit();
-    virtual void doReInit() ;
+    virtual void init();
+    virtual void onParameterChanged();
 
     void addPrefabParameter(const std::string& name, const std::string& help, const std::string& type, pybind11::object defaultValue = pybind11::none());
     void setSourceTracking(const std::string& filename);

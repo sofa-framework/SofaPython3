@@ -45,23 +45,34 @@ using namespace pybind11::literals;
 
 namespace sofapython3 {
 
-class Prefab_Trampoline : public Prefab {
+class Prefab_Trampoline : public Prefab
+{
 public:
     SOFA_CLASS(Prefab_Trampoline, Prefab);
 
-    void doReInit() override ;
+    void init() override ;
+    void onParameterChanged() override ;
 };
 
-void Prefab_Trampoline::doReInit()
+void Prefab_Trampoline::onParameterChanged()
 {
-    if (!m_is_initialized) {
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
-        msg_warning(this) << "Prefab instantiated. Check for required prefab parameters to fully populate";
-        return;
-    }
-    try{
+    try
+    {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
-        PYBIND11_OVERLOAD(void, Prefab, doReInit, );
+        PYBIND11_OVERLOAD(void, Prefab, onParameterChanged, );
+    } catch (std::exception& e)
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        msg_error(this) << e.what();
+    }
+}
+
+void Prefab_Trampoline::init()
+{
+    try
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+        PYBIND11_OVERLOAD(void, Prefab, init, );
     } catch (std::exception& e)
     {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
@@ -108,8 +119,9 @@ void moduleAddPrefab(py::module &m) {
     f.def("setSourceTracking", &Prefab::setSourceTracking);
     f.def("addPrefabParameter", &Prefab::addPrefabParameter,
           "name"_a, "help"_a, "type"_a, "default"_a = py::none());
+    f.def("initPrefab", &Prefab::initPrefab);
     f.def("init", &Prefab::init);
-    f.def("reinit", &Prefab::reinit);
+    f.def("onParameterChanged", &Prefab::onParameterChanged);
 }
 
 

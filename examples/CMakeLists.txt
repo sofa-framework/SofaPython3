@@ -8,6 +8,7 @@ set(EXAMPLES_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/emptyController.py
     ${CMAKE_CURRENT_SOURCE_DIR}/emptyDataEngine.py
     ${CMAKE_CURRENT_SOURCE_DIR}/emptyForceField.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/example-prefab.py
     ${CMAKE_CURRENT_SOURCE_DIR}/example-forcefield.py
     ${CMAKE_CURRENT_SOURCE_DIR}/example-scriptcontroller.py
     ${CMAKE_CURRENT_SOURCE_DIR}/keyEvents.py

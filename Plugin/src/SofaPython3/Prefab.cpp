@@ -41,10 +41,9 @@ namespace sofapython3
 {
 using sofa::core::objectmodel::Event;
 
-void Prefab::init()
+void Prefab::initPrefab()
 {
     Inherit1::init(sofa::core::execparams::defaultInstance());
-    m_is_initialized = true;
     reinit();
 }
 
@@ -56,26 +55,30 @@ void PrefabFileEventListener::fileHasChanged(const std::string &filename)
     py::eval("onReimpAFile(filename)", py::globals(), local);
 
     m_prefab->clearLoggedMessages();
-    m_prefab->init();
+    m_prefab->reinit();
+}
+
+void Prefab::init()
+{
+}
+
+void Prefab::onParameterChanged()
+{
+    init();
 }
 
 void Prefab::reinit()
 {
+    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
     clearLoggedMessages();
 
     /// remove everything in the node.
     execute<sofa::simulation::DeleteVisitor>(sofa::core::execparams::defaultInstance());
 
-    doReInit();
+    onParameterChanged();
 
-    /// Beurk beurk beurk
     sofa::simulation::getSimulation()->initNode(this);
     execute<VisualInitVisitor>(sofa::core::execparams::defaultInstance());
-}
-
-void Prefab::doReInit()
-{
-    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 Prefab::Prefab()
@@ -84,18 +87,16 @@ Prefab::Prefab()
     m_datacallback.addCallback( std::bind(&Prefab::reinit, this) );
 }
 
-
 Prefab::~Prefab()
 {
     FileMonitor::removeListener(&m_filelistener);
 }
 
-
 void Prefab::addPrefabParameter(const std::string& name, const std::string& help, const std::string& type, py::object defaultValue)
 {
     if(!findData(name) && !findLink(name))
     {
-        sofa::core::objectmodel::BaseData* data = sofapython3::addData(py::cast(this), name, py::none(), defaultValue, help, "Prefab's properties", type);
+        sofa::core::objectmodel::BaseData* data = sofapython3::addData(py::cast(this), name, py::none(), defaultValue, help, "Prefab's parameters", type);
         data->setRequired(true);
         m_datacallback.addInputs({data});
     }

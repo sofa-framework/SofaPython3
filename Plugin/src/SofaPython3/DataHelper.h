@@ -273,9 +273,9 @@ class scoped_read_access
 {
 public:
     BaseData* data{nullptr};
-    void* ptr{nullptr};
-    scoped_read_access(BaseData* data_) : data(data_){ ptr = data->beginEditVoidPtr(); }
-    ~scoped_read_access(){ data->endEditVoidPtr(); }
+    const void* ptr{nullptr};
+    scoped_read_access(BaseData* data_) : data(data_){ ptr = data->getValueVoidPtr(); }
+    ~scoped_read_access(){ }
 };
 
 class scoped_writeonly_access
