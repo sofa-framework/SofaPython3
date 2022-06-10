@@ -221,9 +221,9 @@ void copyScalar(BaseData* a, const AbstractTypeInfo& nfo, pybind11::array_t<T, p
     void* ptr = a->beginEditVoidPtr();
 
     auto r = src.unchecked();
-    for (auto i = 0; i < r.shape(0); i++)
+    for (pybind11::ssize_t i = 0; i < r.shape(0); i++)
     {
-        for (auto j = 0; j < r.shape(1); j++)
+        for (pybind11::ssize_t j = 0; j < r.shape(1); j++)
         {
             nfo.setScalarValue( ptr, i*r.shape(1)+j, r(i,j) );
         }
