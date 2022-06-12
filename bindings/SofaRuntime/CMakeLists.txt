@@ -10,8 +10,7 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/Timer/Submodule_Timer_doc.h
 )
 
-find_package(SofaSimulationGraph REQUIRED)
-find_package(SofaSimulationCommon REQUIRED)
+find_package(Sofa.Simulation.Graph REQUIRED)
 
 SP3_add_python_package(
     SOURCE_DIRECTORY
@@ -26,7 +25,7 @@ SP3_add_python_module(
         DESTINATION  SofaRuntime
         SOURCES      ${SOURCE_FILES}
         HEADERS      ${HEADER_FILES}
-        DEPENDS      Sofa.Core Sofa.Helper Sofa.SimulationCore SofaSimulationGraph SofaSimulationCommon SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
+        DEPENDS      Sofa.Simulation.Graph SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
 )
 
 sofa_create_component_in_package_with_targets(

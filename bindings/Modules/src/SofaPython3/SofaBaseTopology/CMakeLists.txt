@@ -13,7 +13,7 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_SparseGridTopology_doc.h
 )
 
-find_package(SofaBaseTopology REQUIRED)
+find_package(Sofa.Component.Topology.Container.Grid REQUIRED)
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
@@ -22,5 +22,5 @@ SP3_add_python_module(
     DESTINATION  Sofa
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
-    DEPENDS      SofaBaseTopology SofaPython3::Plugin
+    DEPENDS      Sofa.Component.Topology.Container.Grid SofaPython3::Plugin
 )

@@ -52,9 +52,9 @@ using sofa::helper::logging::Message;
 #include <sofa/helper/init.h>
 #include <sofa/simulation/init.h>
 #include <sofa/defaulttype/init.h>
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-#include <SofaBaseVisual/initSofaBaseVisual.h>
-#include <SofaBaseUtils/initSofaBaseUtils.h>
+
+#include <sofa/component/collision/response/contact/init.h>
+#include <sofa/component/visual/init.h>
 
 namespace sofapython3
 {
@@ -67,9 +67,8 @@ PYBIND11_MODULE(Core, core)
     sofa::helper::init();
     sofa::simulation::core::init();
     sofa::defaulttype::init();
-    sofa::component::initSofaBaseCollision();
-    sofa::component::initSofaBaseVisual();
-    sofa::component::initSofaBaseUtils(); // Needed to add "RequiredPlugin" components
+    sofa::component::collision::response::contact::init();
+    sofa::component::visual::init();
 
     core.doc() = R"doc(
            Scene components

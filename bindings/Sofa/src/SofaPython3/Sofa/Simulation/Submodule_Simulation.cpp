@@ -24,7 +24,7 @@
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Simulation;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation;
 
 #include <sofa/simulation/Node.h>
@@ -40,7 +40,7 @@ using sofa::simulation::Simulation;
 
 #include <sofa/core/init.h>
 #include <sofa/simulation/init.h>
-#include <SofaSimulationGraph/init.h>
+#include <sofa/simulation/graph/init.h>
 
 namespace py = pybind11;
 

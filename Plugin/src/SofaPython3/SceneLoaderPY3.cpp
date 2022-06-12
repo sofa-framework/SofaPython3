@@ -21,7 +21,7 @@
 #include <sstream>
 #include <fstream>
 
-#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/simulation/graph/DAGNode.h>
 using sofa::simulation::graph::DAGNode;
 
 #include <SofaPython3/PythonEnvironment.h>

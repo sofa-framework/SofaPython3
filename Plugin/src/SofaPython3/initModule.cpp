@@ -27,7 +27,7 @@ using sofapython3::PythonEnvironment;
 #include <sofa/defaulttype/init.h>
 #include <sofa/simulation/init.h>
 #include <sofa/helper/init.h>
-#include <SofaSimulationGraph/init.h>
+#include <sofa/simulation/graph/init.h>
 
 extern "C" {
 

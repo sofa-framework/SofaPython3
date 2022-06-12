@@ -29,13 +29,13 @@
 #include <sofa/core/objectmodel/BaseData.h>
 using sofa::core::objectmodel::BaseData;
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 namespace simpleapi = sofa::simpleapi;
 
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message;
 
-#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/simulation/graph/DAGNode.h>
 using sofa::core::ExecParams;
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>

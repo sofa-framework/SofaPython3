@@ -21,11 +21,11 @@
 #include <pybind11/eval.h>
 namespace py = pybind11;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Simulation;
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 namespace simpleapi = sofa::simpleapi;
 
 #include <sofa/helper/Utils.h>
@@ -52,8 +52,8 @@ using sofapython3::SceneLoaderPY3;
 
 #include <sofa/helper/BackTrace.h>
 
-#include <SofaSimulationCommon/init.h>
-#include <SofaSimulationGraph/init.h>
+#include <sofa/simulation/common/init.h>
+#include <sofa/simulation/graph/init.h>
 
 #include "Timer/Submodule_Timer.h"
 
@@ -67,8 +67,6 @@ using sofa::helper::logging::MainConsoleMessageHandler;
 #include <sofa/core/init.h>
 #include <sofa/helper/init.h>
 #include <sofa/simulation/init.h>
-#include <SofaSimulationGraph/init.h>
-#include <SofaSimulationCommon/init.h>
 
 namespace sofapython3
 {
