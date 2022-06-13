@@ -34,6 +34,7 @@ add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 foreach(bindings_module ${BINDINGS_MODULE_LIST})
     target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.${bindings_module})
+    set_target_properties(${PROJECT_NAME}.${bindings_module} PROPERTIES FOLDER "Bindings")
 endforeach()
 
 sofa_create_component_in_package_with_targets(
