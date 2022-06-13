@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 
 exportCSV = False
-showImage = False
+showImage = True
 
 # Function called when the scene graph is being created
 def createScene(root):
