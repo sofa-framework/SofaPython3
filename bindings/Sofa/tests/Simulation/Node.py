@@ -46,7 +46,7 @@ class Test(unittest.TestCase):
                 root = Sofa.Core.Node("rootNode")
                 root.addObject("RequiredPlugin", name="SofaBaseMechanics")
                 c = root.addChild("child1")
-                c = c.addObject("MechanicalObject", name="MO", position=[0.0,1.0,2.0]*100)
+                c = c.addObject("MechanicalObject", name="MO", position=[[0.0,1.0,2.0]]*100)
                 root.init()
                 print("TYPE: "+str(len(c.position.value)))
                 self.assertEqual(len(c.position.value), 100)

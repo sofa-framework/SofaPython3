@@ -30,7 +30,7 @@ def createParticle(node, node_name, use_implicit_scheme, use_iterative_solver):
     p = node.addChild(node_name)
     createIntegrationScheme(p, use_implicit_scheme)
     createSolver(p, use_iterative_solver)
-    dofs = p.addObject('MechanicalObject', name="MO", position=[0, 0, 0])
+    dofs = p.addObject('MechanicalObject', name="MO", position=[[0, 0, 0]])
     p.addObject('UniformMass', totalMass=1.0)
 
     myRSSFF = NaiveRestShapeSpringsForcefield(name="Springs",
