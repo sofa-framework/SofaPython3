@@ -67,5 +67,3 @@ class MatrixAccessController(Sofa.Core.Controller):
         print('shape: ' + str(solution.shape))
         print('ndim: ' + str(solution.ndim))
 
-        pass
-
