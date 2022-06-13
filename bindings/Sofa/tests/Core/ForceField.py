@@ -95,7 +95,7 @@ class Test(unittest.TestCase):
     def simulate_beam(linear_solver_template):
         root = Sofa.Core.Node("rootNode")
 
-        loop = root.addObject('DefaultAnimationLoop')
+        root.addObject('DefaultAnimationLoop')
 
         root.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Backward')
         root.addObject('RequiredPlugin', name='Sofa.Component.LinearSolver.Direct')
@@ -110,20 +110,19 @@ class Test(unittest.TestCase):
         root.addObject('MechanicalObject', name="DoFs")
         root.addObject('UniformMass', name="mass", totalMass="320")
         root.addObject('RegularGridTopology', name="grid", nx="4", ny="4", nz="20", xmin="-9", xmax="-6", ymin="0", ymax="3", zmin="0", zmax="19")
-        root.addObject('BoxROI', name="box", box="-10 -1 -0.0001  -5 4 0.0001")
+        root.addObject('BoxROI', name="box", box=[-10, -1, -0.0001,  -5, 4, 0.0001])
         root.addObject('FixedConstraint', indices="@box.indices")
-        force_field = root.addObject('HexahedronFEMForceField', name="FEM", youngModulus="4000", poissonRatio="0.3", method="large")
-
-        matrix_accessor = root.addObject(MatrixAccessController('MatrixAccessor', name='matrixAccessor', force_field=force_field))
+        root.addObject('HexahedronFEMForceField', name="FEM", youngModulus="4000", poissonRatio="0.3", method="large")
 
         Sofa.Simulation.init(root)
         Sofa.Simulation.animate(root, 0.0001)
 
-        return matrix_accessor.stiffness_matrix
+        return root
 
     def test_stiffness_matrix_access_scalar(self):
 
-        K = self.simulate_beam("CompressedRowSparseMatrixd")
+        root = self.simulate_beam("CompressedRowSparseMatrixd")
+        K = root.FEM.assembleKMatrix()
 
         self.assertEqual(K.ndim, 2)
         self.assertEqual(K.shape, (960, 960))
@@ -131,19 +130,9 @@ class Test(unittest.TestCase):
 
     def test_stiffness_matrix_access_blocks3x3(self):
 
-        K = self.simulate_beam("CompressedRowSparseMatrixMat3x3d")
+        root = self.simulate_beam("CompressedRowSparseMatrixMat3x3d")
+        K = root.FEM.assembleKMatrix()
 
         self.assertEqual(K.ndim, 2)
         self.assertEqual(K.shape, (960, 960))
         self.assertEqual(K.nnz, 52200)
-
-
-class MatrixAccessController(Sofa.Core.Controller):
-
-
-    def __init__(self, *args, **kwargs):
-        Sofa.Core.Controller.__init__(self, *args, **kwargs)
-        self.force_field = kwargs.get("force_field")
-
-    def onAnimateEndEvent(self, event):
-        self.stiffness_matrix = self.force_field.assembleKMatrix()

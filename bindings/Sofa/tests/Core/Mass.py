@@ -13,7 +13,7 @@ class Test(unittest.TestCase):
     def simulate_beam(linear_solver_template):
         root = Sofa.Core.Node("rootNode")
 
-        loop = root.addObject('DefaultAnimationLoop')
+        root.addObject('DefaultAnimationLoop')
 
         root.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Backward')
         root.addObject('RequiredPlugin', name='Sofa.Component.LinearSolver.Direct')
@@ -26,43 +26,31 @@ class Test(unittest.TestCase):
         root.addObject('SparseLDLSolver', applyPermutation="false", template=linear_solver_template)
 
         root.addObject('MechanicalObject', name="DoFs")
-        mass = root.addObject('MeshMatrixMass', name="mass", totalMass="320")
+        root.addObject('MeshMatrixMass', name="mass", totalMass="320")
         root.addObject('RegularGridTopology', name="grid", nx="4", ny="4", nz="20", xmin="-9", xmax="-6", ymin="0", ymax="3", zmin="0", zmax="19")
-        root.addObject('BoxROI', name="box", box="-10 -1 -0.0001  -5 4 0.0001")
+        root.addObject('BoxROI', name="box", box=[-10, -1, -0.0001,  -5, 4, 0.0001])
         root.addObject('FixedConstraint', indices="@box.indices")
         root.addObject('HexahedronFEMForceField', name="FEM", youngModulus="4000", poissonRatio="0.3", method="large")
-
-        matrix_accessor = root.addObject(MatrixAccessController('MatrixAccessor', name='matrixAccessor', mass=mass))
 
         Sofa.Simulation.init(root)
         Sofa.Simulation.animate(root, 0.0001)
 
-        return matrix_accessor.mass_matrix
+        return root
 
-    def test_stiffness_matrix_access_scalar(self):
+    def test_mass_matrix_access_scalar(self):
 
-        M = self.simulate_beam("CompressedRowSparseMatrixd")
-
-        self.assertEqual(M.ndim, 2)
-        self.assertEqual(M.shape, (960, 960))
-        self.assertEqual(M.nnz, 9480)
-
-    def test_stiffness_matrix_access_blocks3x3(self):
-
-        M = self.simulate_beam("CompressedRowSparseMatrixMat3x3d")
+        root = self.simulate_beam("CompressedRowSparseMatrixd")
+        M = root.mass.assembleMMatrix()
 
         self.assertEqual(M.ndim, 2)
         self.assertEqual(M.shape, (960, 960))
         self.assertEqual(M.nnz, 9480)
 
+    def test_mass_matrix_access_blocks3x3(self):
 
+        root = self.simulate_beam("CompressedRowSparseMatrixMat3x3d")
+        M = root.mass.assembleMMatrix()
 
-class MatrixAccessController(Sofa.Core.Controller):
-
-
-    def __init__(self, *args, **kwargs):
-        Sofa.Core.Controller.__init__(self, *args, **kwargs)
-        self.mass = kwargs.get("mass")
-
-    def onAnimateEndEvent(self, event):
-        self.mass_matrix = self.mass.assembleMMatrix()
+        self.assertEqual(M.ndim, 2)
+        self.assertEqual(M.shape, (960, 960))
+        self.assertEqual(M.nnz, 9480)
