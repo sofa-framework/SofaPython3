@@ -101,8 +101,13 @@ void bindSpringForcefield(py::module& m) {
     });
 }
 
-void moduleAddSpringForceField(py::module& m) {
-    bindSpringForcefield<sofa::defaulttype::Vec3dTypes>(m);
-    bindSpringForcefield<sofa::defaulttype::Vec6dTypes>(m);
+void moduleAddSpringForceField(py::module& m)
+{
+    bindSpringForcefield<sofa::defaulttype::Vec3Types>(m);
+    bindSpringForcefield<sofa::defaulttype::Vec2Types>(m);
+    bindSpringForcefield<sofa::defaulttype::Vec1Types>(m);
+    bindSpringForcefield<sofa::defaulttype::Vec6Types>(m);
+    bindSpringForcefield<sofa::defaulttype::Rigid3Types>(m);
 }
+
 } // namespace sofapython3
