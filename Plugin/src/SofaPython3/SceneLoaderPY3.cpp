@@ -106,6 +106,9 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
 
         py::object createScene = module.attr("createScene");
         createScene( PythonFactory::toPython(root_out.get()) );
+
+        root_out->setInstanciationSourceFileName(filename);
+        root_out->setInstanciationSourceFilePos(0);
     }catch(py::error_already_set& e)
     {
         msg_error() << "Unable to completely load the scene from file '"<< filename << "'." << msgendl
