@@ -28,8 +28,8 @@
 #include <SofaPython3/PythonFactory.h>
 #include <SofaPython3/PythonEnvironment.h>
 
-/// Bind the python's attribute error
-namespace pybind11 { PYBIND11_RUNTIME_EXCEPTION(attribute_error, PyExc_AttributeError) }
+SOFAPYTHON3_BIND_ATTRIBUTE_ERROR()
+
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
 
@@ -64,6 +64,13 @@ void Controller_Trampoline::reinit()
 void Controller_Trampoline::callScriptMethod(
         const py::object& self, Event* event, const std::string & methodName)
 {
+    if(f_printLog.getValue())
+    {
+        std::string name = std::string("on")+event->getClassName();
+        std::string eventStr = py::str(PythonFactory::toPython(event));
+        msg_info() << name << " " << eventStr;
+    }
+
     if( py::hasattr(self, methodName.c_str()) )
     {
         py::object fct = self.attr(methodName.c_str());

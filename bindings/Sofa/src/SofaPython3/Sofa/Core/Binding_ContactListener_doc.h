@@ -43,6 +43,7 @@ static auto contactListenerClass =
                 collisionModel2=model2.getLinkPath(),
             )
             print(listener.getNumberOfContacts())
+            print(listener.getDistances())
         )";
 
 } // namespace sofapython3::doc::contactListener

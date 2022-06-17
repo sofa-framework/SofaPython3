@@ -1,0 +1,216 @@
+name: CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      is_nightly:
+        description: 'Is this a nightly build?'
+        required: false
+        default: false
+        type: boolean
+  pull_request:
+  push:
+
+jobs:
+  build-and-test:
+    name: Run on ${{ matrix.os }} with SOFA ${{ matrix.sofa_branch }} and python ${{ matrix.python_version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-10.15, windows-2019]
+        sofa_branch: [master]
+        python_version: ['3.9']
+
+    steps:
+      - name: Setup SOFA and environment
+        id: sofa
+        uses: sofa-framework/sofa-setup-action@v4
+        with:
+          sofa_root: ${{ github.workspace }}/sofa
+          sofa_version: ${{ matrix.sofa_branch }}
+          sofa_scope: 'standard'
+          sofa_with_sofapython3: 'false'
+          python_version: '${{ matrix.python_version }}'
+      
+      - name: Checkout source code
+        uses: actions/checkout@v2
+        with:
+          path: ${{ env.WORKSPACE_SRC_PATH }}
+      
+      - name: Setup cache for ccache files
+        if: ${{ runner.os != 'Windows' }}
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache_${{ runner.os }}
+      
+      - name: Build and install
+        shell: bash
+        run: |
+          cmake_options="-GNinja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="$WORKSPACE_INSTALL_PATH" \
+            -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake" \
+            -DPYTHON_ROOT=$PYTHON_ROOT -DPython_ROOT=$PYTHON_ROOT \
+            -DPYTHON_EXECUTABLE=$PYTHON_EXE -DPython_EXECUTABLE=$PYTHON_EXE"
+          if [ -e "$(command -v ccache)" ]; then
+            cmake_options="$cmake_options -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
+          fi
+          cmake_options="$(echo $cmake_options)" # prettify
+          
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} \
+              && cd /d $WORKSPACE_BUILD_PATH \
+              && cmake $cmake_options ../src \
+              && ninja install"
+          else
+            cd "$WORKSPACE_BUILD_PATH"
+            ccache -z
+            cmake $cmake_options ../src
+            ninja install
+            echo ${CCACHE_BASEDIR}
+            ccache -s
+          fi
+        
+      - name: Set env vars for artifacts
+        shell: bash
+        run: |
+          PROJECT_NAME="${GITHUB_REPOSITORY#*/}"
+          echo "PROJECT_NAME=$PROJECT_NAME" | tee -a $GITHUB_ENV
+          
+          ARTIFACT_VERSION="${{ steps.sofa.outputs.run_branch }}"
+          if [[ "${{ github.event.inputs.is_nightly }}" == "true" ]]; then
+            ARTIFACT_VERSION="${ARTIFACT_VERSION}-nightly"
+          fi
+          ARTIFACT_NAME="${PROJECT_NAME}_${ARTIFACT_VERSION}_python-${{ matrix.python_version }}_for-SOFA-${{ matrix.sofa_branch }}_${{ runner.os }}"
+          echo "ARTIFACT_NAME=$ARTIFACT_NAME" | tee -a $GITHUB_ENV
+
+      - name: Create artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.WORKSPACE_INSTALL_PATH }}
+
+      - name: Install artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.WORKSPACE_ARTIFACT_PATH }}
+      
+      - name: Set env vars for tests
+        shell: bash
+        run: |
+          # Set env vars for tests
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            echo "$WORKSPACE_ARTIFACT_PATH/lib" >> $GITHUB_PATH
+            echo "$WORKSPACE_ARTIFACT_PATH/bin" >> $GITHUB_PATH
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            echo "DYLD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
+          fi
+          echo "LD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
+          echo "PYTHONPATH=$WORKSPACE_ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
+          # Add execution right on the tests
+          chmod +x $WORKSPACE_ARTIFACT_PATH/bin/*.Tests${{ steps.sofa.outputs.exe }}
+      
+      - name: Check environment for tests
+        shell: bash
+        run: |
+          echo '------ ls -la "$WORKSPACE_SRC_PATH" ------'
+          ls -la "$WORKSPACE_SRC_PATH"
+          echo '------ ls -la "$WORKSPACE_BUILD_PATH" ------'
+          ls -la "$WORKSPACE_BUILD_PATH"
+          echo '------ ls -la "$WORKSPACE_INSTALL_PATH" ------'
+          ls -la "$WORKSPACE_INSTALL_PATH"
+          echo '------ ls -la "$WORKSPACE_ARTIFACT_PATH" ------'
+          ls -la "$WORKSPACE_ARTIFACT_PATH"
+          echo '----------------------'
+          echo "SOFA_ROOT = $SOFA_ROOT"
+          echo "PYTHONPATH = $PYTHONPATH"
+          echo '----------------------'
+          echo "PATH = $PATH"
+          echo '----------------------'
+          python -c "import sys; print('sys.version = ' + str(sys.version)); print('sys.path = ' + str(sys.path))"
+
+      - name: Run test Binding.Sofa.Tests
+        if: always()
+        shell: bash
+        run: |
+          cd $WORKSPACE_ARTIFACT_PATH
+          ./bin/Bindings.Sofa.Tests${{ steps.sofa.outputs.exe }}
+      
+      - name: Run test Bindings.SofaRuntime.Tests
+        if: always()
+        shell: bash
+        run: |
+          cd $WORKSPACE_ARTIFACT_PATH
+          ./bin/Bindings.SofaRuntime.Tests${{ steps.sofa.outputs.exe }}
+      
+      - name: Run test Bindings.SofaTypes.Tests
+        if: always()
+        shell: bash
+        run: |
+          cd $WORKSPACE_ARTIFACT_PATH
+          ./bin/Bindings.SofaTypes.Tests${{ steps.sofa.outputs.exe }}
+      
+      - name: Run test Bindings.Modules.Tests
+        if: always()
+        shell: bash
+        run: |
+          cd $WORKSPACE_ARTIFACT_PATH
+          ./bin/Bindings.Modules.Tests${{ steps.sofa.outputs.exe }}
+
+  deploy:
+    name: Deploy artifacts
+    if: always() && startsWith(github.ref, 'refs/heads/') # we are on a branch (not a PR)
+    needs: [build-and-test]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Get artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+
+      - name: Zip artifacts and set env vars
+        shell: bash
+        run: |
+          cd $GITHUB_WORKSPACE/artifacts
+          for artifact in *; do
+            zip $artifact.zip -r $artifact/*
+          done
+          PROJECT_NAME="${GITHUB_REPOSITORY#*/}"
+          echo "PROJECT_NAME=$PROJECT_NAME" | tee -a $GITHUB_ENV
+          
+          RELEASE_NAME="${{ github.ref_name }}"
+          RELEASE_TAGNAME="release-${{ github.ref_name }}"
+          if [[ "${{ github.event.inputs.is_nightly }}" == "true" ]]; then
+              RELEASE_NAME="$RELEASE_NAME-nightly"
+              RELEASE_TAGNAME="$RELEASE_TAGNAME-nightly"
+          fi
+          RELEASE_DATE="$(date +'%Y-%m-%d (at %T UTC)')"
+          echo "RELEASE_NAME=$RELEASE_NAME" | tee -a $GITHUB_ENV
+          echo "RELEASE_TAGNAME=$RELEASE_TAGNAME" | tee -a $GITHUB_ENV
+          echo "RELEASE_DATE=$RELEASE_DATE" | tee -a $GITHUB_ENV
+
+      - name: Delete old release
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          tag_name: ${{ env.RELEASE_TAGNAME }}
+          delete_release: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create new release
+        if: success() || failure()
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ env.RELEASE_NAME }}
+          tag_name: ${{ env.RELEASE_TAGNAME }}
+          fail_on_unmatched_files: true
+          body: |
+            Last updated on ${{ env.RELEASE_DATE }}
+          files: |
+            artifacts/${{ env.PROJECT_NAME }}_*_Linux.zip
+            artifacts/${{ env.PROJECT_NAME }}_*_Windows.zip
+            artifacts/${{ env.PROJECT_NAME }}_*_macOS.zip

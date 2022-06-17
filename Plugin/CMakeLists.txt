@@ -1,7 +1,7 @@
 project(Plugin VERSION 1.0)
 
 set(HEADER_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/config.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/config.h.in
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/initModule.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonEnvironment.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SceneLoaderPY3.h
@@ -48,7 +48,7 @@ add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAPYTHON3")
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaDefaultType SofaSimulationCore SofaSimulationGraph SofaHelper)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core Sofa.DefaultType Sofa.SimulationCore SofaSimulationGraph Sofa.Helper)
 target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::module pybind11::embed)
 
 if(SP3_BUILD_TEST AND Sofa.Testing_FOUND)
@@ -80,6 +80,8 @@ set_target_properties(
         CXX_VISIBILITY_PRESET "hidden"
         CUDA_VISIBILITY_PRESET "hidden"
 )
+
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 
 sofa_create_component_in_package_with_targets(
     COMPONENT_NAME ${PROJECT_NAME}

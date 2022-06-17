@@ -39,6 +39,55 @@ using sofa::core::collision::ContactListener;
 namespace sofapython3
 {
 
+    pybind11::dict getContactData(const ContactListener& listener){
+        pybind11::dict contactData;
+        const sofa::Size numberOfContacts = listener.getNumberOfContacts();
+        contactData["numberOfContacts"] = numberOfContacts;
+
+        const std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> contactElements = listener.getContactElements();
+        const std::vector<std::tuple<unsigned int, sofa::type::Vector3, unsigned int, sofa::type::Vector3>> contactPoints = listener.getContactPoints();
+
+        std::vector<unsigned int> collisionElementsModel1;
+        std::vector<unsigned int> collisionElementsModel2;
+        collisionElementsModel1.reserve(numberOfContacts);
+        collisionElementsModel2.reserve(numberOfContacts);
+
+        std::vector<sofa::type::Vector3> collisionPointsModel1;
+        std::vector<sofa::type::Vector3> collisionPointsModel2;
+        collisionPointsModel1.reserve(numberOfContacts);
+        collisionPointsModel2.reserve(numberOfContacts);
+
+        for (unsigned int i = 0; i < numberOfContacts; i++){
+
+            if(std::get<0>(contactElements[i]) == 0){
+                collisionElementsModel1.emplace_back(std::get<1>(contactElements[i]));
+                collisionElementsModel2.emplace_back(std::get<3>(contactElements[i]));
+            }
+            else{
+                collisionElementsModel1.emplace_back(std::get<3>(contactElements[i]));
+                collisionElementsModel2.emplace_back(std::get<1>(contactElements[i]));
+            }
+
+            if(std::get<0>(contactPoints[i]) == 0){
+                collisionPointsModel1.emplace_back(std::get<1>(contactPoints[i]));
+                collisionPointsModel2.emplace_back(std::get<3>(contactPoints[i]));
+            }
+            else{
+                collisionPointsModel1.emplace_back(std::get<3>(contactPoints[i]));
+                collisionPointsModel2.emplace_back(std::get<1>(contactPoints[i]));
+            }
+        }
+
+        contactData["collisionPointsModel1"] = collisionPointsModel1;
+        contactData["collisionPointsModel2"] = collisionPointsModel2;
+
+        contactData["collisionElementsModel1"] = collisionElementsModel1;
+        contactData["collisionElementsModel2"]= collisionElementsModel2;
+
+        return contactData;
+    }
+
+
 void moduleAddContactListener(pybind11::module &m)
 {
     /// register the ContactListener binding in the pybind11 typing sytem
@@ -46,8 +95,11 @@ void moduleAddContactListener(pybind11::module &m)
                sofa::core::objectmodel::BaseObject,
                py_shared_ptr<ContactListener>> c(m, "ContactListener", sofapython3::doc::contactListener::contactListenerClass);
 
-    /// Commented out until feature is in SOFA master
-    /* c.def("getNumberOfContacts", &ContactListener::getNumberOfContacts); */
+    c.def("getNumberOfContacts", &ContactListener::getNumberOfContacts);
+    c.def("getContactData", &getContactData);
+    c.def("getDistances", &sofa::core::collision::ContactListener::getDistances);
+    c.def("getContactPoints", &sofa::core::collision::ContactListener::getContactPoints);
+    c.def("getContactElements", &sofa::core::collision::ContactListener::getContactElements);
 
     /// register the ContactListener binding in the downcasting subsystem
     PythonFactory::registerType<ContactListener>([](sofa::core::objectmodel::Base* object)

@@ -20,44 +20,38 @@
 
 #pragma once
 
-#include <string>
-#include <map>
+#include <sofa/config.h>
+#include <pybind11/pybind11.h>
 
-#include <sofa/simulation/SceneLoaderFactory.h>
-#include <sofa/simulation/Visitor.h>
-#include <sofa/simulation/Node.h>
 
-#include <SofaPython3/config.h>
+/**
+ * This macro HAS to be placed in front of function prototypes containing
+ * pybind11 symbols. By default pybind exports its attributes as hidden symbols
+ * which causes linking against libs using them impossible (undefined refs).
+ * It will also do the job of adding the dllexport / dllimport declaration on
+ * Windows Systems.
+ **/
 
-namespace sofapython3
-{
-using sofa::simulation::Node;
-using sofa::simulation::SceneLoader;
+ // __attribute__(visibility("default")) && __declspec(dllexport)
+#ifdef SOFA_BUILD_SOFAPYTHON3
+	#define SOFAPYTHON3_API PYBIND11_EXPORT
+#else
+	#define SOFAPYTHON3_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-/// The scene loader for python3 scene files
-class SOFAPYTHON3_API SceneLoaderPY3 : public SceneLoader
-{
-public:
-    virtual ~SceneLoaderPY3(){}
+// define own pybind version macro, much easier to test/read
+#define PYBIND11_SOFA_VERSION_MAJOR @pybind11_VERSION_MAJOR@
+#define PYBIND11_SOFA_VERSION_MINOR @pybind11_VERSION_MINOR@
+#define PYBIND11_SOFA_VERSION_PATCH @pybind11_VERSION_PATCH@
+#define PYBIND11_SOFA_VERSION ( \
+      PYBIND11_SOFA_VERSION_MAJOR * 10000 \
+    + PYBIND11_SOFA_VERSION_MINOR * 100 \
+    + PYBIND11_SOFA_VERSION_PATCH )
 
-    /// Pre-loading check
-    virtual bool canLoadFileExtension(const char *extension) override;
-
-    /// Pre-saving check
-    virtual bool canWriteFileExtension(const char *extension) override;
-
-    /// load the file
-    virtual Node::SPtr doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs=std::vector<std::string>(0)) override;
-
-    void loadSceneWithArguments(const char *filename,
-                                const std::vector<std::string>& arguments=std::vector<std::string>(0),
-                                Node::SPtr root_out = nullptr);
-
-    /// get the file type description
-    virtual std::string getFileTypeDesc() override;
-
-    /// get the list of file extensions
-    virtual void getExtensionList(ExtensionList* list) override;
-};
-
-} // namespace sofapython3
+// pybind11 already bind the attributeError starting from 2.8.1 version.
+// so if the version is >= 2.8.1, macro does nothing, otherwise bind attribute_error
+#if PYBIND11_SOFA_VERSION >= 20801
+#define SOFAPYTHON3_BIND_ATTRIBUTE_ERROR()
+#else
+#define SOFAPYTHON3_BIND_ATTRIBUTE_ERROR() namespace pybind11 { PYBIND11_RUNTIME_EXCEPTION(attribute_error, PyExc_AttributeError) }
+#endif // PYBIND11_SOFA_VERSION >= 20801

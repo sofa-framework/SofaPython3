@@ -18,23 +18,33 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#pragma once
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaExporter/Binding_VisualModelOBJExporter.h>
+#include <SofaExporter/Binding_VisualModelOBJExporter_doc.h>
 
-#include <sofa/config.h>
-#include <pybind11/pybind11.h>
+#include <SofaPython3/PythonFactory.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
+#include <SofaExporter/VisualModelOBJExporter.h>
 
+using  sofa::component::exporter::VisualModelOBJExporter;
 
-/**
- * This macro HAS to be placed in front of function prototypes containing
- * pybind11 symbols. By default pybind exports its attributes as hidden symbols
- * which causes linking against libs using them impossible (undefined refs).
- * It will also do the job of adding the dllexport / dllimport declaration on
- * Windows Systems.
- **/
+namespace py { using namespace pybind11; }
 
- // __attribute__(visibility("default")) && __declspec(dllexport)
-#ifdef SOFA_BUILD_SOFAPYTHON3
-	#define SOFAPYTHON3_API PYBIND11_EXPORT
-#else
-	#define SOFAPYTHON3_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofapython3 {
+
+void moduleAddVisualModelOBJExporter(py::module &m)
+{
+    PythonFactory::registerType<VisualModelOBJExporter>([](sofa::core::objectmodel::Base* object)
+    {
+        return py::cast(dynamic_cast<VisualModelOBJExporter*>(object));
+    });
+
+    py::class_<VisualModelOBJExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<VisualModelOBJExporter>> p(m, "VisualModelOBJExporter");
+
+    p.def("write", &VisualModelOBJExporter::write, sofapython3::doc::SofaExporter::VisualModelOBJExporter::write::docstring);
+
+    SOFA_ATTRIBUTE_DISABLED("v21.12", "PR#2505", "The OBJExporter class has been renamed in VisualModelOBJExporter.")
+    py::class_<VisualModelOBJExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<VisualModelOBJExporter>> p_deprecated(m, "OBJExporter");
+}
+
+} // namespace sofapython3

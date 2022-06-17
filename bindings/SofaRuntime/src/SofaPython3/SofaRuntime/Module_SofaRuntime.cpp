@@ -38,6 +38,15 @@ using sofa::helper::system::PluginRepository;
 using sofa::simulation::SceneLoaderFactory;
 using sofa::simulation::SceneLoader;
 
+
+#include <pybind11/stl.h>
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
+#include <sofa/core/CategoryLibrary.h>
+using sofa::core::CategoryLibrary;
+
+
+
 #include <SofaPython3/SceneLoaderPY3.h>
 using sofapython3::SceneLoaderPY3;
 
@@ -64,6 +73,7 @@ using sofa::helper::logging::MainConsoleMessageHandler;
 namespace sofapython3
 {
 
+
 class SofaInitializer
 {
 public:
@@ -81,7 +91,25 @@ public:
     }
 };
 
+static std::vector<std::string>  getCategories(const std::string& className)
+{
+    std::vector<std::string> categories;
+    ObjectFactory* factory = ObjectFactory::getInstance();
 
+    if (factory->hasCreator(className))
+    {
+        ObjectFactory::ClassEntry& entry = factory->getEntry(className);
+        ObjectFactory::CreatorMap::iterator it = entry.creatorMap.begin();
+
+        if( it != entry.creatorMap.end())
+        {
+            ObjectFactory::Creator::SPtr c = it->second;
+            const sofa::core::objectmodel::BaseClass* objClass = c->getClass();
+            CategoryLibrary::getCategories(objClass,categories);
+        }
+    }
+    return categories ;
+}
 
 static SofaInitializer s;
 
@@ -141,6 +169,7 @@ PYBIND11_MODULE(SofaRuntime, m) {
 
     m.add_object("DataRepository", py::cast(&sofa::helper::system::DataRepository));
     m.add_object("PluginRepository", py::cast(&sofa::helper::system::PluginRepository));
+    m.def("getCategories", &getCategories);
 
     addSubmoduleTimer(m);
 }

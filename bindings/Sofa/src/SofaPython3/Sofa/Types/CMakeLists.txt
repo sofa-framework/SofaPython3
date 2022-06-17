@@ -13,10 +13,10 @@ find_package(SofaFramework REQUIRED)
 
 SP3_add_python_module(
         TARGET       ${PROJECT_NAME}
-        PACKAGE      Bindings
+        PACKAGE      Bindings.Sofa
         MODULE       Types
         DESTINATION  Sofa
         SOURCES      ${SOURCE_FILES}
         HEADERS      ${HEADER_FILES}
-        DEPENDS      SofaCore SofaDefaultType SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
+        DEPENDS      Sofa.Core Sofa.DefaultType SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
 )

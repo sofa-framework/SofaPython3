@@ -11,14 +11,14 @@ set(HEADER_FILES
 )
 
 if (NOT TARGET SofaPython3::Plugin)
-    find_package(SofaPython3 REQUIRED)
+    find_package(SofaPython3 REQUIRED COMPONENTS Plugin Bindings.Sofa)
 endif()
 
 find_package(Sofa.GL REQUIRED)
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
-    PACKAGE      Bindings
+    PACKAGE      Bindings.Modules
     MODULE       SofaGL
     DESTINATION  Sofa
     SOURCES      ${SOURCE_FILES}

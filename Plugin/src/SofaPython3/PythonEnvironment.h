@@ -44,7 +44,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/eval.h>
 
-#include "config.h"
+#include <SofaPython3/config.h>
 
 namespace sofapython3
 {
@@ -58,6 +58,11 @@ class SOFAPYTHON3_API PythonEnvironment
 public:
     static void Init();
     static void Release();
+
+    static bool isInitialized()
+    {
+        return s_isInitialized;
+    };
 
     static pybind11::module importFromFile(const std::string& module,
                                      const std::string& path,
@@ -150,6 +155,7 @@ public:
 private:
     static PythonEnvironmentData* getStaticData() ;
     static std::string pluginLibraryPath;
+    static inline bool s_isInitialized{false};
 };
 
 } // namespace sofapython3

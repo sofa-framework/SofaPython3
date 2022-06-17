@@ -17,7 +17,7 @@ find_package(SofaBaseTopology REQUIRED)
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
-    PACKAGE      Bindings
+    PACKAGE      Bindings.Modules
     MODULE       SofaBaseTopology
     DESTINATION  Sofa
     SOURCES      ${SOURCE_FILES}

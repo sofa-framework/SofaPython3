@@ -20,44 +20,10 @@
 
 #pragma once
 
-#include <string>
-#include <map>
+#include <pybind11/pybind11.h>
 
-#include <sofa/simulation/SceneLoaderFactory.h>
-#include <sofa/simulation/Visitor.h>
-#include <sofa/simulation/Node.h>
+namespace sofapython3 {
 
-#include <SofaPython3/config.h>
+void moduleAddVisualModelOBJExporter(pybind11::module &m);
 
-namespace sofapython3
-{
-using sofa::simulation::Node;
-using sofa::simulation::SceneLoader;
-
-/// The scene loader for python3 scene files
-class SOFAPYTHON3_API SceneLoaderPY3 : public SceneLoader
-{
-public:
-    virtual ~SceneLoaderPY3(){}
-
-    /// Pre-loading check
-    virtual bool canLoadFileExtension(const char *extension) override;
-
-    /// Pre-saving check
-    virtual bool canWriteFileExtension(const char *extension) override;
-
-    /// load the file
-    virtual Node::SPtr doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs=std::vector<std::string>(0)) override;
-
-    void loadSceneWithArguments(const char *filename,
-                                const std::vector<std::string>& arguments=std::vector<std::string>(0),
-                                Node::SPtr root_out = nullptr);
-
-    /// get the file type description
-    virtual std::string getFileTypeDesc() override;
-
-    /// get the list of file extensions
-    virtual void getExtensionList(ExtensionList* list) override;
-};
-
-} // namespace sofapython3
+} /// namespace sofapython3

@@ -23,8 +23,13 @@ foreach(modulebindings_module ${MODULEBINDINGS_MODULE_LIST})
     set_target_properties(${PROJECT_NAME}.${modulebindings_module} PROPERTIES FOLDER "Bindings/Modules")
 endforeach()
 
-install(TARGETS ${PROJECT_NAME} EXPORT BindingsTargets)
-
 if(SP3_BUILD_TEST)
 	add_subdirectory(tests)
 endif()
+
+sofa_create_component_in_package_with_targets(
+    COMPONENT_NAME ${PROJECT_NAME}
+    COMPONENT_VERSION ${SofaPython3_VERSION}
+    PACKAGE_NAME SofaPython3
+    TARGETS ${PROJECT_NAME}
+    )

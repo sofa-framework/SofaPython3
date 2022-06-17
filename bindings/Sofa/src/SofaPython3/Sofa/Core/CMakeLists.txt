@@ -70,7 +70,7 @@ set(SOURCE_FILES
 )
 
 if (NOT TARGET SofaPython3::Plugin)
-    find_package(SofaPython3 REQUIRED)
+    find_package(SofaPython3 REQUIRED COMPONENTS Plugin)
 endif()
 
 find_package(SofaFramework REQUIRED)
@@ -80,10 +80,10 @@ find_package(SofaBaseUtils REQUIRED)
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
-    PACKAGE      Bindings
+    PACKAGE      Bindings.Sofa
     MODULE       Core
     DESTINATION  Sofa
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
-    DEPENDS      SofaBaseUtils SofaBaseCollision SofaCore SofaHelper SofaSimulationCore SofaDefaultType SofaBaseVisual SofaPython3::Plugin
+    DEPENDS      SofaBaseUtils SofaBaseCollision Sofa.Core Sofa.Helper Sofa.SimulationCore Sofa.DefaultType SofaBaseVisual SofaPython3::Plugin
 )

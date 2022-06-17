@@ -26,6 +26,7 @@ using  sofa::core::objectmodel::BaseObject;
 
 #include <sofa/core/objectmodel/BaseNode.h>
 
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseLink.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseLink_doc.h>
 #include <SofaPython3/PythonFactory.h>
@@ -67,6 +68,29 @@ std::string getPathName(BaseLink& self)
     return (n ? n->getPathName() : o->getPathName()) + "." + self.getName();
 }
 
+namespace {
+py::object __getattr__(py::object self, const std::string& s)
+{
+    py::object base = getLinkedBase(py::cast<BaseLink&>(self), 0);
+    if(!base.is_none())
+    {
+        return BindingBase::__getattr__(base, s);
+    }
+    throw std::runtime_error("Unable to find attribute on an empty link.");
+}
+
+void __setattr__(py::object self, const std::string& s, py::object value)
+{
+    py::object base = getLinkedBase(py::cast<BaseLink&>(self), 0);
+    if(!base.is_none())
+    {
+        BindingBase::__setattr__(base, s, value);
+        return;
+    }
+    throw std::runtime_error("Unable to find and set an attribute on an empty link.");
+}
+}
+
 void moduleAddBaseLink(py::module& m)
 {
     py::class_<BaseLink> link(m, "Link", sofapython3::doc::baseLink::baseLinkClass);
@@ -89,11 +113,12 @@ void moduleAddBaseLink(py::module& m)
     link.def("getLinkedBase", getLinkedBase, "index"_a = 0, sofapython3::doc::baseLink::getLinkedBase);
     link.def("setLinkedBase", &BaseLink::setLinkedBase, sofapython3::doc::baseLink::getLinkedBase);
 
-
     link.def("getLinkedPath", &BaseLink::getLinkedPath, "index"_a = 0, sofapython3::doc::baseLink::getLinkedPath);
     link.def("getPathName", getPathName, sofapython3::doc::baseLink::getLinkedPath);
     link.def("read", &BaseLink::read, sofapython3::doc::baseLink::read);
 
+    link.def("__getattr__", &__getattr__);
+    link.def("__setattr__", &__setattr__);
 }
 
 } /// namespace sofapython3

@@ -63,6 +63,22 @@ static auto findData =
         :type name: string
         :return: the data field
         )";
+static auto getLinkPath =
+        R"(
+        returns the path name as a parsable string.
+        eg:
+            if object.getPathName() is "/child1/object"
+            then the linkPath is @"/child1/object"
+        )";
+static auto getPathName =
+        R"(
+        returns the path name as a string.
+        .. code-block:: python
+            a = Sofa.Core.Node("root")
+            b.addObject("Camera", name="camera")
+            b.getPathName() # should returns "/root/camera"
+        ```
+        )";
 static auto setDataValues =
         R"(
         Set values for a the given data field, multiple pairs of args are allowed.

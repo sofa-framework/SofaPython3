@@ -22,13 +22,19 @@ SP3_add_python_package(
 
 SP3_add_python_module(
         TARGET       ${PROJECT_NAME}
-        PACKAGE      Bindings
         MODULE       SofaRuntime
         DESTINATION  SofaRuntime
         SOURCES      ${SOURCE_FILES}
         HEADERS      ${HEADER_FILES}
-        DEPENDS      SofaCore SofaHelper SofaSimulationCore SofaSimulationGraph SofaSimulationCommon SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
+        DEPENDS      Sofa.Core Sofa.Helper Sofa.SimulationCore SofaSimulationGraph SofaSimulationCommon SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
 )
+
+sofa_create_component_in_package_with_targets(
+    COMPONENT_NAME ${PROJECT_NAME}
+    COMPONENT_VERSION ${SofaPython3_VERSION}
+    PACKAGE_NAME SofaPython3
+    TARGETS ${PROJECT_NAME}
+    )
 
 if(SP3_BUILD_TEST)
     add_subdirectory(tests)

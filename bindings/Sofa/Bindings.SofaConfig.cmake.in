@@ -3,14 +3,12 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-set(SP3_BUILD_TEST @SP3_BUILD_TEST@)
+find_package(SofaPython3 QUIET REQUIRED COMPONENTS Plugin)
 
-find_package(pybind11 QUIET REQUIRED CONFIG)
+# Required by Bindings.Sofa.Components, Bindings.Sofa.Core, Bindings.Sofa.Helper, Bindings.Sofa.Simulation, Bindings.Sofa.Types, Bindings.SofaGui
 find_package(SofaFramework QUIET REQUIRED)
+# Required by Bindings.Sofa.Simulation, Bindings.SofaRuntime
 find_package(SofaSimulationGraph QUIET REQUIRED)
-if(SP3_BUILD_TEST)
-    find_package(Sofa.Testing QUIET REQUIRED)
-endif()
 
 # If we are importing this config file and the target is not yet there this is indicating that
 # target is an imported one. So we include it

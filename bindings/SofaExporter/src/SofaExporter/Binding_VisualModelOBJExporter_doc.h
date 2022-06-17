@@ -20,44 +20,31 @@
 
 #pragma once
 
-#include <string>
-#include <map>
+namespace sofapython3::doc::SofaExporter::VisualModelOBJExporter::write {
 
-#include <sofa/simulation/SceneLoaderFactory.h>
-#include <sofa/simulation/Visitor.h>
-#include <sofa/simulation/Node.h>
+static auto docstring =
+        R"(
+        Exports an OBJ file
+        ---------------------------------------
 
-#include <SofaPython3/config.h>
+        Will export a binary or ascii file depending on the binary flag of VisualModelOBJExporter
+        Will auto-number the exported files
 
-namespace sofapython3
-{
-using sofa::simulation::Node;
-using sofa::simulation::SceneLoader;
+        Example of use:
+          .. code-block:: python
 
-/// The scene loader for python3 scene files
-class SOFAPYTHON3_API SceneLoaderPY3 : public SceneLoader
-{
-public:
-    virtual ~SceneLoaderPY3(){}
+             import Sofa
+             import SofaExporter
 
-    /// Pre-loading check
-    virtual bool canLoadFileExtension(const char *extension) override;
+             # Create a new node
+             n = Sofa.Core.Node("root"")
 
-    /// Pre-saving check
-    virtual bool canWriteFileExtension(const char *extension) override;
+             # Add STLExporter
+             n.addObject("VisualModelOBJExporter", name="exporter", ...)
 
-    /// load the file
-    virtual Node::SPtr doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs=std::vector<std::string>(0)) override;
+             # writes down the stl file
+             n.exporter.write()
 
-    void loadSceneWithArguments(const char *filename,
-                                const std::vector<std::string>& arguments=std::vector<std::string>(0),
-                                Node::SPtr root_out = nullptr);
+        )";
 
-    /// get the file type description
-    virtual std::string getFileTypeDesc() override;
-
-    /// get the list of file extensions
-    virtual void getExtensionList(ExtensionList* list) override;
-};
-
-} // namespace sofapython3
+}

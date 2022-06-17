@@ -7,6 +7,7 @@ import Sofa
 def create_scene(rootName="root"):
     root = Sofa.Core.Node(rootName)
     root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+    root.addObject("RequiredPlugin", name="SofaDeformable")
     return root
 
 class Test(unittest.TestCase):
@@ -92,8 +93,16 @@ class Test(unittest.TestCase):
         self.assertEqual(link_input.getLinkedBase(0).getName(),"t1")
         link_output = mm.findLink("output")
         self.assertEqual(link_output.getLinkedBase(0).getName(),"t2")
-        self.assertEqual(link_input.getOwnerBase().getName(), "BarycentricMapping")
-        self.assertEqual(link_output.getOwnerBase().getName(), "BarycentricMapping")
+        self.assertEqual(link_input.getOwnerBase().getName(), mm.getName())
+        self.assertEqual(link_output.getOwnerBase().getName(), mm.getName())
+
+    def test_baselink_attributes_forwarding(self):
+        root = create_scene("root")
+        c1 = root.addObject("MechanicalObject", name="t1", position=[[-1,-2,-3],[-4,-5,-6]])
+        f1 = root.addObject("RestShapeSpringsForceField", name="forcefield", mstate="@t1")
+        self.assertEqual(len(f1.mstate.position), 2)
+        f1.mstate.position = [[1.0,2.0,3.0]]
+        self.assertEqual(len(f1.mstate.position), 1)
 
     @unittest.skip # Segmentation fault on MacOS
     def test_read(self):

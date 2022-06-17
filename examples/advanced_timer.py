@@ -65,7 +65,7 @@ def createScene(root):
     # Create our mechanical node
     root.addChild("meca")
     root.meca.addObject("StaticSolver", newton_iterations=5, printLog=False)
-    root.meca.addObject("CGLinearSolver")
+    root.meca.addObject("CGLinearSolver", iterations=25, tolerance=1e-5, threshold=1e-5)
 
     root.meca.addObject('MechanicalObject', name='mo', position='@../grid.position')
     root.meca.addObject('HexahedronSetTopologyContainer', name='mechanical_topology', src='@../grid')

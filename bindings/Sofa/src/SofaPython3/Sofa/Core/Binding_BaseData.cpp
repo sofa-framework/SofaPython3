@@ -33,8 +33,8 @@
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/PythonFactory.h>
 
-/// Bind the python's attribute error
-namespace pybind11 { PYBIND11_RUNTIME_EXCEPTION(attribute_error, PyExc_AttributeError) }
+SOFAPYTHON3_BIND_ATTRIBUTE_ERROR()
+
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
 
@@ -112,6 +112,7 @@ py::object writeableArray(BaseData* self)
 
 void __setattr__(py::object self, const std::string& s, py::object value)
 {
+    SOFA_UNUSED(s);
     BaseData* selfdata = py::cast<BaseData*>(self);
 
     if(py::isinstance<DataContainer>(value))
@@ -136,6 +137,9 @@ py::object __getattr__(py::object self, const std::string& s)
     /// function.
     if(s == "value")
         return PythonFactory::valueToPython_ro(py::cast<BaseData*>(self));
+
+    if(s == "linkpath")
+        return py::cast((py::cast<BaseData*>(self))->getLinkPath());
 
     /// BaseData does not support dynamic attributes, if you think this is an important feature
     /// please request for its integration.

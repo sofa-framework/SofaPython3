@@ -35,9 +35,10 @@ def createScene(root):
     root.addObject('DefaultAnimationLoop')
 
     root.addObject('VisualStyle', displayFlags="showCollisionModels")
-    root.addObject('RequiredPlugin', pluginName="SofaOpenglVisual SofaBoundaryCondition SofaGeneralLoader SofaGeneralSimpleFem")
+    root.addObject('RequiredPlugin', pluginName="SofaImplicitOdeSolver SofaLoader SofaOpenglVisual SofaBoundaryCondition SofaGeneralLoader SofaGeneralSimpleFem")
     root.addObject('DefaultPipeline', name="CollisionPipeline")
-    root.addObject('BruteForceDetection', name="N2")
+    root.addObject('BruteForceBroadPhase', name="BroadPhase")
+    root.addObject('BVHNarrowPhase', name="NarrowPhase")
     root.addObject('DefaultContactManager', name="CollisionResponse", response="default")
     root.addObject('DiscreteIntersection')
 

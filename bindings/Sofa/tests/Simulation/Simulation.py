@@ -21,6 +21,7 @@ class Test(unittest.TestCase):
         tf = tempfile.NamedTemporaryFile(mode="w+t", suffix=".scn", delete=False)
         tf.write(scene)
         tf.flush()
+        tf.close() # need to close the file otherwise SOFA cannot open it (on Windows)
         node = Sofa.Simulation.load(tf.name)
         self.assertNotEqual(node, None)
         self.assertEqual(node.name.value, "rootNode")

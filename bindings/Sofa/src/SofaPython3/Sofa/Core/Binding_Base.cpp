@@ -43,8 +43,7 @@ using sofa::simulation::Node;
 
 #include <SofaPython3/DataHelper.h>
 
-/// Bind the python's attribute error
-namespace pybind11 { PYBIND11_RUNTIME_EXCEPTION(attribute_error, PyExc_AttributeError) }
+SOFAPYTHON3_BIND_ATTRIBUTE_ERROR()
 
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
@@ -387,7 +386,13 @@ std::string BindingBase::getPathName(Base& self)
 {
     return self.toBaseNode() ? self.toBaseNode()->getPathName() : self.toBaseObject()->getPathName();
 }
-    
+
+std::string BindingBase::getLinkPath(Base& self)
+{
+    return "@"+getPathName(self);
+}
+
+
 py::object BindingBase::setDataValues(Base& self, py::kwargs kwargs)
 {
     for(auto key : kwargs)
@@ -435,7 +440,8 @@ void moduleAddBase(py::module &m)
     base.def("getLoggedMessagesAsString", &BindingBase::getLoggedMessagesAsString, sofapython3::doc::base::getLoggedMessagesAsString);
     base.def("countLoggedMessages", &BindingBase::countLoggedMessages, sofapython3::doc::base::countLoggedMessages);
     base.def("clearLoggedMessages", &BindingBase::clearLoggedMessages, sofapython3::doc::base::clearLoggedMessages);
-    base.def("getPathName", &BindingBase::getPathName);
+    base.def("getPathName", &BindingBase::getPathName, sofapython3::doc::base::getPathName);
+    base.def("getLinkPath", &BindingBase::getLinkPath, sofapython3::doc::base::getLinkPath);
     base.def("setDataValues", &BindingBase::setDataValues, sofapython3::doc::base::setDataValues);
 }
 

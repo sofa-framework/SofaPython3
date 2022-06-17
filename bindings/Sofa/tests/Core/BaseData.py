@@ -292,6 +292,11 @@ class Test(unittest.TestCase):
             self.assertEqual(wa[2, 2], 8.0)
             numpy.testing.assert_array_equal(wa, v*4.0)
 
+    def test_linkpath(self):
+        n = create_scene("rootNode")
+        m = n. addObject("MechanicalObject", name="dofs")
+        self.assertEqual(m.position.linkpath, "@/dofs.position")
+
     def test_set_value_from_string(self):
         n = create_scene("rootNode")
         n.gravity.value = [1.0,2.0,3.0]

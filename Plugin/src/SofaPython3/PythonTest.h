@@ -22,7 +22,7 @@
 
 #include <string>
 #include <SofaPython3/config.h>
-#include <sofa/helper/testing/BaseTest.h>
+#include <sofa/testing/BaseTest.h>
 
 #include <filesystem>
 using std::filesystem::path;
@@ -30,7 +30,7 @@ using std::filesystem::path;
 namespace sofapython3
 {
 
-using sofa::helper::testing::BaseTest;
+using sofa::testing::BaseTest;
 
 /// a Python_test is defined by a python filepath and optional arguments
 struct SOFAPYTHON3_API PythonTestData
