@@ -13,7 +13,7 @@ def main():
 
     Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
     Sofa.Gui.GUIManager.createGUI(root, __file__)
-    Sofa.Gui.GUIManager.SetDimension(1080, 1080)
+    Sofa.Gui.GUIManager.SetDimension(1080, 600)
     Sofa.Gui.GUIManager.MainLoop(root)
     Sofa.Gui.GUIManager.closeGUI()
 
@@ -25,7 +25,7 @@ def createScene(root):
     root.addObject('DefaultAnimationLoop')
     root.addObject('DefaultVisualManagerLoop')
     root.addObject('VisualStyle', displayFlags="hideCollisionModels showVisualModels hideForceFields showBehaviorModels")
-    root.addObject('RequiredPlugin', pluginName="SofaSimpleFem SofaSparseSolver SofaEngine SofaImplicitOdeSolver SofaLoader SofaOpenglVisual SofaBoundaryCondition SofaGeneralLoader SofaGeneralSimpleFem SofaGeneralEngine CImgPlugin SofaTopologyMapping") 
+    root.addObject('RequiredPlugin', pluginName="Sofa.Component.Constraint.Projective Sofa.Component.Diffusion Sofa.Component.Engine.Select Sofa.Component.LinearSolver.Direct Sofa.Component.LinearSolver.Iterative Sofa.Component.Mass Sofa.Component.ODESolver.Backward Sofa.Component.SolidMechanics.FEM.Elastic Sofa.Component.Topology.Container.Dynamic Sofa.Component.Topology.Container.Grid Sofa.Component.Topology.Mapping Sofa.Component.Visual Sofa.GL.Component.Engine Sofa.GL.Component.Rendering2D Sofa.GL.Component.Rendering3D")
 
     root.addObject('RegularGridTopology', name="gridGenerator", nx="16", ny="6", nz="6", xmin="0", xmax="1", ymin="0", ymax="0.2", zmin="0", zmax="0.2")
     root.addObject("OglColorMap", legendTitle="A-dimensional temperature", min=0, max=1, showLegend=True, colorScheme="Blue to Red")
@@ -45,7 +45,7 @@ def createScene(root):
     meca.addObject("TetrahedronSetTopologyContainer", name="tetContainer", src="@../tetContainer")
     meca.addObject("TetrahedronSetGeometryAlgorithms", name="tetGeometry", template="Vec3d")
     meca.addObject("MechanicalObject", name="MO", position="@../tetraO.position")
-    meca.addObject("MeshMatrixMass", name="Mass", massDensity="100")
+    meca.addObject("MeshMatrixMass", template="Vec3d,Vec3d", name="Mass", massDensity="100", topology="@tetContainer", geometryState="@MO")
     meca.addObject("FixedConstraint", name="FixedBoundaryCondition", indices="@../BoundaryCondition.indices")
 
     #initialization of the vector multiplying the local Young's modulus (need to activate updateStiffness=True)
@@ -59,7 +59,7 @@ def createScene(root):
     thermo.addObject("TetrahedronSetTopologyContainer", name="tetContainer", src="@../tetContainer")
     thermo.addObject("TetrahedronSetGeometryAlgorithms", name="tetGeometry", template="Vec3d")
     thermo.addObject("MechanicalObject", name="Temperatures", template="Vec1d", size="576", showObject=True)
-    thermo.addObject("MeshMatrixMass", name="Conductivity", massDensity="1.0")
+    thermo.addObject("MeshMatrixMass", template="Vec1d,Vec3d", name="Conductivity", massDensity="1.0", topology="@../tetContainer", geometryState="@../Mechanics/MO")
     thermo.addObject("FixedConstraint", name="Heating", indices="495")
     thermo.addObject("TetrahedronDiffusionFEMForceField", name="DiffusionForceField", template="Vec1d", constantDiffusionCoefficient="0.05", tagMechanics="3dgeometry", mstate="@Temperatures")
 
