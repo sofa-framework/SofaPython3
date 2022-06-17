@@ -27,7 +27,7 @@ def createScene(root):
     root.addObject('VisualStyle', displayFlags="hideCollisionModels showVisualModels hideForceFields showBehaviorModels")
     root.addObject('RequiredPlugin', pluginName="Sofa.Component.Constraint.Projective Sofa.Component.Diffusion Sofa.Component.Engine.Select Sofa.Component.LinearSolver.Direct Sofa.Component.LinearSolver.Iterative Sofa.Component.Mass Sofa.Component.ODESolver.Backward Sofa.Component.SolidMechanics.FEM.Elastic Sofa.Component.Topology.Container.Dynamic Sofa.Component.Topology.Container.Grid Sofa.Component.Topology.Mapping Sofa.Component.Visual Sofa.GL.Component.Engine Sofa.GL.Component.Rendering2D Sofa.GL.Component.Rendering3D")
 
-    root.addObject('RegularGridTopology', name="gridGenerator", nx="16", ny="6", nz="6", xmin="0", xmax="1", ymin="0", ymax="0.2", zmin="0", zmax="0.2")
+    root.addObject('RegularGridTopology', name="gridGenerator", nx=16, ny=6, nz=6, xmin=0, xmax=1, ymin=0, ymax=0.2, zmin=0, zmax=0.2)
     root.addObject("OglColorMap", legendTitle="A-dimensional temperature", min=0, max=1, showLegend=True, colorScheme="Blue to Red")
 
 
@@ -36,7 +36,7 @@ def createScene(root):
     tetraTopo.addObject("TetrahedronSetTopologyModifier", name="Modifier")
     tetraTopo.addObject("Hexa2TetraTopologicalMapping", input="@../gridGenerator", output="@tetContainer")
     tetraTopo.addObject("MechanicalObject", name="tetraO", position="@../gridGenerator.position", tags="3dgeometry")
-    tetraTopo.addObject("BoxROI", name="BoundaryCondition", box="-0.01 -0.01 -0.01 0.01 0.21 0.21")
+    tetraTopo.addObject("BoxROI", name="BoundaryCondition", box=[-0.01, -0.01, -0.01, 0.01, 0.21, 0.21])
 
 
     meca = tetraTopo.addChild("Mechanics")
@@ -45,27 +45,27 @@ def createScene(root):
     meca.addObject("TetrahedronSetTopologyContainer", name="tetContainer", src="@../tetContainer")
     meca.addObject("TetrahedronSetGeometryAlgorithms", name="tetGeometry", template="Vec3d")
     meca.addObject("MechanicalObject", name="MO", position="@../tetraO.position")
-    meca.addObject("MeshMatrixMass", template="Vec3d,Vec3d", name="Mass", massDensity="100", topology="@tetContainer", geometryState="@MO")
+    meca.addObject("MeshMatrixMass", template="Vec3d,Vec3d", name="Mass", massDensity=100, topology="@tetContainer", geometryState="@MO")
     meca.addObject("FixedConstraint", name="FixedBoundaryCondition", indices="@../BoundaryCondition.indices")
 
     #initialization of the vector multiplying the local Young's modulus (need to activate updateStiffness=True)
     initVector = np.full((1, 576), 1.0)
-    meca.addObject("TetrahedronFEMForceField", name="LinearElasticity", youngModulus="3e5", poissonRatio="0.4", computeVonMisesStress="1", showVonMisesStressPerElement=True, localStiffnessFactor=initVector, updateStiffness=True)
+    meca.addObject("TetrahedronFEMForceField", name="LinearElasticity", youngModulus=3e5, poissonRatio=0.4, computeVonMisesStress=1, showVonMisesStressPerElement=True, localStiffnessFactor=initVector, updateStiffness=True)
 
 
     thermo = tetraTopo.addChild("Thermodynamics")
-    thermo.addObject("EulerImplicitSolver", name="Euler Impl IntegrationScheme", firstOrder="1")
-    thermo.addObject("CGLinearSolver", name="Conjugate Gradient", iterations="1000", tolerance="1.0e-10", threshold="1.0e-30")
+    thermo.addObject("EulerImplicitSolver", name="Euler Impl IntegrationScheme", firstOrder=True)
+    thermo.addObject("CGLinearSolver", name="Conjugate Gradient", iterations="1000", tolerance=1.0e-10, threshold=1.0e-30)
     thermo.addObject("TetrahedronSetTopologyContainer", name="tetContainer", src="@../tetContainer")
     thermo.addObject("TetrahedronSetGeometryAlgorithms", name="tetGeometry", template="Vec3d")
-    thermo.addObject("MechanicalObject", name="Temperatures", template="Vec1d", size="576", showObject=True)
-    thermo.addObject("MeshMatrixMass", template="Vec1d,Vec3d", name="Conductivity", massDensity="1.0", topology="@../tetContainer", geometryState="@../Mechanics/MO")
-    thermo.addObject("FixedConstraint", name="Heating", indices="495")
-    thermo.addObject("TetrahedronDiffusionFEMForceField", name="DiffusionForceField", template="Vec1d", constantDiffusionCoefficient="0.05", tagMechanics="3dgeometry", mstate="@Temperatures")
+    thermo.addObject("MechanicalObject", name="Temperatures", template="Vec1d", size=576, showObject=True)
+    thermo.addObject("MeshMatrixMass", template="Vec1d,Vec3d", name="Conductivity", massDensity=1.0, topology="@../tetContainer", geometryState="@../Mechanics/MO")
+    thermo.addObject("FixedConstraint", name="Heating", indices=495)
+    thermo.addObject("TetrahedronDiffusionFEMForceField", name="DiffusionForceField", template="Vec1d", constantDiffusionCoefficient=0.05, tagMechanics="3dgeometry", mstate="@Temperatures")
 
     thermoVisu = thermo.addChild("Visu")
-    thermoVisu.addObject("TextureInterpolation", template="Vec1d", name="EngineInterpolation", input_states="@../Temperatures.position",  input_coordinates="@../../Mechanics/MO.position",  min_value="0.",  max_value="1.",  manual_scale="1" , drawPotentiels="0",  showIndicesScale="5e-05")
-    thermoVisu.addObject("OglModel", template="Vec3d", name="oglPotentiel", handleDynamicTopology="0", texcoords="@EngineInterpolation.output_coordinates" ,texturename="textures/heatColor.bmp", scale3d="1 1 1", material="Default Diffuse 1 1 1 1 0.5 Ambient 1 1 1 1 0.3 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material ")
+    thermoVisu.addObject("TextureInterpolation", template="Vec1d", name="EngineInterpolation", input_states="@../Temperatures.position",  input_coordinates="@../../Mechanics/MO.position",  min_value=0.,  max_value=1.,  manual_scale=True , drawPotentiels=False,  showIndicesScale=5e-05)
+    thermoVisu.addObject("OglModel", template="Vec3d", name="oglPotentiel", handleDynamicTopology="0", texcoords="@EngineInterpolation.output_coordinates" ,texturename="textures/heatColor.bmp", scale3d=[1, 1, 1], material="Default Diffuse 1 1 1 1 0.5 Ambient 1 1 1 1 0.3 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material ")
     thermoVisu.addObject("IdentityMapping", input="@../../Mechanics/MO", output="@oglPotentiel")
 
     # Add the controller
