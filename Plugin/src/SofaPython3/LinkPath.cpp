@@ -31,10 +31,7 @@ LinkPath::LinkPath(sofa::core::sptr<sofa::core::objectmodel::Base> target)
 
 LinkPath::LinkPath(sofa::core::objectmodel::BaseData* target)
 {
-    if(target->getOwner())
-    {
-        targetBase = target->getOwner();
-    }
+    targetBase = target->getOwner();
     targetData = target;
 }
 
