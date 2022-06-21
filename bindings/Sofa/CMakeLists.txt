@@ -1,6 +1,7 @@
 project(Bindings.Sofa)
 
 set(SOFABINDINGS_MODULE_LIST
+    Lifecycle
     Components
     Core
     Helper

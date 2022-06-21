@@ -54,11 +54,12 @@ static struct PythonModule_Sofa_tests : public PythonTestExtractor
     PythonModule_Sofa_tests()
     {
         const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
+        addTestDirectory(executable_directory+"/Bindings.Sofa.Tests.d/Components", "Sofa_Components_");
         addTestDirectory(executable_directory+"/Bindings.Sofa.Tests.d/Core", "Sofa_Core_");
         addTestDirectory(executable_directory+"/Bindings.Sofa.Tests.d/Helper", "Sofa_Helper_");
+        addTestDirectory(executable_directory+"/Bindings.Sofa.Tests.d/Lifecycle", "Sofa_Core_");
         addTestDirectory(executable_directory+"/Bindings.Sofa.Tests.d/Simulation", "Sofa_Simulation_");
         addTestDirectory(executable_directory+"/Bindings.Sofa.Tests.d/Types", "Sofa_Types_");
-        addTestDirectory(executable_directory+"/Bindings.Sofa.Tests.d/Components", "Sofa_Components_");
     }
 } python_tests;
 

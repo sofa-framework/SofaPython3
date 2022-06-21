@@ -106,14 +106,15 @@ sys.stdout.flush()
 import Sofa.constants
 import Sofa.Helper
 import Sofa.Core
+import Sofa.Lifecycle
 import Sofa.Simulation
 import Sofa.Types
 import Sofa.Components
 import SofaTypes
-
 from .prefab import *
+from .Lifecycle import __new_feature__
 
-__all__=["constants", "Helper", "Core", "Simulation", "Types", "SofaTypes", "prefab"]
+__all__=["constants", "Helper", "Core", "Simulation", "Types", "SofaTypes", "prefab", "future"]
 
 # Keep a list of the modules always imported in the Sofa-PythonEnvironment
 try:
@@ -124,7 +125,6 @@ except:
     # some modules could be added here manually and can be modified procedurally
     # e.g. plugin's modules defined from c++
     __SofaPythonEnvironment_modulesExcludedFromReload = []
-
 
 def unloadModules():
     """ call this function to unload python modules and to force their reload
@@ -177,7 +177,6 @@ def getPythonCallingPoint():
 def sendMessageFromException(e):
     exc_type, exc_value, exc_tb = sys.exc_info()
     sofaExceptHandler(exc_type, exc_value, exc_tb)
-
 
 def sofaFormatHandler(type, value, tb):
     global oldexcepthook
