@@ -241,10 +241,6 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         object->setName(resolvedName);
     }
 
-    auto finfo = PythonEnvironment::getPythonCallingPointAsFileInfo();
-    object->setInstanciationSourceFileName(finfo->filename);
-    object->setInstanciationSourceFilePos(finfo->line);
-
     setFieldsFromPythonValues(object.get(), kwargs);
 
     checkParamUsage(desc);
