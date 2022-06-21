@@ -110,7 +110,7 @@ class Prefab(Sofa.Core.RawPrefab):
                 docstring += "\n:param " + p['name'] + ": " + p['help'] + ", defaults to " + str(p.get('default', '')) + '\n:type ' + p['name'] + ": " + p['type'] + "\n\n"
 
         if hasattr(self, "properties"):
-            Sofa.Helper.msg_deprecated(self, "properties has been replace with prefabParameters. Please update your code.")
+            Sofa.Helper.msg_deprecated(self, "'properties' has been replaced with 'prefabParameters'. Please update your code.")
             docstring += "Prefab's (properties):"
             for p in self.properties:
                 self.addPrefabParameter(name=p['name'], type=p['type'], help=p['help'], default=kwargs.get(p['name'], p.get('default', None)))
