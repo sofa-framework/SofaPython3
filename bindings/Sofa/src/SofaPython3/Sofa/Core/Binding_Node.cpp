@@ -193,17 +193,17 @@ void setFieldsFromPythonValues(Base* self, const py::kwargs& dict)
     // For each argument of the addObject functin we check if this is a
     // and argument we can do a raw conversion from.
     // currently, only the LinkPath object is supported.
-    for(auto kv : dict)
+    for(auto [key, value] : dict)
     {
-        if(py::isinstance<LinkPath>(kv.second))
+        if(py::isinstance<LinkPath>(value))
         {
-            auto* data = self->findData(py::str(kv.first));
+            auto* data = self->findData(py::str(key));
             if(data)
-                BindingBase::SetData(data, py::cast<py::object>(kv.second));
+                BindingBase::SetData(data, py::cast<py::object>(value));
 
-            auto* link = self->findLink(py::str(kv.first));
+            auto* link = self->findLink(py::str(key));
             if(link)
-                BindingBase::SetLink(link, py::cast<py::object>(kv.second));
+                BindingBase::SetLink(link, py::cast<py::object>(value));
         }
     }
 }
