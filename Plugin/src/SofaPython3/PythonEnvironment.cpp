@@ -237,7 +237,7 @@ void PythonEnvironment::Init()
     // Lastly, we (try to) add modules from the root of SOFA
     addPythonModulePathsFromDirectory( Utils::getSofaPathPrefix() );
 
-    executePython([]{ getStaticData()->m_sofamodule = py::module::import("Sofa"); });
+    executePython([]{ getStaticData()->m_sofaModule = py::module::import("Sofa"); });
     executePython([]{ getStaticData()->m_sofaRuntimeModule = py::module::import("SofaRuntime"); });
     executePython([]{ PyRun_SimpleString("import SofaRuntime");});
 
