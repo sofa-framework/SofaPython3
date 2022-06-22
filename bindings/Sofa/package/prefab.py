@@ -1,34 +1,50 @@
 import Sofa.Core
 import inspect
 
+
 class Prefab(Sofa.Core.RawPrefab):
     """
-    The Prefab object is a Base class to create custom Prefab components for SOFA, implemented in python.
-    A Prefab can have parameters defined in the "properties" list (datafields under the group "Prefab's Properties"), that trigger its doReInit() function when modified. Parameters must be in a list of dictionaries containing the 3 required fields ("name", "type", "help") and one optional field ("default").
-    When initializing a Prefab, if a prefab property name matches a keyword argument fed to the Prefab's initializer, the property will be added to the prefab as a SOFA data of the given type.
+    Special Node to make reusable procedural objects in Sofa.
+    ---------------------------------------------------------
 
-    Prefabs have protected keyword arguments:
-    - name: the name of the prefab instance
-    - parent and parents: can't be used together, they set the context of the prefab, thus allowing paths resolution for Prefab parameters whose arguments are passed as link paths (strings). parents (with an '-s') sets multi-node contexts
-    - All other protected keyword arguments in SOFA components    
+    Inherit from this class to create your own Prefab. What makes Prefab special is that they 
+    have a set of special data named prefabParameters. When any of prefabParameter is changed the prefab
+    is completely recreated by calling the onParameterChanged method so the scene graph is always kept synchronized
+    with the parameter's content.
+
+    To specify the prefabParameters, it is possible to provide in the class a list of dictionaries containing the 3 required fields ("name", "type", "help")
+    and one optional field ("default").
+
+    The same syntax can be used to also add prefab's data.
 
     Example of use:
       .. code-block:: python
+
         import Sofa.Core
 
         class Foo(Sofa.Core.Prefab):
-            properties = [{ 'name': 'n', 'type': 'int', 'help': 'number of times this prefab prints 'message', 'default': '1'},
-                          {'name': 'message', 'type': 'string', 'help': 'message to display n times', 'default': 'Hello World!'}]
+            prefabParameters = [{ 'name': 'n', 'type': 'int', 'help': 'number of repetition, 'default': 1},
+                                {'name': 'message', 'type': 'string', 'help': 'message to display', 'default': ''}]
+
+            myAttribute = 0
 
             def __init__(self, *a, *k):
                 Sofa.Core.Prefab.__init__(self, *a, **k)
 
-            def doReInit(self):
+            def init(self):
+                myAttribute += 1
                 for i in range(0, self.n.value):
                     print(self.message.value)
 
         n = Sofa.Core.Node()
         n.addChild(Foo(name="aFooPrefab", n=42, message="hello universe!"))
+
+    Prefab has protected the following additional keywords:
+        - "name": the name of the prefab instance
+        - "parent" and "parents": can't be used together, they set the context of the prefab,
+           thus allowing paths resolution for Prefab parameters whose arguments are passed as link paths (strings). parents (with an '-s') sets multi-node contexts
+
+
     """
     def __init__(self, *args, **kwargs):
         Sofa.Core.RawPrefab.__init__(self, *args, **kwargs)
@@ -71,14 +87,36 @@ class Prefab(Sofa.Core.RawPrefab):
             if "parent" in kwargs and "parents" in kwargs:
                 Sofa.Helper.msg_error(self, "Cannot use both 'parent' and 'parents' keywords on a prefab. Use 'parent' to set the context of your prefab, 'parents' in the case of a multi-parent prefab")
         
-        # Prefab parameters are defined in a list of dictionaries named "properties".
+        # Prefab parameters are defined in a list of dictionaries named "prefabParameters".
         # The dictionaries has 3 required fields (name, type, help) and an additional optional field "default"
         docstring = ""
+
+        if hasattr(self, "prefabParameters"):
+            docstring += "Prefab's parameters:"
+            for p in self.prefabParameters:
+                self.addPrefabParameter(name=p['name'],
+                                        type=p['type'],
+                                        help=p['help'],
+                                        default=kwargs.get(p['name'], p.get('default', None)))
+                docstring += "\n:param " + p['name'] + ": " + p['help'] + ", defaults to " + str(p.get('default', '')) + '\n:type ' + p['name'] + ": " + p['type'] + "\n\n"
+
+        if hasattr(self, "prefabData"):
+            docstring += "Prefab's data:"
+            for p in self.prefabData:
+                self.addData(name=p['name'], type=p['type'], help=p['help'],
+                             value=kwargs.get(p['name'], p.get('default', None)),
+                             default=p['default'],
+                             group=p.get('group', 'Property'))
+                docstring += "\n:param " + p['name'] + ": " + p['help'] + ", defaults to " + str(p.get('default', '')) + '\n:type ' + p['name'] + ": " + p['type'] + "\n\n"
+
         if hasattr(self, "properties"):
-            docstring += ""
+            Sofa.Helper.msg_deprecated(self, "'properties' has been replaced with 'prefabParameters'. Please update your code.")
+            docstring += "Prefab's (properties):"
             for p in self.properties:
                 self.addPrefabParameter(name=p['name'], type=p['type'], help=p['help'], default=kwargs.get(p['name'], p.get('default', None)))
                 docstring += "\n:param " + p['name'] + ": " + p['help'] + ", defaults to " + str(p.get('default', '')) + '\n:type ' + p['name'] + ": " + p['type'] + "\n\n"
 
         self.addData("docstring", value=('' if self.__doc__ is None else self.__doc__) + docstring, type="string", group="Infos", help="Documentation of the prefab")
+
+        # calls the init() method in the prefab, then do node init & traversal.
         self.init()
