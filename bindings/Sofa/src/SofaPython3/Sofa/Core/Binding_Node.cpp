@@ -190,9 +190,8 @@ py::object getObject(Node &n, const std::string &name, const py::kwargs& kwargs)
 
 void setFieldsFromPythonValues(Base* self, const py::kwargs& dict)
 {
-    // For each argument of the addObject functin we check if this is a
-    // and argument we can do a raw conversion from.
-    // currently, only the LinkPath object is supported.
+    // For each argument of the addObject function we check if this is an argument we can do a raw conversion from.
+    // Doing a raw conversion means that we are not converting the argument anymore into a sofa parsable string.
     for(auto [key, value] : dict)
     {
         if(py::isinstance<LinkPath>(value))
