@@ -68,8 +68,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
 endif()
 
 if (CMAKE_SYSTEM_NAME STREQUAL Windows )
-    target_include_directories(${PROJECT_NAME} PUBLIC "${pybind11_INCLUDE_DIR}")
-
     # https://github.com/boostorg/system/issues/32
     target_compile_definitions(${PROJECT_NAME} PUBLIC "-DHAVE_SNPRINTF")
 endif()
