@@ -195,15 +195,15 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         if (sofapython3::isProtectedKeyword(name))
             throw py::value_error("Cannot call addObject with name " + name + ": Protected keyword");
     }
-    /// Prepare the description to hold the different python attributes as data field's
-    /// arguments then create the object.
+    // Prepare the description to hold the different python attributes as data field's
+    // arguments then create the object.
     BaseObjectDescription desc {nullptr, type.c_str()};
     fillBaseObjectdescription(desc, kwargs);
     auto object = ObjectFactory::getInstance()->createObject(self, &desc);
 
-    /// After calling createObject the returned value can be either a nullptr
-    /// or non-null but with error message or non-null.
-    /// Let's first handle the case when the returned pointer is null.
+    // After calling createObject the returned value can be either a nullptr
+    // or non-null but with error message or non-null.
+    // Let's first handle the case when the returned pointer is null.
     if(!object)
     {
         std::stringstream tmp ;
@@ -211,6 +211,11 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
             tmp << s << msgendl ;
         throw py::value_error(tmp.str());
     }
+
+    // Associates the emission location to the created object.
+    auto finfo = PythonEnvironment::getPythonCallingPointAsFileInfo();
+    object->setInstanciationSourceFileName(finfo->filename);
+    object->setInstanciationSourceFilePos(finfo->line);
 
     if (name.empty())
     {
@@ -220,10 +225,10 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
 
     checkParamUsage(desc);
 
-    /// Convert the logged messages in the object's internal logging into python exception.
-    /// this is not a very fast way to do that...but well...python is slow anyway. And serious
-    /// error management has a very high priority. If performance becomes an issue we will fix it
-    /// when needed.
+    // Convert the logged messages in the object's internal logging into python exception.
+    // this is not a very fast way to do that...but well...python is slow anyway. And serious
+    // error management has a very high priority. If performance becomes an issue we will fix it
+    // when needed.
     if(object->countLoggedMessages({Message::Error}))
     {
         throw py::value_error(object->getLoggedMessagesAsString({Message::Error}));
@@ -244,7 +249,6 @@ py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& k
     if(py::isinstance<BaseObject*>(callable))
     {
         BaseObject* obj = py::cast<BaseObject*>(callable);
-
         self->addObject(obj);
         return py::cast(obj);
     }
@@ -255,6 +259,7 @@ py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& k
         self->addChild(node);
         return py::cast(node);
     }
+
     if(py::isinstance<py::str>(callable))
     {
         py::str type = callable;
@@ -265,11 +270,21 @@ py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& k
     {
         std::string name = py::str(kwargs["name"]);
         if (sofapython3::isProtectedKeyword(name))
-            throw py::value_error("addObject: Cannot call addObject with name " + name + ": Protected keyword");
+            throw py::value_error("add: Cannot call addObject with name " + name + ": Protected keyword");
     }
 
     auto c = callable(self, **kwargs);
     Base* base = py::cast<Base*>(c);
+    if(!py::isinstance<Base*>(c))
+    {
+        throw py::value_error("add: the function passed as first argument can only return a Sofa.BaseObject or Sofa.Node object");
+    }
+
+    // Set the creation point
+    auto finfo = PythonEnvironment::getPythonCallingPointAsFileInfo();
+    base->setInstanciationSourceFileName(finfo->filename);
+    base->setInstanciationSourceFilePos(finfo->line);
+
     for(auto a : kwargs)
     {
         BaseData* d = base->findData(py::cast<std::string>(a.first));
@@ -299,6 +314,10 @@ py::object addChildKwargs(Node* self, const std::string& name, const py::kwargs&
     BaseObjectDescription desc (name.c_str());
     fillBaseObjectdescription(desc,kwargs);
     auto node=simpleapi::createChild(self, desc);
+    auto finfo = PythonEnvironment::getPythonCallingPointAsFileInfo();
+    node->setInstanciationSourceFileName(finfo->filename);
+    node->setInstanciationSourceFilePos(finfo->line);
+
     checkParamUsage(desc);
 
     for(auto a : kwargs)

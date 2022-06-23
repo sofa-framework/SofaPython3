@@ -103,7 +103,8 @@ public:
 
     std::set<std::string> addedPath;
 
-    py::module m_sofamodule ;
+    py::module m_sofaModule ;
+    py::module m_sofaRuntimeModule ;
 private:
     std::vector<wchar_t*> m_argv;
 };
@@ -236,7 +237,8 @@ void PythonEnvironment::Init()
     // Lastly, we (try to) add modules from the root of SOFA
     addPythonModulePathsFromDirectory( Utils::getSofaPathPrefix() );
 
-    executePython([]{ getStaticData()->m_sofamodule = py::module::import("Sofa"); });
+    executePython([]{ getStaticData()->m_sofaModule = py::module::import("Sofa"); });
+    executePython([]{ getStaticData()->m_sofaRuntimeModule = py::module::import("SofaRuntime"); });
     executePython([]{ PyRun_SimpleString("import SofaRuntime");});
 
     // python livecoding related
@@ -505,22 +507,15 @@ std::string PythonEnvironment::getStackAsString()
 
 std::string PythonEnvironment::getPythonCallingPointString()
 {
-    return py::cast<std::string>(getStaticData()->m_sofamodule.attr("getPythonCallingPointAsString")());
+    gil lock;
+    return py::cast<std::string>(getStaticData()->m_sofaModule.attr("getPythonCallingPointAsString")());
 }
 
 sofa::helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAsFileInfo()
 {
-    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaRuntime"));
-    PyObject* res = PyDict_GetItemString(pDict, "getPythonCallingPoint");
-    if(res && PySequence_Check(res) ){
-        PyObject* filename = PySequence_GetItem(res, 0) ;
-        PyObject* number = PySequence_GetItem(res, 1) ;
-        std::string tmp=PyBytes_AsString(filename);
-        auto lineno = PyLong_AsLong(number);
-        Py_DECREF(res) ;
-        return SOFA_FILE_INFO_COPIED_FROM(tmp, lineno);
-    }
-    return SOFA_FILE_INFO_COPIED_FROM("undefined", -1);
+    gil lock;
+    py::tuple cp = getStaticData()->m_sofaRuntimeModule.attr("getPythonCallingPoint")();
+    return SOFA_FILE_INFO_COPIED_FROM(py::cast<std::string>(cp[0]), py::cast<int>(cp[1]));
 }
 
 void PythonEnvironment::setArguments(const std::string& filename, const std::vector<std::string>& arguments)

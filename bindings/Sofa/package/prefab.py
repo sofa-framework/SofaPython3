@@ -1,5 +1,6 @@
 import Sofa.Core
 import inspect
+import os
 
 
 class Prefab(Sofa.Core.RawPrefab):
@@ -50,7 +51,7 @@ class Prefab(Sofa.Core.RawPrefab):
         Sofa.Core.RawPrefab.__init__(self, *args, **kwargs)
         frame = inspect.currentframe().f_back
         frameinfo = inspect.getframeinfo(frame)
-        definedloc = (frameinfo.filename, frameinfo.lineno)
+        definedloc = (os.path.abspath(frameinfo.filename), frameinfo.lineno)
 
         self.setDefinitionSourceFileName(definedloc[0])
         self.setDefinitionSourceFilePos(definedloc[1])
@@ -59,7 +60,7 @@ class Prefab(Sofa.Core.RawPrefab):
         frame = frame.f_back
         if frame is not None:
             frameinfo = inspect.getframeinfo(frame)
-            definedloc = (frameinfo.filename, frameinfo.lineno)
+            definedloc = (os.path.abspath(frameinfo.filename), frameinfo.lineno)
             self.setInstanciationSourceFileName(definedloc[0])
             self.setInstanciationSourceFilePos(definedloc[1])
 
