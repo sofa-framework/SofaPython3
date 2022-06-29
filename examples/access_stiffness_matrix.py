@@ -1,7 +1,6 @@
 # Required import for python
 import Sofa
 import SofaRuntime
-from Sofa import SofaLinearSolver
 from scipy import sparse
 from scipy import linalg
 from matplotlib import pyplot as plt
