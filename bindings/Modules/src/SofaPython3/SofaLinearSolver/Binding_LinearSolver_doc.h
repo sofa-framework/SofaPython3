@@ -18,37 +18,49 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaPython3/PythonTest.h>
-#include <SofaPython3/PythonTestExtractor.h>
-#include <sofa/helper/Utils.h>
+#pragma once
 
-#include <sofa/helper/logging/Messaging.h>
-#include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
-#include <sofa/helper/logging/MessageDispatcher.h>
-using sofa::helper::logging::MessageDispatcher;
+namespace sofapython3::doc::linearsolver {
 
+static auto linearSolverClass =
+R"(
+Linear solver. Supports only scalar CompressedRowSparseMatrix.
 
-/// static build of the test list
-static struct Tests : public sofapython3::PythonTestExtractor
-{
-    Tests() {
-        using sofa::helper::logging::MessageDispatcher;
-        using sofa::helper::logging::MainPerComponentLoggingMessageHandler;
+example:
+------------
 
-        MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+linear_solver = root.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixd') # supported
+linear_solver = root.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixMat3x3d') # not supported
+)";
 
-        const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
-        addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaDeformable", "SofaDeformable_");
-        addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaLinearSolver", "SofaLinearSolver_");
-    }
-} python_tests;
+static auto linearSolver_A =
+R"(
+Returns the global system matrix as a scipy sparse matrix
 
-/// run test list using the custom name function getTestName.
-/// this allows to do gtest_filter=*FileName*
-class Modules : public sofapython3::PythonTest {};
-INSTANTIATE_TEST_SUITE_P(SofaPython3,
-                        Modules,
-                        ::testing::ValuesIn(python_tests.extract()),
-                        Modules::getTestName);
+example:
+------------
+linear_solver = root.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixd')
+matrix = linear_solver.A()
+)";
 
-TEST_P(Modules, all_tests) { run(GetParam()); }
+static auto linearSolver_b =
+R"(
+Returns the global system right hand side as a numpy array
+
+example:
+------------
+linear_solver = root.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixd')
+matrix = linear_solver.b()
+)";
+
+static auto linearSolver_x =
+R"(
+Returns the global system solution vector as a numpy array
+
+example:
+------------
+linear_solver = root.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixd')
+matrix = linear_solver.x()
+)";
+
+} // namespace sofapython3::doc::baseCamera
