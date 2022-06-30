@@ -55,5 +55,5 @@ class MatrixAccessController(Sofa.Core.Controller):
             np.savetxt('mass.csv', mass_matrix.toarray(), delimiter=',')
         if showImage:
             plt.imshow(mass_matrix.toarray(), interpolation='nearest', cmap='gist_gray')
-            plt.show()
+            plt.show(block=False)
 

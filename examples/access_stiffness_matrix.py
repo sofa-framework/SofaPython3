@@ -55,5 +55,5 @@ class MatrixAccessController(Sofa.Core.Controller):
             np.savetxt('stiffness.csv', stiffness_matrix.toarray(), delimiter=',')
         if showImage:
             plt.imshow(stiffness_matrix.toarray(), interpolation='nearest', cmap='gist_gray')
-            plt.show()
+            plt.show(block=False)
 
