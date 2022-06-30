@@ -28,7 +28,7 @@
 namespace sofapython3 {
 
 template<class TDOFType>
-class ForceField_Trampoline  : public sofa::core::behavior::ForceField<TDOFType> {
+class ForceField_Trampoline : public sofa::core::behavior::ForceField<TDOFType> {
 public:
     SOFA_CLASS(ForceField_Trampoline, SOFA_TEMPLATE(sofa::core::behavior::ForceField, TDOFType));
     using sofa::core::behavior::ForceField<TDOFType>::mstate;

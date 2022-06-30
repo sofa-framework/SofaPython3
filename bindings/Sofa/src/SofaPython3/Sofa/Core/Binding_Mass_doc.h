@@ -20,25 +20,25 @@
 
 #pragma once
 
-namespace sofapython3::doc::forceField
+namespace sofapython3::doc::mass
 {
-static auto forceFieldClass = R"(
-                         An overridable class to create your own customized force field.
+static auto massClass = R"(
+                         Mass is an API dedicated to the control of a mass in SOFA.
                          )";
 
-static constexpr const char* assembleKMatrix = R"(
-Assemble the stiffness matrix of a force field.
+static constexpr const char* assembleMMatrix = R"(
+Assemble the mass matrix of a mass.
 
-Note that this function is not free. It assembles the stiffness matrix whether or not it has been assembled previously
+Note that this function is not free. It assembles the mass matrix whether or not it has been assembled previously
 to add it into the global system matrix. Besides, the function does not prevent side effects of a second matrix assembly
 in a single time step.
 
 Typical usage example:
-FEM = root.addObject('HexahedronFEMForceField', name="FEM", youngModulus="4000", poissonRatio="0.3", method="large")
+mass = root.addObject('MeshMatrixMass', name="mass", totalMass="320")
 ...
-stiffness_matrix = self.force_field.assembleKMatrix()
+mass_matrix = mass.assembleMMatrix()
 
 Returns:
-    A scipy.sparse.csr_matrix object representing the stiffness matrix of the force field
+    A scipy.sparse.csr_matrix object representing the mass matrix of the mass
 )";
 }

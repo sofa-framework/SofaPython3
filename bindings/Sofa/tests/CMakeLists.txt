@@ -16,6 +16,7 @@ set(PYTHON_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseObject.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Controller.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/ForceField.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Mass.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/DataEngine.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/MyRestShapeForceField.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseLink.py
