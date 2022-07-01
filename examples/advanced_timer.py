@@ -43,15 +43,7 @@ def createScene(root):
     root.dt = 0.01
 
     # List of required plugins
-    root.addObject('RequiredPlugin', name='SofaBaseMechanics')
-    root.addObject('RequiredPlugin', name='SofaSparseSolver')
-    root.addObject('RequiredPlugin', name='SofaGraphComponent')
-    root.addObject('RequiredPlugin', name='SofaOpenglVisual')
-    root.addObject('RequiredPlugin', name='SofaPreconditioner')
-    root.addObject('RequiredPlugin', name='SofaBoundaryCondition')
-    root.addObject('RequiredPlugin', name='SofaEngine')
-    root.addObject('RequiredPlugin', name='SofaImplicitOdeSolver')
-    root.addObject('RequiredPlugin', name='SofaSimpleFem')
+    root.addObject('RequiredPlugin', name='Sofa.Component')
 
     # Visual style
     root.addObject('VisualStyle', displayFlags='showBehaviorModels showForceFields')

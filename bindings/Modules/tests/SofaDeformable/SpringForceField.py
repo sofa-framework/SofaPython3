@@ -5,7 +5,7 @@ import numpy as np
 
 
 def create_scene(root):
-    root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+    root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
     root.addObject("RequiredPlugin", name="SofaBaseTopology")
 
     # Create a simple plane having 3x3 nodes and a size of 3x3 on the yz plane centered on (-0.5,0,0).

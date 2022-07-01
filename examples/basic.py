@@ -4,8 +4,8 @@ import SofaRuntime
 
 
 def main():
-	# Make sure to load all SOFA libraries
-	SofaRuntime.importPlugin("SofaBaseMechanics")
+        # Make sure to load all necessary libraries
+        SofaRuntime.importPlugin("Sofa.Component.StateContainer")
 
 	# Call the above function to create the scene graph
 	root = Sofa.Core.Node("root")

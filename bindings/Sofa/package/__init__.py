@@ -8,7 +8,7 @@ Example of use:
     import Sofa.Core
     import Sofa.Simulation
     import SofaRuntime
-    SofaRuntime.importPlugin("SofaComponentAll")
+    SofaRuntime.importPlugin("Sofa.Component")
 
     n = Sofa.Core.Node("MyNode")
     n.addChild("Node2")

@@ -128,7 +128,7 @@ PYBIND11_MODULE(SofaRuntime, m) {
                 .. code-block:: python
 
                    import SofaRuntime
-                   SofaRuntime.importPlugin("SofaSparseSolver")
+                   SofaRuntime.importPlugin("Sofa.Component.LinearSolver")
 
               )doc";
 
