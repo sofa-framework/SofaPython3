@@ -43,7 +43,7 @@ def rssffScene(use_implicit_scheme=True, use_iterative_solver=True):
     node = Sofa.Core.Node("root")
     node.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
     node.addObject("RequiredPlugin", name="Sofa.Component.LinearSolver")
-    node.addObject("RequiredPlugin", name="Sofa.Component.ODESolver.Forward")
+    node.addObject("RequiredPlugin", name="Sofa.Component.ODESolver")
     node.addObject("RequiredPlugin", name="Sofa.Component.Mass")
 
     node.gravity = [0, -10, 0]
