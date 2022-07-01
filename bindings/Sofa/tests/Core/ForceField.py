@@ -44,6 +44,7 @@ def rssffScene(use_implicit_scheme=True, use_iterative_solver=True):
     node.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
     node.addObject("RequiredPlugin", name="Sofa.Component.LinearSolver")
     node.addObject("RequiredPlugin", name="Sofa.Component.ODESolver.Forward")
+    node.addObject("RequiredPlugin", name="Sofa.Component.Mass")
 
     node.gravity = [0, -10, 0]
     createParticle(node, "particle", use_implicit_scheme, use_iterative_solver)
