@@ -29,7 +29,7 @@ def createScene(rootNode):
         rootNode.addObject('GenericConstraintSolver', tolerance="1e-6", maxIterations="1000")
         rootNode.addObject('BruteForceDetection')
         rootNode.addObject('RuleBasedContactManager', responseParams="mu="+str(0.0), name='Response',
-                response='FrictionContact')
+                response='FrictionContactConstraint')
         rootNode.addObject('LocalMinDistance', alarmDistance=10, contactDistance=5, angleCone=0.01)
 
         ### Mechanical model

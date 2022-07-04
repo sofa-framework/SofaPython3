@@ -39,7 +39,7 @@ def createScene(root):
     root.addObject('DefaultPipeline', name="CollisionPipeline")
     root.addObject('BruteForceBroadPhase', name="BroadPhase")
     root.addObject('BVHNarrowPhase', name="NarrowPhase")
-    root.addObject('DefaultContactManager', name="CollisionResponse", response="default")
+    root.addObject('DefaultContactManager', name="CollisionResponse", response="PenalityContactForceField")
     root.addObject('DiscreteIntersection')
 
     root.addObject('MeshObjLoader', name="LiverSurface", filename="mesh/liver-smooth.obj")
