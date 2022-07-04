@@ -48,28 +48,12 @@ using sofa::helper::logging::Message;
 #include <SofaPython3/Sofa/Core/Data/Binding_DataVectorString.h>
 #include <SofaPython3/Sofa/Core/Data/Binding_DataContainer.h>
 
-#include <sofa/core/init.h>
-#include <sofa/helper/init.h>
-#include <sofa/simulation/init.h>
-#include <sofa/defaulttype/init.h>
-
-#include <sofa/component/collision/response/contact/init.h>
-#include <sofa/component/visual/init.h>
-
 namespace sofapython3
 {
 
 /// The first parameter must be named the same as the module file to load.
 PYBIND11_MODULE(Core, core)
 {
-    // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
-    sofa::core::init();
-    sofa::helper::init();
-    sofa::simulation::core::init();
-    sofa::defaulttype::init();
-    sofa::component::collision::response::contact::init();
-    sofa::component::visual::init();
-
     core.doc() = R"doc(
            Scene components
            -----------------------
