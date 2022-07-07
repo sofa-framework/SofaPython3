@@ -33,7 +33,7 @@ class Test(unittest.TestCase):
 
         def test_GetAttr(self):
                 root = Sofa.Core.Node("rootNode")
-                root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+                root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
                 c = root.addChild("child1")
                 self.assertTrue(c is not None)
                 self.assertTrue(root.child1 is not None)
@@ -44,7 +44,7 @@ class Test(unittest.TestCase):
 
         def test_init(self):
                 root = Sofa.Core.Node("rootNode")
-                root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+                root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
                 c = root.addChild("child1")
                 c = c.addObject("MechanicalObject", name="MO", position=[0.0,1.0,2.0]*100)
                 root.init()
@@ -86,7 +86,7 @@ class Test(unittest.TestCase):
 
         def test_createObjectWithParam(self):
                 root = Sofa.Core.Node("rootNode")
-                root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+                root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
                 root.addObject("MechanicalObject", name="mechanical", position=[[0,0,0],[1,1,1],[2,2,2]])
                         
         def test_children_property(self):                
@@ -116,7 +116,7 @@ class Test(unittest.TestCase):
 
         def test_objects_property(self):
                 root = Sofa.Core.Node("rootNode")
-                root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+                root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
                 child = root.addChild(Sofa.Core.Node("child1"))
                 child.addObject("MechanicalObject", name="name1")
                 child.addObject("MechanicalObject", name="name2")
@@ -126,7 +126,7 @@ class Test(unittest.TestCase):
 
         def test_objects_property_contains_method(self):
             root = Sofa.Core.Node("rootNode")
-            root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+            root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
             child = root.addChild(Sofa.Core.Node("child1"))
             child.addObject("MechanicalObject", name="name1")
             child.addObject("MechanicalObject", name="name2")
@@ -138,7 +138,7 @@ class Test(unittest.TestCase):
 
         def test_objects_property_remove_at_method(self):
             root = Sofa.Core.Node("rootNode")
-            root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+            root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
             child = root.addChild(Sofa.Core.Node("child1"))
             child.addObject("MechanicalObject", name="name1")
             child.addObject("MechanicalObject", name="name2")
@@ -158,7 +158,7 @@ class Test(unittest.TestCase):
 
         def test_getItem(self):
             root = Sofa.Core.Node("root")
-            root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+            root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
             node1 = root.addChild('node1')
             object1 = root.addObject("MechanicalObject", name="object1")
             node2 = node1.addChild('node2')
@@ -200,20 +200,20 @@ class Test(unittest.TestCase):
 
         def test_hasObjectWithFastPath(self):
             root = Sofa.Core.Node("root")
-            root.addObject("RequiredPlugin", name="SofaBaseMechanics")
-            self.assertTrue(root.hasObject("SofaBaseMechanics"))
+            root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
+            self.assertTrue(root.hasObject("Sofa.Component.StateContainer"))
             self.assertFalse(root.hasObject("NonExistingObjectName"))
 
         def test_hasObjectWithDefaultPythonFunction(self):
             root = Sofa.Core.Node("root")
-            root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+            root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
 
-            self.assertTrue(hasattr(root, "SofaBaseMechanics"))
+            self.assertTrue(hasattr(root, "Sofa.Component.StateContainer"))
             self.assertFalse(hasattr(root, "NonExistingObjectName"))
 
         def test_removeObject(self):
             root = Sofa.Core.Node("root")
-            root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+            root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
             child = root.addChild(Sofa.Core.Node("child1"))
 
             obj1 = child.addObject("MechanicalObject", name="obj1")
@@ -263,28 +263,28 @@ class Test(unittest.TestCase):
 
         def test_getMass(self):
             root = Sofa.Core.Node("root")
-            root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+            root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
             root.addObject("MechanicalObject")
             m = root.addObject("UniformMass", name="mass", vertexMass=0.1)
             self.assertEqual(m,root.getMass())
 
         def test_getForceField(self):
             root = Sofa.Core.Node("root")
-            root.addObject("RequiredPlugin", name="SofaBoundaryCondition")
-            root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+            root.addObject("RequiredPlugin", name="Sofa.Component.MechanicalLoad")
+            root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
             root.addObject("MechanicalObject")
             ff = root.addObject('ConstantForceField', template="Vec3d", name="cff2")
             self.assertEqual(ff, root.getForceField(0))
 
         def test_getMechanicalState(self):
             root = Sofa.Core.Node("root")
-            root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+            root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
             c = root.addObject("MechanicalObject")
             self.assertEqual(c, root.getMechanicalState())
 
         def test_getMechanicalMapping(self):
             root = Sofa.Core.Node("root")
-            root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+            root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
             root.addObject("MechanicalObject", name="t1")
             root.addObject("MechanicalObject", name="t2")
             mm  = root.addObject("BarycentricMapping", input="@/t1", output="@/t2")

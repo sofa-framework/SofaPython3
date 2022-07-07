@@ -17,8 +17,7 @@ if (NOT TARGET SofaPython3::Plugin)
     find_package(SofaPython3 REQUIRED COMPONENTS Plugin Bindings.Sofa)
 endif()
 
-find_package(SofaBase REQUIRED)
-find_package(SofaDeformable REQUIRED)
+find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
@@ -27,6 +26,6 @@ SP3_add_python_module(
     DESTINATION  Sofa
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
-    DEPENDS      SofaBase SofaDeformable SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
+    DEPENDS      Sofa.Component.SolidMechanics.Spring SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
 
 )

@@ -35,11 +35,11 @@ def createScene(root):
     root.addObject('DefaultAnimationLoop')
 
     root.addObject('VisualStyle', displayFlags="showCollisionModels")
-    root.addObject('RequiredPlugin', pluginName="SofaImplicitOdeSolver SofaLoader SofaOpenglVisual SofaBoundaryCondition SofaGeneralLoader SofaGeneralSimpleFem")
+    root.addObject('RequiredPlugin', pluginName="Sofa.Component")
     root.addObject('DefaultPipeline', name="CollisionPipeline")
     root.addObject('BruteForceBroadPhase', name="BroadPhase")
     root.addObject('BVHNarrowPhase', name="NarrowPhase")
-    root.addObject('DefaultContactManager', name="CollisionResponse", response="default")
+    root.addObject('DefaultContactManager', name="CollisionResponse", response="PenalityContactForceField")
     root.addObject('DiscreteIntersection')
 
     root.addObject('MeshObjLoader', name="LiverSurface", filename="mesh/liver-smooth.obj")

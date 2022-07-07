@@ -7,8 +7,9 @@ sys.path.append(os.path.abspath("./bindings/SofaTypes/package"))
 import Sofa.Core
 import SofaRuntime
 
-## Register all the common component in the factory. 
-SofaRuntime.importPlugin("SofaComponentAll")
+## Register all the common component in the factory. 
+SofaRuntime.importPlugin("Sofa.Component")
+SofaRuntime.importPlugin("Sofa.GL.Component")
 
 def createScene(rootNode):
         rootNode.addObject("OglGrid", nbSubdiv=10, size=1000)
@@ -17,7 +18,6 @@ def createScene(rootNode):
         rootNode.findData('dt').value=0.01
 
         confignode = rootNode.addChild("Config")
-        confignode.addObject('RequiredPlugin', name="SofaMiscCollision", printLog=False)
 
         confignode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
 
@@ -29,7 +29,7 @@ def createScene(rootNode):
         rootNode.addObject('GenericConstraintSolver', tolerance="1e-6", maxIterations="1000")
         rootNode.addObject('BruteForceDetection')
         rootNode.addObject('RuleBasedContactManager', responseParams="mu="+str(0.0), name='Response',
-                response='FrictionContact')
+                response='FrictionContactConstraint')
         rootNode.addObject('LocalMinDistance', alarmDistance=10, contactDistance=5, angleCone=0.01)
 
         ### Mechanical model

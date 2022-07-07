@@ -10,7 +10,7 @@ def main():
     import SofaRuntime
     import Sofa.Gui
     # Make sure to load all SOFA libraries
-    SofaRuntime.importPlugin("SofaBaseMechanics")
+    SofaRuntime.importPlugin("Sofa.Component.StateContainer")
     SofaRuntime.importPlugin("SofaOpenglVisual")
 
     #Create the root node

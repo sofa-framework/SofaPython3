@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 
 project(SofaPython3 VERSION 20.12.00)
 
-find_package(SofaFramework REQUIRED)
+find_package(Sofa.Config REQUIRED)
 
 # Detect if SofaPython3 is a subproject of another project (eg. when compiled within Sofa)
 if (NOT "${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")

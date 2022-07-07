@@ -93,7 +93,7 @@ class NpArrayTestController(Sofa.Core.Controller):
 
 def create_scene(rootName="root"):
     root = Sofa.Core.Node(rootName)
-    root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+    root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
     return root
 
 class Test(unittest.TestCase):

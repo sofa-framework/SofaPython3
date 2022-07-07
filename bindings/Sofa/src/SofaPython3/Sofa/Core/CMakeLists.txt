@@ -76,10 +76,9 @@ if (NOT TARGET SofaPython3::Plugin)
     find_package(SofaPython3 REQUIRED COMPONENTS Plugin)
 endif()
 
-find_package(SofaFramework REQUIRED)
-find_package(SofaBaseCollision REQUIRED)
-find_package(SofaBaseVisual REQUIRED)
-find_package(SofaBaseUtils REQUIRED)
+find_package(Sofa.Simulation.Core REQUIRED)
+find_package(Sofa.Component.Collision.Response.Contact REQUIRED) # for Binding_ContactListener
+find_package(Sofa.Component.Visual REQUIRED) # for Binding_BaseCamera
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
@@ -88,5 +87,5 @@ SP3_add_python_module(
     DESTINATION  Sofa
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
-    DEPENDS      SofaBaseUtils SofaBaseCollision Sofa.Core Sofa.Helper Sofa.SimulationCore Sofa.DefaultType SofaBaseVisual SofaPython3::Plugin
+    DEPENDS      Sofa.Simulation.Core Sofa.Component.Collision.Response.Contact Sofa.Component.Visual SofaPython3::Plugin
 )

@@ -8,7 +8,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Components.cpp
 )
 
-find_package(SofaFramework REQUIRED)
+find_package(Sofa.Simulation.Core REQUIRED)
 
 SP3_add_python_module(
         TARGET       ${PROJECT_NAME}
@@ -17,5 +17,5 @@ SP3_add_python_module(
         DESTINATION  Sofa
         SOURCES      ${SOURCE_FILES}
         HEADERS      ${HEADER_FILES}
-        DEPENDS      Sofa.Core Sofa.Helper Sofa.SimulationCore SofaPython3::Plugin
+        DEPENDS      Sofa.Simulation.Core SofaPython3::Plugin
 )

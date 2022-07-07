@@ -24,7 +24,7 @@
 #include <pybind11/stl.h>
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaBaseCollision/ContactListener.h>
+#include <sofa/component/collision/response/contact/ContactListener.h>
 
 #include <SofaPython3/Sofa/Core/Binding_ContactListener.h>
 #include <SofaPython3/Sofa/Core/Binding_ContactListener_doc.h>
@@ -34,7 +34,7 @@
 
 namespace py { using namespace pybind11; }
 using sofa::core::objectmodel::BaseObject;
-using sofa::core::collision::ContactListener;
+using sofa::component::collision::response::contact::ContactListener;
 
 namespace sofapython3
 {
@@ -97,9 +97,9 @@ void moduleAddContactListener(pybind11::module &m)
 
     c.def("getNumberOfContacts", &ContactListener::getNumberOfContacts);
     c.def("getContactData", &getContactData);
-    c.def("getDistances", &sofa::core::collision::ContactListener::getDistances);
-    c.def("getContactPoints", &sofa::core::collision::ContactListener::getContactPoints);
-    c.def("getContactElements", &sofa::core::collision::ContactListener::getContactElements);
+    c.def("getDistances", &ContactListener::getDistances);
+    c.def("getContactPoints", &ContactListener::getContactPoints);
+    c.def("getContactElements", &ContactListener::getContactElements);
 
     /// register the ContactListener binding in the downcasting subsystem
     PythonFactory::registerType<ContactListener>([](sofa::core::objectmodel::Base* object)

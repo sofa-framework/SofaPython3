@@ -19,7 +19,7 @@
 ******************************************************************************/
 
 #pragma once
-#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/simulation/graph/DAGNode.h>
 #include <sofa/core/objectmodel/DataCallback.h>
 
 #include <sofa/helper/system/FileMonitor.h>
