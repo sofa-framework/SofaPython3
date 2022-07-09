@@ -52,6 +52,7 @@ using sofa::simulation::SceneLoader ;
 
 /// Forward definition
 class PythonEnvironmentData ;
+class PythonEnvironmentModule ;
 
 class SOFAPYTHON3_API PythonEnvironment
 {
@@ -154,6 +155,7 @@ public:
 
 private:
     static PythonEnvironmentData* getStaticData() ;
+    static PythonEnvironmentModule* getStaticModule() ;
     static std::string pluginLibraryPath;
     static inline bool s_isInitialized{false};
 };

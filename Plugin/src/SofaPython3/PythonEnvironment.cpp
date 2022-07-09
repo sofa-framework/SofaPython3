@@ -60,6 +60,13 @@ MSG_REGISTER_CLASS(sofapython3::PythonEnvironment, "SofaPython3::PythonEnvironme
 namespace sofapython3
 {
 
+class PythonEnvironmentModule
+{
+public:
+    py::module m_sofaModule ;
+    py::module m_sofaRuntimeModule ;
+};
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief The PythonEnvironmentData class which hold "static" data as long as python is running
 ///
@@ -102,9 +109,6 @@ public:
     }
 
     std::set<std::string> addedPath;
-
-    py::module m_sofaModule ;
-    py::module m_sofaRuntimeModule ;
 private:
     std::vector<wchar_t*> m_argv;
 };
@@ -114,9 +118,26 @@ PythonEnvironmentData* PythonEnvironment::getStaticData()
     static PythonEnvironmentData* m_staticdata { nullptr } ;
 
     if( !m_staticdata )
+    {
         m_staticdata = new PythonEnvironmentData();
-
+    }
     return m_staticdata;
+}
+
+PythonEnvironmentModule* PythonEnvironment::getStaticModule()
+{
+    PythonEnvironment::gil lock;
+
+    static PythonEnvironmentModule* m_staticmodule { nullptr } ;
+    if( !m_staticmodule )
+    {
+        m_staticmodule = new PythonEnvironmentModule();
+        executePython([]{
+            getStaticModule()->m_sofaModule = py::module::import("Sofa");
+            getStaticModule()->m_sofaRuntimeModule = py::module::import("SofaRuntime");
+        });
+    }
+    return m_staticmodule;
 }
 
 std::string PythonEnvironment::pluginLibraryPath = "";
@@ -155,7 +176,6 @@ void PythonEnvironment::Init()
         msg_info("SofaPython3") << "Registering a scene loader for [.py, .py3, .pyscn, .py3scn] files." ;
         SceneLoaderFactory::getInstance()->addEntry(new SceneLoaderPY3());
     }
-
 
 #if defined(__linux__)
     // WARNING: workaround to be able to import python libraries on linux (like
@@ -237,8 +257,6 @@ void PythonEnvironment::Init()
     // Lastly, we (try to) add modules from the root of SOFA
     addPythonModulePathsFromDirectory( Utils::getSofaPathPrefix() );
 
-    executePython([]{ getStaticData()->m_sofaModule = py::module::import("Sofa"); });
-    executePython([]{ getStaticData()->m_sofaRuntimeModule = py::module::import("SofaRuntime"); });
     executePython([]{ PyRun_SimpleString("import SofaRuntime");});
 
     // python livecoding related
@@ -365,7 +383,7 @@ void PythonEnvironment::addPythonModulePathsFromDirectory(const std::string& dir
     }
 
     // For each of the directories in pythonDirs, search for a site-packages entry
-    for(std::string searchDir : searchDirs)
+    for(std::string& searchDir : searchDirs)
     {
         // Search for a subdir "site-packages"
         if (FileSystem::exists(searchDir + "/site-packages") && FileSystem::isDirectory(searchDir + "/site-packages"))
@@ -508,13 +526,13 @@ std::string PythonEnvironment::getStackAsString()
 std::string PythonEnvironment::getPythonCallingPointString()
 {
     gil lock;
-    return py::cast<std::string>(getStaticData()->m_sofaModule.attr("getPythonCallingPointAsString")());
+    return py::cast<std::string>(getStaticModule()->m_sofaModule.attr("getPythonCallingPointAsString")());
 }
 
 sofa::helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAsFileInfo()
 {
     gil lock;
-    py::tuple cp = getStaticData()->m_sofaRuntimeModule.attr("getPythonCallingPoint")();
+    py::tuple cp = getStaticModule()->m_sofaRuntimeModule.attr("getPythonCallingPoint")();
     return SOFA_FILE_INFO_COPIED_FROM(py::cast<std::string>(cp[0]), py::cast<int>(cp[1]));
 }
 
