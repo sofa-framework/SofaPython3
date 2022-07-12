@@ -212,10 +212,10 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         throw py::value_error(tmp.str());
     }
 
-    // Associates the emission location to the created object.
-    auto finfo = PythonEnvironment::getPythonCallingPointAsFileInfo();
-    object->setInstanciationSourceFileName(finfo->filename);
-    object->setInstanciationSourceFilePos(finfo->line);
+    //// Associates the emission location to the created object.
+    //auto finfo = PythonEnvironment::getPythonCallingPointAsFileInfo();
+    //object->setInstanciationSourceFileName(finfo->filename);
+    //object->setInstanciationSourceFilePos(finfo->line);
 
     if (name.empty())
     {
@@ -281,9 +281,9 @@ py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& k
     }
 
     // Set the creation point
-    auto finfo = PythonEnvironment::getPythonCallingPointAsFileInfo();
-    base->setInstanciationSourceFileName(finfo->filename);
-    base->setInstanciationSourceFilePos(finfo->line);
+    //auto finfo = PythonEnvironment::getPythonCallingPointAsFileInfo();
+    //base->setInstanciationSourceFileName(finfo->filename);
+    //base->setInstanciationSourceFilePos(finfo->line);
 
     for(auto a : kwargs)
     {
@@ -314,9 +314,9 @@ py::object addChildKwargs(Node* self, const std::string& name, const py::kwargs&
     BaseObjectDescription desc (name.c_str());
     fillBaseObjectdescription(desc,kwargs);
     auto node=simpleapi::createChild(self, desc);
-    auto finfo = PythonEnvironment::getPythonCallingPointAsFileInfo();
-    node->setInstanciationSourceFileName(finfo->filename);
-    node->setInstanciationSourceFilePos(finfo->line);
+    //auto finfo = PythonEnvironment::getPythonCallingPointAsFileInfo();
+    //node->setInstanciationSourceFileName(finfo->filename);
+    //node->setInstanciationSourceFilePos(finfo->line);
 
     checkParamUsage(desc);
 
