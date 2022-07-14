@@ -20,7 +20,7 @@ ones = numpy.ones((1000,3), dtype=numpy.float64)
 aList = zeros.tolist()
 
 root = Sofa.Core.Node("root")
-root.addObject("RequiredPlugin", name="SofaBaseMechanics")
+root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
 obj = root.createObject("MechanicalObject", name="test", position=aList)
 print("A counter: ", obj.position.getCounter())
 obj.position += ones

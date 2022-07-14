@@ -36,7 +36,7 @@ def createScene(root):
     root.addObject('RequiredPlugin', pluginName="SofaImplicitOdeSolver SofaLoader SofaOpenglVisual SofaBoundaryCondition SofaGeneralLoader SofaGeneralSimpleFem") 
     root.addObject('DefaultPipeline', name="CollisionPipeline")
     root.addObject('BruteForceDetection', name="N2")
-    root.addObject('DefaultContactManager', name="CollisionResponse", response="default")
+    root.addObject('DefaultContactManager', name="CollisionResponse", response="PenalityContactForceField")
     root.addObject('DiscreteIntersection')
 
     root.addObject('MeshObjLoader', name="LiverSurface", filename="mesh/liver-smooth.obj")

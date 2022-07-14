@@ -7,14 +7,15 @@ set(SOURCE_FILES
 set(PYTHON_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/SofaDeformable/LinearSpring.py
     ${CMAKE_CURRENT_SOURCE_DIR}/SofaDeformable/SpringForceField.py
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/SofaLinearSolver/matrix_access.py
 )
 
-find_package(SofaGTestMain REQUIRED)
-find_package(SofaFramework REQUIRED)
+find_package(Sofa.Testing REQUIRED)
 
 enable_testing()
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain Sofa.Helper SofaPython3::Plugin)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaPython3::Plugin)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "PYTHON_TESTFILES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\"")
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "Bindings/Tests")
 
@@ -26,7 +27,7 @@ sofa_auto_set_target_rpath(
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 
-set(DIR_BINDING_LIST SofaBaseTopology SofaDeformable)
+set(DIR_BINDING_LIST SofaBaseTopology SofaDeformable SofaLinearSolver)
 get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 foreach(dir_binding ${DIR_BINDING_LIST})
     if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${dir_binding}")

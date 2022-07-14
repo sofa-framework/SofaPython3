@@ -143,10 +143,10 @@ The following code should cover most basic SOFA elements:
 .. code-block:: python
 
         # to be able to create SOFA objects you need to first load the plugins that implement them.
-        # For simplicity you can load the plugin "SofaComponentAll" that will load all most
+        # For simplicity you can load the plugin "Sofa.Component" that will load all most
         # common sofa objects.
         import SofaRuntime
-        SofaRuntime.importPlugin("SofaComponentAll")
+        SofaRuntime.importPlugin("Sofa.Component")
 
         # to create elements like Node or objects
 	import Sofa.Core
@@ -448,7 +448,7 @@ If you were using the previous SofaPython plugin (2.7) and that you are willing 
 	def main():
 
 		# Make sure to load all SOFA libraries and plugins
-		SofaRuntime.importPlugin("SofaBaseMechanics")
+		SofaRuntime.importPlugin("Sofa.Component.StateContainer")
 
 		# Generate the root node
 		root = Sofa.Core.Node("root")

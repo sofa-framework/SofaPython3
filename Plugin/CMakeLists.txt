@@ -42,15 +42,14 @@ if(SP3_BUILD_TEST)
 endif(SP3_BUILD_TEST)
 
 find_package(pybind11 CONFIG REQUIRED)
-find_package(SofaFramework REQUIRED)
-find_package(SofaSimulationGraph REQUIRED)
+find_package(Sofa.Simulation.Graph REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAPYTHON3")
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core Sofa.DefaultType Sofa.SimulationCore SofaSimulationGraph Sofa.Helper)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Graph)
 target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::module pybind11::embed)
 
 if(SP3_BUILD_TEST AND Sofa.Testing_FOUND)
@@ -70,8 +69,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
 endif()
 
 if (CMAKE_SYSTEM_NAME STREQUAL Windows )
-    target_include_directories(${PROJECT_NAME} PUBLIC "${pybind11_INCLUDE_DIR}")
-
     # https://github.com/boostorg/system/issues/32
     target_compile_definitions(${PROJECT_NAME} PUBLIC "-DHAVE_SNPRINTF")
 endif()

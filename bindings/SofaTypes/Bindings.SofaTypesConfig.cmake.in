@@ -5,6 +5,8 @@
 
 find_package(SofaPython3 QUIET REQUIRED COMPONENTS Plugin Bindings.Sofa)
 
+find_package(Sofa.DefaultType QUIET REQUIRED)
+
 # If we are importing this config file and the target is not yet there this is indicating that
 # target is an imported one. So we include it
 if(NOT TARGET @PROJECT_NAME@)

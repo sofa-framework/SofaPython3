@@ -103,7 +103,8 @@ public:
 
     std::set<std::string> addedPath;
 
-    py::module m_sofamodule ;
+    py::module m_sofaModule ;
+    py::module m_sofaRuntimeModule ;
 private:
     std::vector<wchar_t*> m_argv;
 };
@@ -180,27 +181,26 @@ void PythonEnvironment::Init()
     }
 
     PyEval_InitThreads();
-    gil lock;
 
     // Required for sys.path, used in addPythonModulePath().
-    PyRun_SimpleString("import sys");
+    executePython([]{ PyRun_SimpleString("import sys");});
 
     // Force C locale.
-    PyRun_SimpleString("import locale");
-    PyRun_SimpleString("locale.setlocale(locale.LC_ALL, 'C')");
+    executePython([]{ PyRun_SimpleString("import locale");});
+    executePython([]{ PyRun_SimpleString("locale.setlocale(locale.LC_ALL, 'C')");});
 
     // Workaround: try to import numpy and to launch numpy.finfo to cache data;
     // this prevents a deadlock when calling numpy.finfo from a worker thread.
-    PyRun_SimpleString("try:\n\timport numpy;numpy.finfo(float)\nexcept:\n\tpass");
+    executePython([]{ PyRun_SimpleString("try:\n\timport numpy;numpy.finfo(float)\nexcept:\n\tpass");});
 
     // Workaround: try to import scipy from the main thread this prevents a deadlock when importing
     // scipy from a worker thread when we use the SofaScene asynchronous loading
-    PyRun_SimpleString("try:\n\tfrom scipy import misc, optimize\nexcept:\n\tpass\n");
+    executePython([]{ PyRun_SimpleString("try:\n\tfrom scipy import misc, optimize\nexcept:\n\tpass\n");});
 
     // If the script directory is not available (e.g. if the interpreter is invoked interactively
     // or if the script is read from standard input), path[0] is the empty string,
     // which directs Python to search modules in the current directory first.
-    PyRun_SimpleString(std::string("sys.path.insert(0,\"\")").c_str());
+    executePython([]{ PyRun_SimpleString(std::string("sys.path.insert(0,\"\")").c_str());});
 
     // Add the paths to the plugins' python modules to sys.path.  Those paths
     // are read from all the files in 'etc/sofa/python.d'
@@ -237,11 +237,12 @@ void PythonEnvironment::Init()
     // Lastly, we (try to) add modules from the root of SOFA
     addPythonModulePathsFromDirectory( Utils::getSofaPathPrefix() );
 
-    getStaticData()->m_sofamodule = py::module::import("Sofa");
-    PyRun_SimpleString("import SofaRuntime");
+    executePython([]{ getStaticData()->m_sofaModule = py::module::import("Sofa"); });
+    executePython([]{ getStaticData()->m_sofaRuntimeModule = py::module::import("SofaRuntime"); });
+    executePython([]{ PyRun_SimpleString("import SofaRuntime");});
 
     // python livecoding related
-    PyRun_SimpleString("from Sofa.livecoding import onReimpAFile");
+    executePython([]{ PyRun_SimpleString("from Sofa.livecoding import onReimpAFile");});
 
     // general sofa-python stuff
 
@@ -311,16 +312,14 @@ void PythonEnvironment::Release()
 void PythonEnvironment::addPythonModulePath(const std::string& path)
 {
     PythonEnvironmentData* data = getStaticData() ;
-    if (  data->addedPath.find(path)==data->addedPath.end()) {
+    if (  data->addedPath.find(path)==data->addedPath.end())
+    {
         // note not to insert at first 0 place
         // an empty string must be at first so modules can be found in the current directory first.
 
-        {
-            gil lock;
-            PyRun_SimpleString(std::string("sys.path.insert(1,\""+path+"\")").c_str());
-        }
+        executePython([&]{ PyRun_SimpleString(std::string("sys.path.insert(1,\""+path+"\")").c_str());});
 
-        msg_info("SofaPython3") << "Added '" + path + "' to sys.path";
+        msg_info("SofaPython3")<< "Added '" + path + "' to sys.path";
         data->addedPath.insert(path);
     }
 }
@@ -508,22 +507,15 @@ std::string PythonEnvironment::getStackAsString()
 
 std::string PythonEnvironment::getPythonCallingPointString()
 {
-    return py::cast<std::string>(getStaticData()->m_sofamodule.attr("getPythonCallingPointAsString")());
+    gil lock;
+    return py::cast<std::string>(getStaticData()->m_sofaModule.attr("getPythonCallingPointAsString")());
 }
 
 sofa::helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAsFileInfo()
 {
-    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaRuntime"));
-    PyObject* res = PyDict_GetItemString(pDict, "getPythonCallingPoint");
-    if(res && PySequence_Check(res) ){
-        PyObject* filename = PySequence_GetItem(res, 0) ;
-        PyObject* number = PySequence_GetItem(res, 1) ;
-        std::string tmp=PyBytes_AsString(filename);
-        auto lineno = PyLong_AsLong(number);
-        Py_DECREF(res) ;
-        return SOFA_FILE_INFO_COPIED_FROM(tmp, lineno);
-    }
-    return SOFA_FILE_INFO_COPIED_FROM("undefined", -1);
+    gil lock;
+    py::tuple cp = getStaticData()->m_sofaRuntimeModule.attr("getPythonCallingPoint")();
+    return SOFA_FILE_INFO_COPIED_FROM(py::cast<std::string>(cp[0]), py::cast<int>(cp[1]));
 }
 
 void PythonEnvironment::setArguments(const std::string& filename, const std::vector<std::string>& arguments)
@@ -546,9 +538,8 @@ void PythonEnvironment::setArguments(const std::string& filename, const std::vec
 
 void PythonEnvironment::SceneLoaderListerner::rightBeforeLoadingScene()
 {
-    gil lock;
     // unload python modules to force importing their eventual modifications
-    PyRun_SimpleString("SofaRuntime.unloadModules()");
+    executePython([]{ PyRun_SimpleString("SofaRuntime.unloadModules()");});
 }
 
 void PythonEnvironment::setAutomaticModuleReload( bool b )
@@ -561,8 +552,7 @@ void PythonEnvironment::setAutomaticModuleReload( bool b )
 
 void PythonEnvironment::excludeModuleFromReload( const std::string& moduleName )
 {
-    gil lock;
-    PyRun_SimpleString( std::string( "try: SofaRuntime.__SofaPythonEnvironment_modulesExcludedFromReload.append('" + moduleName + "')\nexcept:pass" ).c_str() );
+    executePython([&]{ PyRun_SimpleString( std::string( "try: SofaRuntime.__SofaPythonEnvironment_modulesExcludedFromReload.append('" + moduleName + "')\nexcept:pass" ).c_str() );});
 }
 
 static const bool debug_gil = false;

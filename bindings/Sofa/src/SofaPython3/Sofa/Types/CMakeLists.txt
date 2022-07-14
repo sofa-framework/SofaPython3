@@ -9,7 +9,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BoundingBox.cpp
 )
 
-find_package(SofaFramework REQUIRED)
+find_package(Sofa.Core REQUIRED)
 
 SP3_add_python_module(
         TARGET       ${PROJECT_NAME}
@@ -18,5 +18,5 @@ SP3_add_python_module(
         DESTINATION  Sofa
         SOURCES      ${SOURCE_FILES}
         HEADERS      ${HEADER_FILES}
-        DEPENDS      Sofa.Core Sofa.DefaultType SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
+        DEPENDS      Sofa.Core SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
 )

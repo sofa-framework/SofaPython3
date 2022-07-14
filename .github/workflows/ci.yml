@@ -19,8 +19,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04, macos-10.15, windows-2019]
-        sofa_branch: [master]
-        python_version: ['3.9']
+        sofa_branch: [master, v22.06]
+        python_version: ['3.8']
 
     steps:
       - name: Setup SOFA and environment

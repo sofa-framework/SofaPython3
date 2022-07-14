@@ -6,8 +6,8 @@
 set(SP3_BUILD_TEST @SP3_BUILD_TEST@)
 
 find_package(pybind11 QUIET REQUIRED CONFIG)
-find_package(SofaFramework QUIET REQUIRED)
-find_package(SofaSimulationGraph QUIET REQUIRED)
+find_package(Sofa.Simulation.Graph QUIET REQUIRED)
+
 if(SP3_BUILD_TEST)
     find_package(Sofa.Testing QUIET REQUIRED)
 endif()

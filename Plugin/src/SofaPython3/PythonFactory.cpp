@@ -22,7 +22,7 @@
 #include <SofaPython3/PythonFactory.h>
 #include <SofaPython3/DataHelper.h>
 
-#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/simulation/graph/DAGNode.h>
 
 #include "sofa/simulation/AnimateBeginEvent.h"
 using sofa::simulation::AnimateBeginEvent;

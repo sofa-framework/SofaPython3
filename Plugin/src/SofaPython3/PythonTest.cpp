@@ -32,7 +32,7 @@ namespace py = pybind11;
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager;
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 namespace simpleapi=sofa::simpleapi;
 
 #include <sofa/helper/system/SetDirectory.h>

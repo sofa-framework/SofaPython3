@@ -23,10 +23,10 @@
 #include "Binding_SparseGridTopology.h"
 #include "Binding_SparseGridTopology_doc.h"
 
-#include <SofaBaseTopology/SparseGridTopology.h>
+#include <sofa/component/topology/container/grid/SparseGridTopology.h>
 #include <SofaPython3/PythonFactory.h>
 
-using sofa::component::topology::SparseGridTopology;
+using sofa::component::topology::container::grid::SparseGridTopology;
 using sofa::core::objectmodel::BaseObject;
 
 PYBIND11_DECLARE_HOLDER_TYPE(Base, sofa::core::sptr<Base>, true)

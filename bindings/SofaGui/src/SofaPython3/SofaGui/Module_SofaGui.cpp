@@ -27,9 +27,9 @@
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem;
 
-#if SOFAGUI_HAVE_SOFAGUIQT
+#if SOFAGUI_HAVE_SOFA_GUI_QT
 #include <sofa/gui/qt/qt.conf.h>
-#endif // SOFAGUI_HAVE_SOFAGUIQT
+#endif // SOFAGUI_HAVE_SOFA_GUI_QT
 
 #include "Binding_BaseGui.h"
 #include "Binding_GUIManager.h"
@@ -63,7 +63,7 @@ PYBIND11_MODULE(Gui, m) {
                     :members:
              )doc";
 
-#if SOFAGUI_HAVE_SOFAGUIQT
+#if SOFAGUI_HAVE_SOFA_GUI_QT
     std::string sofaPrefixAbsolute = sofa::helper::Utils::getSofaPathPrefix();
     std::string inputFilepath = FileSystem::cleanPath(sofaPrefixAbsolute + "/bin/qt.conf");
     bool success = sofa::gui::qt::loadQtConfWithCustomPrefix(inputFilepath, sofaPrefixAbsolute);
@@ -81,7 +81,7 @@ PYBIND11_MODULE(Gui, m) {
         }
         std::cout << std::endl;
     }
-#endif // SOFAGUI_HAVE_SOFAGUIQT
+#endif // SOFAGUI_HAVE_SOFA_GUI_QT
 
     // This is needed to make sure the GuiMain library (libSofaGuiMain.so) is correctly
     // linked since the GUIs are statically created during the load of the library.
