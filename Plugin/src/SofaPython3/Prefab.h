@@ -59,6 +59,8 @@ public:
     void reinit();
     virtual void doReInit() ;
 
+    static const std::string GetCustomClassName(){ return "Prefab"; }
+
     void addPrefabParameter(const std::string& name, const std::string& help, const std::string& type, pybind11::object defaultValue = pybind11::none());
     void setSourceTracking(const std::string& filename);
     void breakPrefab();
