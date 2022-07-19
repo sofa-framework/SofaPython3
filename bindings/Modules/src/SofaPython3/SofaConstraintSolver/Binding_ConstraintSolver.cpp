@@ -49,7 +49,7 @@ void moduleAddConstraintSolver(py::module &m)
         return { W_matrix.ptr(), W_matrix.rows(), W_matrix.cols()};
     }, sofapython3::doc::constraintsolver::constraintSolver_W);
 
-    c.def("lambda_force", [](ConstraintSolverImpl& self) -> Eigen::Map<Eigen::Vector<SReal, Eigen::Dynamic> >
+    c.def("lambda_force", [](ConstraintSolverImpl& self) -> Eigen::Map<Eigen::Matrix<SReal, Eigen::Dynamic, 1> >
     {
         assert(self.getConstraintProblem());
         auto& lambda = self.getConstraintProblem()->f;
