@@ -46,7 +46,18 @@ example:
 ------------
 
 constraint_solver = root.addObject("GenericConstraintSolver", tolerance=1e-9, maxIterations=1000)
-matrix = constraint_solver.lambda_force()
+lambda = constraint_solver.lambda_force()
+)";
+
+static auto constraintSolver_dfree =
+R"(
+Returns the displacement computed without any constraint
+
+example:
+------------
+
+constraint_solver = root.addObject("GenericConstraintSolver", tolerance=1e-9, maxIterations=1000)
+dfree = constraint_solver.dfree()
 )";
 
 } // namespace sofapython3::doc::constraintsolver

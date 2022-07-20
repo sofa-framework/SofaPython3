@@ -56,6 +56,13 @@ void moduleAddConstraintSolver(py::module &m)
         return { lambda.ptr(), lambda.size()};
     }, sofapython3::doc::constraintsolver::constraintSolver_lambda);
 
+    c.def("dfree", [](ConstraintSolverImpl& self) -> Eigen::Map<Eigen::Matrix<SReal, Eigen::Dynamic, 1> >
+    {
+        assert(self.getConstraintProblem());
+        auto& dfree = self.getConstraintProblem()->dFree;
+        return { dfree.ptr(), dfree.size()};
+    }, sofapython3::doc::constraintsolver::constraintSolver_dfree);
+
     /// register the binding in the downcasting subsystem
     PythonFactory::registerType<ConstraintSolverImpl>([](sofa::core::objectmodel::Base* object)
     {
