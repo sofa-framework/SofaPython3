@@ -39,7 +39,7 @@ namespace sofapython3 {
 void moduleAddBaseMeshTopology(py::module& m) {
     py::class_<BaseMeshTopology, Base, py_shared_ptr<BaseMeshTopology>> c (m, "BaseMeshTopology");
 
-    /// register the ContactListener binding in the downcasting subsystem
+    /// register the BaseMeshTopology binding in the downcasting subsystem
     PythonFactory::registerType<BaseMeshTopology>([](sofa::core::objectmodel::Base* object)
     {
         return py::cast(dynamic_cast<BaseMeshTopology*>(object));

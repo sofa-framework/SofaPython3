@@ -26,6 +26,7 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_NodeIterator.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_PointSetTopologyModifier.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Prefab.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Prefab_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataContainer.h
@@ -64,6 +65,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_NodeIterator.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_PointSetTopologyModifier.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Prefab.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Core.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_PythonScriptEvent.cpp
