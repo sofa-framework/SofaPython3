@@ -149,7 +149,7 @@ void moduleAddDataContainer(py::module& m)
     }, sofapython3::doc::datacontainer::__len__);
 
     p.def("array", [](DataContainer* self){
-        auto capsule = py::capsule(new Base::SPtr(self->getOwner()));
+        auto capsule = py::capsule(self->getOwner());
         py::buffer_info ninfo = toBufferInfo(*self);
         py::array a(pybind11::dtype(ninfo), ninfo.shape,
                     ninfo.strides, ninfo.ptr, capsule);
@@ -160,18 +160,18 @@ void moduleAddDataContainer(py::module& m)
     p.def("writeable", [](DataContainer* self, py::object f) -> py::object
     {
         if(self!=nullptr)
-            return py::cast(new DataContainerContext(self, f));
+            return py::cast(std::make_unique<DataContainerContext>(self, f));
 
         return py::none();
-    });
+    }, py::return_value_policy::move);
 
     p.def("writeable", [](DataContainer* self) -> py::object
     {
         if(self!=nullptr)
-            return py::cast(new DataContainerContext(self, py::none()));
+            return py::cast(std::make_unique<DataContainerContext>(self, py::none()));
 
         return py::none();
-    });
+    }, py::return_value_policy::move);
 
     p.def("__iadd__", [](DataContainer* self, py::object value)
     {
