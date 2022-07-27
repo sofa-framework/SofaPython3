@@ -62,7 +62,7 @@ void moduleAddQuat(py::module &m) {
   p.def("toRotationVector", &Quat::quatToRotationVector);
   p.def("toEulerVector", &Quat::toEulerVector);
   p.def("buildRotationMatrix", [](Quat &self, Matrix4 &m) {
-    double tmp[4][4] = {0};
+    double tmp[4][4] = {{0}};
     self.buildRotationMatrix(tmp);
     m = Matrix4(Vec4d(tmp[0]), Vec4d(tmp[1]), Vec4d(tmp[2]), Vec4d(tmp[3]));
   });
