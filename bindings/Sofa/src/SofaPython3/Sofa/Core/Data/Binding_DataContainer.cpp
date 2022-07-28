@@ -157,21 +157,23 @@ void moduleAddDataContainer(py::module& m)
         return a;
     });
 
-    p.def("writeable", [](DataContainer* self, py::object f) -> py::object
+    p.def("writeable", [](DataContainer* self, py::object f) -> DataContainerContext*
     {
-        if(self!=nullptr)
-            return py::cast(std::make_unique<DataContainerContext>(self, f));
+        if(self!=nullptr){
+            return new DataContainerContext(self, f);
+        }
+        // pybind11 automatically converts this nullptr into a python None object
+        return nullptr;
+    });
 
-        return py::none();
-    }, py::return_value_policy::move);
-
-    p.def("writeable", [](DataContainer* self) -> py::object
+    p.def("writeable", [](DataContainer* self) -> DataContainerContext*
     {
-        if(self!=nullptr)
-            return py::cast(std::make_unique<DataContainerContext>(self, py::none()));
-
-        return py::none();
-    }, py::return_value_policy::move);
+        if(self!=nullptr){
+            return new DataContainerContext(self, py::none());
+        }
+        // pybind11 automatically converts this nullptr into a python None object
+        return nullptr;
+    });
 
     p.def("__iadd__", [](DataContainer* self, py::object value)
     {
