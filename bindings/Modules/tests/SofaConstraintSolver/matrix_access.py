@@ -40,13 +40,45 @@ class Test(unittest.TestCase):
         ext.addObject("DistanceMapping", name="distanceMapping")
         ext.addObject("UniformConstraint", template="Vec1d", iterative=True)
 
+        print("before init")
+
+        for obj in root.objects:
+            if obj is not None:
+                print(obj.name)
+            else:
+                print("None")
+
         Sofa.Simulation.init(root)
+
+        print("before animate")
+
+        for obj in root.objects:
+            if obj is not None:
+                print(obj.name)
+            else:
+                print("None")
+
         Sofa.Simulation.animate(root, 0.0001)
+
+        print("after animate")
+
+        for obj in root.objects:
+            if obj is not None:
+                print(obj.name)
+            else:
+                print("None")
 
         return root
 
     def test_matrix_access(self):
         root = self.simulate_pendulum()
+
+        for obj in root.objects:
+            if obj is not None:
+                print(obj.name)
+            else:
+                print("None")
+
         self.assertNotEqual(root, None)
         self.assertNotEqual(root.getObject("constraint_solver"), None)
         self.assertNotEqual(root.constraint_solver, None)
