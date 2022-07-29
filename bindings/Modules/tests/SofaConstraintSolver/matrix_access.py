@@ -47,6 +47,9 @@ class Test(unittest.TestCase):
 
     def test_matrix_access(self):
         root = self.simulate_pendulum()
+        self.assertNotEqual(root, None)
+        self.assertNotEqual(root.getObject("constraint_solver"), None)
+        self.assertNotEqual(root.constraint_solver, None)
         W = root.constraint_solver.W()
 
         self.assertEqual(W.ndim, 2)

@@ -37,138 +37,137 @@ namespace sofa {
     namespace defaulttype {
         class AbstractTypeInfo;
     }
-    namespace core {
-        namespace objectmodel {
-            class BaseData;
+    namespace core::objectmodel
+    {
+        class BaseData;
 
 
-            class SOFAPYTHON3_API PrefabLink
+        class SOFAPYTHON3_API PrefabLink
+        {
+        public:
+            PrefabLink() {}
+            PrefabLink(const Base::SPtr& targetBase) { m_targetBase = targetBase; }
+            PrefabLink(BaseLink* targetLink) { m_targetBase = targetLink->getLinkedBase(); }
+            PrefabLink(const std::string& targetPath) { m_targetPath = targetPath; }
+
+            const Base::SPtr& getTargetBase() const { return m_targetBase; }
+            void setTargetBase(const Base::SPtr& targetBase) { m_targetBase = targetBase; }
+
+            const std::string& getTargetPath() const { return m_targetPath; }
+            void setTargetPath(const std::string& targetPath) { m_targetPath = targetPath; }
+
+            friend std::ostream& operator << ( std::ostream& out, const PrefabLink& l)
             {
-            public:
-                PrefabLink() {}
-                PrefabLink(const Base::SPtr& targetBase) { m_targetBase = targetBase; }
-                PrefabLink(BaseLink* targetLink) { m_targetBase = targetLink->getLinkedBase(); }
-                PrefabLink(const std::string& targetPath) { m_targetPath = targetPath; }
-
-                const Base::SPtr& getTargetBase() const { return m_targetBase; }
-                void setTargetBase(const Base::SPtr& targetBase) { m_targetBase = targetBase; }
-
-                const std::string& getTargetPath() const { return m_targetPath; }
-                void setTargetPath(const std::string& targetPath) { m_targetPath = targetPath; }
-
-                friend std::ostream& operator << ( std::ostream& out, const PrefabLink& l)
+                if (l.getTargetBase())
                 {
-                    if (l.getTargetBase())
-                    {
-                        auto bn = l.getTargetBase()->toBaseNode();
-                        auto bo = l.getTargetBase()->toBaseObject();
-                        out << "@" + (bn ? bn->getPathName() : bo->getPathName());
-                    }
-                    out << l.getTargetPath();
-                    return out;
+                    auto bn = l.getTargetBase()->toBaseNode();
+                    auto bo = l.getTargetBase()->toBaseObject();
+                    out << "@" + (bn ? bn->getPathName() : bo->getPathName());
                 }
+                out << l.getTargetPath();
+                return out;
+            }
 
-                friend std::istream& operator >> ( std::istream& in, PrefabLink& l)
-                {
-                    std::string s;
-                    in >> s;
-                    l.setTargetPath(s);
-                    return in;
-                }
+            friend std::istream& operator >> ( std::istream& in, PrefabLink& l)
+            {
+                std::string s;
+                in >> s;
+                l.setTargetPath(s);
+                return in;
+            }
 
-                inline bool operator ==(const PrefabLink& value) const
+            inline bool operator ==(const PrefabLink& value) const
+            {
+                if (getTargetBase())
                 {
-                    if (getTargetBase())
-                    {
-                        if (value.getTargetBase())
-                            return getTargetBase() == value.getTargetBase();
-                        else
-                            return getTargetBase()->getPathName() == value.getTargetPath();
-                    }
+                    if (value.getTargetBase())
+                        return getTargetBase() == value.getTargetBase();
                     else
-                    {
-                        if (value.getTargetBase())
-                            return getTargetPath() == value.getTargetBase()->getPathName();
-                        else
-                            return getTargetPath() == value.getTargetPath();
-                    }
+                        return getTargetBase()->getPathName() == value.getTargetPath();
                 }
-
-                inline bool operator !=(const PrefabLink& value) const
+                else
                 {
-                    return !(*this == value);
+                    if (value.getTargetBase())
+                        return getTargetPath() == value.getTargetBase()->getPathName();
+                    else
+                        return getTargetPath() == value.getTargetPath();
                 }
+            }
 
-            private:
-                Base::SPtr m_targetBase { nullptr };
-                std::string m_targetPath {""};
-            };
-
-            class SOFAPYTHON3_API DataPrefabLink : public Data<PrefabLink>
+            inline bool operator !=(const PrefabLink& value) const
             {
-                typedef Data<PrefabLink> Inherit;
+                return !(*this == value);
+            }
 
-                DataPrefabLink( const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
-                    : Inherit(helpMsg, isDisplayed, isReadOnly)
-                {
+        private:
+            Base::SPtr m_targetBase { nullptr };
+            std::string m_targetPath {""};
+        };
+
+        class SOFAPYTHON3_API DataPrefabLink : public Data<PrefabLink>
+        {
+            typedef Data<PrefabLink> Inherit;
+
+            DataPrefabLink( const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
+                : Inherit(helpMsg, isDisplayed, isReadOnly)
+            {
+            }
+
+            DataPrefabLink( const std::string& value, const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
+                : Inherit(PrefabLink(value), helpMsg, isDisplayed, isReadOnly)
+            {
+            }
+
+            explicit DataPrefabLink(const BaseData::BaseInitData& init)
+                : Inherit(init)
+            {
+            }
+
+            const PrefabLink& getValue() const
+            {
+                updateIfDirty();
+                if (m_value.getValue().getTargetBase()) return m_value.getValue();
+
+                auto self = const_cast<DataPrefabLink*>(this);
+
+                Base* dst = nullptr;
+                this->getOwner()->findLinkDest(dst, self->m_value.getValue().getTargetPath(), nullptr);
+                if (dst) {
+                    auto edit = self->m_value.beginEdit();
+                    edit->setTargetBase(dst);
+                    edit->setTargetPath("");
+                    self->m_value.endEdit();
                 }
+                return m_value.getValue();
+            }
 
-                DataPrefabLink( const std::string& value, const std::string& helpMsg="", bool isDisplayed=true, bool isReadOnly=false )
-                    : Inherit(value, helpMsg, isDisplayed, isReadOnly)
+            std::string getValueString() const override
+            {
+                const auto& ptr = getValue();
+                if (ptr.getTargetBase())
                 {
+                    auto bn = ptr.getTargetBase()->toBaseNode();
+                    auto bo = ptr.getTargetBase()->toBaseObject();
+                    return "@" + (bn ? bn->getPathName() : bo->getPathName());
                 }
+                return ptr.getTargetPath();
+            }
 
-                explicit DataPrefabLink(const BaseData::BaseInitData& init)
-                    : Inherit(init)
-                {
+
+            bool read(const std::string& value) override
+            {
+                Base* dst;
+                auto data = m_value.beginEdit();
+                if (this->getOwner()->findLinkDest(dst, value, nullptr) && dst != nullptr)
+                    data->setTargetBase(dst);
+                else {
+                    data->setTargetBase(nullptr);
+                    data->setTargetPath(value);
                 }
+                return true;
+            }
+        };
 
-                const PrefabLink& getValue() const
-                {
-                    updateIfDirty();
-                    if (m_value.getValue().getTargetBase()) return m_value.getValue();
-
-                    auto self = const_cast<DataPrefabLink*>(this);
-
-                    Base* dst = nullptr;
-                    this->getOwner()->findLinkDest(dst, self->m_value.getValue().getTargetPath(), nullptr);
-                    if (dst) {
-                        auto edit = self->m_value.beginEdit();
-                        edit->setTargetBase(dst);
-                        edit->setTargetPath("");
-                        self->m_value.endEdit();
-                    }
-                    return m_value.getValue();
-                }
-
-                std::string getValueString() const
-                {
-                    const auto& ptr = getValue();
-                    if (ptr.getTargetBase())
-                    {
-                        auto bn = ptr.getTargetBase()->toBaseNode();
-                        auto bo = ptr.getTargetBase()->toBaseObject();
-                        return "@" + (bn ? bn->getPathName() : bo->getPathName());
-                    }
-                    return ptr.getTargetPath();
-                }
-
-
-                bool read(const std::string& value)
-                {
-                    Base* dst;
-                    auto data = m_value.beginEdit();
-                    if (this->getOwner()->findLinkDest(dst, value, nullptr) && dst != nullptr)
-                       data->setTargetBase(dst);
-                    else {
-                        data->setTargetBase(nullptr);
-                        data->setTargetPath(value);
-                    }
-                    return true;
-                }
-            };
-
-        }
     }
 }
 
