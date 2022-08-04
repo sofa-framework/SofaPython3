@@ -149,6 +149,7 @@ void moduleAddDataContainer(py::module& m)
     }, sofapython3::doc::datacontainer::__len__);
 
     p.def("array", [](DataContainer* self){
+        // in array construction, array increases the reference counter of the capsule and sets it to the owner of the buffer
         auto capsule = py::capsule(self->getOwner());
         py::buffer_info ninfo = toBufferInfo(*self);
         py::array a(pybind11::dtype(ninfo), ninfo.shape,

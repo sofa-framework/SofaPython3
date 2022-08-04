@@ -86,7 +86,7 @@ py::list toList(BaseData* self)
 
 py::array array(BaseData* self)
 {
-    auto capsule = py::capsule(new Base::SPtr(self->getOwner()));
+    auto capsule = py::capsule(self->getOwner(), self->getName().c_str());
     py::buffer_info ninfo = toBufferInfo(*self);
     py::array a(pybind11::dtype(ninfo), ninfo.shape,
                 ninfo.strides, ninfo.ptr, capsule);
@@ -136,7 +136,9 @@ py::object __getattr__(py::object self, const std::string& s)
     /// a python object that is easy to manipulate. The conversion is done with the toPython
     /// function.
     if(s == "value")
+    {
         return PythonFactory::valueToPython_ro(py::cast<BaseData*>(self));
+    }
 
     if(s == "linkpath")
         return py::cast((py::cast<BaseData*>(self))->getLinkPath());

@@ -19,6 +19,7 @@
 ******************************************************************************/
 
 
+#include <pybind11/detail/common.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
@@ -316,14 +317,21 @@ py::buffer_info toBufferInfo(BaseData& m)
             format = py::format_descriptor<double>::value;
         else if(nfo.byteSize() == 4)
             format = py::format_descriptor<float>::value;
+    // TODO add nfo.Text()
+    /* } else if(nfo.Text()) { */
+    /*     format = py::format_descriptor<char>::value; */
+    /* } */ 
+    }
+    else {
+        throw py::type_error("Invalid type");
     }
 
     size_t datasize = nfo.byteSize();
 
     std::tuple<int,int> shape = getShape(&m);
-    size_t  ndim = getNDim(&m);
 
     void* ptr = const_cast<void*>(nfo.getValuePtr(m.getValueVoidPtr()));
+
     if( !itemNfo->Container() ){
         return py::buffer_info(
                     ptr, /* Pointer to buffer */
@@ -348,8 +356,9 @@ py::buffer_info toBufferInfo(BaseData& m)
 py::object convertToPython(BaseData* d)
 {
     const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
-    if(hasArrayFor(d))
+    if(hasArrayFor(d)){
         return getPythonArrayFor(d);
+    }
 
     if(nfo.Container())
     {
@@ -380,12 +389,15 @@ py::object convertToPython(BaseData* d)
         return std::move(list);
     }
 
-    if(nfo.Integer())
+    if(nfo.Integer()){
         return py::cast(nfo.getIntegerValue(d->getValueVoidPtr(), 0));
-    if(nfo.Text())
+    }
+    if(nfo.Text()){
         return py::cast(d->getValueString());
-    if(nfo.Scalar())
+    }
+    if(nfo.Scalar()){
         return py::cast(nfo.getScalarValue(d->getValueVoidPtr(), 0));
+    }
 
     return py::cast(d->getValueString());
 }
@@ -400,7 +412,7 @@ py::array resetArrayFor(BaseData* d)
 {
     //todo: protect the function.
     auto& memcache = getObjectCache();
-    auto capsule = py::capsule(new Base::SPtr(d->getOwner()));
+    auto capsule = py::capsule(d->getOwner());
 
     py::buffer_info ninfo = toBufferInfo(*d);
     py::array a(pybind11::dtype(ninfo), ninfo.shape,
@@ -415,7 +427,7 @@ py::array getPythonArrayFor(BaseData* d)
     auto& memcache = getObjectCache();
     if(d->isDirty() || memcache.find(d) == memcache.end())
     {
-        auto capsule = py::capsule(new Base::SPtr(d->getOwner()));
+        auto capsule = py::capsule(d->getOwner());
 
         py::buffer_info ninfo = toBufferInfo(*d);
         py::array a(pybind11::dtype(ninfo), ninfo.shape,
@@ -605,6 +617,7 @@ BaseLink* addLink(py::object py_self, const std::string& name, py::object value,
 
     BaseLink::InitLink<Base> initlink(self, name, help);
 
+    // TODO: replace new keyword with a reference counted pointer (make_unique or make_shared)
     BaseLink* link = new sofa::core::objectmodel::SingleLink<Base, Base, BaseLink::FLAG_MULTILINK>(initlink);
     if (py::isinstance<std::string>(value))
     {

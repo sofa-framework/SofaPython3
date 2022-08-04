@@ -119,6 +119,7 @@ PythonEnvironmentData* PythonEnvironment::getStaticData()
 
     if( !m_staticdata )
     {
+        // TODO: replace new with reference counted pointer (make_unique or make_shared)
         m_staticdata = new PythonEnvironmentData();
     }
     return m_staticdata;
@@ -131,6 +132,7 @@ PythonEnvironmentModule* PythonEnvironment::getStaticModule()
     static PythonEnvironmentModule* m_staticmodule { nullptr } ;
     if( !m_staticmodule )
     {
+        // TODO: replace new with reference counted pointer (make_unique or make_shared)
         m_staticmodule = new PythonEnvironmentModule();
         executePython([]{
             getStaticModule()->m_sofaModule = py::module::import("Sofa");
@@ -174,6 +176,7 @@ void PythonEnvironment::Init()
     if( !SceneLoaderFactory::getInstance()->getEntryFileExtension("py3") )
     {
         msg_info("SofaPython3") << "Registering a scene loader for [.py, .py3, .pyscn, .py3scn] files." ;
+        // TODO: replace new with reference counted pointer (make_unique or make_shared)
         SceneLoaderFactory::getInstance()->addEntry(new SceneLoaderPY3());
     }
 
