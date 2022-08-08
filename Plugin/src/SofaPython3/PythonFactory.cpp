@@ -187,7 +187,8 @@ py::object PythonFactory::valueToPython_ro(sofa::core::objectmodel::BaseData* da
     /// we can expose the field as a numpy.array (no copy)
     if(nfo.Container() && nfo.SimpleLayout())
     {
-        auto capsule = py::capsule(data->getOwner());
+        // TODO If data->getOwner is passed directly to py::capsule, writeable() does not contain the actual values. (BasaData.py test test_DataAsContainerNumpyArray_ fails). If pybind11 is upgraded, we could use make_shared here.
+        auto capsule = py::capsule(new Base::SPtr(data->getOwner()));
         py::buffer_info ninfo = toBufferInfo(*data);
         py::array a(pybind11::dtype(ninfo), ninfo.shape,
                     ninfo.strides, ninfo.ptr, capsule);

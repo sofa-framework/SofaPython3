@@ -254,12 +254,20 @@ class Test(unittest.TestCase):
         c = root.addObject("MechanicalObject", name="t", position=v.tolist())
         Sofa.Simulation.init(root)
 
-        with c.position.writeableArray() as wa:
+        numpy.testing.assert_array_equal(c.position.array(), v)
+
+        with c.position.writeable() as wa:
             self.assertEqual(wa.shape, (4, 3))
             self.assertEqual(wa[0, 0], 0.0)
             self.assertEqual(wa[1, 1], 1.0)
             self.assertEqual(wa[2, 2], 2.0)
-            numpy.testing.assert_array_equal(c.position.array(), v)
+
+        numpy.testing.assert_array_equal(c.position.array(), v)
+
+        with c.position.writeable() as wa:
+            wa[0, 0] = 1.0
+
+        assert c.position.array()[0, 0] == 1.0
 
     def test_DataAsContainerNumpyArrayRepeat(self):
         root = create_scene("rootNode")
