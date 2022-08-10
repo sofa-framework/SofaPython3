@@ -86,7 +86,7 @@ py::list toList(BaseData* self)
 
 py::array array(BaseData* self)
 {
-    auto capsule = py::capsule(self->getOwner(), self->getName().c_str());
+    auto capsule = py::capsule(new Base::SPtr(self->getOwner()));
     py::buffer_info ninfo = toBufferInfo(*self);
     py::array a(pybind11::dtype(ninfo), ninfo.shape,
                 ninfo.strides, ninfo.ptr, capsule);
