@@ -88,5 +88,5 @@ sofa_create_component_in_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "."
     OPTIMIZE_BUILD_DIR FALSE
-    RELOCATABLE ".."
+    RELOCATABLE "../../plugins"
     )
