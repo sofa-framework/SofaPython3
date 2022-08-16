@@ -52,6 +52,7 @@ using sofa::core::objectmodel::ScriptEvent;
 using sofa::core::objectmodel::Event;
 
 #include <SofaPython3/PythonEnvironment.h>
+#include <SofaPython3/LinkPath.h>
 
 #include <sofa/core/topology/Topology.h>
 
@@ -293,6 +294,12 @@ void copyFromListOf<std::string>(BaseData& d, const AbstractTypeInfo& nfo, const
 
 void PythonFactory::fromPython(BaseData* d, const py::object& o)
 {
+    if(py::isinstance<sofapython3::LinkPath>(o))
+    {
+        d->setParent(py::cast<LinkPath&>(o).targetData);
+        return;
+    }
+
     const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
 
     // Is this data field a container ?

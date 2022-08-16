@@ -8,6 +8,7 @@ set(HEADER_FILES
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/DataCache.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/DataHelper.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/LinkPath.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonFactory.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Prefab.h
 )
@@ -19,6 +20,7 @@ set(SOURCE_FILES
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/DataCache.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/DataHelper.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/LinkPath.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonFactory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Prefab.cpp
 )

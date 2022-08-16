@@ -99,7 +99,6 @@ class Test(unittest.TestCase):
         # child properly updated from parent value
         self.assertEqual("test", c1.d2.value)
 
-
     def test_addNewDataFromParent_brokenLink(self):
         root = create_scene('root')
         c1 = root.addObject("MechanicalObject", name="c1")
@@ -121,13 +120,21 @@ class Test(unittest.TestCase):
     def test_getTemplateName(self):
         root = create_scene("root")
         c = root.addObject("MechanicalObject", name="t")
-        self.assertEqual(c.getTemplateName(),"Vec3d")
+        self.assertEqual(c.getTemplateName(), "Vec3d")
 
     def test_getLinkPath(self):
         root = create_scene("root")
         obj = root.addObject("MechanicalObject", name="obj")
-        self.assertEqual(obj.getPathName(),"/obj")
-        self.assertEqual(obj.getLinkPath(),"@/obj")
+        self.assertEqual(obj.getPathName(), "/obj")
+        self.assertEqual(obj.getLinkPath(), "@/obj")
+
+    def test_linkpath(self):
+        """Accessing the linkpath property should return a LinkPath object with a correctly set 'path'"""
+        root = create_scene("root")
+        root.addChild("child")
+        root.child.addObject("MechanicalObject", name="dofs")
+        self.assertEqual(type(root.child.dofs.linkpath), Sofa.Core.LinkPath)
+        self.assertEqual(str(root.child.dofs.linkpath), "@/child/dofs")
 
     def test_addExistingDataAsParentOfNewData(self):
         # TODO(@marques-bruno)
@@ -148,4 +155,3 @@ class Test(unittest.TestCase):
         # self.assertEqual(aData.getOwner(), obj1)
         # self.assertEqual(obj2.aData.value, "pouet")
         pass
-

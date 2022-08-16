@@ -48,6 +48,7 @@ public:
     /// Set the data field value from the array.
     static void SetDataFromArray(sofa::core::objectmodel::BaseData* data, const pybind11::array& value);
     static bool SetData(sofa::core::objectmodel::BaseData* data, pybind11::object value);
+    static bool SetLink(sofa::core::objectmodel::BaseLink* link, pybind11::object value);
     static pybind11::object setDataValues(sofa::core::objectmodel::Base& self, pybind11::kwargs kwargs);
 
     static pybind11::list getDataFields(sofa::core::objectmodel::Base& self);
