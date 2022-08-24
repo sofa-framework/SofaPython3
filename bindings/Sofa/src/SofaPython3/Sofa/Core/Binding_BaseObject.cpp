@@ -197,7 +197,7 @@ void moduleAddBaseObject(py::module& m)
     PythonFactory::registerType<sofa::core::objectmodel::BaseObject>(
                 [](sofa::core::objectmodel::Base* object)
     {
-        msg_error_when(object, "Binding_BaseObject") << "Input object is nullptr";
+        msg_error_when(object == nullptr, "Binding_BaseObject") << "Input object is nullptr";
         BaseObject* baseObject = object->toBaseObject();
         msg_error_when(baseObject == nullptr, "Binding_BaseObject") << "Input object cannot be cast to BaseObject";
         return py::cast(py_shared_ptr<sofa::core::objectmodel::BaseObject>(baseObject));

@@ -66,7 +66,16 @@ void moduleAddConstraintSolver(py::module &m)
     /// register the binding in the downcasting subsystem
     PythonFactory::registerType<ConstraintSolverImpl>([](sofa::core::objectmodel::Base* object)
     {
-        return py::cast(dynamic_cast<ConstraintSolverImpl*>(object));
+        ConstraintSolverImpl* d = dynamic_cast<ConstraintSolverImpl*>(object);
+        msg_error_when(d == nullptr, "PythonFactory") << "Dynamic cast failed";
+
+        auto c = py::cast(d);
+        py::print("Cast raw pointer: ", c);
+
+        auto s = py::cast(py_shared_ptr<ConstraintSolverImpl>(d));
+        py::print("Cast py_shared_ptr: ", s);
+
+        return c;
     });
 }
 
