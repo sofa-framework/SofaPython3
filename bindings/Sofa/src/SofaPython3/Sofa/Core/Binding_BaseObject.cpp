@@ -197,7 +197,10 @@ void moduleAddBaseObject(py::module& m)
     PythonFactory::registerType<sofa::core::objectmodel::BaseObject>(
                 [](sofa::core::objectmodel::Base* object)
     {
-        return py::cast(py_shared_ptr<sofa::core::objectmodel::BaseObject>(object->toBaseObject()));
+        msg_error_when(object, "Binding_BaseObject") << "Input object is nullptr";
+        BaseObject* baseObject = object->toBaseObject();
+        msg_error_when(baseObject == nullptr, "Binding_BaseObject") << "Input object cannot be cast to BaseObject";
+        return py::cast(py_shared_ptr<sofa::core::objectmodel::BaseObject>(baseObject));
     });
 
     p.def("init", &BaseObject::init, sofapython3::doc::baseObject::init);

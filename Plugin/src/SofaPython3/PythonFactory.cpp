@@ -141,6 +141,7 @@ py::object PythonFactory::toPython(sofa::core::objectmodel::Base* object)
     auto kv = s_componentDowncastingFct.find(type_name);
     if( kv != s_componentDowncastingFct.end())
     {
+        msg_info("PythonFactory") << "Found downcasting function for " << type_name;
         return kv->second(object);
     }
 
@@ -154,6 +155,8 @@ py::object PythonFactory::toPython(sofa::core::objectmodel::Base* object)
                                    << "Tried with:\n" << get_class_hierarchy_as_string(metaclass);
         throw std::runtime_error("Unable to find a python binding for an object in-heriting from Base.");
     }
+
+    msg_info("PythonFactory") << "Found a lower downcasting function for " << type_name << " based on " << kv->first;
 
     s_componentDowncastingFct[type_name] = kv->second;
     return kv->second(object);
