@@ -134,6 +134,8 @@ py::object PythonFactory::toPython(sofa::core::objectmodel::Base* object)
 {
     auto metaclass = object->getClass();
 
+    std::cout << "CLASS HIERARCHY\n" << get_class_hierarchy_as_string(metaclass);
+
     /// Let's first search if there is a casting function for the give type.
     std::string type_name = metaclass->typeName;
     auto kv = s_componentDowncastingFct.find(type_name);
