@@ -182,6 +182,7 @@ py::object getObject(Node &n, const std::string &name, const py::kwargs& kwargs)
     BaseObject *object = n.getObject(name);
     if (object)
         return PythonFactory::toPython(object);
+    msg_error("PythonFactory") << "Could not find object with name " << name << " in Node " << n.getName();
     return py::none();
 }
 
