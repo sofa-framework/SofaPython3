@@ -66,8 +66,15 @@ void moduleAddConstraintSolver(py::module &m)
     /// register the binding in the downcasting subsystem
     PythonFactory::registerType<ConstraintSolverImpl>([](sofa::core::objectmodel::Base* object)
     {
+        if (object == nullptr)
+            std::cout << "Input object is nullptr" << std::endl;
+
+        std::cout << "Object address: " << object << std::endl;
+
         ConstraintSolverImpl* d = dynamic_cast<ConstraintSolverImpl*>(object);
-        msg_error_when(d == nullptr, "PythonFactory") << "Dynamic cast failed";
+
+        if (d == nullptr)
+            std::cout << "Dynamic cast failed" << std::endl;
 
         auto c = py::cast(d);
         py::print("Cast raw pointer: ", c);

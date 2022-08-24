@@ -142,6 +142,7 @@ py::object PythonFactory::toPython(sofa::core::objectmodel::Base* object)
     if( kv != s_componentDowncastingFct.end())
     {
         msg_info("PythonFactory") << "Found downcasting function for " << type_name;
+        std::cout << "Object address: " << object << std::endl;
         return kv->second(object);
     }
 
@@ -159,6 +160,7 @@ py::object PythonFactory::toPython(sofa::core::objectmodel::Base* object)
     msg_info("PythonFactory") << "Found a lower downcasting function for " << type_name << " based on " << kv->first;
 
     s_componentDowncastingFct[type_name] = kv->second;
+    std::cout << "Object address: " << object << std::endl;
     return kv->second(object);
 }
 
