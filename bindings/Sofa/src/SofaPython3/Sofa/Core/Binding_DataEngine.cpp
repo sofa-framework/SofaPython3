@@ -40,14 +40,6 @@ using sofa::core::objectmodel::BaseData;
 using sofa::core::objectmodel::BaseObject;
 using sofa::core::objectmodel::DDGNode;
 
-std::string DataEngine_Trampoline::getClassName() const
-{
-    PythonEnvironment::gil acquire {"getClassName"};
-
-    // Get the actual class name from python.
-    return py::str(py::cast(this).get_type().attr("__name__"));
-}
-
 void DataEngine_Trampoline::init()
 {
     PythonEnvironment::executePython(this, [this](){

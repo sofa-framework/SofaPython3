@@ -31,8 +31,6 @@ public:
     SOFA_CLASS(DataEngine_Trampoline, sofa::core::DataEngine);
     void init() override;
     void doUpdate() override;
-
-    std::string getClassName() const override;
 };
 
 void moduleAddDataEngine(pybind11::module &m);

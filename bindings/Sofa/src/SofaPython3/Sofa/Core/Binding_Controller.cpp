@@ -38,13 +38,6 @@ namespace sofapython3
 using sofa::core::objectmodel::Event;
 using sofa::core::objectmodel::BaseObject;
 
-std::string Controller_Trampoline::getClassName() const
-{
-    PythonEnvironment::gil acquire {"getClassName"};
-    // Get the actual class name from python.
-    return py::str(py::cast(this).get_type().attr("__name__"));
-}
-
 void Controller_Trampoline::init()
 {
     PythonEnvironment::executePython(this, [this](){
