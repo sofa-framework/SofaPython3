@@ -50,8 +50,17 @@ def rssffScene(use_implicit_scheme=True, use_iterative_solver=True):
     createParticle(node, "particle", use_implicit_scheme, use_iterative_solver)
     return node
 
+class EmptyForceField(Sofa.Core.ForceFieldVec3d):
+    def __init__(self, *args, **kwargs):
+        Sofa.Core.ForceFieldVec3d.__init__(self, *args, **kwargs)
+        pass
 
 class Test(unittest.TestCase):
+
+    def test_class_name(self):
+        c = EmptyForceField()
+        self.assertEqual(c.getClassName(), "EmptyForceField")
+
     def test_0_explicit(self):
         root = rssffScene(use_implicit_scheme=False,
                           use_iterative_solver=False)
