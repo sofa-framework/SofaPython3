@@ -329,7 +329,6 @@ py::buffer_info toBufferInfo(BaseData& m)
     size_t datasize = nfo.byteSize();
 
     std::tuple<int,int> shape = getShape(&m);
-    size_t  ndim = getNDim(&m);
 
     void* ptr = const_cast<void*>(nfo.getValuePtr(m.getValueVoidPtr()));
     if( !itemNfo->Container() ){

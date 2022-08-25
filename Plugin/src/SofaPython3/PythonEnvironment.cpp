@@ -434,7 +434,9 @@ void PythonEnvironment::addPythonModulePathsFromPlugin(const std::string& plugin
 void PythonEnvironment::addPluginManagerCallback()
 {
     PluginManager::getInstance().addOnPluginLoadedCallback(pluginLibraryPath,
-        [](const std::string& pluginLibraryPath, const Plugin& plugin) {
+        [](const std::string& pluginLibraryPath, const Plugin& plugin)
+        {
+            SOFA_UNUSED(pluginLibraryPath);
             // search for plugin with PluginRepository
             for ( auto path : sofa::helper::system::PluginRepository.getPaths() )
             {
