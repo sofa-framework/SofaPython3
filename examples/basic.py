@@ -29,6 +29,9 @@ def createScene(root):
     node1 = root.addChild("Node1")
     node2 = root.addChild("Node2")
     
+    root.addObject("RequiredPlugin", pluginName=["Sofa.Component.StateContainer"])
+    root.addObject('DefaultAnimationLoop')
+
     node1.addObject("MechanicalObject", template="Rigid3d", position="0 0 0   0 0 0 1", showObject="1")
 
     node2.addObject("MechanicalObject", template="Rigid3d", position="1 1 1   0 0 0 1", showObject="1")

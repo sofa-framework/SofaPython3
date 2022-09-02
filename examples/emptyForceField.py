@@ -37,7 +37,10 @@ class EmptyForceField(Sofa.Core.ForceFieldVec3d):
 
 def createScene(root):
     root.dt = 0.01
-    root.addObject('DefaultVisualManagerLoop')
+    root.bbox = [[0, 0, 0],[1,1,1]]
+
+    root.addObject("RequiredPlugin", pluginName=["Sofa.Component.LinearSolver.Iterative", "Sofa.Component.ODESolver.Backward",
+                                                 "Sofa.Component.StateContainer"])
     root.addObject('DefaultAnimationLoop')
 
     node1 = root.addChild("Node1")
