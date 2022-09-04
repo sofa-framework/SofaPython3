@@ -38,7 +38,7 @@ class Test(unittest.TestCase):
 
         self.assertEqual(A.ndim, 2)
         self.assertEqual(A.shape, (960, 960))
-        self.assertGreater(A.nnz, 960) // Should be Equal to one specific value but a different between OS has been reported here: https://github.com/sofa-framework/sofa/issues/3036
+        self.assertGreater(A.nnz, 960) # Should be Equal to one specific value but a different between OS has been reported here: https://github.com/sofa-framework/sofa/issues/3036
 
     def test_matrix_access_blocks3x3(self):
         root = self.simulate_beam("CompressedRowSparseMatrixMat3x3d")
@@ -46,4 +46,4 @@ class Test(unittest.TestCase):
 
         self.assertEqual(A.ndim, 2)
         self.assertEqual(A.shape, (960, 960))
-        self.assertGreater(A.nnz, 960) // Should be Equal to one specific value but a different between OS has been reported here: https://github.com/sofa-framework/sofa/issues/3036
+        self.assertGreater(A.nnz, 960) # Should be Equal to one specific value but a different between OS has been reported here: https://github.com/sofa-framework/sofa/issues/3036

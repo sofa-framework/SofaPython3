@@ -18,38 +18,18 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaPython3/PythonTest.h>
-#include <SofaPython3/PythonTestExtractor.h>
-#include <sofa/helper/Utils.h>
+#pragma once
 
-#include <sofa/helper/logging/Messaging.h>
-#include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
-#include <sofa/helper/logging/MessageDispatcher.h>
-using sofa::helper::logging::MessageDispatcher;
-
-
-/// static build of the test list
-static struct Tests : public sofapython3::PythonTestExtractor
+namespace sofapython3::doc::linkpath
 {
-    Tests() {
-        using sofa::helper::logging::MessageDispatcher;
-        using sofa::helper::logging::MainPerComponentLoggingMessageHandler;
+static auto linkpath =
+        R"(
+        Hold a linkpath to an object or a data.
+        Example of use:
+            node.addObject("MechanicalObject", name="o")
+            node.addObject(position=node.o.position.linkpath)
 
-        MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
-
-        const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
-        addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaDeformable", "SofaDeformable_");
-        addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaLinearSolver", "SofaLinearSolver_");
-        addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaConstraintSolver", "SofaConstraintSolver_");
-    }
-} python_tests;
-
-/// run test list using the custom name function getTestName.
-/// this allows to do gtest_filter=*FileName*
-class Modules : public sofapython3::PythonTest {};
-INSTANTIATE_TEST_SUITE_P(SofaPython3,
-                        Modules,
-                        ::testing::ValuesIn(python_tests.extract()),
-                        Modules::getTestName);
-
-TEST_P(Modules, all_tests) { run(GetParam()); }
+            str(node.o.linkpath) # prints LinkPath("@/o.position")
+            repr(node.o.linkpath) # prints "@/o.position"
+        )";
+}

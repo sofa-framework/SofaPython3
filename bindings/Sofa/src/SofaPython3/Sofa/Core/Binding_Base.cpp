@@ -33,6 +33,7 @@ using sofa::helper::WriteOnlyAccessor;
 
 #include <SofaPython3/PythonFactory.h>
 
+#include <SofaPython3/Sofa/Core/Binding_LinkPath.h>
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_Base_doc.h>
 #include <SofaPython3/Sofa/Core/Binding_DataDict.h>
@@ -90,6 +91,10 @@ py::object BindingBase::GetAttr(Base* self, const std::string& s, bool doThrowEx
     if( s == "__data__")
         return py::cast( DataDict(self) );
 
+    /// Returns the linkpath to the self object.
+    if(s == "linkpath")
+        return py::cast(sofapython3::LinkPath(self));
+
     if(doThrowException)
         throw py::attribute_error("Missing attribute: "+s);
 
@@ -101,9 +106,25 @@ bool BindingBase::SetData(BaseData* d, py::object value)
     if(d==nullptr)
         return false;
 
-    const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
-
     PythonFactory::fromPython(d, value);
+    return true;
+}
+
+bool BindingBase::SetLink(BaseLink* link, py::object value)
+{
+    if(link==nullptr)
+        return false;
+
+    if(py::isinstance<py::str>(value))
+        return link->read(py::cast<py::str>(value));
+
+    if(py::isinstance<LinkPath>(value))
+    {
+        auto& target = py::cast<LinkPath&>(value);
+        if(target.isPointingToData())
+            throw std::runtime_error("Passing a link to a data field instead of an object.");
+        link->setLinkedBase(target.targetBase.get());
+    }
     return true;
 }
 
@@ -111,8 +132,8 @@ bool BindingBase::SetData(BaseData* d, py::object value)
 void BindingBase::SetAttr(py::object self, const std::string& s, py::object value)
 {
     Base* self_d = py::cast<Base*>(self);
-    BaseData* d = self_d->findData(s);
 
+    BaseData* d = self_d->findData(s);
     if(d!=nullptr)
     {
         SetData(d, value);
@@ -122,6 +143,7 @@ void BindingBase::SetAttr(py::object self, const std::string& s, py::object valu
     BaseLink* l = self_d->findLink(s);
     if(l!=nullptr)
     {
+        SetLink(l, value);
         return;
     }
 
@@ -132,17 +154,8 @@ void BindingBase::SetAttr(py::object self, const std::string& s, py::object valu
 void BindingBase::SetAttr(Base& self, const std::string& s, py::object value)
 {
     BaseData* d = self.findData(s);
-
     if(d!=nullptr)
     {
-        const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
-
-        /// We go for the container path.
-        if(nfo.Container())
-        {
-            PythonFactory::fromPython(d,value);
-            return;
-        }
         PythonFactory::fromPython(d, value);
         return;
     }
@@ -150,6 +163,7 @@ void BindingBase::SetAttr(Base& self, const std::string& s, py::object value)
     BaseLink* l = self.findLink(s);
     if(l!=nullptr)
     {
+        SetLink(l, value);
         return;
     }
 

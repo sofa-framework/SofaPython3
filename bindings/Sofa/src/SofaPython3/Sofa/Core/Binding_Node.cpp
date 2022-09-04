@@ -38,6 +38,9 @@ using sofa::helper::logging::Message;
 #include <sofa/simulation/graph/DAGNode.h>
 using sofa::core::ExecParams;
 
+#include <SofaPython3/LinkPath.h>
+using sofapython3::LinkPath;
+
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
 #include <SofaPython3/DataHelper.h>
@@ -185,6 +188,25 @@ py::object getObject(Node &n, const std::string &name, const py::kwargs& kwargs)
     return py::none();
 }
 
+void setFieldsFromPythonValues(Base* self, const py::kwargs& dict)
+{
+    // For each argument of the addObject function we check if this is an argument we can do a raw conversion from.
+    // Doing a raw conversion means that we are not converting the argument anymore into a sofa parsable string.
+    for(auto [key, value] : dict)
+    {
+        if(py::isinstance<LinkPath>(value))
+        {
+            auto* data = self->findData(py::str(key));
+            if(data)
+                BindingBase::SetData(data, py::cast<py::object>(value));
+
+            auto* link = self->findLink(py::str(key));
+            if(link)
+                BindingBase::SetLink(link, py::cast<py::object>(value));
+        }
+    }
+}
+
 /// Implement the addObject function.
 py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
@@ -222,6 +244,8 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         const auto resolvedName = self->getNameHelper().resolveName(object->getClassName(), name, sofa::core::ComponentNameHelper::Convention::python);
         object->setName(resolvedName);
     }
+
+    setFieldsFromPythonValues(object.get(), kwargs);
 
     checkParamUsage(desc);
 

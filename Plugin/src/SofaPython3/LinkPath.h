@@ -18,38 +18,29 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaPython3/PythonTest.h>
-#include <SofaPython3/PythonTestExtractor.h>
-#include <sofa/helper/Utils.h>
+#pragma once
 
-#include <sofa/helper/logging/Messaging.h>
-#include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
-#include <sofa/helper/logging/MessageDispatcher.h>
-using sofa::helper::logging::MessageDispatcher;
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/BaseData.h>
 
-
-/// static build of the test list
-static struct Tests : public sofapython3::PythonTestExtractor
+namespace sofapython3
 {
-    Tests() {
-        using sofa::helper::logging::MessageDispatcher;
-        using sofa::helper::logging::MainPerComponentLoggingMessageHandler;
 
-        MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+/// A placeholder class storing a link to a data or a base
+///
+/// LinkPath can be used to indicate that a link is needed to be made in place of a string
+/// like "@/usr/myobj.position" or "@/usr/myobj"
+///
+class LinkPath
+{
+public:
+    sofa::core::sptr<sofa::core::objectmodel::Base> targetBase;
+    sofa::core::objectmodel::BaseData* targetData;
 
-        const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
-        addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaDeformable", "SofaDeformable_");
-        addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaLinearSolver", "SofaLinearSolver_");
-        addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaConstraintSolver", "SofaConstraintSolver_");
-    }
-} python_tests;
+    LinkPath(sofa::core::sptr<sofa::core::objectmodel::Base>);
+    LinkPath(sofa::core::objectmodel::BaseData*);
 
-/// run test list using the custom name function getTestName.
-/// this allows to do gtest_filter=*FileName*
-class Modules : public sofapython3::PythonTest {};
-INSTANTIATE_TEST_SUITE_P(SofaPython3,
-                        Modules,
-                        ::testing::ValuesIn(python_tests.extract()),
-                        Modules::getTestName);
+    bool isPointingToData() const;
+};
 
-TEST_P(Modules, all_tests) { run(GetParam()); }
+} /// sofapython3

@@ -18,38 +18,26 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaPython3/PythonTest.h>
-#include <SofaPython3/PythonTestExtractor.h>
-#include <sofa/helper/Utils.h>
+#include <SofaPython3/LinkPath.h>
 
-#include <sofa/helper/logging/Messaging.h>
-#include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
-#include <sofa/helper/logging/MessageDispatcher.h>
-using sofa::helper::logging::MessageDispatcher;
-
-
-/// static build of the test list
-static struct Tests : public sofapython3::PythonTestExtractor
+namespace sofapython3
 {
-    Tests() {
-        using sofa::helper::logging::MessageDispatcher;
-        using sofa::helper::logging::MainPerComponentLoggingMessageHandler;
 
-        MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+LinkPath::LinkPath(sofa::core::sptr<sofa::core::objectmodel::Base> target)
+{
+    targetBase = target;
+    targetData = nullptr;
+}
 
-        const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
-        addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaDeformable", "SofaDeformable_");
-        addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaLinearSolver", "SofaLinearSolver_");
-        addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaConstraintSolver", "SofaConstraintSolver_");
-    }
-} python_tests;
+LinkPath::LinkPath(sofa::core::objectmodel::BaseData* target)
+{
+    targetBase = target->getOwner();
+    targetData = target;
+}
 
-/// run test list using the custom name function getTestName.
-/// this allows to do gtest_filter=*FileName*
-class Modules : public sofapython3::PythonTest {};
-INSTANTIATE_TEST_SUITE_P(SofaPython3,
-                        Modules,
-                        ::testing::ValuesIn(python_tests.extract()),
-                        Modules::getTestName);
+bool LinkPath::isPointingToData() const
+{
+    return targetData != nullptr;
+}
 
-TEST_P(Modules, all_tests) { run(GetParam()); }
+}/// namespace sofapython3

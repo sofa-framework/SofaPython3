@@ -9,6 +9,8 @@ set(PYTHON_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/SofaDeformable/SpringForceField.py
 
     ${CMAKE_CURRENT_SOURCE_DIR}/SofaLinearSolver/matrix_access.py
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/SofaConstraintSolver/matrix_access.py
 )
 
 find_package(Sofa.Testing REQUIRED)
@@ -27,7 +29,7 @@ sofa_auto_set_target_rpath(
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 
-set(DIR_BINDING_LIST SofaBaseTopology SofaDeformable SofaLinearSolver)
+set(DIR_BINDING_LIST SofaBaseTopology SofaDeformable SofaLinearSolver SofaConstraintSolver)
 get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 foreach(dir_binding ${DIR_BINDING_LIST})
     if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${dir_binding}")

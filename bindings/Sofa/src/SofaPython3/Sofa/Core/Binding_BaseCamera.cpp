@@ -55,7 +55,6 @@ std::vector<double> getOpenGLProjectionMatrix(BaseCamera* self)
 
 std::vector<double> getOpenGLModelViewMatrix(BaseCamera* self)
 {
-    auto s = self->p_position.getValue();
     static std::vector<double> m {16};
     m.resize(16);
     self->getOpenGLModelViewMatrix(m.data());

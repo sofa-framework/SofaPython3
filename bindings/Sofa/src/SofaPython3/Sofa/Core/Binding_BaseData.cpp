@@ -29,6 +29,7 @@
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseData.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseData_doc.h>
+#include <SofaPython3/Sofa/Core/Binding_LinkPath.h>
 #include <SofaPython3/Sofa/Core/Data/Binding_DataContainer.h>
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/PythonFactory.h>
@@ -139,7 +140,7 @@ py::object __getattr__(py::object self, const std::string& s)
         return PythonFactory::valueToPython_ro(py::cast<BaseData*>(self));
 
     if(s == "linkpath")
-        return py::cast((py::cast<BaseData*>(self))->getLinkPath());
+        return py::cast(sofapython3::LinkPath(py::cast<BaseData*>(self)));
 
     /// BaseData does not support dynamic attributes, if you think this is an important feature
     /// please request for its integration.
@@ -151,9 +152,16 @@ void setParent(BaseData* self, BaseData* parent)
     self->setParent(parent);
 }
 
-void setParentFromLinkPath(BaseData* self, const std::string& parent)
+void setParentFromLinkPathStr(BaseData* self, const std::string& parent)
 {
     self->setParent(parent);
+}
+
+void setParentFromLinkPath(BaseData* self, const LinkPath& parent)
+{
+    if(!parent.isPointingToData())
+        throw std::runtime_error("The provided linkpath is not containing a linkable data");
+    self->setParent(parent.targetData);
 }
 
 bool hasParent(BaseData *self)
@@ -205,6 +213,7 @@ void moduleAddBaseData(py::module& m)
     data.def("isPersistent", &BaseData::isPersistent, sofapython3::doc::baseData::isPersistent);
     data.def("setPersistent", &BaseData::setPersistent, sofapython3::doc::baseData::setPersistent);
     data.def("setParent", setParent, sofapython3::doc::baseData::setParent);
+    data.def("setParent", setParentFromLinkPathStr, sofapython3::doc::baseData::setParent);
     data.def("setParent", setParentFromLinkPath, sofapython3::doc::baseData::setParent);
     data.def("hasParent", hasParent, sofapython3::doc::baseData::hasParent);
     data.def("read", &BaseData::read, sofapython3::doc::baseData::read);
