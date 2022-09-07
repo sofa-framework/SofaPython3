@@ -337,8 +337,8 @@ py::buffer_info toBufferInfo(BaseData& m)
                     datasize,                              /* Size of one scalar */
                     format,                                /* Python struct-style format descriptor */
                     1,                                     /* Number of dimensions */
-        { std::get<0>(shape) },                              /* Buffer dimensions */
-        { datasize }                           /* Strides (in bytes) for each index */
+                    { std::get<0>(shape) },                              /* Buffer dimensions */
+                    { datasize }                           /* Strides (in bytes) for each index */
                     );
     }
     py::buffer_info ninfo(
@@ -346,8 +346,8 @@ py::buffer_info toBufferInfo(BaseData& m)
                 datasize,                              /* Size of one scalar */
                 format,                                /* Python struct-style format descriptor */
                 2,                                     /* Number of dimensions */
-    { std::get<0>(shape), std::get<1>(shape)},                        /* Buffer dimensions */
-    { datasize * std::get<1>(shape) ,    datasize }                         /* Strides (in bytes) for each index */
+                { std::get<0>(shape), std::get<1>(shape)},                        /* Buffer dimensions */
+                { datasize * std::get<1>(shape) ,    datasize }                         /* Strides (in bytes) for each index */
                 );
     return ninfo;
 }
@@ -372,14 +372,15 @@ py::object convertToPython(BaseData* d)
             size_t dim1 = nfo.size();
             for(size_t i=0;i<dim0;i++)
             {
-
                 py::list list1;
                 for(size_t j=0;j<dim1;j++)
                 {
                     if(nfo.Integer())
                         list1.append(nfo.getIntegerValue(d->getValueVoidPtr(),i*dim1+j));
-                    if(nfo.Scalar())
+                    else if(nfo.Scalar())
                         list1.append(nfo.getScalarValue(d->getValueVoidPtr(),i*dim1+j));
+                    else
+                        throw py::type_error("Invalid type");
                 }
                 list.append(list1);
             }
@@ -407,7 +408,7 @@ py::array resetArrayFor(BaseData* d)
 {
     //todo: protect the function.
     auto& memcache = getObjectCache();
-    auto capsule = py::capsule(new Base::SPtr(d->getOwner()));
+    auto capsule = py::capsule(new Base::SPtr(d->getOwner()), [](void*p){ delete static_cast<Base::SPtr*>(p); } );
 
     py::buffer_info ninfo = toBufferInfo(*d);
     py::array a(pybind11::dtype(ninfo), ninfo.shape,
@@ -624,7 +625,7 @@ BaseLink* addLink(py::object py_self, const std::string& name, py::object value,
     else if (py::isinstance<Base*>(value))
         link->setLinkedBase(py::cast<Base*>(value));
 
-//    self->addLink(link);
+    //    self->addLink(link);
     return link;
 }
 

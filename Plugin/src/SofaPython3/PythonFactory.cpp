@@ -201,7 +201,8 @@ py::object PythonFactory::valueToPython_ro(sofa::core::objectmodel::BaseData* da
     /// we can expose the field as a numpy.array (no copy)
     if(nfo.Container() && nfo.SimpleLayout())
     {
-        auto capsule = py::capsule(new Base::SPtr(data->getOwner()));
+        auto capsule = py::capsule(new Base::SPtr(data->getOwner()),
+                                   [](void*p){ delete static_cast<Base::SPtr*>(p); } );
         py::buffer_info ninfo = toBufferInfo(*data);
         py::array a(pybind11::dtype(ninfo), ninfo.shape,
                     ninfo.strides, ninfo.ptr, capsule);
