@@ -87,7 +87,8 @@ py::list toList(BaseData* self)
 
 py::array array(BaseData* self)
 {
-    auto capsule = py::capsule(new Base::SPtr(self->getOwner()));
+    auto capsule = py::capsule(new Base::SPtr(self->getOwner()),
+                               [](void*p){ delete static_cast<Base::SPtr*>(p); });
     py::buffer_info ninfo = toBufferInfo(*self);
     py::array a(pybind11::dtype(ninfo), ninfo.shape,
                 ninfo.strides, ninfo.ptr, capsule);
@@ -95,20 +96,20 @@ py::array array(BaseData* self)
     return a;
 }
 
-py::object writeableArrayWithType(BaseData* self, py::object f)
+std::unique_ptr<DataContainerContext> writeableArrayWithType(BaseData* self, py::object f)
 {
     if(self!=nullptr)
-        return py::cast(new DataContainerContext(self, f));
+        return std::make_unique<DataContainerContext>(self, f);
 
-    return py::none();
+    return nullptr;
 }
 
-py::object writeableArray(BaseData* self)
+std::unique_ptr<DataContainerContext> writeableArray(BaseData* self)
 {
     if(self!=nullptr)
-        return py::cast(new DataContainerContext(self, py::none()));
+        return std::make_unique<DataContainerContext>(self, py::none());
 
-    return py::none();
+    return nullptr;
 }
 
 void __setattr__(py::object self, const std::string& s, py::object value)
@@ -186,6 +187,11 @@ py::object getOwner(BaseData& self)
     return PythonFactory::toPython(self.getOwner());
 }
 
+std::string getValueTypeString(BaseData* data)
+{
+    return data->getValueTypeInfo()->name();
+}
+
 void moduleAddBaseData(py::module& m)
 {
     /// Register the BaseData binding into the pybind11 system.
@@ -211,7 +217,7 @@ void moduleAddBaseData(py::module& m)
     data.def("__setattr__", __setattr__);
     data.def("__getattr__", __getattr__);
     data.def("getValueString",&BaseData::getValueString, sofapython3::doc::baseData::getValueString);
-    data.def("getValueTypeString", &BaseData::getValueTypeString, sofapython3::doc::baseData::getValueTypeString);
+    data.def("getValueTypeString", &getValueTypeString, sofapython3::doc::baseData::getValueTypeString);
     data.def("isPersistent", &BaseData::isPersistent, sofapython3::doc::baseData::isPersistent);
     data.def("setPersistent", &BaseData::setPersistent, sofapython3::doc::baseData::setPersistent);
     data.def("setParent", setParent, sofapython3::doc::baseData::setParent);
