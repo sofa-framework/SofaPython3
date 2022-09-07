@@ -19,6 +19,8 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataEngine_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinkPath.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinkPath_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Mass.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Mass_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory.h
@@ -60,6 +62,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataLink.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataVectorString.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinkPath.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Mass.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node.cpp

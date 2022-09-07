@@ -301,16 +301,35 @@ class Test(unittest.TestCase):
             numpy.testing.assert_array_equal(wa, v*4.0)
 
     def test_linkpath(self):
+        """Accessing the linkpath property should return a LinkPath object with a correct 'path'"""
         n = create_scene("rootNode")
         m = n. addObject("MechanicalObject", name="dofs")
-        self.assertEqual(m.position.linkpath, "@/dofs.position")
+        self.assertEqual(type(m.position.linkpath), Sofa.Core.LinkPath)
+        self.assertEqual(str(m.position.linkpath), "@/dofs.position")
+
+    def test_linkpath_in_add_object_compat(self):
+        """Checks that passing a link path to the addObject function is still working as it was before sofa 21.12"""
+        root = create_scene("root")
+        root.addObject("MechanicalObject", name="dofs1", position=[[1.0,2.0,3.0]])
+        root.addObject("MechanicalObject", name="dofs2", position=root.dofs1.position.linkpath)
+        self.assertEqual(str(root.dofs2.position.getParent().linkpath), "@/dofs1.position")
+
+    def test_linkpath_between_two_scenes(self):
+        """Checks that passing a link path to the addObject function is still working as it was before sofa 21.12"""
+        root1 = create_scene("root1")
+        root1.addChild("child1")
+        root2 = create_scene("root2")
+        root2.addChild("child2)
+        root1.child1.addObject("MechanicalObject", name="dofs1", position=[[1.0,2.0,3.0]])
+        root2.chdil2.addObject("MechanicalObject", name="dofs2", position=root1.child1.dofs1.position.linkpath)
+        self.assertEqual(root2.dofs2.position.getParent().name, "dofs1")
 
     def test_set_value_from_string(self):
         n = create_scene("rootNode")
-        n.gravity.value = [1.0,2.0,3.0]
-        self.assertEqual(list(n.gravity.value), [1.0,2.0,3.0])
+        n.gravity.value = [1.0, 2.0, 3.0]
+        self.assertEqual(list(n.gravity.value), [1.0, 2.0, 3.0])
         n.gravity.value = "4.0 5.0 6.0"
-        self.assertEqual(list(n.gravity.value), [4.0,5.0,6.0])
+        self.assertEqual(list(n.gravity.value), [4.0, 5.0, 6.0])
 
     def test_DataString(self):
         n = create_scene("rootNode")

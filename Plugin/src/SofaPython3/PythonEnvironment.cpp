@@ -404,8 +404,19 @@ void PythonEnvironment::addPythonModulePathsFromPlugin(const std::string& plugin
         Plugin p = elem.second;
         if ( p.getModuleName() == pluginName )
         {
-            std::string pluginLibraryPath = elem.first;
+            // 1. Try to find the plugin directory starting from SOFA root
+            for ( auto path : sofa::helper::system::PluginRepository.getPaths() )
+            {
+                std::string pluginRoot = FileSystem::cleanPath( path + "/" + pluginName );
+                if ( FileSystem::exists(pluginRoot) && FileSystem::isDirectory(pluginRoot) )
+                {
+                    addPythonModulePathsFromDirectory(pluginRoot);
+                    return;
+                }
+            }
 
+            // 2. Try to find the plugin directory starting from the plugin library
+            std::string pluginLibraryPath = elem.first;
             // moduleRoot can be 1 or 2 levels above the library directory
             // like "plugin_name/lib/plugin_name.so"
             // or "sofa_root/bin/Release/plugin_name.dll"
@@ -416,7 +427,6 @@ void PythonEnvironment::addPythonModulePathsFromPlugin(const std::string& plugin
                 moduleRoot = FileSystem::getParentDirectory(moduleRoot);
                 maxDepth++;
             }
-
             addPythonModulePathsFromDirectory(moduleRoot);
             return;
         }
@@ -427,7 +437,9 @@ void PythonEnvironment::addPythonModulePathsFromPlugin(const std::string& plugin
 void PythonEnvironment::addPluginManagerCallback()
 {
     PluginManager::getInstance().addOnPluginLoadedCallback(pluginLibraryPath,
-        [](const std::string& pluginLibraryPath, const Plugin& plugin) {
+        [](const std::string& pluginLibraryPath, const Plugin& plugin)
+        {
+            SOFA_UNUSED(pluginLibraryPath);
             // search for plugin with PluginRepository
             for ( auto path : sofa::helper::system::PluginRepository.getPaths() )
             {

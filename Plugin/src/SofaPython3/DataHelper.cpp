@@ -26,8 +26,10 @@
 #include <sofa/simulation/Node.h>
 
 #include <SofaPython3/DataHelper.h>
+#include <SofaPython3/LinkPath.h>
 #include <SofaPython3/DataCache.h>
 #include <SofaPython3/PythonFactory.h>
+
 
 using sofa::core::objectmodel::BaseLink;
 
@@ -61,6 +63,12 @@ std::string toSofaParsableString(const py::handle& p)
     {
         py::object o = p.attr("tolist")();
         return toSofaParsableString(o);
+    }
+
+    // if the object is a link path we set it.
+    if(py::isinstance<sofapython3::LinkPath>(p))
+    {
+        return py::str(p);
     }
 
     return py::repr(p);
@@ -475,7 +483,7 @@ BaseData* deriveTypeFromParent(sofa::core::objectmodel::BaseContext* ctx, const 
 bool isProtectedKeyword(const std::string& name)
 {
     if (name == "children" || name == "objects" || name == "parents" ||
-            name == "data" || name == "links")
+            name == "data" || name == "links" || name == "linkpath")
     {
         return true;
     }
