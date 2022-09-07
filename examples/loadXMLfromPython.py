@@ -8,7 +8,7 @@ def createScene(root):
 	scene="""
 			<Node dt="0.005" gravity="0 0 0">
 				<RequiredPlugin name="Sofa.Component.StateContainer"/>
-				<DefaultAnimationLoop,/>
+				<DefaultAnimationLoop/>
 
 				<Node name="child1">
 					<MechanicalObject template="Rigid3d" position="0 0 0   0 0 0 1" showObject="1"/>
