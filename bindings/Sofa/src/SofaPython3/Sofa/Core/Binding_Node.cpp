@@ -395,9 +395,9 @@ py::object removeChildByName(Node& n, const std::string name)
     return py::cast(node);
 }
 
-NodeIterator* property_children(Node* node)
+std::unique_ptr<NodeIterator> property_children(Node* node)
 {
-    return new NodeIterator(node,
+    return std::make_unique<NodeIterator>(node,
                             [](Node* n) -> size_t { return n->child.size(); },
                             [](Node* n, unsigned int index) -> Base::SPtr { return n->child[index]; },
                             [](const Node* n, const std::string& name) { return n->getChild(name); },
@@ -405,9 +405,9 @@ NodeIterator* property_children(Node* node)
                             );
 }
 
-NodeIterator* property_parents(Node* node)
+std::unique_ptr<NodeIterator> property_parents(Node* node)
 {
-    return new NodeIterator(node,
+    return std::make_unique<NodeIterator>(node,
                             [](Node* n) -> size_t { return n->getNbParents(); },
                             [](Node* n, unsigned int index) -> Node::SPtr {
                                 auto p = n->getParents();
@@ -424,9 +424,9 @@ NodeIterator* property_parents(Node* node)
                             });
 }
 
-NodeIterator* property_objects(Node* node)
+std::unique_ptr<NodeIterator> property_objects(Node* node)
 {
-    return new NodeIterator(node,
+    return std::make_unique<NodeIterator>(node,
                             [](Node* n) -> size_t { return n->object.size(); },
                             [](Node* n, unsigned int index) -> Base::SPtr { return (n->object[index]);},
                             [](const Node* n, const std::string& name) { return n->getObject(name); },

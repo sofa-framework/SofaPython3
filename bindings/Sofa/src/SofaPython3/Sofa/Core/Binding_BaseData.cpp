@@ -96,20 +96,20 @@ py::array array(BaseData* self)
     return a;
 }
 
-py::object writeableArrayWithType(BaseData* self, py::object f)
+std::unique_ptr<DataContainerContext> writeableArrayWithType(BaseData* self, py::object f)
 {
     if(self!=nullptr)
-        return py::cast(new DataContainerContext(self, f));
+        return std::make_unique<DataContainerContext>(self, f);
 
-    return py::none();
+    return nullptr;
 }
 
-py::object writeableArray(BaseData* self)
+std::unique_ptr<DataContainerContext> writeableArray(BaseData* self)
 {
     if(self!=nullptr)
-        return py::cast(new DataContainerContext(self, py::none()));
+        return std::make_unique<DataContainerContext>(self, py::none());
 
-    return py::none();
+    return nullptr;
 }
 
 void __setattr__(py::object self, const std::string& s, py::object value)
