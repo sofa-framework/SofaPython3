@@ -43,7 +43,7 @@ using sofa::core::behavior::Mass;
 template<class TDOFType>
 void declare_mass(py::module &m) {
     const std::string pyclass_name = std::string("Mass") + TDOFType::Name();
-    py::class_<Mass<TDOFType>, sofa::core::behavior::ForceField<TDOFType>, py_shared_ptr<Mass<TDOFType>>> f(m, pyclass_name.c_str(), sofapython3::doc::mass::massClass);
+    py::class_<Mass<TDOFType>, py_shared_ptr<Mass<TDOFType>>> f(m, pyclass_name.c_str(), sofapython3::doc::mass::massClass);
 
     using Real = typename TDOFType::Real;
     using EigenSparseMatrix = Eigen::SparseMatrix<typename TDOFType::Real, Eigen::RowMajor>;
