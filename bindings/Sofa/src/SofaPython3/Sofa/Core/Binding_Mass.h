@@ -20,9 +20,30 @@
 
 #pragma once
 
-#include <pybind11/pybind11.h>
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/behavior/Mass.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/MechanicalParams.h>
 
 namespace sofapython3 {
+
+template<class TDOFType>
+class Mass_Trampoline : public sofa::core::behavior::Mass<TDOFType> {
+public:
+    SOFA_CLASS(Mass_Trampoline, SOFA_TEMPLATE(sofa::core::behavior::Mass, TDOFType));
+    using sofa::core::behavior::Mass<TDOFType>::mstate;
+    using sofa::core::behavior::Mass<TDOFType>::getContext;
+    using typename sofa::core::behavior::Mass<TDOFType>::DataTypes;
+    using typename sofa::core::behavior::Mass<TDOFType>::Coord;
+    using typename sofa::core::behavior::Mass<TDOFType>::DataVecDeriv;
+    using typename sofa::core::behavior::Mass<TDOFType>::DataVecCoord;
+
+    Mass_Trampoline();
+    ~Mass_Trampoline() override;
+
+    std::string getClassName() const override;
+    void init() override;
+};
 
 void moduleAddMass(pybind11::module &m);
 
