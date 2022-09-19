@@ -44,11 +44,11 @@ static void bindSquaredMat(py::class_<Mat<R, C, double>> & /*p*/) {}
 
 template <sofa::Size S> static void bindSquaredMat(py::class_<Mat<S, S, double>> &p) {
     typedef Mat<S, S, double> MatClass;
-    p.def("identity", &MatClass::identity);
-    p.def("Identity", &MatClass::Identity);
+    p.def("identity", [](MatClass &mat){ return mat.identity(); });
+    p.def_static("Identity", []() { return MatClass::Identity(); });
     p.def("transpose", (void (MatClass::*)()) & MatClass::transpose);
-    p.def("inverted", &MatClass::inverted);
-    p.def("invert", &MatClass::invert);
+    p.def("inverted", [](MatClass &mat){ return mat.inverted(); });
+    p.def("invert", [](MatClass &dest, MatClass &from){ return dest.invert(from); });
 }
 
 template <sofa::Size R, sofa::Size C>
