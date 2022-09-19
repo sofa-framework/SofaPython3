@@ -28,19 +28,6 @@
 using sofa::simulation::AnimateBeginEvent;
 #include "sofa/simulation/AnimateEndEvent.h"
 using sofa::simulation::AnimateEndEvent;
-//#include "sofa/simulation/CollisionBeginEvent.h"
-//#include "sofa/simulation/CollisionEndEvent.h"
-//#include "sofa/simulation/IntegrateBeginEvent.h"
-//#include "sofa/simulation/IntegrateEndEvent.h"
-//#include "sofa/simulation/PauseEvent.h"
-//#include "sofa/simulation/PositionEvent.h"
-//#include "sofa/simulation/UpdateMappingEndEvent.h"
-
-//#include "sofa/core/objectmodel/DetachNodeEvent.h"
-//#include "sofa/core/objectmodel/GUIEvent.h"
-//#include "sofa/core/objectmodel/HapticDeviceEvent.h"
-//#include "sofa/core/objectmodel/IdleEvent.h"
-//#include "sofa/core/objectmodel/JoystickEvent.h"
 #include "sofa/core/objectmodel/KeypressedEvent.h"
 using sofa::core::objectmodel::KeypressedEvent;
 #include "sofa/core/objectmodel/KeyreleasedEvent.h"
@@ -201,7 +188,8 @@ py::object PythonFactory::valueToPython_ro(sofa::core::objectmodel::BaseData* da
     /// we can expose the field as a numpy.array (no copy)
     if(nfo.Container() && nfo.SimpleLayout())
     {
-        auto capsule = py::capsule(new Base::SPtr(data->getOwner()));
+        auto capsule = py::capsule(new Base::SPtr(data->getOwner()),
+                                   [](void*p){ delete static_cast<Base::SPtr*>(p); } );
         py::buffer_info ninfo = toBufferInfo(*data);
         py::array a(pybind11::dtype(ninfo), ninfo.shape,
                     ninfo.strides, ninfo.ptr, capsule);

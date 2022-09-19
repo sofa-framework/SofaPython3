@@ -31,6 +31,8 @@ using  sofa::core::objectmodel::BaseObject;
 #include <sofa/core/objectmodel/BaseNode.h>
 using  sofa::core::objectmodel::BaseNode;
 
+#include <memory>
+
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/PythonFactory.h>
 #include "../Binding_Base.h"
@@ -39,6 +41,8 @@ using  sofa::core::objectmodel::BaseNode;
 #include "Binding_DataContainer_doc.h"
 
 #include <sofa/type/BoundingBox.h>
+
+//PYBIND11_DECLARE_HOLDER_TYPE(sofapython3::DataContainerContext, std::unique_ptr<sofapython3::DataContainerContext>)
 
 namespace sofapython3
 {
@@ -149,7 +153,8 @@ void moduleAddDataContainer(py::module& m)
     }, sofapython3::doc::datacontainer::__len__);
 
     p.def("array", [](DataContainer* self){
-        auto capsule = py::capsule(new Base::SPtr(self->getOwner()));
+        auto capsule = py::capsule(new Base::SPtr(self->getOwner()),
+                                   [](void*p){ delete static_cast<Base::SPtr*>(p); });
         py::buffer_info ninfo = toBufferInfo(*self);
         py::array a(pybind11::dtype(ninfo), ninfo.shape,
                     ninfo.strides, ninfo.ptr, capsule);
@@ -157,20 +162,20 @@ void moduleAddDataContainer(py::module& m)
         return a;
     });
 
-    p.def("writeable", [](DataContainer* self, py::object f) -> py::object
+    p.def("writeable", [](DataContainer* self, py::object f) -> std::unique_ptr<DataContainerContext>
     {
         if(self!=nullptr)
-            return py::cast(new DataContainerContext(self, f));
+            return std::make_unique<DataContainerContext>(self, f);
 
-        return py::none();
+        return nullptr;
     });
 
-    p.def("writeable", [](DataContainer* self) -> py::object
+    p.def("writeable", [](DataContainer* self) -> std::unique_ptr<DataContainerContext>
     {
         if(self!=nullptr)
-            return py::cast(new DataContainerContext(self, py::none()));
+            return std::make_unique<DataContainerContext>(self, py::none());
 
-        return py::none();
+        return nullptr;
     });
 
     p.def("__iadd__", [](DataContainer* self, py::object value)
