@@ -436,7 +436,7 @@ py::array getPythonArrayFor(BaseData* d)
     auto& memcache = getObjectCache();
     if(d->isDirty() || memcache.find(d) == memcache.end())
     {
-        auto capsule = py::capsule(new Base::SPtr(d->getOwner()));
+        auto capsule = py::capsule(d->getOwner());
 
         py::buffer_info ninfo = toBufferInfo(*d);
         py::array a(pybind11::dtype(ninfo), ninfo.shape,
