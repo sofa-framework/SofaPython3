@@ -249,12 +249,8 @@ py::slice toSlice(const py::object& o)
 
 std::map<void*, py::array>& getObjectCache()
 {
-    static std::map<void*, py::array>* s_objectcache {nullptr} ;
-    if(!s_objectcache)
-    {
-        s_objectcache=new std::map<void*, py::array>();
-    }
-    return *s_objectcache;
+    static std::map<void*, py::array> s_objectcache {} ;
+    return s_objectcache;
 }
 
 void trimCache()
@@ -436,7 +432,7 @@ py::array getPythonArrayFor(BaseData* d)
     auto& memcache = getObjectCache();
     if(d->isDirty() || memcache.find(d) == memcache.end())
     {
-        auto capsule = py::capsule(d->getOwner());
+        auto capsule = py::capsule(new Base::SPtr(d->getOwner()), [](void*p){ delete static_cast<Base::SPtr*>(p); } );
 
         py::buffer_info ninfo = toBufferInfo(*d);
         py::array a(pybind11::dtype(ninfo), ninfo.shape,
