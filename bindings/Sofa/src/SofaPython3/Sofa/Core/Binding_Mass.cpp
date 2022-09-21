@@ -50,14 +50,6 @@ Mass_Trampoline<TDOFType>::Mass_Trampoline() = default;
 template<class TDOFType>
 Mass_Trampoline<TDOFType>::~Mass_Trampoline() = default;
 
-template<class TDOFType>
-std::string Mass_Trampoline<TDOFType>::getClassName() const
-{
-    PythonEnvironment::gil acquire {"getClassName"};
-
-    // Get the actual class name from python.
-    return py::str(py::cast(this).get_type().attr("__name__"));
-}
 
 template<class TDOFType>
 void Mass_Trampoline<TDOFType>::init()
@@ -74,6 +66,57 @@ void Mass_Trampoline<TDOFType>::init()
 
     PYBIND11_OVERLOAD(void, Mass<TDOFType>, init,);
 }
+
+
+template<class TDOFType>
+std::string Mass_Trampoline<TDOFType>::getClassName() const
+{
+    PythonEnvironment::gil acquire {"getClassName"};
+
+    // Get the actual class name from python.
+    return py::str(py::cast(this).get_type().attr("__name__"));
+}
+
+
+template<class TDOFType>
+bool Mass_Trampoline<TDOFType>::isDiagonal() const
+{
+    PythonEnvironment::gil acquire;
+
+    PYBIND11_OVERLOAD_PURE(bool, Mass<TDOFType>, isDiagonal);
+}
+
+
+template<class TDOFType>
+void Mass_Trampoline<TDOFType>::addGravitationalForce( const sofa::core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity)
+{
+    PythonEnvironment::gil acquire;
+
+    // pass bFactor, kFactor, energy
+    py::dict mp = py::dict("time"_a=getContext()->getTime(),
+                           "mFactor"_a=mparams->mFactor(),
+                           "bFactor"_a=mparams->bFactor(),
+                           "kFactor"_a=mparams->kFactor(),
+                           "isImplicit"_a=mparams->implicit());
+    PYBIND11_OVERLOAD_PURE(void, Mass<TDOFType>, addGravitationalForce, mp, PythonFactory::toPython(&f), PythonFactory::toPython(&x), PythonFactory::toPython(&v), gravity);
+}
+
+
+template<class TDOFType>
+SReal Mass_Trampoline<TDOFType>::getGravitationalPotentialEnergy( const sofa::core::MechanicalParams* mparams, const DataVecCoord& x, const Deriv& gravity) const
+{
+    PythonEnvironment::gil acquire;
+
+    // pass bFactor, kFactor, energy
+    py::dict mp = py::dict("time"_a=getContext()->getTime(),
+                           "mFactor"_a=mparams->mFactor(),
+                           "bFactor"_a=mparams->bFactor(),
+                           "kFactor"_a=mparams->kFactor(),
+                           "isImplicit"_a=mparams->implicit(),
+                           "energy"_a=mparams->energy());
+    PYBIND11_OVERLOAD_PURE(SReal, Mass<TDOFType>, getGravitationalPotentialEnergy, mp, PythonFactory::toPython(&x), gravity);
+}
+
 
 template<class TDOFType>
 void declare_mass(py::module &m) {

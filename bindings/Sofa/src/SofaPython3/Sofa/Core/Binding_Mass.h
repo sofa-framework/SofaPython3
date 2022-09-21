@@ -35,14 +35,20 @@ public:
     using sofa::core::behavior::Mass<TDOFType>::getContext;
     using typename sofa::core::behavior::Mass<TDOFType>::DataTypes;
     using typename sofa::core::behavior::Mass<TDOFType>::Coord;
+    using typename sofa::core::behavior::Mass<TDOFType>::Deriv;
     using typename sofa::core::behavior::Mass<TDOFType>::DataVecDeriv;
     using typename sofa::core::behavior::Mass<TDOFType>::DataVecCoord;
 
     Mass_Trampoline();
     ~Mass_Trampoline() override;
 
-    std::string getClassName() const override;
     void init() override;
+    std::string getClassName() const override;
+
+    bool isDiagonal() const override;
+
+    void addGravitationalForce( const sofa::core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v, const Deriv& gravity) override;
+    SReal getGravitationalPotentialEnergy( const sofa::core::MechanicalParams* mparams, const DataVecCoord& x, const Deriv& gravity) const override;
 };
 
 void moduleAddMass(pybind11::module &m);
