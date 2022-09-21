@@ -72,7 +72,6 @@ PYBIND11_MODULE(Simulation, simulation)
     }, sofapython3::doc::simulation::load);
     simulation.def("unload", [](Node* n){
             auto& memcache = getObjectCache();
-            std::cout << "Unloading scene and clearing memory cache of size " << memcache.size() << std::endl;
             sofa::simulation::getSimulation()->unload(n);
             memcache.clear();
             }, sofapython3::doc::simulation::unload);
