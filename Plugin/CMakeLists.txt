@@ -42,7 +42,7 @@ if(SP3_BUILD_TEST)
 endif(SP3_BUILD_TEST)
 
 find_package(pybind11 CONFIG REQUIRED)
-find_package(Sofa.Simulation.Graph REQUIRED)
+sofa_find_package(Sofa.Simulation.Graph REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})

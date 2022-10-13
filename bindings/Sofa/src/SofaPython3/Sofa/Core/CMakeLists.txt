@@ -76,12 +76,12 @@ set(SOURCE_FILES
 )
 
 if (NOT TARGET SofaPython3::Plugin)
-    find_package(SofaPython3 REQUIRED COMPONENTS Plugin)
+    sofa_find_package(SofaPython3 REQUIRED COMPONENTS Plugin)
 endif()
 
-find_package(Sofa.Simulation.Core REQUIRED)
-find_package(Sofa.Component.Collision.Response.Contact REQUIRED) # for Binding_ContactListener
-find_package(Sofa.Component.Visual REQUIRED) # for Binding_BaseCamera
+sofa_find_package(Sofa.Simulation.Core REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Response.Contact REQUIRED) # for Binding_ContactListener
+sofa_find_package(Sofa.Component.Visual REQUIRED) # for Binding_BaseCamera
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}

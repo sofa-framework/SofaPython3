@@ -8,7 +8,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Components.cpp
 )
 
-find_package(Sofa.Simulation.Core REQUIRED)
+sofa_find_package(Sofa.Simulation.Core REQUIRED)
 
 SP3_add_python_module(
         TARGET       ${PROJECT_NAME}

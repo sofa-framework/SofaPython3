@@ -2,7 +2,7 @@ project(Bindings.Modules)
 
 set(MODULEBINDINGS_MODULE_LIST SofaBaseTopology SofaDeformable SofaLinearSolver SofaConstraintSolver)
 
-find_package(Sofa.GL QUIET)
+sofa_find_package(Sofa.GL QUIET)
 if(Sofa.GL_FOUND)
 	list(APPEND MODULEBINDINGS_MODULE_LIST SofaGL)
 else()
