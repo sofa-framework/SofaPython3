@@ -50,6 +50,7 @@ class MatrixAccessController(Sofa.Core.Controller):
 
     def onBuildConstraintSystemEndEvent(self, event):
         compliance_matrix = self.constraint_solver.W()
+        dfree = self.constraint_solver.dfree()
 
         print('====================================')
         print('Compliance matrix in constraint space')
@@ -61,6 +62,9 @@ class MatrixAccessController(Sofa.Core.Controller):
         with np.printoptions(precision=3, suppress=False, threshold=np.inf):
             print(str(compliance_matrix))
 
+        self.constraint_solver.setW(compliance_matrix)
+        self.constraint_solver.set_dfree(dfree)
+
     def onSolveConstraintSystemEndEvent(self, event):
         
         print('====================================')
@@ -69,3 +73,5 @@ class MatrixAccessController(Sofa.Core.Controller):
 
         lambda_vector = self.constraint_solver.lambda_force()
         print(str(lambda_vector))
+
+        self.constraint_solver.set_lambda_force(lambda_vector)

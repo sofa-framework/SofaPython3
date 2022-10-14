@@ -38,6 +38,17 @@ constraint_solver = root.addObject("GenericConstraintSolver", tolerance=1e-9, ma
 matrix = constraint_solver.W()
 )";
 
+static auto constraintSolver_setW =
+R"(
+Sets the compliance matrix projected in constraint space
+
+example:
+------------
+
+constraint_solver = root.addObject("GenericConstraintSolver", tolerance=1e-9, maxIterations=1000)
+matrix = constraint_solver.setW(compliance_matrix)
+)";
+
 static auto constraintSolver_lambda =
 R"(
 Returns the force resulting from the constraints
@@ -49,6 +60,17 @@ constraint_solver = root.addObject("GenericConstraintSolver", tolerance=1e-9, ma
 lambda = constraint_solver.lambda_force()
 )";
 
+static auto constraintSolver_set_lambda_force =
+R"(
+Sets the force resulting from the constraints
+
+example:
+------------
+
+constraint_solver = root.addObject("GenericConstraintSolver", tolerance=1e-9, maxIterations=1000)
+lambda = constraint_solver.set_lambda_force(lambda)
+)";
+
 static auto constraintSolver_dfree =
 R"(
 Returns the displacement computed without any constraint
@@ -58,6 +80,17 @@ example:
 
 constraint_solver = root.addObject("GenericConstraintSolver", tolerance=1e-9, maxIterations=1000)
 dfree = constraint_solver.dfree()
+)";
+
+static auto constraintSolver_set_dfree =
+R"(
+Sets the displacement computed without any constraint
+
+example:
+------------
+
+constraint_solver = root.addObject("GenericConstraintSolver", tolerance=1e-9, maxIterations=1000)
+dfree = constraint_solver.dfree(dfree)
 )";
 
 } // namespace sofapython3::doc::constraintsolver

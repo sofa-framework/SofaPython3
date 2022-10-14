@@ -49,6 +49,19 @@ void moduleAddConstraintSolver(py::module &m)
         return { W_matrix.ptr(), W_matrix.rows(), W_matrix.cols()};
     }, sofapython3::doc::constraintsolver::constraintSolver_W);
 
+    c.def("setW", [](ConstraintSolverImpl& self, py::array_t<SReal> _W)
+    {
+        auto& W_matrix = self.getConstraintProblem()->W;
+
+        auto r = _W.unchecked<2>(); // _W must have ndim = 2; can be non-writeable
+        if (r.shape(0) != W_matrix.rows())
+            throw py::type_error("Invalid row dimension");
+        if (r.shape(1) != W_matrix.cols())
+            throw py::type_error("Invalid col dimension");
+
+        std::memcpy(W_matrix.ptr(), _W.data(), W_matrix.rows() * W_matrix.cols() * sizeof(SReal));
+    }, sofapython3::doc::constraintsolver::constraintSolver_setW);
+
     c.def("lambda_force", [](ConstraintSolverImpl& self) -> Eigen::Map<Eigen::Matrix<SReal, Eigen::Dynamic, 1> >
     {
         assert(self.getConstraintProblem());
@@ -56,12 +69,38 @@ void moduleAddConstraintSolver(py::module &m)
         return { lambda.ptr(), lambda.size()};
     }, sofapython3::doc::constraintsolver::constraintSolver_lambda);
 
+    c.def("set_lambda_force", [](ConstraintSolverImpl& self, py::array_t<SReal> _lambda)
+    {
+        assert(self.getConstraintProblem());
+        auto& lambda = self.getConstraintProblem()->f;
+
+        auto r = _lambda.unchecked<1>();
+        if (r.shape(0) != lambda.size())
+            throw py::type_error("Invalid dimension");
+
+        std::memcpy(lambda.ptr(), _lambda.data(), _lambda.size() * sizeof(SReal));
+
+    }, sofapython3::doc::constraintsolver::constraintSolver_set_lambda_force);
+
     c.def("dfree", [](ConstraintSolverImpl& self) -> Eigen::Map<Eigen::Matrix<SReal, Eigen::Dynamic, 1> >
     {
         assert(self.getConstraintProblem());
         auto& dfree = self.getConstraintProblem()->dFree;
         return { dfree.ptr(), dfree.size()};
     }, sofapython3::doc::constraintsolver::constraintSolver_dfree);
+
+    c.def("set_dfree", [](ConstraintSolverImpl& self, py::array_t<SReal> _dfree)
+    {
+        assert(self.getConstraintProblem());
+        auto& dFree = self.getConstraintProblem()->dFree;
+
+        auto r = _dfree.unchecked<1>();
+        if (r.shape(0) != dFree.size())
+            throw py::type_error("Invalid dimension");
+
+        std::memcpy(dFree.ptr(), _dfree.data(), _dfree.size() * sizeof(SReal));
+
+    }, sofapython3::doc::constraintsolver::constraintSolver_set_dfree);
 
     /// register the binding in the downcasting subsystem
     PythonFactory::registerType<ConstraintSolverImpl>([](sofa::core::objectmodel::Base* object)
