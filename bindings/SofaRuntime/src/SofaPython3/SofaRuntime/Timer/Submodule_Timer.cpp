@@ -42,7 +42,17 @@ py::dict getRecords(const std::string & id) {
         return 1000.0 * t / timer_freq;
     };
 
+    if (sofa::helper::AdvancedTimer::isEnabled("Animate"))
+    {
+        msg_info("getRecords") << "Animate timer is enabled";
+    }
+    else
+    {
+        msg_info("getRecords") << "Animate timer is disabled";
+    }
+
     const auto records = AdvancedTimer::getRecords(id);
+    msg_info("getRecords") << "Nb records: " << records.size();
 
     std::stack<py::dict> tokens;
     py::dict token, token_temp;
@@ -50,6 +60,7 @@ py::dict getRecords(const std::string & id) {
     ctime_t t0;
 
     for (const auto & r : records) {
+        msg_info("getRecords") << r.id << " " << r.label << " " << r.type ;
         switch (r.type) {
             case Record::RNONE:
                 break;
