@@ -25,6 +25,14 @@ class TimerController(Sofa.Core.Controller):
         else:
             records = Timer.getRecords("cg_timer")
 
+        if 'AnimateVisitor' not in records:
+            print("not 'AnimateVisitor' in records")
+            print(records)
+            if self.use_sofa_profiler_timer:
+                print('use_sofa_profiler_timer = true')
+            else:
+                print('use_sofa_profiler_timer = false')
+
         step_time = records['AnimateVisitor']['Mechanical (meca)']['total_time']
         print(f"Step took {step_time:.2f} ms")
 
@@ -43,7 +51,19 @@ def createScene(root):
     root.dt = 0.01
 
     # List of required plugins
-    root.addObject('RequiredPlugin', name='Sofa.Component')
+    plugins = root.addChild('plugins')
+    plugins.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Projective')
+    plugins.addObject('RequiredPlugin', name='Sofa.Component.Engine.Select')
+    plugins.addObject('RequiredPlugin', name='Sofa.Component.LinearSolver.Iterative')
+    plugins.addObject('RequiredPlugin', name='Sofa.Component.MechanicalLoad')
+    plugins.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Backward')
+    plugins.addObject('RequiredPlugin', name='Sofa.Component.SolidMechanics.FEM.Elastic')
+    plugins.addObject('RequiredPlugin', name='Sofa.Component.StateContainer')
+    plugins.addObject('RequiredPlugin', name='Sofa.Component.Topology.Container.Dynamic')
+    plugins.addObject('RequiredPlugin', name='Sofa.Component.Topology.Container.Grid')
+    plugins.addObject('RequiredPlugin', name='Sofa.Component.Visual')
+
+    root.addObject('DefaultAnimationLoop')
 
     # Visual style
     root.addObject('VisualStyle', displayFlags='showBehaviorModels showForceFields')
