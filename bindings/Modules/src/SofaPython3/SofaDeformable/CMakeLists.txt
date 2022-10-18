@@ -17,7 +17,7 @@ if (NOT TARGET SofaPython3::Plugin)
     find_package(SofaPython3 REQUIRED COMPONENTS Plugin Bindings.Sofa)
 endif()
 
-find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
