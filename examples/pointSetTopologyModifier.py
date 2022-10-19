@@ -28,11 +28,17 @@ class PointController(Sofa.Core.Controller):
         if event["key"] == "A":
             print("Add 10 points")
             self.modifier.addPoints(10, True)
-
-            with self.state.position.writeable() as state:
-                for i in range(len(state)):
-                    state[i] = np.array([i, 0, 0])
+            # print("Before setting positions", self.state.position.array())
 
         elif event["key"] == "D":
             print("Remove point 0")
             self.modifier.removePoints(np.array([0]), True)
+
+        elif event["key"] == "B":
+            print(f"{len(self.state.position.array())=}")
+            with self.state.position.writeable() as state:
+                print(f"{len(state)=}")
+                # for i in range(len(state)):
+                #     state[i] = np.array([i, 0, 0])
+
+            # print("After setting positions", self.state.position.array())
