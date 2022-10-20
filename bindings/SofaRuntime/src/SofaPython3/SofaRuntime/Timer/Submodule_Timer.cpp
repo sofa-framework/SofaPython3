@@ -42,14 +42,16 @@ py::dict getRecords(const std::string & id) {
         return 1000.0 * t / timer_freq;
     };
 
-    if (sofa::helper::AdvancedTimer::isEnabled("Animate"))
+    if (sofa::helper::AdvancedTimer::isEnabled(id))
     {
-        msg_info("getRecords") << "Animate timer is enabled";
+        msg_info("getRecords") << std::string(id) << " timer is enabled";
     }
     else
     {
-        msg_info("getRecords") << "Animate timer is disabled";
+        msg_info("getRecords") << std::string(id) << " timer is disabled";
     }
+
+    msg_info("getRecords") << "getInterval" << AdvancedTimer::getInterval(id);
 
     const auto records = AdvancedTimer::getRecords(id);
     msg_info("getRecords") << "Nb records: " << records.size();
@@ -182,7 +184,11 @@ py::module addSubmoduleTimer(py::module &m)
 
     timer.def("clear", AdvancedTimer::clear, doc::Timer::clear);
     timer.def("isEnabled", [](const std::string & name) {AdvancedTimer::isEnabled(name);}, py::arg("id"), doc::Timer::isEnabled);
-    timer.def("setEnabled", [](const std::string & n, bool e) {AdvancedTimer::setEnabled(n, e);}, py::arg("name"), py::arg("enabled"), doc::Timer::setEnabled);
+    timer.def("setEnabled", [](const std::string & n, bool e)
+    {
+        std::cout << "Setting timer " << n << " to " << e << std::endl;
+        AdvancedTimer::setEnabled(n, e);
+    }, py::arg("name"), py::arg("enabled"), doc::Timer::setEnabled);
     timer.def("getInterval", [](const std::string & name) {AdvancedTimer::getInterval(name);}, py::arg("id"), doc::Timer::getInterval);
     timer.def("setInterval", [](const std::string & name, unsigned int interval) {AdvancedTimer::setInterval(name, interval);}, py::arg("id"), py::arg("interval"), doc::Timer::setInterval);
 

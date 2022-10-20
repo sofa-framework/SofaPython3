@@ -28,10 +28,10 @@ class TimerController(Sofa.Core.Controller):
         if 'AnimateVisitor' not in records:
             print("not 'AnimateVisitor' in records")
             print(records)
-            if self.use_sofa_profiler_timer:
-                print('use_sofa_profiler_timer = true')
-            else:
-                print('use_sofa_profiler_timer = false')
+        if self.use_sofa_profiler_timer:
+            print('use_sofa_profiler_timer = true')
+        else:
+            print('use_sofa_profiler_timer = false')
 
         step_time = records['AnimateVisitor']['Mechanical (meca)']['total_time']
         print(f"Step took {step_time:.2f} ms")
@@ -44,6 +44,8 @@ class TimerController(Sofa.Core.Controller):
 
         if not self.use_sofa_profiler_timer:
             Timer.end("cg_timer")
+
+        records['fjdsguberiufrgberu2gberiugre']
 
 
 # Scene creation - This is automatically called by SofaPython3 when using runSofa
