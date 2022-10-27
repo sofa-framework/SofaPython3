@@ -10,7 +10,7 @@ import SofaRuntime
 class MyController(Sofa.Core.Controller):
     """This is my custom controller
         when init is called from Sofa this should call the python init function
-    """        
+    """
 
     def __init__(self, *args, **kwargs):
         ## These are needed (and the normal way to override from a python class)
@@ -20,29 +20,29 @@ class MyController(Sofa.Core.Controller):
         self.solve_iterations = 0
 
     def __del__(self):
-            pass
-    
+        pass
+
     def init(self):
-            self.inited += 1
+        self.inited += 1
 
     def onEvent(self, kwargs):
-            pass
+        pass
 
     def onBuildConstraintSystemEndEvent(self, kwargs):
-            self.build_iterations+=1
+        self.build_iterations+=1
 
     def onSolveConstraintSystemEndEvent(self, kwargs):
-            self.solve_iterations+=1
+        self.solve_iterations+=1
 
 class Test(unittest.TestCase):
 
     def test_events(self):
         """Test the BuildConstraintSystem and SolveConstraintSystem events."""
         node = Sofa.Core.Node("root")
-        node.addObject("DefaultAnimationLoop", name="loop")
+        node.addObject("RequiredPlugin", name="Sofa.Component.AnimationLoop")
+        node.addObject("FreeMotionAnimationLoop", name="loop")
+        node.addObject("GenericConstraintSolver", name="constraintSolver")
         controller = node.addObject( MyController() )
-
-        self.assertTrue( hasattr(controller, "iterations") )
 
         Sofa.Simulation.init(node)
         for i in range(10):
