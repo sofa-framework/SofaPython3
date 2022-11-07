@@ -35,6 +35,9 @@ namespace simpleapi = sofa::simpleapi;
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message;
 
+#include <sofa/helper/DiffLib.h>
+using sofa::helper::getClosestMatch;
+
 #include <sofa/simulation/graph/DAGNode.h>
 using sofa::core::ExecParams;
 
@@ -71,29 +74,48 @@ using sofa::simulation::Node;
 
 namespace sofapython3 {
 
-bool checkParamUsage(BaseObjectDescription& desc)
+bool checkParamUsage(BaseObjectDescription& desc, const Base* base)
 {
-    bool hasFailure = false;
-    std::stringstream tmp;
-    tmp <<"Unknown Attribute(s): " << msgendl;
+    std::vector<std::tuple<std::string, std::string>> paramErrors;
     for( auto& it : desc.getAttributeMap() )
     {
         if (!it.second.isAccessed())
         {
-            hasFailure = true;
-            tmp << " - \""<<it.first <<"\" with value: \"" <<std::string(it.second) << msgendl;
+            paramErrors.emplace_back(std::make_tuple(it.first, it.second));
         }
     }
-    if(!desc.getErrors().empty())
+
+    if(!paramErrors.empty() || !desc.getErrors().empty())
     {
-        hasFailure = true;
-        tmp << desc.getErrors()[0];
-    }
-    if(hasFailure)
-    {
+        std::stringstream tmp;
+        tmp << "Unknown Attribute(s): " << msgendl;
+
+        std::vector<std::string> possibleNames;
+        if(base)
+        {
+            for(auto& data : base->getDataFields())
+                possibleNames.emplace_back(data->getName());
+            for(auto& link : base->getLinks())
+                possibleNames.emplace_back(link->getName());
+        }
+
+        for(auto& [name, value] : paramErrors)
+        {
+            tmp << "  - Unable to set attribute '"<< name <<"' with value: " << value;
+            const auto& v = getClosestMatch(name, possibleNames);
+            if(!v.empty())
+                tmp << ". Possible misspelling of attribute '" << std::get<0>(v[0]) << "' ?";
+            else
+                tmp << ".";
+            tmp << msgendl;
+        }
+
+        if(!desc.getErrors().empty())
+            tmp << desc.getErrors()[0];
         throw py::type_error(tmp.str());
     }
-    return hasFailure;
+
+    return false;
 }
 
 py::object getItem(Node& self, std::list<std::string>& path)
@@ -247,7 +269,7 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
 
     setFieldsFromPythonValues(object.get(), kwargs);
 
-    checkParamUsage(desc);
+    checkParamUsage(desc, object.get());
 
     // Convert the logged messages in the object's internal logging into python exception.
     // this is not a very fast way to do that...but well...python is slow anyway. And serious
@@ -342,7 +364,7 @@ py::object addChildKwargs(Node* self, const std::string& name, const py::kwargs&
     node->setInstanciationSourceFileName(finfo->filename);
     node->setInstanciationSourceFilePos(finfo->line);
 
-    checkParamUsage(desc);
+    checkParamUsage(desc, node.get());
 
     for(auto a : kwargs)
     {
