@@ -20,6 +20,7 @@
 #pragma once
 
 #include <functional>
+#include <algorithm>
 #include <iostream>
 #include <sofa/helper/DiffLib.h>
 
@@ -32,27 +33,13 @@ void fillVectorOfStringFrom(const Iterable& v, const UnaryOperation& op, const P
     std::transform(v.begin(), v.end(), op, func);
 }
 
-//template<class Iterable>
-//std::ostream& emitSpellingMessage(std::ostream& ostream, const std::string& message, const Iterable& iterable, const std::string& name, sofa::Size numEntries=5, double thresold=0.6)
-//{
-//    std::vector<std::string> possibleNames;
-//    fillVectorOfStringFrom(iterable, std::back_inserter(possibleNames), [](const typename Iterable::value_type d) { return d->getName(); });
-
-//    auto spellingSuggestions = sofa::helper::getClosestMatch(name, possibleNames, numEntries, thresold);
-//    if(!spellingSuggestions.empty())
-//    {
-//        for(auto& [name, score] : spellingSuggestions)
-//           ostream << message << "'" << name << "' ("<< std::to_string((int)(100*score))+"% match)" << std::endl;
-//    }
-//    return ostream;
-//}
-
 template<class Iterable, class PickingFunction=std::function<const std::string(typename Iterable::value_type)> >
 std::ostream& emitSpellingMessage(std::ostream& ostream, const std::string& message, const Iterable& iterable, const std::string& name,
                                   sofa::Size numEntries=5, SReal thresold=0.6_sreal,
                                   PickingFunction f = [](const typename Iterable::value_type d) { return d->getName(); })
 {
     std::vector<std::string> possibleNames;
+    possibleNames.reserve(iterable.size());
     fillVectorOfStringFrom(iterable, std::back_inserter(possibleNames), f);
 
     auto spellingSuggestions = sofa::helper::getClosestMatch(name, possibleNames, numEntries, thresold);

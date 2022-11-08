@@ -30,6 +30,34 @@ namespace sofapython3 {
 template <typename T>
 using py_shared_ptr = sofa::core::sptr<T>;
 
+namespace pybind11_compat
+{
+using namespace pybind11;
+class type : public pybind11::object {
+public:
+    PYBIND11_OBJECT(type, pybind11::object, PyType_Check)
+
+    /// Return a type handle from a handle or an object
+    static pybind11::handle handle_of(pybind11::handle h) { return handle((PyObject*) Py_TYPE(h.ptr())); }
+
+    /// Return a type object from a handle or an object
+    static type of(pybind11::handle h) { return type(type::handle_of(h), borrowed_t{}); }
+
+    // Defined in pybind11/cast.h
+    /// Convert C++ type to handle if previously registered. Does not convert
+    /// standard types, like int, float. etc. yet.
+    /// See https://github.com/pybind/pybind11/issues/2486
+    template<typename T>
+    static handle handle_of();
+
+    /// Convert C++ type to type if previously registered. Does not convert
+    /// standard types, like int, float. etc. yet.
+    /// See https://github.com/pybind/pybind11/issues/2486
+    template<typename T>
+    static type of() {return type(type::handle_of<T>(), borrowed_t{}); }
+};
+}
+
 } // namespace sofapython3
 
 PYBIND11_DECLARE_HOLDER_TYPE(T, sofapython3::py_shared_ptr<T>, true)

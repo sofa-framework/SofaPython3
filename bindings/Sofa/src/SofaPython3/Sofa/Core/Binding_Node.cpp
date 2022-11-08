@@ -17,11 +17,9 @@
 *******************************************************************************
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-
 /// Neede to have automatic conversion from pybind types to stl container.
 #include <pybind11/stl.h>
-#include <pybind11/eval.h>
+#include <pybind11/numpy.h>
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/ComponentNameHelper.h>
@@ -68,6 +66,8 @@ using sofa::core::objectmodel::BaseObjectDescription;
 
 #include <queue>
 #include <sofa/core/objectmodel/Link.h>
+
+SOFAPYTHON3_BIND_ATTRIBUTE_ERROR()
 
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
@@ -484,7 +484,7 @@ py::object __getattr__(py::object pyself, const std::string& name)
     emitSpellingMessage(tmp, "   - The child node named ", selfnode->getChildren(), name, 2, 0.8);
 
     // Also provide spelling hints on python functions.
-    emitSpellingMessage(tmp, "   - The python attribute named ", py::cast<py::dict>(py::type::of(pyself).attr("__dict__")), name, 5, 0.8,
+    emitSpellingMessage(tmp, "   - The python attribute named ", py::cast<py::dict>(pybind11_compat::type::of(pyself).attr("__dict__")), name, 5, 0.8,
                         [](const std::pair<py::handle, py::handle>& kv) { return py::cast<std::string>(std::get<0>(kv)); });
 
     std::stringstream message;
@@ -495,7 +495,7 @@ py::object __getattr__(py::object pyself, const std::string& name)
         message << "   You possibly wanted to access: " << msgendl;
         message << tmp.rdbuf();
     }
-    throw py::attribute_error(message.str());
+    throw pybind11::attribute_error(message.str());
 }
 
 /// gets an item using its path (path is dot-separated, relative to the object
