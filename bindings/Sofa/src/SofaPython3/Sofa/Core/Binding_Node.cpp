@@ -74,6 +74,28 @@ using sofa::simulation::Node;
 
 namespace sofapython3 {
 
+
+template<class Iterable, class UnaryOperation, class PickingFunction>
+void fillVectorOfStringFrom(const Iterable& v, const UnaryOperation& op, const PickingFunction func)
+{
+    std::transform(v.begin(), v.end(), op, func);
+}
+
+template<class Iterable>
+std::ostream& emitSpellingMessage(std::ostream& ostream, const std::string& message, const Iterable& iterable, const std::string& name, sofa::Size numEntries=5, double thresold=0.6)
+{
+    std::vector<std::string> possibleNames;
+    fillVectorOfStringFrom(iterable, std::back_inserter(possibleNames), [](const typename Iterable::value_type d) { return d->getName(); });
+
+    auto spellingSuggestions = getClosestMatch(name, possibleNames, numEntries, thresold);
+    if(!spellingSuggestions.empty())
+    {
+        for(auto& [name, score] : spellingSuggestions)
+           ostream << message << "'" << name << "' ("<< std::to_string((int)(100*score))+"% match)" << msgendl;
+    }
+    return ostream;
+}
+
 bool checkParamUsage(BaseObjectDescription& desc, const Base* base)
 {
     std::vector<std::tuple<std::string, std::string>> paramErrors;
@@ -469,7 +491,27 @@ py::object __getattr__(Node& self, const std::string& name)
         return PythonFactory::toPython(child);
 
     /// Search in the data & link lists
-    return BindingBase::GetAttr(&self, name, true);
+    py::object result = BindingBase::GetAttr(&self, name, false);
+    if(!result.is_none())
+        return result;
+
+    Node* selfnode = &self;
+
+    std::stringstream tmp;
+    emitSpellingMessage(tmp, "   - The data field named ", selfnode->getDataFields(), name, 2, 0.8);
+    emitSpellingMessage(tmp, "   - The link named ", selfnode->getDataFields(), name, 2, 0.8);
+    emitSpellingMessage(tmp, "   - The object named ", selfnode->getNodeObjects(), name, 2, 0.8);
+    emitSpellingMessage(tmp, "   - The child node named ", selfnode->getChildren(), name, 2, 0.8);
+
+    std::stringstream message;
+    message << "Unable to find attribute: "+name;
+    if(!tmp.str().empty())
+    {
+        message << msgendl;
+        message << "   You possibly wanted to access: " << msgendl;
+        message << tmp.rdbuf();
+    }
+    throw py::attribute_error(message.str());
 }
 
 /// gets an item using its path (path is dot-separated, relative to the object
