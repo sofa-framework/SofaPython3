@@ -15,7 +15,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/System/Binding_FileRepository.cpp
 )
 
-find_package(Sofa.Core REQUIRED)
+sofa_find_package(Sofa.Core REQUIRED)
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}

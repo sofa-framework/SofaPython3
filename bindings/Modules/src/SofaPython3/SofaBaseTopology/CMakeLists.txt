@@ -13,7 +13,7 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_SparseGridTopology_doc.h
 )
 
-find_package(Sofa.Component.Topology.Container.Grid REQUIRED)
+sofa_find_package(Sofa.Component.Topology.Container.Grid REQUIRED)
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}

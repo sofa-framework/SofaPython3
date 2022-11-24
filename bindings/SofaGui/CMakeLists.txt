@@ -12,9 +12,9 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaGui/Binding_GUIManager.h
 )
 
-find_package(Sofa.Core REQUIRED)
-find_package(SofaGui REQUIRED)
-find_package(Sofa.GL REQUIRED)
+sofa_find_package(Sofa.Core REQUIRED)
+sofa_find_package(SofaGui REQUIRED)
+sofa_find_package(Sofa.GL REQUIRED)
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}

@@ -9,10 +9,10 @@ set(SOURCE_FILES
 )
 
 if (NOT TARGET SofaPython3::Plugin)
-    find_package(SofaPython3 REQUIRED COMPONENTS Plugin)
+    sofa_find_package(SofaPython3 REQUIRED COMPONENTS Plugin)
 endif()
 
-find_package(Sofa.Simulation.Graph REQUIRED)
+sofa_find_package(Sofa.Simulation.Graph REQUIRED)
 
 SP3_add_python_module(
         TARGET       ${PROJECT_NAME}

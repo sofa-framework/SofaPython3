@@ -41,7 +41,7 @@ if(SP3_BUILD_TEST)
     find_package(Threads REQUIRED)
 endif()
 
-find_package(SofaExporter QUIET)
+sofa_find_package(SofaExporter QUIET)
 CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAEXPORTER "Bind the SOFA exporter component." ON "SofaExporter_FOUND" OFF)
 
 # BUILD OPTIONS

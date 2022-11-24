@@ -48,7 +48,7 @@ class MatrixAccessController(Sofa.Core.Controller):
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
         self.constraint_solver = kwargs.get("constraint_solver")
 
-    def onAnimateEndEvent(self, event):
+    def onBuildConstraintSystemEndEvent(self, event):
         compliance_matrix = self.constraint_solver.W()
 
         print('====================================')
@@ -61,6 +61,8 @@ class MatrixAccessController(Sofa.Core.Controller):
         with np.printoptions(precision=3, suppress=False, threshold=np.inf):
             print(str(compliance_matrix))
 
+    def onSolveConstraintSystemEndEvent(self, event):
+        
         print('====================================')
         print('Lambda force')
         print('====================================')

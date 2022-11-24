@@ -28,6 +28,7 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_NodeIterator.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_PointSetTopologyModifier.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Prefab.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Prefab_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataContainer.h
@@ -67,6 +68,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_NodeIterator.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_PointSetTopologyModifier.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Prefab.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Core.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_PythonScriptEvent.cpp
@@ -76,12 +78,12 @@ set(SOURCE_FILES
 )
 
 if (NOT TARGET SofaPython3::Plugin)
-    find_package(SofaPython3 REQUIRED COMPONENTS Plugin)
+    sofa_find_package(SofaPython3 REQUIRED COMPONENTS Plugin)
 endif()
 
-find_package(Sofa.Simulation.Core REQUIRED)
-find_package(Sofa.Component.Collision.Response.Contact REQUIRED) # for Binding_ContactListener
-find_package(Sofa.Component.Visual REQUIRED) # for Binding_BaseCamera
+sofa_find_package(Sofa.Simulation.Core REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Response.Contact REQUIRED) # for Binding_ContactListener
+sofa_find_package(Sofa.Component.Visual REQUIRED) # for Binding_BaseCamera
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
