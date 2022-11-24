@@ -334,7 +334,10 @@ py::buffer_info toBufferInfo(BaseData& m)
 
     std::tuple<int,int> shape = getShape(&m);
 
-    void* ptr = const_cast<void*>(nfo.getValuePtr(m.getValueVoidPtr()));
+
+    void* ptr = nullptr;
+    if (std::get<0>(shape) != 0)
+        ptr = const_cast<void*>(nfo.getValuePtr(m.getValueVoidPtr()));
 
     if( !itemNfo->Container() ){
         return py::buffer_info(
