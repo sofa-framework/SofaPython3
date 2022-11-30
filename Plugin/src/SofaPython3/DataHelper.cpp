@@ -334,7 +334,7 @@ py::buffer_info toBufferInfo(BaseData& m)
 
     std::tuple<int,int> shape = getShape(&m);
 
-
+    // By default, ptr is set to nullptr. It is updated by a call to getValuePtr only if the data is not empty. Otherwise the ptr passed to the py::buffer_info remains nullptr. 
     void* ptr = nullptr;
     if (std::get<0>(shape) != 0)
         ptr = const_cast<void*>(nfo.getValuePtr(m.getValueVoidPtr()));
