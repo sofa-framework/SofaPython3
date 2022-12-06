@@ -45,7 +45,9 @@ using sofa::simulation::Node;
 
 #include <SofaPython3/DataHelper.h>
 
+// These two lines are there to handle deprecated version of pybind.
 SOFAPYTHON3_BIND_ATTRIBUTE_ERROR()
+SOFAPYTHON3_ADD_PYBIND_TYPE_FOR_OLD_VERSION()
 
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
@@ -361,7 +363,7 @@ py::object BindingBase::__getattr__(py::object self, const std::string& attribut
     emitSpellingMessage(tmp, "   - The link named ", selfbase->getLinks(), attributeName, 2, 0.6);
 
     // Also provide spelling hints on python functions.
-    emitSpellingMessage(tmp, "   - The python attribute named ", py::cast<py::dict>(pybind11_compat::type::of(self).attr("__dict__")), attributeName, 5, 0.8,
+    emitSpellingMessage(tmp, "   - The python attribute named ", py::cast<py::dict>(py::type::of(self).attr("__dict__")), attributeName, 5, 0.8,
                         [](const std::pair<py::handle, py::handle>& kv) { return py::cast<std::string>(std::get<0>(kv)); });
 
     std::stringstream message;
