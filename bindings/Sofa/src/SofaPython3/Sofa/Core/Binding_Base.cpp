@@ -18,6 +18,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include "SofaPython3/SpellingSuggestionHelper.h"
 #include <pybind11/pybind11.h>
 
 #include <pybind11/numpy.h>
@@ -44,7 +45,9 @@ using sofa::simulation::Node;
 
 #include <SofaPython3/DataHelper.h>
 
+// These two lines are there to handle deprecated version of pybind.
 SOFAPYTHON3_BIND_ATTRIBUTE_ERROR()
+SOFAPYTHON3_ADD_PYBIND_TYPE_FOR_OLD_VERSION()
 
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
@@ -339,15 +342,39 @@ py::list BindingBase::__dir__(Base* self)
     return list;
 }
 
-py::object BindingBase::__getattr__(py::object self, const std::string& s)
+py::object BindingBase::__getattr__(py::object self, const std::string& attributeName)
 {
-    py::object res = BindingBase::GetAttr( py::cast<Base*>(self), s, false );
-    if( res.is_none() )
-    {
-        return self.attr("__dict__")[s.c_str()];
-    }
+    // Search for attribute s.
+    py::object res = BindingBase::GetAttr( py::cast<Base*>(self), attributeName, false );
 
-    return res;
+    // If there is one, then return it
+    if( !res.is_none() )
+        return res;
+
+   // If there is none, then search into the python dictionnary
+    if( py::hasattr(self.attr("__dict__"), attributeName.c_str()) )
+        return self.attr("__dict__")[attributeName.c_str()];
+
+    // If we reach this line, this indicate that no attribute was found. Maybe it is a misspelling
+    // so let's build misspelling hints for the user.
+    Base* selfbase = py::cast<Base*>(self);
+    std::stringstream tmp;
+    emitSpellingMessage(tmp, "   - The data field named ", selfbase->getDataFields(), attributeName, 2, 0.6);
+    emitSpellingMessage(tmp, "   - The link named ", selfbase->getLinks(), attributeName, 2, 0.6);
+
+    // Also provide spelling hints on python functions.
+    emitSpellingMessage(tmp, "   - The python attribute named ", py::cast<py::dict>(py::type::of(self).attr("__dict__")), attributeName, 5, 0.8,
+                        [](const std::pair<py::handle, py::handle>& kv) { return py::cast<std::string>(std::get<0>(kv)); });
+
+    std::stringstream message;
+    message << "Unable to find attribute: "+attributeName;
+    if(!tmp.str().empty())
+    {
+        message << msgendl;
+        message << "   You possibly wanted to access: " << msgendl;
+        message << tmp.rdbuf();
+    }
+    throw py::attribute_error(message.str());
 }
 
 void BindingBase::__setattr__(py::object self, const std::string& s, py::object value)
