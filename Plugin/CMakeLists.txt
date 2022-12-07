@@ -5,7 +5,6 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/initModule.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonEnvironment.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SceneLoaderPY3.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SpellingSuggestionHelper.h
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/DataCache.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/DataHelper.h
