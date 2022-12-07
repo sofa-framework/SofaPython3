@@ -17,11 +17,9 @@
 *******************************************************************************
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-
 /// Neede to have automatic conversion from pybind types to stl container.
 #include <pybind11/stl.h>
-#include <pybind11/eval.h>
+#include <pybind11/numpy.h>
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/ComponentNameHelper.h>
@@ -34,6 +32,9 @@ namespace simpleapi = sofa::simpleapi;
 
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message;
+
+#include <sofa/helper/DiffLib.h>
+using sofa::helper::getClosestMatch;
 
 #include <sofa/simulation/graph/DAGNode.h>
 using sofa::core::ExecParams;
@@ -59,41 +60,67 @@ using sofapython3::PythonEnvironment;
 #include <SofaPython3/Sofa/Core/Binding_NodeIterator.h>
 #include <SofaPython3/Sofa/Core/Binding_PythonScriptEvent.h>
 
+#include <SofaPython3/SpellingSuggestionHelper.h>
+
 using sofa::core::objectmodel::BaseObjectDescription;
 
 #include <queue>
 #include <sofa/core/objectmodel/Link.h>
+
+// These two lines are there to handle deprecated version of pybind.
+SOFAPYTHON3_BIND_ATTRIBUTE_ERROR()
+SOFAPYTHON3_ADD_PYBIND_TYPE_FOR_OLD_VERSION()
 
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
 
 using sofa::simulation::Node;
 
-namespace sofapython3 {
-
-bool checkParamUsage(BaseObjectDescription& desc)
+namespace sofapython3
 {
-    bool hasFailure = false;
-    std::stringstream tmp;
-    tmp <<"Unknown Attribute(s): " << msgendl;
+
+namespace
+{
+bool checkParamUsage(BaseObjectDescription& desc, const Base* base)
+{
+    std::vector<std::tuple<std::string, std::string>> paramErrors;
     for( auto& it : desc.getAttributeMap() )
     {
         if (!it.second.isAccessed())
         {
-            hasFailure = true;
-            tmp << " - \""<<it.first <<"\" with value: \"" <<std::string(it.second) << msgendl;
+            paramErrors.emplace_back(std::make_tuple(it.first, it.second));
         }
     }
-    if(!desc.getErrors().empty())
+
+    if(!paramErrors.empty() || !desc.getErrors().empty())
     {
-        hasFailure = true;
-        tmp << desc.getErrors()[0];
-    }
-    if(hasFailure)
-    {
+        std::stringstream tmp;
+        tmp << "Unknown Attribute(s): " << msgendl;
+
+        std::vector<std::string> possibleNames;
+        if(base)
+        {
+            fillVectorOfStringFrom(base->getDataFields(), std::back_inserter(possibleNames), [](const BaseData* d){return d->getName();});
+            fillVectorOfStringFrom(base->getLinks(), std::back_inserter(possibleNames), [](const BaseLink* l){return l->getName();});
+        }
+
+        for(auto& [name, value] : paramErrors)
+        {
+            tmp << "  - Unable to set attribute '"<< name <<"' with value: " << value;
+            const auto& v = getClosestMatch(name, possibleNames);
+            if(!v.empty())
+                tmp << ". Possible misspelling of attribute '" << std::get<0>(v[0]) << "' ?";
+            else
+                tmp << ".";
+            tmp << msgendl;
+        }
+
+        if(!desc.getErrors().empty())
+            tmp << desc.getErrors()[0];
         throw py::type_error(tmp.str());
     }
-    return hasFailure;
+
+    return false;
 }
 
 py::object getItem(Node& self, std::list<std::string>& path)
@@ -179,7 +206,7 @@ py::object getObject(Node &n, const std::string &name, const py::kwargs& kwargs)
         msg_deprecated(&n) << "Calling the method getObject() with extra arguments is not supported anymore."
                            << "To remove this message please refer to the documentation of the getObject method"
                            << msgendl
-                            << PythonEnvironment::getPythonCallingPointString() ;
+                           << PythonEnvironment::getPythonCallingPointString() ;
     }
 
     BaseObject *object = n.getObject(name);
@@ -247,7 +274,7 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
 
     setFieldsFromPythonValues(object.get(), kwargs);
 
-    checkParamUsage(desc);
+    checkParamUsage(desc, object.get());
 
     // Convert the logged messages in the object's internal logging into python exception.
     // this is not a very fast way to do that...but well...python is slow anyway. And serious
@@ -342,7 +369,7 @@ py::object addChildKwargs(Node* self, const std::string& name, const py::kwargs&
     node->setInstanciationSourceFileName(finfo->filename);
     node->setInstanciationSourceFilePos(finfo->line);
 
-    checkParamUsage(desc);
+    checkParamUsage(desc, node.get());
 
     for(auto a : kwargs)
     {
@@ -398,56 +425,79 @@ py::object removeChildByName(Node& n, const std::string name)
 std::unique_ptr<NodeIterator> property_children(Node* node)
 {
     return std::make_unique<NodeIterator>(node,
-                            [](Node* n) -> size_t { return n->child.size(); },
-                            [](Node* n, unsigned int index) -> Base::SPtr { return n->child[index]; },
-                            [](const Node* n, const std::string& name) { return n->getChild(name); },
-                            [](Node* n, unsigned int index) { n->removeChild(n->child[index]); }
-                            );
+                                          [](Node* n) -> size_t { return n->child.size(); },
+    [](Node* n, unsigned int index) -> Base::SPtr { return n->child[index]; },
+[](const Node* n, const std::string& name) { return n->getChild(name); },
+[](Node* n, unsigned int index) { n->removeChild(n->child[index]); }
+);
 }
 
 std::unique_ptr<NodeIterator> property_parents(Node* node)
 {
     return std::make_unique<NodeIterator>(node,
-                            [](Node* n) -> size_t { return n->getNbParents(); },
-                            [](Node* n, unsigned int index) -> Node::SPtr {
-                                auto p = n->getParents();
-                                return static_cast<Node*>(p[index]);
-                                },
-                            [](const Node* n, const std::string& name) -> sofa::core::Base* {
-                                    const auto& parents = n->getParents();
-                                    return *std::find_if(parents.begin(),
-                                                     parents.end(),
-                                                     [name](BaseNode* child){ return child->getName() == name; });
-                                },
-                            [](Node*, unsigned int) {
-                                throw std::runtime_error("Removing a parent is not a supported operation. Please detach the node from the corresponding graph node.");
-                            });
+                                          [](Node* n) -> size_t { return n->getNbParents(); },
+    [](Node* n, unsigned int index) -> Node::SPtr {
+    auto p = n->getParents();
+    return static_cast<Node*>(p[index]);
+},
+[](const Node* n, const std::string& name) -> sofa::core::Base* {
+    const auto& parents = n->getParents();
+    return *std::find_if(parents.begin(),
+                         parents.end(),
+                         [name](BaseNode* child){ return child->getName() == name; });
+},
+[](Node*, unsigned int) {
+    throw std::runtime_error("Removing a parent is not a supported operation. Please detach the node from the corresponding graph node.");
+});
 }
 
 std::unique_ptr<NodeIterator> property_objects(Node* node)
 {
     return std::make_unique<NodeIterator>(node,
-                            [](Node* n) -> size_t { return n->object.size(); },
-                            [](Node* n, unsigned int index) -> Base::SPtr { return (n->object[index]);},
-                            [](const Node* n, const std::string& name) { return n->getObject(name); },
-                            [](Node* n, unsigned int index) { n->removeObject(n->object[index]);}
-                            );
+                                          [](Node* n) -> size_t { return n->object.size(); },
+    [](Node* n, unsigned int index) -> Base::SPtr { return (n->object[index]);},
+[](const Node* n, const std::string& name) { return n->getObject(name); },
+[](Node* n, unsigned int index) { n->removeObject(n->object[index]);}
+);
 }
 
-py::object __getattr__(Node& self, const std::string& name)
+py::object __getattr__(py::object pyself, const std::string& name)
 {
+    Node* selfnode = py::cast<Node*>(pyself);
     /// Search in the object lists
-    BaseObject *object = self.getObject(name);
+    BaseObject *object = selfnode->getObject(name);
     if (object)
         return PythonFactory::toPython(object);
 
     /// Search in the child lists
-    Node *child = self.getChild(name);
+    Node *child = selfnode->getChild(name);
     if (child)
         return PythonFactory::toPython(child);
 
     /// Search in the data & link lists
-    return BindingBase::GetAttr(&self, name, true);
+    py::object result = BindingBase::GetAttr(selfnode, name, false);
+    if(!result.is_none())
+        return result;
+
+    std::stringstream tmp;
+    emitSpellingMessage(tmp, "   - The data field named ", selfnode->getDataFields(), name, 2, 0.8);
+    emitSpellingMessage(tmp, "   - The link named ", selfnode->getDataFields(), name, 2, 0.8);
+    emitSpellingMessage(tmp, "   - The object named ", selfnode->getNodeObjects(), name, 2, 0.8);
+    emitSpellingMessage(tmp, "   - The child node named ", selfnode->getChildren(), name, 2, 0.8);
+
+    // Also provide spelling hints on python functions.
+    emitSpellingMessage(tmp, "   - The python attribute named ", py::cast<py::dict>(py::type::of(pyself).attr("__dict__")), name, 5, 0.8,
+                        [](const std::pair<py::handle, py::handle>& kv) { return py::cast<std::string>(std::get<0>(kv)); });
+
+    std::stringstream message;
+    message << "Unable to find attribute: "+name;
+    if(!tmp.str().empty())
+    {
+        message << msgendl;
+        message << "   You possibly wanted to access: " << msgendl;
+        message << tmp.rdbuf();
+    }
+    throw pybind11::attribute_error(message.str());
 }
 
 /// gets an item using its path (path is dot-separated, relative to the object
@@ -547,6 +597,8 @@ void sendEvent(Node* self, py::object pyUserData, char* eventName)
 {
     sofapython3::PythonScriptEvent event(self, eventName, pyUserData);
     self->propagateEvent(sofa::core::execparams::defaultInstance(), &event);
+}
+
 }
 
 void moduleAddNode(py::module &m) {
