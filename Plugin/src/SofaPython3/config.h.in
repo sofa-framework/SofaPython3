@@ -55,18 +55,3 @@
 #else
 #define SOFAPYTHON3_BIND_ATTRIBUTE_ERROR() namespace pybind11 { PYBIND11_RUNTIME_EXCEPTION(attribute_error, PyExc_AttributeError) }
 #endif // PYBIND11_SOFA_VERSION >= 20801
-
-#if PYBIND11_SOFA_VERSION >= 20801
-#define SOFAPYTHON3_ADD_PYBIND_TYPE_FOR_OLD_VERSION()
-#else
-#define SOFAPYTHON3_ADD_PYBIND_TYPE_FOR_OLD_VERSION() namespace pybind11 { \
-class type : public pybind11::object { \
-public: \
-    PYBIND11_OBJECT(type, pybind11::object, PyType_Check) \
-    static pybind11::handle handle_of(pybind11::handle h) { return handle((PyObject*) Py_TYPE(h.ptr())); } \
-    static type of(pybind11::handle h) { return type(type::handle_of(h), borrowed_t{}); } \
-    template<typename T> static handle handle_of(); \
-    template<typename T> static type of() {return type(type::handle_of<T>(), borrowed_t{}); } \
-}; \
-}
-#endif // PYBIND11_SOFA_VERSION >= 20801
