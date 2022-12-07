@@ -247,9 +247,9 @@ py::slice toSlice(const py::object& o)
 }
 
 
-std::map<void*, py::array>& getObjectCache()
+std::map<void*, std::pair<int, py::array>>& getObjectCache()
 {
-    static std::map<void*, py::array> s_objectcache {} ;
+    static std::map<void*, std::pair<int, py::array>> s_objectcache {} ;
     return s_objectcache;
 }
 
@@ -324,7 +324,7 @@ py::buffer_info toBufferInfo(BaseData& m)
     // TODO add nfo.Text()
     /* } else if(nfo.Text()) { */
     /*     format = py::format_descriptor<char>::value; */
-    /* } */ 
+    /* } */
     }
     else {
         throw py::type_error("Invalid type");
@@ -426,14 +426,15 @@ py::array resetArrayFor(BaseData* d)
     py::array a(pybind11::dtype(ninfo), ninfo.shape,
                 ninfo.strides, ninfo.ptr, capsule);
 
-    memcache[d] = a;
+    memcache[d] = std::make_pair(d->getCounter(), a);
     return a;
 }
 
 py::array getPythonArrayFor(BaseData* d)
 {
     auto& memcache = getObjectCache();
-    if(d->isDirty() || memcache.find(d) == memcache.end())
+    auto mementry = memcache.find(d);
+    if(d->isDirty() || mementry == memcache.end() || std::get<0>(mementry->second) != d->getCounter())
     {
         auto capsule = py::capsule(new Base::SPtr(d->getOwner()), [](void*p){ delete static_cast<Base::SPtr*>(p); } );
 
@@ -441,10 +442,10 @@ py::array getPythonArrayFor(BaseData* d)
         py::array a(pybind11::dtype(ninfo), ninfo.shape,
                     ninfo.strides, ninfo.ptr, capsule);
 
-        memcache[d] = a;
+        memcache[d] = std::make_pair(d->getCounter(), a);
         return a;
     }
-    return memcache[d];
+    return std::get<1>(memcache[d]);
 }
 
 
