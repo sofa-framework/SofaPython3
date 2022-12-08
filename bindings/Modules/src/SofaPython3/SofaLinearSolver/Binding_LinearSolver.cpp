@@ -58,7 +58,6 @@ void bindLinearSolvers(py::module &m)
 {
     using CRS = sofa::linearalgebra::CompressedRowSparseMatrix<TBlock>;
     using CRSLinearSolver = sofa::component::linearsolver::MatrixLinearSolver<CRS, sofa::linearalgebra::FullVector<SReal> >;
-    using Real = typename CRS::Real;
 
     const std::string typeName = CRSLinearSolver::GetClass()->className + CRSLinearSolver::GetCustomTemplateName();
 

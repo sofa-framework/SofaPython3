@@ -24,9 +24,9 @@
 
 #include <SofaPython3/PythonFactory.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
-#include <SofaExporter/STLExporter.h>
+#include <sofa/component/io/mesh/STLExporter.h>
 
-using  sofa::component::exporter::STLExporter;
+using  sofa::component::io::mesh::STLExporter;
 
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
