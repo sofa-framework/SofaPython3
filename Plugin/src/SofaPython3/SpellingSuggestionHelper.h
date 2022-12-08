@@ -45,8 +45,8 @@ std::ostream& emitSpellingMessage(std::ostream& ostream, const std::string& mess
     auto spellingSuggestions = sofa::helper::getClosestMatch(name, possibleNames, numEntries, thresold);
     if(!spellingSuggestions.empty())
     {
-        for(auto& [name, score] : spellingSuggestions)
-           ostream << message << "'" << name << "' ("<< std::to_string((int)(100*score))+"% match)" << std::endl;
+        for(auto& [suggestedName, score] : spellingSuggestions)
+           ostream << message << "'" << suggestedName<< "' ("<< std::to_string((int)(100*score))+"% match)" << std::endl;
     }
     return ostream;
 }
