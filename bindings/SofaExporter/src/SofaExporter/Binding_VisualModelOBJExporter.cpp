@@ -24,9 +24,9 @@
 
 #include <SofaPython3/PythonFactory.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
-#include <SofaExporter/VisualModelOBJExporter.h>
+#include <sofa/component/io/mesh/VisualModelOBJExporter.h>
 
-using  sofa::component::exporter::VisualModelOBJExporter;
+using  sofa::component::io::mesh::VisualModelOBJExporter;
 
 namespace py { using namespace pybind11; }
 

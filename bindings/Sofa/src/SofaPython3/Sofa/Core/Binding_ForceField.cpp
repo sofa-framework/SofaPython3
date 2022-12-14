@@ -141,7 +141,7 @@ namespace sofapython3
 
         size_t offset = mref.offset;
         // nNodes is the number of nodes (positions) of the object whose K matrix we're computing
-        int nNodes = int(mparams->readX(mstate)->getValue().size());
+        int nNodes = int(mparams->readX(mstate.get())->getValue().size());
         // nDofs is the number of degrees of freedom per-element of the object whose K matrix we're computing
         int nDofs = Coord::total_size;
 

@@ -46,7 +46,7 @@ void moduleAddSparseGridTopology(pybind11::module& m) {
 
     // findCube (pos)
     c.def("findCube", [](SparseGridTopology & self, const py::list & l) {
-        sofa::type::Vector3 pos;
+        sofa::type::Vec3 pos;
         pos[0] = l[0].cast<double>();
         pos[1] = l[1].cast<double>();
         pos[2] = l[2].cast<double>();
