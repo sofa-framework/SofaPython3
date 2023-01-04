@@ -1,5 +1,3 @@
-`Text ici <websitepointcom>`_ 
-
 Using the plugin
 ================
 
@@ -547,13 +545,59 @@ Here is the entire code of the scene :
 Accessing data
 --------------
 
-One major advantage of coupling SOFA simulation and python is to access and process data before the simulation starts, while it is running and once the simulation ended.
+One major advantage of coupling SOFA simulation and python is to access and process data before the simulation starts, while it is running and once the simulation ended. All components in SOFA have so-called data. A data is a public attribute of a Component (C++ class) visible to the user in the SOFA user interface and any data can also be accessed though python.
+
+
+Read access
+^^^^^^^^^^^
+
+Let's consider the full scene introduced just `above in-tree <https://sofapython3.readthedocs.io/en/latest/menu/Compilation.html#full-scene>`_ and try to access data once the GUI is closed:
+
+
+.. code-block:: python
+
+	import Sofa
+	import Sofa.Gui
+
+
+	def main():
+        
+        ...
+
+        # Initialization of the scene will be done here
+        Sofa.Gui.GUIManager.MainLoop(root)
+        Sofa.Gui.GUIManager.closeGUI()
+
+        # Accessing and printing the final time of simulation
+        # "time" being the name of a Data available in all Nodes
+        finalTime = root.time.value
+        print(finalTime)
+
+Note that:
+* accessing the Data "time" doing ``root.time`` would only return the python pointer and not the value of the Data
+* Data which are vectors can be casted as numpy arrays
+
+
+Write access
+^^^^^^^^^^^^
+
+
 
 
 More simulation examples
 ------------------------
 
-Many `additional examples <https://github.com/sofa-framework/SofaPython3/tree/master/examples>`_ are available within the SofaPython3 plugin in the *examples/* folder. Do not hesitate to take a look and get inspiration!
+Many `additional examples <https://github.com/sofa-framework/SofaPython3/tree/master/examples>`_ are available within the SofaPython3 plugin in the *examples/* folder:
+
+* `basic.py <https://github.com/sofa-framework/SofaPython3/blob/master/examples/basic.py>`_ : basic scene with a rigid particle without a GUI
+* `basic-addGUI.py <https://github.com/sofa-framework/SofaPython3/blob/master/examples/basic-addGUI.py>`_ : same basic scene with a rigid particle with a GUI
+* `emptyController.py <https://github.com/sofa-framework/SofaPython3/blob/master/examples/emptyController.py>`_ : example displaying all possible functions available in python controllers
+* `access_matrix.py <https://github.com/sofa-framework/SofaPython3/blob/master/examples/access_matrix.py>`_ : example on how to access the system matrix and vector
+* `access_mass_matrix.py <https://github.com/sofa-framework/SofaPython3/blob/master/examples/access_mass_matrix.py>`_ : example on how to access the mass matrix
+* `access_stiffness_matrix.py <https://github.com/sofa-framework/SofaPython3/blob/master/examples/access_stiffness_matrix.py>`_ : example on how to access the stiffness matrix
+* `access_compliance_matrix.py <https://github.com/sofa-framework/SofaPython3/blob/master/examples/access_compliance_matrix.py>`_ : example on how to access the compliance matrix used in constraint problems
+
+Do not hesitate to take a look and get inspiration!
 
 
 Technical support
