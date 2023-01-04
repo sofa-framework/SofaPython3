@@ -23,6 +23,21 @@ jobs:
         python_version: ['3.8']
 
     steps:
+      - name: (Mac) Workaround for homebrew
+        shell: bash
+        if: runner.os == 'macOS'
+        run: |
+            rm -f /usr/local/bin/2to3
+            rm -f /usr/local/bin/idle3
+            rm -f /usr/local/bin/pydoc3
+            rm -f /usr/local/bin/python3
+            rm -f /usr/local/bin/python3-config
+            rm -f /usr/local/bin/2to3-3.11
+            rm -f /usr/local/bin/idle3.11
+            rm -f /usr/local/bin/pydoc3.11
+            rm -f /usr/local/bin/python3.11
+            rm -f /usr/local/bin/python3.11-config
+            
       - name: Setup SOFA and environment
         id: sofa
         uses: sofa-framework/sofa-setup-action@v4
