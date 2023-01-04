@@ -54,3 +54,8 @@ class Test(unittest.TestCase):
         self.assertEqual(M.ndim, 2)
         self.assertEqual(M.shape, (960, 960))
         self.assertEqual(M.nnz, 9480)
+
+    def test_mass_mstate(self):
+
+        root = self.simulate_beam("CompressedRowSparseMatrixMat3x3d")
+        self.assertNotEqual(root.mass.mstate, None)
