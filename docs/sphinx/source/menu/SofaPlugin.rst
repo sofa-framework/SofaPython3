@@ -551,7 +551,7 @@ One major advantage of coupling SOFA simulation and python is to access and proc
 Read access
 ^^^^^^^^^^^
 
-Let's consider the full scene introduced just `above in-tree <https://sofapython3.readthedocs.io/en/latest/menu/Compilation.html#full-scene>`_ and try to access data once the GUI is closed:
+Let's consider the full scene introduced just `above in-tree <https://sofapython3.readthedocs.io/en/latest/menu/Compilation.html#full-scene>`_ and try to access data using the ``.value`` acessor once the GUI is closed:
 
 
 .. code-block:: python
@@ -578,9 +578,54 @@ Note that:
 * Data which are vectors can be casted as numpy arrays
 
 
+
 Write access
 ^^^^^^^^^^^^
 
+In the same way, Data can be modified (write access) using the ``.value`` accessor. Here is an example (without GUI) computing 10 time steps, then setting the world gravity to zero and recomputing 10 time steps:
+
+
+.. code-block:: python
+
+
+	def main():
+
+        # Call the SOFA function to create the root node
+        root = Sofa.Core.Node("root")
+
+        # Call the createScene function, as runSofa does
+        createScene(root)
+
+        # Once defined, initialization of the scene graph
+        Sofa.Simulation.init(root)
+
+        # Run the simulation for 10 steps
+        for iteration in range(10):
+                Sofa.Simulation.animate(root, root.dt.value)
+        
+        # Print the position of the falling sphere
+        print(root.sphere.mstate.position.value)
+
+        # Increase the gravity
+        root.gravity.value = [0, 0, 0]
+
+        # Run the simulation for 10 steps MORE
+        for iteration in range(10):
+                Sofa.Simulation.animate(root, root.dt.value)
+
+        # Print the position of the falling sphere
+        print(root.sphere.mstate.position.value)
+
+
+The ``.value`` accessor works for simple Data structures such as a string, an integer, a floating-point numbers or a vector of these.
+
+For more complex Data such as Data related to the degrees of freedom (e.g. Coord/Deriv, VecCoord/VecDeriv), the ``.writeableArray()`` write accessor must be used. Let's consider a scene graph that would have a *ConstantForceField* named "CFF" in the sphere node, and that we would like to modify the Data "totalForce" (a Deriv defined in `ConstantForceField.h <https://github.com/sofa-framework/sofa/blob/master/Sofa/Component/MechanicalLoad/src/sofa/component/mechanicalload/ConstantForceField.h#L66>`_), we should then write something like:
+
+
+.. code-block:: python
+
+	with root.sphere.CFF.totalForce.writeableArray() as wa:
+        wa[0] += 0.01 # modify the first entry of the Deriv Data "totalForce"
 
 
 
