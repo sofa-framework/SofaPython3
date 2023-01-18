@@ -13,7 +13,7 @@ set(HEADER_FILES
 )
 
 sofa_find_package(Sofa.Core REQUIRED)
-sofa_find_package(SofaGui REQUIRED)
+sofa_find_package(Sofa.GUI REQUIRED)
 sofa_find_package(Sofa.GL REQUIRED)
 
 SP3_add_python_module(
@@ -22,7 +22,7 @@ SP3_add_python_module(
     DESTINATION  Sofa
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
-    DEPENDS      Sofa.Core SofaGui SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
+    DEPENDS      Sofa.Core Sofa.GUI SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
 )
 
 sofa_create_component_in_package_with_targets(
