@@ -22,7 +22,9 @@ class EmptyDataEngine(Sofa.Core.DataEngine):
 
 def createScene(root):
     root.dt = 0.01
-    root.addObject('DefaultVisualManagerLoop')
+    root.bbox = [[0, 0, 0],[1,1,1]]
+
+    root.addObject('DefaultAnimationLoop')
 
     # Add our python forcefield in the scene
     root.addObject( EmptyDataEngine(name="MyEmptyDataEngine") )
@@ -31,7 +33,6 @@ def createScene(root):
 def main():
     import Sofa.Gui
     import SofaRuntime
-    SofaRuntime.importPlugin("SofaOpenglVisual")
     root=Sofa.Core.Node("root")
     createScene(root)
     Sofa.Simulation.init(root)

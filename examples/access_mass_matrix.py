@@ -20,6 +20,16 @@ def createScene(root):
     root.addObject('EulerImplicitSolver', rayleighStiffness="0.1", rayleighMass="0.1")
     root.addObject('SparseLDLSolver', applyPermutation="false", template="CompressedRowSparseMatrixd")
 
+    root.addObject('RequiredPlugin', pluginName=["Sofa.Component.Constraint.Projective",
+                                                 "Sofa.Component.Engine.Select",
+                                                 "Sofa.Component.ODESolver.Backward",
+                                                 "Sofa.Component.LinearSolver.Direct",
+                                                 "Sofa.Component.SolidMechanics.FEM.Elastic",
+                                                 "Sofa.Component.Mass",
+                                                 "Sofa.Component.StateContainer",
+                                                 "Sofa.Component.Topology.Container.Grid",
+                                                 "Sofa.Component.Visual"])
+
     root.addObject('MechanicalObject', name="DoFs")
     mass = root.addObject('MeshMatrixMass', name="mass", totalMass="320")
     root.addObject('RegularGridTopology', name="grid", nx="4", ny="4", nz="20", xmin="-9", xmax="-6", ymin="0", ymax="3", zmin="0", zmax="19")

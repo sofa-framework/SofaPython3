@@ -12,11 +12,15 @@ def createScene(root):
     root.addObject('DefaultAnimationLoop')
     root.addObject('DefaultVisualManagerLoop')
 
-    root.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Backward')
-    root.addObject('RequiredPlugin', name='Sofa.Component.LinearSolver.Direct')
-    root.addObject('RequiredPlugin', name='Sofa.Component.Engine.Select')
-    root.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Projective')
-    root.addObject('RequiredPlugin', name='Sofa.Component.SolidMechanics.FEM.Elastic')
+    root.addObject('RequiredPlugin', pluginName=["Sofa.Component.Constraint.Projective",
+                                                 "Sofa.Component.Engine.Select",
+                                                 "Sofa.Component.ODESolver.Backward",
+                                                 "Sofa.Component.LinearSolver.Direct",
+                                                 "Sofa.Component.SolidMechanics.FEM.Elastic",
+                                                 "Sofa.Component.Mass",
+                                                 "Sofa.Component.StateContainer",
+                                                 "Sofa.Component.Topology.Container.Grid",
+                                                 "Sofa.Component.Visual"])
 
     root.addObject('EulerImplicitSolver', rayleighStiffness="0.1", rayleighMass="0.1")
     linear_solver = root.addObject('SparseLDLSolver', applyPermutation="false", template="CompressedRowSparseMatrixMat3x3d")

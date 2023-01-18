@@ -7,8 +7,7 @@ def createScene(root):
 	# Call the above function to create the scene graph
 	scene="""
 			<Node dt="0.005" gravity="0 0 0">
-				<RequiredPlugin name="SofaOpenglVisual" />
-				<DefaultVisualManagerLoop/>
+				<RequiredPlugin name="Sofa.Component.StateContainer"/>
 				<DefaultAnimationLoop/>
 
 				<Node name="child1">

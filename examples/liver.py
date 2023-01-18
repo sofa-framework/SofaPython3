@@ -31,18 +31,32 @@ def createScene(root):
     root.gravity=[0, -9.81, 0]
     root.dt=0.02
 
-    root.addObject('DefaultVisualManagerLoop')
     root.addObject('DefaultAnimationLoop')
 
+    root.addObject("RequiredPlugin", pluginName=["Sofa.Component.Collision.Detection.Intersection",
+                                                 "Sofa.Component.Collision.Detection.Algorithm",
+                                                 "Sofa.Component.Collision.Geometry",
+                                                 "Sofa.Component.Collision.Response.Contact",
+                                                 "Sofa.Component.Constraint.Projective",
+                                                 "Sofa.Component.IO.Mesh",
+                                                 "Sofa.Component.LinearSolver.Iterative",
+                                                 "Sofa.Component.Mass",
+                                                 "Sofa.Component.ODESolver.Backward",
+                                                 "Sofa.Component.StateContainer",
+                                                 "Sofa.Component.Mapping.Linear",
+                                                 "Sofa.Component.SolidMechanics.FEM.Elastic",
+                                                 "Sofa.Component.Visual",
+                                                 "Sofa.GL.Component.Rendering3D",
+                                                 "Sofa.Component.Topology.Container.Dynamic"])
+
     root.addObject('VisualStyle', displayFlags="showCollisionModels")
-    root.addObject('RequiredPlugin', pluginName="Sofa.Component")
     root.addObject('DefaultPipeline', name="CollisionPipeline")
     root.addObject('BruteForceBroadPhase', name="BroadPhase")
     root.addObject('BVHNarrowPhase', name="NarrowPhase")
     root.addObject('DefaultContactManager', name="CollisionResponse", response="PenalityContactForceField")
     root.addObject('DiscreteIntersection')
 
-    root.addObject('MeshObjLoader', name="LiverSurface", filename="mesh/liver-smooth.obj")
+    root.addObject('MeshOBJLoader', name="LiverSurface", filename="mesh/liver-smooth.obj")
 
     liver = root.addChild('Liver')
     liver.addObject('EulerImplicitSolver', name="cg_odesolver", rayleighStiffness="0.1", rayleighMass="0.1")
