@@ -20,16 +20,28 @@
 
 #include <pybind11/pybind11.h>
 
-#include <SofaGui/initSofaGui.h>
 #include <sofa/core/init.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem;
 
-#if SOFAGUI_HAVE_SOFA_GUI_QT
+#if __has_include(<sofa/gui/batch/init.h>)
+#include <sofa/gui/batch/init.h>
+#define HAS_GUI_BATCH
+#endif
+
+#if __has_include(<sofa/gui/qt/init.h>)
+#include <sofa/gui/qt/init.h>
 #include <sofa/gui/qt/qt.conf.h>
-#endif // SOFAGUI_HAVE_SOFA_GUI_QT
+#define HAS_GUI_QT
+#endif
+
+#if __has_include(<sofa/gui/headlessrecorder/init.h>)
+#include <sofa/gui/headlessrecorder/init.h>
+#define HAS_GUI_HEADLESSRECORDER
+#endif
+
 
 #include "Binding_BaseGui.h"
 #include "Binding_GUIManager.h"
@@ -63,7 +75,7 @@ PYBIND11_MODULE(Gui, m) {
                     :members:
              )doc";
 
-#if SOFAGUI_HAVE_SOFA_GUI_QT
+#ifdef HAS_GUI_QT
     std::string sofaPrefixAbsolute = sofa::helper::Utils::getSofaPathPrefix();
     std::string inputFilepath = FileSystem::cleanPath(sofaPrefixAbsolute + "/bin/qt.conf");
     bool success = sofa::gui::qt::loadQtConfWithCustomPrefix(inputFilepath, sofaPrefixAbsolute);
@@ -82,11 +94,19 @@ PYBIND11_MODULE(Gui, m) {
         }
         std::cout << std::endl;
     }
-#endif // SOFAGUI_HAVE_SOFA_GUI_QT
+#endif // HAS_GUI_QT
 
-    // This is needed to make sure the GuiMain library (libSofaGuiMain.so) is correctly
-    // linked since the GUIs are statically created during the load of the library.
-    sofa::gui::initSofaGui();
+    // forcefullly link libraries at compile-time
+#ifdef HAS_GUI_BATCH
+    sofa::gui::batch::init();
+#endif
+#ifdef HAS_GUI_QT
+    sofa::gui::qt::init();
+#endif
+#ifdef HAS_GUI_HEADLESSRECORDER
+    sofa::gui::headlessrecorder::init();
+#endif
+
     sofa::core::init();
 
     moduleAddBaseGui(m);
