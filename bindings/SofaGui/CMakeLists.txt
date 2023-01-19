@@ -13,7 +13,6 @@ set(HEADER_FILES
 )
 
 sofa_find_package(Sofa.Core REQUIRED)
-sofa_find_package(Sofa.GL REQUIRED)
 sofa_find_package(Sofa.GUI.Common REQUIRED) # to get the GUI mechanism
 
 sofa_find_package(Sofa.GUI.Batch QUIET)
@@ -41,7 +40,7 @@ SP3_add_python_module(
     DESTINATION  Sofa
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
-    DEPENDS      Sofa.Core Sofa.GL Sofa.GUI.Common SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core ${SUPPORTED_GUIS}
+    DEPENDS      Sofa.Core Sofa.GUI.Common SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core ${SUPPORTED_GUIS}
 )
 
 sofa_create_component_in_package_with_targets(
