@@ -96,7 +96,7 @@ PYBIND11_MODULE(Gui, m) {
     }
 #endif // HAS_GUI_QT
 
-    // forcefullly link libraries at compile-time
+// forcefullly link libraries at compile-time
 #ifdef HAS_GUI_BATCH
     sofa::gui::batch::init();
 #endif
