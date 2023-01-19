@@ -12,24 +12,27 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaGui/Binding_GUIManager.h
 )
 
-set(DEPENDS_LIST Sofa.Core Sofa.GL Sofa.GUI.Common SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core)
-
 sofa_find_package(Sofa.Core REQUIRED)
 sofa_find_package(Sofa.GL REQUIRED)
-
 sofa_find_package(Sofa.GUI.Common REQUIRED) # to get the GUI mechanism
 
 sofa_find_package(Sofa.GUI.Batch QUIET)
 if(Sofa.GUI.Batch_FOUND)
-     list(APPEND DEPENDS_LIST Sofa.GUI.Batch)
+     list(APPEND SUPPORTED_GUIS Sofa.GUI.Batch)
 endif()
 sofa_find_package(Sofa.GUI.Qt QUIET)
 if(Sofa.GUI.Qt_FOUND)
-     list(APPEND DEPENDS_LIST Sofa.GUI.Qt)
+     list(APPEND SUPPORTED_GUIS Sofa.GUI.Qt)
 endif()
 sofa_find_package(Sofa.GUI.HeadlessRecorder QUIET)
 if(Sofa.GUI.HeadlessRecorder_FOUND)
-     list(APPEND DEPENDS_LIST Sofa.GUI.HeadlessRecorder)
+     list(APPEND SUPPORTED_GUIS Sofa.GUI.HeadlessRecorder)
+endif()
+
+if(SUPPORTED_GUIS)
+     message(STATUS "SofaPython3: Bindings.SofaGui will support: ${SUPPORTED_GUIS} .")
+else()
+     message(WARNING "SofaPython3: No GUIs detected.")
 endif()
 
 SP3_add_python_module(
@@ -38,7 +41,7 @@ SP3_add_python_module(
     DESTINATION  Sofa
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
-    DEPENDS      ${DEPENDS_LIST}
+    DEPENDS      Sofa.Core Sofa.GL Sofa.GUI.Common SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core ${SUPPORTED_GUIS}
 )
 
 sofa_create_component_in_package_with_targets(
