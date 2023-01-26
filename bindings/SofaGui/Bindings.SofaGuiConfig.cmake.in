@@ -6,7 +6,7 @@
 find_package(SofaPython3 QUIET REQUIRED COMPONENTS Plugin Bindings.Sofa)
 
 find_package(Sofa.Core QUIET REQUIRED)
-find_package(Sofa.Gui.Common QUIET REQUIRED)
+find_package(Sofa.GUI.Common QUIET REQUIRED)
 
 if(Sofa.GUI.Batch_FOUND)
     find_package(Sofa.GUI.Batch QUIET REQUIRED)
