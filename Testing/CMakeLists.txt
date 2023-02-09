@@ -17,6 +17,7 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Testing SofaPython3::Plugin)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAPYTHON3")
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Testing)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
