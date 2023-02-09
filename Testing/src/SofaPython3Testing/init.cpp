@@ -1,6 +1,6 @@
 /******************************************************************************
-*                              SofaPython3 plugin                             *
-*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -15,40 +15,42 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include <vector>
-
-#include <SofaPython3Testing/PythonTest.h>
-#include <sofa/helper/Utils.h>
-#include <SofaPython3Testing/PythonTestExtractor.h>
-
-using sofapython3::PythonTest ;
-using sofapython3::PythonTestExtractor ;
-using sofapython3::PrintTo ;
-using std::string;
-
-namespace
+#include <SofaPython3Testing/config.h>
+namespace sofapython3::testing
 {
 
-  class PythonModule_SofaTypes_test : public PythonTestExtractor
-  {
-  public:
-    PythonModule_SofaTypes_test()
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
     {
-        const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
-        addTestDirectory(executable_directory+"/Bindings.SofaTypes.Tests.d/pyfiles", "SofaTypes_");
+        first = false;
     }
-  } python_tests;
+}
 
-  /// run test list using the custom name function getTestName.
-  /// this allows to do gtest_filter=*FileName*
-  INSTANTIATE_TEST_SUITE_P(Batch,
-			  PythonTest,
-              ::testing::ValuesIn(python_tests.extract()),
-              PythonTest::getTestName);
+const char* getModuleName()
+{
+    return MODULE_NAME;
+}
 
-  TEST_P(PythonTest, all_tests) { run(GetParam()); }
+const char* getModuleVersion()
+{
+    return MODULE_VERSION;
+}
 
+const char* getModuleComponentList()
+{
+    return {};
+}
 }

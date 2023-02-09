@@ -18,7 +18,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaPython3/PythonTestExtractor.h>
+#include <SofaPython3Testing/PythonTestExtractor.h>
 #include <SofaPython3/PythonEnvironment.h>
 
 #include <sofa/helper/logging/Messaging.h>

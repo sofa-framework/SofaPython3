@@ -20,9 +20,9 @@
 
 #include <vector>
 
-#include <SofaPython3/PythonTest.h>
+#include <SofaPython3Testing/PythonTest.h>
 #include <sofa/helper/Utils.h>
-#include <SofaPython3/PythonTestExtractor.h>
+#include <SofaPython3Testing/PythonTestExtractor.h>
 
 using sofapython3::PythonTest ;
 using sofapython3::PythonTestExtractor ;
