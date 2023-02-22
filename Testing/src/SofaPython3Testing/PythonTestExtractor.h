@@ -17,9 +17,9 @@
 *******************************************************************************
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include <SofaPython3/config.h>
-#include <SofaPython3/PythonTest.h>
+#pragma once
+#include <SofaPython3Testing/config.h>
+#include <SofaPython3Testing/PythonTest.h>
 
 #include <utility>
 #include <pybind11/pybind11.h>
@@ -32,7 +32,7 @@ namespace sofapython3
 /**
  * Utility class that loads up python files and extract the unittest.
  */
-class SOFAPYTHON3_API PythonTestExtractor
+class SOFAPYTHON3_TESTING_API PythonTestExtractor
 {
 public:
     /**

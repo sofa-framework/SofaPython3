@@ -175,6 +175,9 @@ add_subdirectory(Plugin)
 add_subdirectory(bindings)
 add_subdirectory(examples)
 add_subdirectory(docs)
+if (SP3_BUILD_TEST)
+    add_subdirectory(Testing)
+endif()
 
 SP3_add_python_package(
     SOURCE_DIRECTORY

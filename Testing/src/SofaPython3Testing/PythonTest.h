@@ -21,7 +21,7 @@
 #pragma once
 
 #include <string>
-#include <SofaPython3/config.h>
+#include <SofaPython3Testing/config.h>
 #include <sofa/testing/BaseTest.h>
 
 #include <filesystem>
@@ -33,7 +33,7 @@ namespace sofapython3
 using sofa::testing::BaseTest;
 
 /// a Python_test is defined by a python filepath and optional arguments
-struct SOFAPYTHON3_API PythonTestData
+struct SOFAPYTHON3_TESTING_API PythonTestData
 {
     PythonTestData (std::string filepath, std::string testgroup, std::vector<std::string> arguments)
             : filepath(std::move(filepath)), arguments(std::move(arguments)), testgroup{std::move(testgroup)} {}
@@ -48,10 +48,10 @@ struct SOFAPYTHON3_API PythonTestData
 ///        test.all_tests/2, where GetParam() = /path/to/file.py with args {1,2,3}
 /// instead of the defautl googletest printer that output things like the following:
 ///        test.all_tests/2, where GetParam() = 56-byte object <10-48 EC-37 18-56 00-00 67-00-00-00>
-void SOFAPYTHON3_API PrintTo(const PythonTestData& d, ::std::ostream* os);
+void SOFAPYTHON3_TESTING_API PrintTo(const PythonTestData& d, ::std::ostream* os);
 
 /// A test written in python (but not as a sofa class to perform unitary testing on python functions)
-class SOFAPYTHON3_API PythonTest : public BaseTest,
+class SOFAPYTHON3_TESTING_API PythonTest : public BaseTest,
         public ::testing::WithParamInterface<PythonTestData>
 {
 public:
@@ -67,7 +67,7 @@ public:
 
     /// This function is called by gtest to generate the test from the filename. This is nice
     /// As this allows to do mytest --gtest_filter=*MySomething*
-    static std::string getTestName(const testing::TestParamInfo<PythonTestData>& p)
+    static std::string getTestName(const ::testing::TestParamInfo<PythonTestData>& p)
     {
         if(p.param.arguments.size()==0)
             return  std::to_string(p.index)+"_"+p.param.testgroup+path(p.param.filepath).stem().string();
