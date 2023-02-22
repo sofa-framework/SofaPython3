@@ -12,7 +12,7 @@ SofaRuntime.importPlugin("Sofa.Component")
 SofaRuntime.importPlugin("Sofa.GL.Component")
 
 def createScene(rootNode):
-        rootNode.addObject("OglGrid", nbSubdiv=10, size=1000)
+        rootNode.addObject("VisualGrid", nbSubdiv=10, size=1000)
 
         rootNode.findData('gravity').value=[0.0,-981.0,0.0];
         rootNode.findData('dt').value=0.01
