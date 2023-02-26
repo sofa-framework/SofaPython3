@@ -207,7 +207,6 @@ class Test(unittest.TestCase):
         self.assertRaises(AttributeError, (lambda aa: aa.unvalid), p)
 
     # @unittest.skip  # no reason needed
-
     def test_DataArray2DOperation(self):
         root = create_scene("rootNode")
         v = numpy.array([[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]])
@@ -248,18 +247,56 @@ class Test(unittest.TestCase):
             c[0] = 1.0
         self.assertRaises(ValueError, (lambda c: t(c)), color)
 
+    def test_DataAsContainerNumpyArray_testIsDirtyOnDoubleAccess_(self):
+        root = create_scene("rootNode")
+
+        root.addObject("PointSetTopologyContainer", points=[[0, 0, 0], [1, 0, 0]])
+        modifier = root.addObject("PointSetTopologyModifier")
+        mo = root.addObject("MechanicalObject")
+        Sofa.Simulation.init(root)
+
+        modifier.addPoints(10, True)
+        self.assertEqual(len(mo.position), 12)
+
+        modifier.addPoints(10, True)
+        self.assertEqual(len(mo.position), 22)
+
+    def test_DataAsContainerNumpyArray_testIsDirtyOnDoubleWriteAccess_(self):
+        root = create_scene("rootNode")
+
+        root.addObject("PointSetTopologyContainer", points=[[0, 0, 0], [1, 0, 0]])
+        modifier = root.addObject("PointSetTopologyModifier")
+        mo = root.addObject("MechanicalObject")
+        Sofa.Simulation.init(root)
+
+        modifier.addPoints(10, True)
+        with mo.position.writeable() as w:
+            self.assertEqual(len(w), 12)
+
+        modifier.addPoints(10, True)
+        with mo.position.writeable() as w:
+            self.assertEqual(len(w), 22)
+
     def test_DataAsContainerNumpyArray_(self):
         root = create_scene("rootNode")
         v = numpy.array([[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]])
         c = root.addObject("MechanicalObject", name="t", position=v.tolist())
         Sofa.Simulation.init(root)
 
-        with c.position.writeableArray() as wa:
+        numpy.testing.assert_array_equal(c.position.array(), v)
+
+        with c.position.writeable() as wa:
             self.assertEqual(wa.shape, (4, 3))
             self.assertEqual(wa[0, 0], 0.0)
             self.assertEqual(wa[1, 1], 1.0)
             self.assertEqual(wa[2, 2], 2.0)
-            numpy.testing.assert_array_equal(c.position.array(), v)
+
+        numpy.testing.assert_array_equal(c.position.array(), v)
+
+        with c.position.writeable() as wa:
+            wa[0, 0] = 1.0
+
+        assert c.position.array()[0, 0] == 1.0
 
     def test_DataAsContainerNumpyArrayRepeat(self):
         root = create_scene("rootNode")
@@ -311,10 +348,10 @@ class Test(unittest.TestCase):
         root1 = create_scene("root1")
         root1.addChild("child1")
         root2 = create_scene("root2")
-        root2.addChild("child2)
+        root2.addChild("child2")
         root1.child1.addObject("MechanicalObject", name="dofs1", position=[[1.0,2.0,3.0]])
-        root2.chdil2.addObject("MechanicalObject", name="dofs2", position=root1.child1.dofs1.position.linkpath)
-        self.assertEqual(root2.dofs2.position.getParent().name, "dofs1")
+        root2.child2.addObject("MechanicalObject", name="dofs2", position=root1.child1.dofs1.position.linkpath)
+        self.assertEqual(str(root2.child2.dofs2.position.getParent().linkpath), "@/child1/dofs1.position")
 
     def test_set_value_from_string(self):
         n = create_scene("rootNode")

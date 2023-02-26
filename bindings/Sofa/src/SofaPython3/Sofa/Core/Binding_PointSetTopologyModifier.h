@@ -1,6 +1,6 @@
 /******************************************************************************
-*                              SofaPython3 plugin                             *
-*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2021 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -18,37 +18,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <vector>
+#pragma once
 
-#include <SofaPython3Testing/PythonTest.h>
-#include <sofa/helper/Utils.h>
-#include <SofaPython3Testing/PythonTestExtractor.h>
+#include <pybind11/pybind11.h>
 
-using sofapython3::PythonTest ;
-using sofapython3::PythonTestExtractor ;
-using sofapython3::PrintTo ;
-using std::string;
+namespace sofapython3 {
 
-namespace
-{
+void moduleAddPointSetTopologyModifier(pybind11::module &m);
 
-  class PythonModule_SofaTypes_test : public PythonTestExtractor
-  {
-  public:
-    PythonModule_SofaTypes_test()
-    {
-        const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
-        addTestDirectory(executable_directory+"/Bindings.SofaTypes.Tests.d/pyfiles", "SofaTypes_");
-    }
-  } python_tests;
-
-  /// run test list using the custom name function getTestName.
-  /// this allows to do gtest_filter=*FileName*
-  INSTANTIATE_TEST_SUITE_P(Batch,
-			  PythonTest,
-              ::testing::ValuesIn(python_tests.extract()),
-              PythonTest::getTestName);
-
-  TEST_P(PythonTest, all_tests) { run(GetParam()); }
-
-}
+} // namespace sofapython3

@@ -31,10 +31,12 @@ class Test(unittest.TestCase):
      def test_constructor(self):
          c = Sofa.Core.DataEngine()
          c.init()
+         self.assertEqual(c.getClassName(), "DataEngine")
 
      def test_constructorOverriden(self):
          root = Sofa.Core.Node("rootNode")
          root.addObject(MyDataEngine(name="dataEngine", d_in=41))
+         self.assertEqual(root.dataEngine.getClassName(), "MyDataEngine")
          root.dataEngine.init()
          root.dataEngine.update()
          self.assertEqual(root.dataEngine.d_out.value, 42)

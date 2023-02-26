@@ -38,9 +38,9 @@ namespace simpleapi=sofa::simpleapi;
 #include <sofa/helper/system/SetDirectory.h>
 using sofa::helper::system::SetDirectory;
 
-#include <SofaPython3/PythonTestExtractor.h>
+#include <SofaPython3Testing/PythonTestExtractor.h>
 #include <numeric>
-#include "PythonEnvironment.h"
+#include <SofaPython3/PythonEnvironment.h>
 #include "PythonTest.h"
 
 MSG_REGISTER_CLASS(sofapython3::PythonTest, "SofaPython3::PythonTest")
@@ -49,7 +49,7 @@ namespace sofapython3
 {
 
 /// This function is used by gtest to print the content of the struct in a meaninfull way
-void SOFAPYTHON3_API PrintTo(const sofapython3::PythonTestData& d, ::std::ostream *os)
+void PrintTo(const sofapython3::PythonTestData& d, ::std::ostream *os)
 {
     (*os) << d.filepath  ;
     (*os) << " with args {" ;

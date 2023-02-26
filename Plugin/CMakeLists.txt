@@ -5,6 +5,7 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/initModule.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonEnvironment.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SceneLoaderPY3.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SpellingSuggestionHelper.h
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/DataCache.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/DataHelper.h
@@ -25,24 +26,8 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Prefab.cpp
 )
 
-if(SP3_BUILD_TEST)
-    find_package(Sofa.Testing REQUIRED)
-    if(Sofa.Testing_FOUND)
-        list(APPEND HEADER_FILES
-            ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonTest.h
-            ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonTestExtractor.h
-        )
-        list(APPEND SOURCE_FILES
-            ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonTest.cpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/PythonTestExtractor.cpp
-        )
-    else()
-        message(WARNING "Sofa.Testing has not been found, SofaPython3 tests cannot be built.")
-    endif(Sofa.Testing_FOUND)
-endif(SP3_BUILD_TEST)
-
 find_package(pybind11 CONFIG REQUIRED)
-find_package(Sofa.Simulation.Graph REQUIRED)
+sofa_find_package(Sofa.Simulation.Graph REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
@@ -51,10 +36,6 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAPYTHON3")
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Graph)
 target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::module pybind11::embed)
-
-if(SP3_BUILD_TEST AND Sofa.Testing_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Testing)
-endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME SofaPython3)
 

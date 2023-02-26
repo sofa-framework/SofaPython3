@@ -22,6 +22,8 @@
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
+#include <memory>
+#include "SofaPython3/DataHelper.h"
 using sofa::simulation::Simulation;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -68,7 +70,11 @@ PYBIND11_MODULE(Simulation, simulation)
         sofa::simulation::Node::SPtr node = sofa::simulation::getSimulation()->load(name);
         return node ? py::cast(node.get()) : py::none();
     }, sofapython3::doc::simulation::load);
-    simulation.def("unload", [](Node* n){ sofa::simulation::getSimulation()->unload(n); }, sofapython3::doc::simulation::unload);
+    simulation.def("unload", [](Node* n){
+            auto& memcache = getObjectCache();
+            sofa::simulation::getSimulation()->unload(n);
+            memcache.clear();
+            }, sofapython3::doc::simulation::unload);
     simulation.def("animateNSteps", [](Node *n, int n_steps, SReal dt=0.0){
         for (int i = 0; i < n_steps; i++)
         {

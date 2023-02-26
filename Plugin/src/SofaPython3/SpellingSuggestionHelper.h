@@ -17,38 +17,39 @@
 *******************************************************************************
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include <vector>
+#include <functional>
+#include <algorithm>
+#include <iostream>
+#include <sofa/helper/DiffLib.h>
 
-#include <SofaPython3Testing/PythonTest.h>
-#include <sofa/helper/Utils.h>
-#include <SofaPython3Testing/PythonTestExtractor.h>
-
-using sofapython3::PythonTest ;
-using sofapython3::PythonTestExtractor ;
-using sofapython3::PrintTo ;
-using std::string;
-
-namespace
+namespace sofapython3
 {
 
-  class PythonModule_SofaTypes_test : public PythonTestExtractor
-  {
-  public:
-    PythonModule_SofaTypes_test()
+template<class Iterable, class UnaryOperation, class PickingFunction>
+void fillVectorOfStringFrom(const Iterable& v, const UnaryOperation& op, const PickingFunction func)
+{
+    std::transform(v.begin(), v.end(), op, func);
+}
+
+template<class Iterable, class PickingFunction=std::function<const std::string(typename Iterable::value_type)> >
+std::ostream& emitSpellingMessage(std::ostream& ostream, const std::string& message, const Iterable& iterable, const std::string& name,
+                                  sofa::Size numEntries=5, SReal thresold=0.6_sreal,
+                                  PickingFunction f = [](const typename Iterable::value_type d) { return d->getName(); })
+{
+    std::vector<std::string> possibleNames;
+    possibleNames.reserve(iterable.size());
+    fillVectorOfStringFrom(iterable, std::back_inserter(possibleNames), f);
+
+    auto spellingSuggestions = sofa::helper::getClosestMatch(name, possibleNames, numEntries, thresold);
+    if(!spellingSuggestions.empty())
     {
-        const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
-        addTestDirectory(executable_directory+"/Bindings.SofaTypes.Tests.d/pyfiles", "SofaTypes_");
+        for(auto& [suggestedName, score] : spellingSuggestions)
+           ostream << message << "'" << suggestedName<< "' ("<< std::to_string((int)(100*score))+"% match)" << std::endl;
     }
-  } python_tests;
+    return ostream;
+}
 
-  /// run test list using the custom name function getTestName.
-  /// this allows to do gtest_filter=*FileName*
-  INSTANTIATE_TEST_SUITE_P(Batch,
-			  PythonTest,
-              ::testing::ValuesIn(python_tests.extract()),
-              PythonTest::getTestName);
-
-  TEST_P(PythonTest, all_tests) { run(GetParam()); }
 
 }

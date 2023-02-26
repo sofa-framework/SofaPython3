@@ -13,7 +13,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaExporter/Module_SofaExporter.cpp
 )
 
-find_package(SofaExporter REQUIRED)
+sofa_find_package(SofaExporter REQUIRED)
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}

@@ -14,6 +14,7 @@ set(PYTHON_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseData.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Base.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseObject.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Events.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Controller.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/ForceField.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Mass.py
@@ -36,7 +37,7 @@ find_package(Sofa.Testing REQUIRED)
 
 enable_testing()
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaPython3::Plugin)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaPython3Testing)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "PYTHON_TESTFILES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\"")
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "Bindings/Tests")
 

@@ -45,15 +45,15 @@ namespace sofapython3
         contactData["numberOfContacts"] = numberOfContacts;
 
         const std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> contactElements = listener.getContactElements();
-        const std::vector<std::tuple<unsigned int, sofa::type::Vector3, unsigned int, sofa::type::Vector3>> contactPoints = listener.getContactPoints();
+        const std::vector<std::tuple<unsigned int, sofa::type::Vec3, unsigned int, sofa::type::Vec3>> contactPoints = listener.getContactPoints();
 
         std::vector<unsigned int> collisionElementsModel1;
         std::vector<unsigned int> collisionElementsModel2;
         collisionElementsModel1.reserve(numberOfContacts);
         collisionElementsModel2.reserve(numberOfContacts);
 
-        std::vector<sofa::type::Vector3> collisionPointsModel1;
-        std::vector<sofa::type::Vector3> collisionPointsModel2;
+        std::vector<sofa::type::Vec3> collisionPointsModel1;
+        std::vector<sofa::type::Vec3> collisionPointsModel2;
         collisionPointsModel1.reserve(numberOfContacts);
         collisionPointsModel2.reserve(numberOfContacts);
 
