@@ -377,21 +377,24 @@ py::object convertToPython(BaseData* d)
         }
         else
         {
-            size_t dim0 = nfo.size(d->getValueVoidPtr())/nfo.size();
-            size_t dim1 = nfo.size();
-            for(size_t i=0;i<dim0;i++)
+            if (nfo.size() != 0)
             {
-                py::list list1;
-                for(size_t j=0;j<dim1;j++)
+                size_t dim0 = nfo.size(d->getValueVoidPtr())/nfo.size();
+                size_t dim1 = nfo.size();
+                for(size_t i=0;i<dim0;i++)
                 {
-                    if(nfo.Integer())
-                        list1.append(nfo.getIntegerValue(d->getValueVoidPtr(),i*dim1+j));
-                    else if(nfo.Scalar())
-                        list1.append(nfo.getScalarValue(d->getValueVoidPtr(),i*dim1+j));
-                    else
-                        throw py::type_error("Invalid type");
+                    py::list list1;
+                    for(size_t j=0;j<dim1;j++)
+                    {
+                        if(nfo.Integer())
+                            list1.append(nfo.getIntegerValue(d->getValueVoidPtr(),i*dim1+j));
+                        else if(nfo.Scalar())
+                            list1.append(nfo.getScalarValue(d->getValueVoidPtr(),i*dim1+j));
+                        else
+                            throw py::type_error("Invalid type");
+                    }
+                    list.append(list1);
                 }
-                list.append(list1);
             }
         }
         return std::move(list);
