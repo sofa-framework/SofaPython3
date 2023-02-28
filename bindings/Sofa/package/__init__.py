@@ -1,5 +1,5 @@
 """
-Package containg the binding for the core of Sofa
+Package containing the binding for the core of Sofa
 -------------------------------------------------
 
 Example of use:
@@ -44,14 +44,14 @@ if sofa_root:
 else:
     print("Warning: environment variable SOFA_ROOT is empty. Trying to guess it.")
     # try a guess from <sofa_root>/plugins/SofaPython3/lib/python3/site-packages/Sofa
-    sofa_root_guess = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + '/../../../../../..') 
+    sofa_root_guess = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + '/../../../../../..')
     if os.path.isdir(os.path.abspath(sofa_root_guess + '/lib' )):
         print("Guessed SOFA_ROOT: " + sofa_root_guess)
         sofa_root = sofa_root_guess
         os.environ["SOFA_ROOT"] = sofa_root
     else:
-        print("Warning: cannot guess SOFA_ROOT", 
-        "Loading SOFA libraries will likely fail and/or SOFA won't find its resources.")
+        print("Warning: cannot guess SOFA_ROOT",
+              "Loading SOFA libraries will likely fail and/or SOFA won't find its resources.")
 
 if sofa_root and sys.platform == 'win32':
 
@@ -62,31 +62,64 @@ if sofa_root and sys.platform == 'win32':
     else:
         print("Warning: environment variable SOFAPYTHON3_ROOT is empty. Trying to guess it.")
         # try a guess from <sofapython3_root>/lib/python3/site-packages/Sofa
-        sofapython3_root_guess = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + '/../../../..') 
+        sofapython3_root_guess = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + '/../../../..')
         if os.path.isdir(os.path.abspath(sofapython3_root_guess + '/lib' )):
             print("Guessed SOFAPYTHON3_ROOT: " + sofapython3_root_guess)
             sofapython3_root = sofapython3_root_guess
             os.environ["SOFAPYTHON3_ROOT"] = sofapython3_root
         else:
-            print("Warning: cannot guess SOFAPYTHON3_ROOT", 
-            "Loading SofaPython3 modules will likely fail.")
+            print("Warning: cannot guess SOFAPYTHON3_ROOT",
+                  "Loading SofaPython3 modules will likely fail.")
 
-    # Windows-only: starting from python 3.8, python wont read the env. variable PATH to get SOFA's dlls. 
+    # Windows-only: starting from python 3.8, python wont read the env. variable PATH to get SOFA's dlls.
     # os.add_dll_directory() is the new way to add paths for python to get external libraries.
-    sofa_bin_path = sofa_root + "\\bin"
-    sofa_file_test = sofa_bin_path + "\\Sofa.Helper.dll"
-    sofapython3_bin_path = sofapython3_root + "\\bin"
-    sofapython3_file_test = sofapython3_bin_path + "\\SofaPython3.dll"
-    
+    sofa_bin_path = os.path.join(sofa_root, "bin")
+    sofapython3_bin_path = os.path.join(sofapython3_root, "bin")
+
+    compilation_modes = ["Release", "RelWithDebInfo", "Debug", "MinSizeRel"]
+    sofa_bin_compilation_modes = []
+    sofapython3_bin_compilation_modes = []
+    for mode in compilation_modes:
+        if os.path.isdir(os.path.abspath(os.path.join(sofa_bin_path, mode))):
+            sofa_bin_compilation_modes.append(os.path.join(sofa_bin_path, mode))
+        if os.path.isdir(os.path.abspath(os.path.join(sofapython3_bin_path, mode))):
+            sofapython3_bin_compilation_modes.append(os.path.join(sofapython3_bin_path, mode))
+
+    if sofa_bin_compilation_modes:
+        print("Detected SOFA development build")
+    if sofapython3_bin_path:
+        print("Detected SofaPython3 development build")
+
+    sofa_bin_candidates = [sofa_bin_path] + sofa_bin_compilation_modes
+    sofapython3_bin_candidates = [sofapython3_bin_path] + sofapython3_bin_compilation_modes
+
+    for candidate in sofa_bin_candidates:
+        sofa_file_test = os.path.join(candidate, "Sofa.Helper.dll")
+        if os.path.isfile(sofa_file_test):
+            print("Found Sofa.Helper.dll in " + candidate)
+            sofa_bin_path = candidate
+            break
+
+    sofa_file_test = os.path.join(sofa_bin_path, "Sofa.Helper.dll")
+
+    for candidate in sofapython3_bin_candidates:
+        sofapython3_file_test = os.path.join(candidate, "SofaPython3.dll")
+        if os.path.isfile(sofapython3_file_test):
+            print("Found SofaPython3.dll in " + candidate)
+            sofapython3_bin_path = candidate
+            break
+
+    sofapython3_file_test = os.path.join(sofapython3_bin_path, "SofaPython3.dll")
+
     if not os.path.isfile(sofa_file_test):
         print("Warning: environment variable SOFA_ROOT is set but seems invalid.",
-        "Loading SOFA libraries will likely fail.")
+              "Loading SOFA libraries will likely fail.")
         print("SOFA_ROOT is currently: " + sofa_root)
     if not os.path.isfile(sofapython3_file_test):
         print("Warning: cannot find SofaPython3.dll at path: " + sofapython3_bin_path)
-        print("This path will NOT be added to the DLL search path.", 
-        "Loading SofaPython3 python modules will likely fail.")
-    
+        print("This path will NOT be added to the DLL search path.",
+              "Loading SofaPython3 python modules will likely fail.")
+
     if sys.version_info.minor >= 8:
         # Starting from python3.8 we need to explicitly find SOFA libraries
         if os.path.isfile(sofa_file_test):
@@ -216,9 +249,9 @@ def sofaExceptHandler(type, value, tb):
 
     if str(value) != '':
         h += ': ' + str(value)
-    
+
     s = ''.join(traceback.format_tb(tb))
-    
+
     Sofa.Helper.msg_error(h + '\n' + s, "line", 7)
 
 sys.excepthook=sofaExceptHandler
@@ -259,75 +292,75 @@ def msg_deprecated(target, message):
 
 import inspect
 def PrefabBuilder(f):
-        frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
-        definedloc = (frameinfo.filename, frameinfo.lineno)
+    frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
+    definedloc = (frameinfo.filename, frameinfo.lineno)
 
-        def SofaPrefabF(*args, **kwargs):
-            class InnerSofaPrefab(Sofa.Core.RawPrefab):
-                def __init__(self, *args, **kwargs):
-                    Sofa.Core.RawPrefab.__init__(self, *args, **kwargs)
-                    self.isValid = True
+    def SofaPrefabF(*args, **kwargs):
+        class InnerSofaPrefab(Sofa.Core.RawPrefab):
+            def __init__(self, *args, **kwargs):
+                Sofa.Core.RawPrefab.__init__(self, *args, **kwargs)
+                self.isValid = True
 
-                def doReInit(self):
-                    if not self.isValid:
-                        return
-                    try:
-                        argnames = inspect.getfullargspec(f).args
+            def doReInit(self):
+                if not self.isValid:
+                    return
+                try:
+                    argnames = inspect.getfullargspec(f).args
 
-                        kkwargs = {}
-                        kkwargs["self"] = self
-                        for name in argnames[:]:
-                            if name != "self":
-                                kkwargs[name] = self.__data__[name].value
+                    kkwargs = {}
+                    kkwargs["self"] = self
+                    for name in argnames[:]:
+                        if name != "self":
+                            kkwargs[name] = self.__data__[name].value
 
-                        self.cb(**kkwargs)
-                    except Exception as e:
-                        self.isValid = False
-                        exc_type, exc_value, exc_tb = sys.exc_info()
-                        Sofa.Helper.msg_error(self, "Unable to build prefab  \n  "+getSofaFormattedStringFromException(e))
-            try:
-                selfnode = None
-                kwargs["name"] = kwargs.get("name", f.__code__.co_name)
-                selfnode = InnerSofaPrefab(*args, **kwargs)
-                selfnode.setDefinitionSourceFileName(definedloc[0])
-                selfnode.setDefinitionSourceFilePos(definedloc[1])
-                selfnode.setSourceTracking(definedloc[0])
-                selfnode.cb = f
-                ## retrieve meta data from decorated class:
-                selfnode.addData(name="prefabname", value=f.__code__.co_name,
-                         type="string", help="The prefab's name", group="Infos")
-                selfnode.addData(name="docstring", value=f.__doc__,
-                         type="string", help="This prefab's docstring", group="Infos")
+                    self.cb(**kkwargs)
+                except Exception as e:
+                    self.isValid = False
+                    exc_type, exc_value, exc_tb = sys.exc_info()
+                    Sofa.Helper.msg_error(self, "Unable to build prefab  \n  "+getSofaFormattedStringFromException(e))
+        try:
+            selfnode = None
+            kwargs["name"] = kwargs.get("name", f.__code__.co_name)
+            selfnode = InnerSofaPrefab(*args, **kwargs)
+            selfnode.setDefinitionSourceFileName(definedloc[0])
+            selfnode.setDefinitionSourceFilePos(definedloc[1])
+            selfnode.setSourceTracking(definedloc[0])
+            selfnode.cb = f
+            ## retrieve meta data from decorated class:
+            selfnode.addData(name="prefabname", value=f.__code__.co_name,
+                             type="string", help="The prefab's name", group="Infos")
+            selfnode.addData(name="docstring", value=f.__doc__,
+                             type="string", help="This prefab's docstring", group="Infos")
 
-                ## Now we retrieve all params passed to the prefab and add them as datafields:
-                argnames = inspect.getfullargspec(f).args
-                defaults = inspect.getfullargspec(f).defaults
+            ## Now we retrieve all params passed to the prefab and add them as datafields:
+            argnames = inspect.getfullargspec(f).args
+            defaults = inspect.getfullargspec(f).defaults
 
-                if argnames is None:
-                    argnames = []
-                    defaults = []
+            if argnames is None:
+                argnames = []
+                defaults = []
 
-                if defaults is None:
-                    defaults = []
+            if defaults is None:
+                defaults = []
 
-                i = len(argnames) - len(defaults)
-                for n in range(0, len(defaults)):
-                    if argnames[i+n] not in selfnode.__data__:
-                        if pyType2sofaType(defaults[n]) != None:
-                            selfnode.addPrefabParameter(name=argnames[i+n],
+            i = len(argnames) - len(defaults)
+            for n in range(0, len(defaults)):
+                if argnames[i+n] not in selfnode.__data__:
+                    if pyType2sofaType(defaults[n]) != None:
+                        selfnode.addPrefabParameter(name=argnames[i+n],
                                                     default=kwargs.get(argnames[i+n], defaults[n]),
                                                     type=pyType2sofaType(defaults[n]), help="Undefined")
-                        else:
-                            Sofa.Helper.msg_error("Missing type for parameters: ", argnames[i+n])
-                selfnode.init()
+                    else:
+                        Sofa.Helper.msg_error("Missing type for parameters: ", argnames[i+n])
+            selfnode.init()
 
-            except Exception as e:
-                if selfnode is not None:
-                    selfnode.isValid=False
-                    Sofa.Helper.msg_error(selfnode, "Unable to create prefab because: "+getSofaFormattedStringFromException(e))
-                else:
-                    Sofa.Helper.msg_error("PrefabBuilder", "Unable to create prefab because: "+getSofaFormattedStringFromException(e))
-            return selfnode
-        SofaPrefabF.__dict__["__original__"] = f
-        return SofaPrefabF
+        except Exception as e:
+            if selfnode is not None:
+                selfnode.isValid=False
+                Sofa.Helper.msg_error(selfnode, "Unable to create prefab because: "+getSofaFormattedStringFromException(e))
+            else:
+                Sofa.Helper.msg_error("PrefabBuilder", "Unable to create prefab because: "+getSofaFormattedStringFromException(e))
+        return selfnode
+    SofaPrefabF.__dict__["__original__"] = f
+    return SofaPrefabF
 
