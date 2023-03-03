@@ -50,4 +50,4 @@ class Test(unittest.TestCase):
         W = root.constraint_solver.W()
 
         self.assertEqual(W.ndim, 2)
-        self.assertEqual(W.shape, (38, 38))
+        self.assertEqual(W.shape, (19, 19))
