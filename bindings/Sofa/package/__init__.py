@@ -87,7 +87,7 @@ if sofa_root and sys.platform == 'win32':
 
     if sofa_bin_compilation_modes:
         print("Detected SOFA development build")
-    if sofapython3_bin_path:
+    if sofapython3_bin_compilation_modes:
         print("Detected SofaPython3 development build")
 
     sofa_bin_candidates = [sofa_bin_path] + sofa_bin_compilation_modes
