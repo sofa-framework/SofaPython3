@@ -32,7 +32,6 @@ def createScene(root):
     root.addObject("EdgeSetGeometryAlgorithms", drawEdges=True)
     root.addObject("FixedConstraint", indices=[0])
     root.addObject("DiagonalMass", name="mass", totalMass="1e-3")
-    root.addObject("MappingGeometricStiffnessForceField", mapping="@./extensionsNode/distanceMapping")
 
     ext = root.addChild("extensionsNode")
     ext.addObject("MechanicalObject", template="Vec1d", name="extensionsDOF")
