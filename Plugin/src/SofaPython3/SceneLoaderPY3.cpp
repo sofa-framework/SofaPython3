@@ -74,6 +74,18 @@ void SceneLoaderPY3::getExtensionList(ExtensionList* list)
     list->push_back("py");
 }
 
+bool SceneLoaderPY3::syntaxForAddingRequiredPlugin(const std::string& pluginName,
+                                                   const std::vector<std::string>& listComponents, std::ostream& ss, sofa::simulation::Node* nodeWhereAdded)
+{
+    ss << nodeWhereAdded->getName() << ".addObject('RequiredPlugin', name='" << pluginName << "')";
+    if (!listComponents.empty())
+    {
+        ss <<  " # Needed to use components [" << sofa::helper::join(listComponents, ',');
+    }
+    ss << "]" << msgendl;
+    return true;
+}
+
 sofa::simulation::Node::SPtr SceneLoaderPY3::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
 {
     sofa::simulation::Node::SPtr root = sofa::simulation::Node::create("root");
@@ -100,7 +112,7 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
 
         if(!py::hasattr(module, "createScene"))
         {
-            msg_error() << "Missing createScene function";
+            msg_error("SofaPython3") << "Missing createScene function";
             return ;
         }
 
