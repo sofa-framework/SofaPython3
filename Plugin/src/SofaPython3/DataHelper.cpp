@@ -362,6 +362,8 @@ py::buffer_info toBufferInfo(BaseData& m)
 
 py::object convertToPython(BaseData* d)
 {
+    assert(d != nullptr);
+
     const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
     if(hasArrayFor(d)){
         return getPythonArrayFor(d);
@@ -395,6 +397,10 @@ py::object convertToPython(BaseData* d)
                     }
                     list.append(list1);
                 }
+            }
+            else
+            {
+                throw std::runtime_error("Abstract type info corresponding to Data " + d->getName() + " is empty\n");
             }
         }
         return std::move(list);
