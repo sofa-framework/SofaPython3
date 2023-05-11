@@ -238,20 +238,23 @@ void PythonEnvironment::Init()
         }
     }
 
-    /// Add the directories listed in the SOFAPYTHON_PLUGINS_PATH environnement
-    /// variable (colon-separated) to sys.path
-    char * pathVar = getenv("SOFAPYTHON_PLUGINS_PATH");
+    /// Add the directories listed in the SOFAPYTHON3_PLUGINS_PATH environnement
+    /// variable to sys.path
+    std::string envVarName = "SOFAPYTHON3_PLUGINS_PATH";
+    const std::string deprecatedEnvVarName = "SOFAPYTHON_PLUGINS_PATH";
+
+    char* pathVar = getenv(deprecatedEnvVarName.c_str());
     if (pathVar != nullptr)
     {
-        std::istringstream ss(pathVar);
-        std::string path;
-        while(std::getline(ss, path, ':'))
-        {
-            if (FileSystem::exists(path))
-                addPythonModulePathsFromDirectory(path);
-            else
-                msg_warning("SofaPython3") << "no such directory: '" + path + "'";
-        }
+        msg_deprecated("SofaPython3") << deprecatedEnvVarName << " environment variable is deprecated, use SOFAPYTHON3_PLUGINS_PATH instead.";
+        envVarName = "SOFAPYTHON_PLUGINS_PATH";
+    }
+    sofa::helper::system::FileRepository pluginPathsRepository(envVarName.c_str());
+    const auto& pluginPaths = pluginPathsRepository.getPaths();
+    for (auto pluginPath : pluginPaths)
+    {
+        std::string cleanPath = FileSystem::cleanPath(pluginPath);
+        addPythonModulePath(cleanPath);
     }
 
     // Add sites-packages wrt the plugin
@@ -332,6 +335,12 @@ void PythonEnvironment::Release()
 
 void PythonEnvironment::addPythonModulePath(const std::string& path)
 {
+    if (!(FileSystem::exists(path) && FileSystem::isDirectory(path)))
+    {
+        msg_warning("SofaPython3") << "Could not add '" + path + "'" << "(does not exist or is not a directory)";
+        return;
+    }
+
     PythonEnvironmentData* data = getStaticData() ;
     if (  data->addedPath.find(path)==data->addedPath.end())
     {
