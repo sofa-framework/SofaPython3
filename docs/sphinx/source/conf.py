@@ -213,7 +213,7 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
             return MagicMock()
 
-autodoc_mock_imports = ['numpy', 'Sofa', 'SofaRuntime', 'SofaExporter', 'SofaTypes', 'splib']
+autodoc_mock_imports = ['numpy']
 sys.modules.update((mod_name, Mock()) for mod_name in autodoc_mock_imports)
 
 
