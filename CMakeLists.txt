@@ -41,8 +41,8 @@ if(SP3_BUILD_TEST)
     find_package(Threads REQUIRED)
 endif()
 
-sofa_find_package(SofaExporter QUIET)
-CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAEXPORTER "Bind the SOFA exporter component." ON "SofaExporter_FOUND" OFF)
+sofa_find_package(Sofa.Component.IO.Mesh QUIET)
+CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAEXPORTER "Bind the SOFA exporter component." ON "Sofa.Component.IO.Mesh_FOUND" OFF)
 
 # BUILD OPTIONS
 if (NOT SP3_COMPILED_AS_SUBPROJECT)
