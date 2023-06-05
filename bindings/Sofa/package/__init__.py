@@ -1,6 +1,5 @@
 """
-Package containing the binding for the core of Sofa
--------------------------------------------------
+All the key components supported by the sofa-consortium
 
 Example of use:
   .. code-block:: python
@@ -17,14 +16,27 @@ Example of use:
     Sofa.Simulation.init(n)
     Sofa.Simulation.print(n)
 
-Submodules:
-  .. autosummary::
-    :toctree: _autosummary
+.. rubric:: Sub modules
+.. autosummary::
+        :toctree: generated/Sofa
+        :template: autosummary/package.rst
+        :recursive:
 
-    Sofa.Core
-    Sofa.Simulation
-    Sofa.Types
-    Sofa.Helper
+        Core
+        Simulation
+        Helper
+        Types
+        Gui
+
+.. rubric:: Functions
+.. autosummary::
+      :toctree: generated/modules/Sofa
+
+      msg_deprecated
+      msg_warning
+      msg_error
+      msg_info
+
 """
 
 import sys
