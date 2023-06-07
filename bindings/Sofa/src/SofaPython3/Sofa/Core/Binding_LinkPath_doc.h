@@ -23,13 +23,14 @@
 namespace sofapython3::doc::linkpath
 {
 static auto linkpath =
-        R"(
+        R"doc(
         Hold a linkpath to an object or a data.
+
         Example of use:
-            node.addObject("MechanicalObject", name="o")
+            node.addObject('MechanicalObject", name='o')
             node.addObject(position=node.o.position.linkpath)
 
-            str(node.o.linkpath) # prints LinkPath("@/o.position")
-            repr(node.o.linkpath) # prints "@/o.position"
-        )";
+            str(node.o.linkpath) # prints LinkPath('@/o.position')
+            repr(node.o.linkpath) # prints '@/o.position'
+        )doc";
 }

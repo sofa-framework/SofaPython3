@@ -33,9 +33,7 @@ static auto ObjectFactoryClass =
     )";
 
 static auto ClassEntryClass =
-    R"(
-    Record storing information about a class
-    )";
+    R"(Record storing information about a class)";
 
 static auto ObjectFactory_getEntry =
     R"(

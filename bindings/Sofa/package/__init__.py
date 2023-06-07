@@ -1,7 +1,11 @@
 """
 All the key components supported by the sofa-consortium
 
-Example of use:
+General description
+-------------------
+
+Example of use
+--------------
   .. code-block:: python
 
     import Sofa.Core
@@ -15,27 +19,6 @@ Example of use:
 
     Sofa.Simulation.init(n)
     Sofa.Simulation.print(n)
-
-.. rubric:: Sub modules
-.. autosummary::
-        :toctree: generated/Sofa
-        :template: autosummary/package.rst
-        :recursive:
-
-        Core
-        Simulation
-        Helper
-        Types
-        Gui
-
-.. rubric:: Functions
-.. autosummary::
-      :toctree: generated/modules/Sofa
-
-      msg_deprecated
-      msg_warning
-      msg_error
-      msg_info
 
 """
 

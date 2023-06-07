@@ -84,7 +84,6 @@ static auto Class =
 
              # fast access.
              n["child1.child2.dofs.position"]
-
         )";
 static auto init =
         R"(

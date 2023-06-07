@@ -3,12 +3,6 @@ Constants library
 -----------------
 Library for an easier keyboard interaction
 
-Submodules:
-  .. autosummary::
-
-    Sofa.constants.Key
-    Sofa.constants.KeyCode
-
 :Example of use:
     The following scene creates a Controller that will print a custom message in the command line when a key is pressed,
     using constants from Sofa.constants.Key

@@ -112,32 +112,32 @@ PYBIND11_MODULE(Helper, helper)
     sofa::helper::init();
 
     helper.doc() = R"doc(
-           Utility functions
-           -----------------------
-           The 'info' messages are emitted *only* when the object.printLog is
-           set to True.
+            Tooling to print messages or create vectors of different type.
 
-           Examples:
+            Sofa provides a fully feature messaging system allowing to emit messages.
+            The way the message are printed depends on the application. Messages can be routed the console, log files,
+            GUI or ignored.
 
-            .. code-block:: python
+            There are several kind of messages.
 
-               msg_info("something bad happens")
-               msg_info(sofaObject, "something bad happens")
-               msg_info(sofaNode, "something bad happens")
-               msg_info(emitting_file, emitting_loc, "something bad happens")
-               msg_info(sofaObject, "something bad happens", emitting_file, emitting_loc)
-               msg_info(sofaNode, "something bad happens", emitting_file, emitting_loc)
+            The 'info' messages are emitted *only* when the object.printLog is set to True.
+            The 'warning' messages are emitted when the object want the user to be informed.
+            The 'error' messages are emitted when the object cannot perform as expected.
+            The 'deprecated' messages are indicating that some feature are now deprecated and thus be fixed as soon as possible.
+            In general we provide updates tips with deprecated messages.
 
-           Notes:
-               The way the message are printed depends on the application.
-               Messages can be routed the console, log files, GUI or ignored.
+            Examples of use
+            ---------------
 
-           .. autosummary::
-               Sofa.Helper.msg_info
-               Sofa.Helper.msg_warning
-               Sofa.Helper.msg_error
-               Sofa.Helper.msg_deprecated
-               Sofa.Helper.msg_fatal
+             .. code-block:: python
+
+               msg_error("something bad happens")
+               msg_error(sofaObject, "something bad happens")
+               msg_warning(sofaNode, "something happens that sofaNode must be award of")
+               msg_warning(emitting_file, emitting_loc, "something bad happens at given location")
+               msg_info(sofaObject, "something happens", emitting_file, emitting_loc)
+               msg_info(sofaNode, "something happens", emitting_file, emitting_loc)
+
        )doc";
 
     helper.def("msg_info", [](py::args args) { MESSAGE_DISPATCH(msg_info); },

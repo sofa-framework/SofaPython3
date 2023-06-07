@@ -32,13 +32,7 @@ PYBIND11_MODULE(Types, types)
     sofa::defaulttype::init();
 
     types.doc() = R"doc(
-           Default data types
-           -------------------------------
-
-           .. autosummary::
-               Sofa.Types.BoundingBox
-               ...
-
+            Sofa types
        )doc";
 
     moduleAddBoundingBox(types);

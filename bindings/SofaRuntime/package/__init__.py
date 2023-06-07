@@ -1,10 +1,14 @@
-"""
-SofaRuntime package
------------------------
+"""Control of the application runtime
+
+Example of use:
+    .. code-block:: python
+
+        import SofaRuntime
+        SofaRuntime.importPlugin("Sofa.Component.LinearSolver")
 
 """
 
-from .SofaRuntime import *
+import SofaRuntime.SofaRuntime as cpp
 
 import Sofa
 
@@ -28,6 +32,9 @@ except:
     # e.g. plugin's modules defined from c++
     __SofaPythonEnvironment_modulesExcludedFromReload = []
 
+def importPlugin(a):
+    """ Import a plugin"""
+    return cpp.importPlugin(a)
 
 def unloadModules():
     """ call this function to unload python modules and to force their reload
@@ -44,13 +51,19 @@ def unloadModules():
 ################################################################
 
 def formatStackForSofa(o):
-    """ format the stack trace provided as a parameter into a string like that:
-        in filename.py:10:functioname()
-          -> the line of code.
-        in filename2.py:101:functioname1()
-            -> the line of code.
-        in filename3.py:103:functioname2()
-              -> the line of code.
+    """ format the stack trace provided as parameter.
+
+        The parameter is converted into a string like that
+
+        .. code-block:: text
+
+            in filename.py:10:functioname()
+                -> the line of code.
+            in filename2.py:101:functioname1()
+                -> the line of code.
+            in filename3.py:103:functioname2()
+                -> the line of code.
+
     """
     ss='Python Stack: \n'
     for entry in o:
