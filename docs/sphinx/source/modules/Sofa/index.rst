@@ -1,0 +1,45 @@
+Sofa
+====
+
+.. currentmodule:: Sofa
+
+.. automodule:: Sofa
+
+Sub-modules
+-----------
+.. autosummary::
+   :toctree: generated
+   :template: autosummary/sub-modules.rst
+   :recursive:
+
+   Simulation
+   Gui
+   Helper
+   Types
+   SofaTypes
+   prefab
+   constants
+
+Utility Functions
+-----------------
+.. autosummary::
+   :toctree: generated
+   :template: autosummary/base.rst
+   :recursive:
+
+   msg_error
+   msg_info
+   msg_warning
+   msg_deprecated
+
+Plugins
+-------
+.. autosummary::
+   :toctree: generated
+   :template: autosummary/sub-modules.rst
+   :recursive:
+
+   SofaBaseTopology
+   SofaConstraintSolver
+   SofaDeformable
+   SofaGL   
