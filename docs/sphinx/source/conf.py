@@ -36,7 +36,8 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinxcontrib.contentui',
     'sphinx.ext.viewcode',
-    'sphinx.ext.napoleon'
+    'sphinx.ext.napoleon',
+    'sphinx_search.extension'
     ]
 
 import sys
@@ -140,7 +141,9 @@ html_sidebars = {
     '**': [
             'about.html',
             'navigation.html',
-            'searchbox.html'
+            'searchbox.html',
+            'relations.html',
+            'donate.html',
     ]
 }
 
