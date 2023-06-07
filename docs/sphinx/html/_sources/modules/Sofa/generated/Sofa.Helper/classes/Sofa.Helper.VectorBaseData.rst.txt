@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Helper.VectorBaseData
+==========================
+
+.. currentmodule:: Sofa.Helper
+
+.. autoclass:: VectorBaseData
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

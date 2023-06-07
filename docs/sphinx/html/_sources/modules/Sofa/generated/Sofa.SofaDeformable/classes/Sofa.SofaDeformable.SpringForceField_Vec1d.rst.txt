@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.SofaDeformable.SpringForceField\_Vec1d
+===========================================
+
+.. currentmodule:: Sofa.SofaDeformable
+
+.. autoclass:: SpringForceField_Vec1d
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

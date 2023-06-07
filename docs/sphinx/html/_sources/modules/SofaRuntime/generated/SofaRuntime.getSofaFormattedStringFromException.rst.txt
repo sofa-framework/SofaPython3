@@ -1,0 +1,9 @@
+﻿..
+  base.rst
+
+SofaRuntime.getSofaFormattedStringFromException
+===============================================
+
+.. currentmodule:: SofaRuntime
+
+.. autofunction:: getSofaFormattedStringFromException

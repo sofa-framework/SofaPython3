@@ -1,0 +1,9 @@
+..
+  base.rst
+
+Sofa.Simulation.load
+====================
+
+.. currentmodule:: Sofa.Simulation
+
+.. autofunction:: load

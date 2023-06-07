@@ -1,0 +1,39 @@
+﻿..
+  sub-module.rst
+
+Sofa.SofaTypes
+==============
+
+General description
+-------------------
+
+.. automodule:: Sofa.SofaTypes
+
+
+API Table of Content
+--------------------
+
+
+    
+    .. rubric:: Sub-modules
+    .. autosummary::
+        :toctree: Sofa.SofaTypes/submodules
+        
+        Sofa.SofaTypes.SofaTypes
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+
+

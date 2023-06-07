@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.SofaDeformable.SpringForceField\_Rigid3d
+=============================================
+
+.. currentmodule:: Sofa.SofaDeformable
+
+.. autoclass:: SpringForceField_Rigid3d
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

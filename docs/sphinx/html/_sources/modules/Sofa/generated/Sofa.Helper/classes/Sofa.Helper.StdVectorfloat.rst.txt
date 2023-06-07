@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Helper.StdVectorfloat
+==========================
+
+.. currentmodule:: Sofa.Helper
+
+.. autoclass:: StdVectorfloat
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

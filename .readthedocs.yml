@@ -12,6 +12,5 @@ sphinx:
 build:
   os: "ubuntu-22.04"
   commands:
-    - mkdir --parents $READTHEDOCS_OUTPUT//html/
-    - mkdir --parents $READTHEDOCS_OUTPUT//doctrees
-    - cp --recursive docs/sphinx/build/* $READTHEDOCS_OUTPUT/
+    - mkdir --parents $READTHEDOCS_OUTPUT/html/
+    - cp --recursive docs/html/* $READTHEDOCS_OUTPUT/html/

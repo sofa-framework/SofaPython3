@@ -1,0 +1,9 @@
+..
+  base.rst
+
+Sofa.Helper.msg\_error
+======================
+
+.. currentmodule:: Sofa.Helper
+
+.. autofunction:: msg_error

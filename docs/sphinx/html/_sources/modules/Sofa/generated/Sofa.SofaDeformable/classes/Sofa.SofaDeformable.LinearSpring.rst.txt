@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.SofaDeformable.LinearSpring
+================================
+
+.. currentmodule:: Sofa.SofaDeformable
+
+.. autoclass:: LinearSpring
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

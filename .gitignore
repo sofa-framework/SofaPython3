@@ -6,4 +6,7 @@ __pycache__/
 *.pyc
 *.so
 docs/stubs
-docs/sphinx/source/*/_autosummary*
+docs/sphinx/source/build
+docs/sphinx/source/*/generated
+docs/sphinx/source/*/*/generated
+docs/sphinx/source/*/*/*/generated

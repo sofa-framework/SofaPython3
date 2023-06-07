@@ -1,0 +1,9 @@
+﻿..
+  base.rst
+
+SofaRuntime.getStackForSofa
+===========================
+
+.. currentmodule:: SofaRuntime
+
+.. autofunction:: getStackForSofa

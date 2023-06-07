@@ -1,0 +1,9 @@
+﻿..
+  base.rst
+
+SofaRuntime.formatStackForSofa
+==============================
+
+.. currentmodule:: SofaRuntime
+
+.. autofunction:: formatStackForSofa

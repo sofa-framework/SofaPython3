@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Helper.StdVectorint
+========================
+
+.. currentmodule:: Sofa.Helper
+
+.. autoclass:: StdVectorint
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+
