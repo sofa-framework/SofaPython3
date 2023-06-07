@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Using the plugin &mdash; SofaPython3  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/contentui.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/rtd_sphinx_search.min.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/contentui.js"></script>
+        <script src="../_static/js/rtd_search_config.js"></script>
+        <script src="../_static/js/rtd_sphinx_search.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Modules" href="Modules.html" />
+    <link rel="prev" title="Compilation" href="Compilation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SofaPython3
+          </a>
+              <div class="version">
+                xp-readthedocs
+
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+<a href="../index.html">Overview</a>
+
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Compilation.html">Compilation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Using the plugin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modules.html">Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/Sofa/index.html">Sofa</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/Sofa/generated/Sofa.Simulation.html">Sofa.Simulation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.animate.html">Sofa.Simulation.animate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.animateNSteps.html">Sofa.Simulation.animateNSteps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.init.html">Sofa.Simulation.init</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.initTextures.html">Sofa.Simulation.initTextures</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.initVisual.html">Sofa.Simulation.initVisual</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.load.html">Sofa.Simulation.load</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.print.html">Sofa.Simulation.print</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.reset.html">Sofa.Simulation.reset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.unload.html">Sofa.Simulation.unload</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.updateVisual.html">Sofa.Simulation.updateVisual</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core.html">Sofa.Core</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.Base.html">Sofa.Core.Base</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.BaseContext.html">Sofa.Core.BaseContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.BaseMeshTopology.html">Sofa.Core.BaseMeshTopology</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.BaseNode.html">Sofa.Core.BaseNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.BasePrefab.html">Sofa.Core.BasePrefab</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.Camera.html">Sofa.Core.Camera</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.ClassEntry.html">Sofa.Core.ClassEntry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.ContactListener.html">Sofa.Core.ContactListener</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.Context.html">Sofa.Core.Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.Controller.html">Sofa.Core.Controller</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.Data.html">Sofa.Core.Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.DataContainer.html">Sofa.Core.DataContainer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.DataContainerContextManager.html">Sofa.Core.DataContainerContextManager</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.DataDict.html">Sofa.Core.DataDict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.DataDictIterator.html">Sofa.Core.DataDictIterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.DataEngine.html">Sofa.Core.DataEngine</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.DataLink.html">Sofa.Core.DataLink</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.DataString.html">Sofa.Core.DataString</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.DataVectorString.html">Sofa.Core.DataVectorString</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.ForceFieldRigid2d.html">Sofa.Core.ForceFieldRigid2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.ForceFieldRigid3d.html">Sofa.Core.ForceFieldRigid3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.ForceFieldVec1d.html">Sofa.Core.ForceFieldVec1d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.ForceFieldVec2d.html">Sofa.Core.ForceFieldVec2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.ForceFieldVec3d.html">Sofa.Core.ForceFieldVec3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.ForceFieldVec6d.html">Sofa.Core.ForceFieldVec6d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.Link.html">Sofa.Core.Link</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.LinkPath.html">Sofa.Core.LinkPath</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.MassRigid2d.html">Sofa.Core.MassRigid2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.MassRigid3d.html">Sofa.Core.MassRigid3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.MassVec1d.html">Sofa.Core.MassVec1d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.MassVec2d.html">Sofa.Core.MassVec2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.MassVec3d.html">Sofa.Core.MassVec3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.MassVec6d.html">Sofa.Core.MassVec6d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.Node.html">Sofa.Core.Node</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.NodeIterator.html">Sofa.Core.NodeIterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.Object.html">Sofa.Core.Object</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.ObjectFactory.html">Sofa.Core.ObjectFactory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.PointSetTopologyModifier.html">Sofa.Core.PointSetTopologyModifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.PrefabLink.html">Sofa.Core.PrefabLink</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.RawPrefab.html">Sofa.Core.RawPrefab</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Core/classes/Sofa.Core.Topology.html">Sofa.Core.Topology</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/Sofa/generated/Sofa.Gui.html">Sofa.Gui</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Gui/classes/Sofa.Gui.BaseGUI.html">Sofa.Gui.BaseGUI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Gui/classes/Sofa.Gui.GUIManager.html">Sofa.Gui.GUIManager</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper.html">Sofa.Helper</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/functions/Sofa.Helper.msg_deprecated.html">Sofa.Helper.msg_deprecated</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/functions/Sofa.Helper.msg_error.html">Sofa.Helper.msg_error</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/functions/Sofa.Helper.msg_fatal.html">Sofa.Helper.msg_fatal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/functions/Sofa.Helper.msg_info.html">Sofa.Helper.msg_info</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/functions/Sofa.Helper.msg_warning.html">Sofa.Helper.msg_warning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/classes/Sofa.Helper.MessageHandler.html">Sofa.Helper.MessageHandler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/classes/Sofa.Helper.StdVectorBaseData.html">Sofa.Helper.StdVectorBaseData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/classes/Sofa.Helper.StdVectordouble.html">Sofa.Helper.StdVectordouble</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/classes/Sofa.Helper.StdVectorfloat.html">Sofa.Helper.StdVectorfloat</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/classes/Sofa.Helper.StdVectorint.html">Sofa.Helper.StdVectorint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/classes/Sofa.Helper.StdVectorlong.html">Sofa.Helper.StdVectorlong</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/classes/Sofa.Helper.StdVectoruint.html">Sofa.Helper.StdVectoruint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/classes/Sofa.Helper.StdVectorulong.html">Sofa.Helper.StdVectorulong</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/classes/Sofa.Helper.VectorBaseData.html">Sofa.Helper.VectorBaseData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/classes/Sofa.Helper.Vectordouble.html">Sofa.Helper.Vectordouble</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/classes/Sofa.Helper.Vectorfloat.html">Sofa.Helper.Vectorfloat</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/classes/Sofa.Helper.Vectorint.html">Sofa.Helper.Vectorint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/classes/Sofa.Helper.Vectorlong.html">Sofa.Helper.Vectorlong</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/classes/Sofa.Helper.Vectoruint.html">Sofa.Helper.Vectoruint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Helper/classes/Sofa.Helper.Vectorulong.html">Sofa.Helper.Vectorulong</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/Sofa/generated/Sofa.Types.html">Sofa.Types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.Types/classes/Sofa.Types.BoundingBox.html">Sofa.Types.BoundingBox</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/Sofa/generated/Sofa.SofaTypes.html">Sofa.SofaTypes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.SofaTypes/submodules/Sofa.SofaTypes.SofaTypes.html">Sofa.SofaTypes.SofaTypes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/Sofa/generated/Sofa.prefab.html">Sofa.prefab</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.prefab/classes/Sofa.prefab.Prefab.html">Sofa.prefab.Prefab</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/Sofa/generated/Sofa.constants.html">Sofa.constants</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.constants/submodules/Sofa.constants.KeyCode.html">Sofa.constants.KeyCode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.constants/submodules/Sofa.constants.Key.html">Sofa.constants.Key</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/Sofa/generated/Sofa.msg_error.html">Sofa.msg_error</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/Sofa/generated/Sofa.msg_info.html">Sofa.msg_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/Sofa/generated/Sofa.msg_warning.html">Sofa.msg_warning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/Sofa/generated/Sofa.msg_deprecated.html">Sofa.msg_deprecated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/Sofa/generated/Sofa.SofaBaseTopology.html">Sofa.SofaBaseTopology</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.SofaBaseTopology/classes/Sofa.SofaBaseTopology.RegularGridTopology.html">Sofa.SofaBaseTopology.RegularGridTopology</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.SofaBaseTopology/classes/Sofa.SofaBaseTopology.SparseGridTopology.html">Sofa.SofaBaseTopology.SparseGridTopology</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/Sofa/generated/Sofa.SofaConstraintSolver.html">Sofa.SofaConstraintSolver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.SofaConstraintSolver/classes/Sofa.SofaConstraintSolver.ConstraintSolverImpl.html">Sofa.SofaConstraintSolver.ConstraintSolverImpl</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/Sofa/generated/Sofa.SofaDeformable.html">Sofa.SofaDeformable</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.SofaDeformable/classes/Sofa.SofaDeformable.LinearSpring.html">Sofa.SofaDeformable.LinearSpring</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Rigid3d.html">Sofa.SofaDeformable.SpringForceField_Rigid3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Vec1d.html">Sofa.SofaDeformable.SpringForceField_Vec1d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Vec2d.html">Sofa.SofaDeformable.SpringForceField_Vec2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Vec3d.html">Sofa.SofaDeformable.SpringForceField_Vec3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Vec6d.html">Sofa.SofaDeformable.SpringForceField_Vec6d</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/Sofa/generated/Sofa.SofaGL.html">Sofa.SofaGL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.SofaGL/functions/Sofa.SofaGL.draw.html">Sofa.SofaGL.draw</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules/Sofa/generated/Sofa.SofaGL/functions/Sofa.SofaGL.glewInit.html">Sofa.SofaGL.glewInit</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/SofaExporter/generated/SofaExporter.html">SofaExporter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/SofaExporter/generated/SofaExporter/classes/SofaExporter.STLExporter.html">SofaExporter.STLExporter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/SofaExporter/generated/SofaExporter/classes/SofaExporter.VisualModelOBJExporter.html">SofaExporter.VisualModelOBJExporter</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/SofaRuntime/index.html">SofaRuntime</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/SofaRuntime/generated/SofaRuntime.importPlugin.html">SofaRuntime.importPlugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/SofaRuntime/generated/SofaRuntime.unloadModules.html">SofaRuntime.unloadModules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/SofaRuntime/generated/SofaRuntime.formatStackForSofa.html">SofaRuntime.formatStackForSofa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/SofaRuntime/generated/SofaRuntime.getStackForSofa.html">SofaRuntime.getStackForSofa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/SofaRuntime/generated/SofaRuntime.getPythonCallingPointAsString.html">SofaRuntime.getPythonCallingPointAsString</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/SofaRuntime/generated/SofaRuntime.getPythonCallingPoint.html">SofaRuntime.getPythonCallingPoint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/SofaRuntime/generated/SofaRuntime.sendMessageFromException.html">SofaRuntime.sendMessageFromException</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/SofaRuntime/generated/SofaRuntime.sofaFormatHandler.html">SofaRuntime.sofaFormatHandler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/SofaRuntime/generated/SofaRuntime.sofaExceptHandler.html">SofaRuntime.sofaExceptHandler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/SofaRuntime/generated/SofaRuntime.getSofaFormattedStringFromException.html">SofaRuntime.getSofaFormattedStringFromException</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="PythonLibraries.html">Third party modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CustomModule.html">Writing custom binding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Contributing.html">Contributing</a></li>
+</ul>
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SofaPython3</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Using the plugin</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/content/UsingThePlugin.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="using-the-plugin">
+<h1>Using the plugin<a class="headerlink" href="#using-the-plugin" title="Permalink to this heading"></a></h1>
+<p>The SofaPython3 plugins allows you to embed a python3 interpreter into an exising SOFA application (eg: runSofa) and to create/launch SOFA simulations from a python environment.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
+<p>If you downloaded and installed SOFA and its headers from the <a class="reference external" href="https://www.sofa-framework.org/download/">SOFA website</a>, make sure to have python3.8 installed on your computed.</p>
+<div class="content-tabs docutils container">
+<div class="tab-content docutils container" id="tab-tab1">
+<p class="tab-title">Ubuntu</p>
+<blockquote>
+<div><p>Run in a terminal:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>add-apt-repository<span class="w"> </span>ppa:deadsnakes/ppa
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>libpython3.8<span class="w"> </span>python3.8<span class="w"> </span>python3-pip
+python3.8<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>numpy
+</pre></div>
+</div>
+<p>if you want to launch the runSofa:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>libopengl0
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="tab-content docutils container" id="tab-tab2">
+<p class="tab-title">MacOS</p>
+<blockquote>
+<div><p>Run in a terminal:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>python@3.8
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;/usr/local/opt/python@3.8/bin/:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>BigSur only:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+python3.8<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>numpy
+</pre></div>
+</div>
+<p>Catalina only:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3<span class="w"> </span>install<span class="w"> </span>numpy
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="tab-content docutils container" id="tab-tab3">
+<p class="tab-title">Windows</p>
+<p>Download and install <a class="reference external" href="https://www.python.org/ftp/python/3.8.10/python-3.8.10-amd64.exe">Python 3.8 64bit</a></p>
+</div>
+</div>
+</section>
+<section id="run-a-python-script">
+<h2>Run a python script<a class="headerlink" href="#run-a-python-script" title="Permalink to this heading"></a></h2>
+<section id="within-runsofa">
+<h3>Within runSofa<a class="headerlink" href="#within-runsofa" title="Permalink to this heading"></a></h3>
+<p>Using SofaPython3 in runSofa requires loading the SofaPython3 plugin in your runSofa environment.</p>
+<ul>
+<li><p>If you downloaded and installed SOFA and its headers from the <a class="reference external" href="https://www.sofa-framework.org/download/">SOFA website</a>, or if you <a class="reference external" href="https://sofapython3.readthedocs.io/en/latest/menu/Compilation.html#in-tree-build">compiled SofaPython3 in-tree</a>, you can load the SofaPython3 plugin using the PluginManager (in the GUI) or by auto-loading the plugin in runSofa: simply copy the file <strong>plugin_list.conf.default</strong> in <em>&lt;SOFA_build&gt;/lib</em>, and rename it <strong>plugin_list.conf</strong>, then add the line:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>SofaPython3<span class="w"> </span>NO_VERSION
+</pre></div>
+</div>
+<p>Having the SofaPython3 plugin active will allow you to open scene files using the “.py, .py3, .pyscn, .pyscn3” file extension in runSofa, with the command :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&lt;SOFA_build&gt;/bin/runSofa<span class="w"> </span>&lt;your_python_file&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>If you <a class="reference external" href="https://sofapython3.readthedocs.io/en/latest/menu/Compilation.html#out-of-tree-build">compiled SofaPython3 out-of-tree</a>, you can load the SofaPython3 following one of this step:</p>
+<ul class="simple">
+<li><p>use the “-l” of runSofa: <code class="docutils literal notranslate"><span class="pre">runSofa</span> <span class="pre">-l</span> <span class="pre">/path/to/SofaPython3_build/lib/libSofaPython3.so</span> <span class="pre">&lt;scene&gt;</span></code></p></li>
+<li><p>or use the environment variable <code class="docutils literal notranslate"><span class="pre">SOFA_PLUGIN_PATH=/path/to/SofaPython3_build/</span></code></p></li>
+<li><p>or add the component <code class="docutils literal notranslate"><span class="pre">&lt;AddPluginRepository</span> <span class="pre">path=&quot;/path/to/SofaPython3_build/&quot;/&gt;</span></code> in your scene</p></li>
+<li><p>or start runSofa, manually load the SofaPython3 library using <em>Edit-&gt;Plugin Manager-&gt;Add</em> , then restart runSofa: the plugin should load automatically</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="within-a-python3-interpreter">
+<h3>Within a python3 interpreter<a class="headerlink" href="#within-a-python3-interpreter" title="Permalink to this heading"></a></h3>
+<p>Before running your simulations, you must make sure to define the following environment variables:</p>
+<div class="content-tabs docutils container">
+<div class="tab-content docutils container" id="tab-tab1">
+<p class="tab-title">Ubuntu</p>
+<blockquote>
+<div><p>Run in a terminal:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SOFA_ROOT</span><span class="o">=</span>/path/to/SOFA_install
+<span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span>/path/to/SofaPython3/lib/python3/site-packages:<span class="nv">$PYTHONPATH</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="tab-content docutils container" id="tab-tab2">
+<p class="tab-title">MacOS</p>
+<blockquote>
+<div><p>Run in a terminal:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SOFA_ROOT</span><span class="o">=</span>/path/to/SOFA_install
+<span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span>/path/to/SofaPython3/lib/python3/site-packages:<span class="nv">$PYTHONPATH</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;/usr/local/opt/python@3.8/bin/:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="tab-content docutils container" id="tab-tab3">
+<p class="tab-title">Windows</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Create a system variable <strong>SOFA_ROOT</strong> and set it to <code class="docutils literal notranslate"><span class="pre">&lt;SOFA-install-directory&gt;</span></code></p></li>
+<li><p>Create a system variable <strong>PYTHON_ROOT</strong> and set it to <code class="docutils literal notranslate"><span class="pre">&lt;Python3-install-directory&gt;</span></code></p></li>
+<li><p>Create a system variable <strong>PYTHONPATH</strong> and set it to <code class="docutils literal notranslate"><span class="pre">%SOFA_ROOT%\plugins\SofaPython3\lib\python3\site-packages</span></code></p></li>
+<li><p>Edit the system variable <strong>Path</strong> and add at the end <code class="docutils literal notranslate"><span class="pre">;%PYTHON_ROOT%;%PYTHON_ROOT%\DLLs;%PYTHON_ROOT%\Lib;%SOFA_ROOT%\bin;</span></code></p></li>
+<li><p>Open a Console (cmd.exe) and run <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-V</span> <span class="pre">&amp;&amp;</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">numpy</span> <span class="pre">scipy</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>After that, all you need to do is open a Console (cmd.exe) and run: <code class="docutils literal notranslate"><span class="pre">runSofa</span> <span class="pre">-lSofaPython3</span></code></p>
+</div>
+</div>
+<p>It is possible to use SOFA in any python3 interpreter.
+The following code should cover most basic SOFA elements:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># to be able to create SOFA objects you need to first load the plugins that implement them.</span>
+<span class="c1"># For simplicity you can load the plugin &quot;Sofa.Component&quot; that will load all most</span>
+<span class="c1"># common sofa objects.</span>
+<span class="kn">import</span> <span class="nn">SofaRuntime</span>
+<span class="n">SofaRuntime</span><span class="o">.</span><span class="n">importPlugin</span><span class="p">(</span><span class="s2">&quot;Sofa.Component&quot;</span><span class="p">)</span>
+
+<span class="c1"># to create elements like Node or objects</span>
+<span class="kn">import</span> <span class="nn">Sofa.Core</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="create-a-simulation">
+<h2>Create a simulation<a class="headerlink" href="#create-a-simulation" title="Permalink to this heading"></a></h2>
+<p>A scene in SOFA is an ordered tree of nodes representing objects (example of node: hand), with parent/child relationship (example of hand’s child: finger). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is usually called “rootNode” or “root”. More about how to create a simulation scene can be found in the <a class="reference external" href="https://www.sofa-framework.org/community/doc/using-sofa/lexicography/">SOFA online documentation</a></p>
+<section id="id2">
+<h3>Within runSofa<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h3>
+<p>If a python script is loaded within the runSofa executable, make sure the SofaPython3 plugin is well loaded. When opening the python script, runSofa will search for the <cite>createScene(arg0: Sofa.Core.Node) -&gt; Sofa.Core.Node</cite> method and it uses it as the entry point of the SOFA simulation, and taking a single parameter: the root Node.  Thus define this method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">createScene</span><span class="p">(</span><span class="n">rootNode</span><span class="p">):</span>
+        <span class="c1">#Doesn&#39;t do anything yet</span>
+        <span class="k">return</span> <span class="n">rootNode</span>
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h3>Within a python3 interpreter<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h3>
+<p>With the SofaPython3 plugin, it is also possible to execute a python script. However, to run a SOFA simulation from a python3 interpreter, the python environment must be aware of the SOFA python modules and their location. To do so, make sure to read the “<a class="reference external" href="https://sofapython3.readthedocs.io/en/latest/menu/SofaPlugin.html#within-a-python3-interpreter">Within a python3 interpreter</a>” section.</p>
+<p>Within a python3 interpreter, your simulation requires more than only the <code class="docutils literal notranslate"><span class="pre">createScene()</span></code> function. Indeed, the python environment does not pre-generate a root node as the runSofa executable is. One must therefore create it and then call the <code class="docutils literal notranslate"><span class="pre">createScene()</span></code> function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required import for SOFA within python</span>
+<span class="kn">import</span> <span class="nn">Sofa</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+        <span class="c1"># Call the SOFA function to create the root node</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">Sofa</span><span class="o">.</span><span class="n">Core</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;root&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Call the createScene function, as runSofa does</span>
+        <span class="n">createScene</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+        <span class="c1"># Once defined, initialization of the scene graph</span>
+        <span class="n">Sofa</span><span class="o">.</span><span class="n">Simulation</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+        <span class="c1"># Run as many simulation steps (here 10 steps are computed)</span>
+        <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+                <span class="n">Sofa</span><span class="o">.</span><span class="n">Simulation</span><span class="o">.</span><span class="n">animate</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+
+<span class="c1"># Same createScene function as in the previous case</span>
+<span class="k">def</span> <span class="nf">createScene</span><span class="p">(</span><span class="n">rootNode</span><span class="p">):</span>
+        <span class="c1">#Doesn&#39;t do anything yet</span>
+        <span class="k">return</span> <span class="n">rootNode</span>
+
+
+<span class="c1"># Function used only if this script is called from a python environment</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>By structuring your scripts this way, you get the advantage to have a script loadable from both runSofa and a python3 interpreter. Note that the <code class="docutils literal notranslate"><span class="pre">main()</span></code> function runs 10 time steps without any graphical user interface and the script ends. In case you want to manage the simulation from the runSofa GUI, you can simply change the <code class="docutils literal notranslate"><span class="pre">main()</span></code> function as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="c1"># Call the SOFA function to create the root node</span>
+<span class="n">root</span> <span class="o">=</span> <span class="n">Sofa</span><span class="o">.</span><span class="n">Core</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;root&quot;</span><span class="p">)</span>
+
+<span class="c1"># Call the createScene function, as runSofa does</span>
+<span class="n">createScene</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+<span class="c1"># Once defined, initialization of the scene graph</span>
+<span class="n">Sofa</span><span class="o">.</span><span class="n">Simulation</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+<span class="c1"># Launch the GUI (qt or qglviewer)</span>
+<span class="n">Sofa</span><span class="o">.</span><span class="n">Gui</span><span class="o">.</span><span class="n">GUIManager</span><span class="o">.</span><span class="n">Init</span><span class="p">(</span><span class="s2">&quot;myscene&quot;</span><span class="p">,</span> <span class="s2">&quot;qglviewer&quot;</span><span class="p">)</span>
+<span class="n">Sofa</span><span class="o">.</span><span class="n">Gui</span><span class="o">.</span><span class="n">GUIManager</span><span class="o">.</span><span class="n">createGUI</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">)</span>
+<span class="n">Sofa</span><span class="o">.</span><span class="n">Gui</span><span class="o">.</span><span class="n">GUIManager</span><span class="o">.</span><span class="n">SetDimension</span><span class="p">(</span><span class="mi">1080</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span>
+
+<span class="c1"># Initialization of the scene will be done here</span>
+<span class="n">Sofa</span><span class="o">.</span><span class="n">Gui</span><span class="o">.</span><span class="n">GUIManager</span><span class="o">.</span><span class="n">MainLoop</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+<span class="n">Sofa</span><span class="o">.</span><span class="n">Gui</span><span class="o">.</span><span class="n">GUIManager</span><span class="o">.</span><span class="n">closeGUI</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>So far, you can load this python scene, but it doesn’t do much. Let’s enrich this scene!</p>
+</section>
+<section id="create-your-first-object">
+<h3>Create your first object<a class="headerlink" href="#create-your-first-object" title="Permalink to this heading"></a></h3>
+<p>We first propose to add a visual grid, in order to see things more clearly. To do that, we simply need to add an object to the rootNode with the right properties :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">createScene</span><span class="p">(</span><span class="n">rootNode</span><span class="p">):</span>
+        <span class="n">rootNode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s2">&quot;VisualGrid&quot;</span><span class="p">,</span> <span class="n">nbSubdiv</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now, we create a new child node, in order to add the general configuration of the scene : required plugins (here SofaPython3) and other tools (like a system of axes).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">confignode</span> <span class="o">=</span> <span class="n">rootNode</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="s2">&quot;Config&quot;</span><span class="p">)</span>
+<span class="n">confignode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;OglSceneFrame&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;Arrows&quot;</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="s2">&quot;TopRight&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, we add the sphere itself, which consists of two parts : the mechanical representation and the visual representation of the sphere:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Creating the falling sphere object</span>
+    <span class="n">sphere</span> <span class="o">=</span> <span class="n">rootNode</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="s2">&quot;sphere&quot;</span><span class="p">)</span>
+    <span class="n">sphere</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MechanicalObject&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mstate&quot;</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="s2">&quot;Rigid3&quot;</span><span class="p">,</span> <span class="n">translation2</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="n">rotation2</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="n">showObjectScale</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+
+    <span class="c1">#### Visualization subnode for the sphere</span>
+    <span class="n">sphereVisu</span> <span class="o">=</span> <span class="n">sphere</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="s2">&quot;VisualModel&quot;</span><span class="p">)</span>
+    <span class="n">sphereVisu</span><span class="o">.</span><span class="n">loader</span> <span class="o">=</span> <span class="n">sphereVisu</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MeshOBJLoader&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;loader&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;mesh/ball.obj&quot;</span><span class="p">)</span>
+    <span class="n">sphereVisu</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;OglModel&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;@loader&quot;</span><span class="p">,</span> <span class="n">scale3d</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">]</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="n">updateNormals</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">sphereVisu</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RigidMapping&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/exampleScene_step1.png"><img alt="This is what you should see in Sofa at this stage" class="align-center" src="../_images/exampleScene_step1.png" style="height: 250pt;" /></a>
+<p>Now, if you execute your scene, you can see a sphere, but it won’t move if you click on the Animate button in SOFA. Let’s change that!</p>
+</section>
+<section id="define-physical-properties">
+<h3>Define physical properties<a class="headerlink" href="#define-physical-properties" title="Permalink to this heading"></a></h3>
+<p>A default gravity force is implemented on SOFA. Here we reset it, for learning purposes. We also define the time step of the simulation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rootNode</span><span class="o">.</span><span class="n">gravity</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span><span class="o">-</span><span class="mf">9.81</span><span class="p">,</span><span class="mf">0.0</span><span class="p">]</span>
+<span class="n">rootNode</span><span class="o">.</span><span class="n">dt</span><span class="o">=</span><span class="mf">0.01</span>
+</pre></div>
+</div>
+<p>We add a mechanical model, so that all our futur elements will have the same total mass, volume and inertia matrix :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">totalMass</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">volume</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">inertiaMatrix</span><span class="o">=</span><span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>We add properties to the sphere. First, we add a mass, then an object called ‘UncoupledConstraintCorrection’, in charge of computing the constraint forces of the sphere, then we add two different solvers. One is a time integration scheme that defines the system to be solved at each time step of the simulation (here the implicit Euler Method), the other is a solving method (here the Conjugate Gradient method), that solves the equations governing the model at each time step, and updates the MechanicalObject.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Creating the falling sphere object</span>
+<span class="n">sphere</span> <span class="o">=</span> <span class="n">rootNode</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="s2">&quot;sphere&quot;</span><span class="p">)</span>
+<span class="n">sphere</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;EulerImplicitSolver&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;odesolver&#39;</span><span class="p">)</span>
+<span class="n">sphere</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;CGLinearSolver&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Solver&#39;</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">)</span>
+<span class="n">sphere</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MechanicalObject&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mstate&quot;</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="s2">&quot;Rigid3&quot;</span><span class="p">,</span> <span class="n">translation2</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="n">rotation2</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="n">showObjectScale</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">sphere</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;UniformMass&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="n">vertexMass</span><span class="o">=</span><span class="p">[</span><span class="n">totalMass</span><span class="p">,</span> <span class="n">volume</span><span class="p">,</span> <span class="n">inertiaMatrix</span><span class="p">[:]])</span>
+<span class="n">sphere</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;UncoupledConstraintCorrection&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/exampleScene_step2.gif"><img alt="This is what you should see in Sofa at this stage" class="align-center" src="../_images/exampleScene_step2.gif" style="height: 250pt;" /></a>
+<p>Now, if you click on the Animate button in SOFA, the sphere will fall.</p>
+</section>
+<section id="add-a-second-object">
+<h3>Add a second object<a class="headerlink" href="#add-a-second-object" title="Permalink to this heading"></a></h3>
+<p>Let’s add a second element, a floor, to see how they interact :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Creating the floor object</span>
+    <span class="n">floor</span> <span class="o">=</span> <span class="n">rootNode</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="s2">&quot;floor&quot;</span><span class="p">)</span>
+
+    <span class="n">floor</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MechanicalObject&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mstate&quot;</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="s2">&quot;Rigid3&quot;</span><span class="p">,</span> <span class="n">translation2</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span><span class="o">-</span><span class="mf">300.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">],</span> <span class="n">rotation2</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="n">showObjectScale</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
+    <span class="n">floor</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;UniformMass&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="n">vertexMass</span><span class="o">=</span><span class="p">[</span><span class="n">totalMass</span><span class="p">,</span> <span class="n">volume</span><span class="p">,</span> <span class="n">inertiaMatrix</span><span class="p">[:]])</span>
+
+    <span class="c1">#### Collision subnode for the floor</span>
+    <span class="n">floorCollis</span> <span class="o">=</span> <span class="n">floor</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="s1">&#39;collision&#39;</span><span class="p">)</span>
+    <span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MeshOBJLoader&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;loader&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;mesh/floor.obj&quot;</span><span class="p">,</span> <span class="n">triangulate</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
+    <span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MeshTopology&#39;</span><span class="p">,</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;@loader&quot;</span><span class="p">)</span>
+    <span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MechanicalObject&#39;</span><span class="p">)</span>
+    <span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;TriangleCollisionModel&#39;</span><span class="p">,</span> <span class="n">moving</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">simulated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;LineCollisionModel&#39;</span><span class="p">,</span> <span class="n">moving</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">simulated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;PointCollisionModel&#39;</span><span class="p">,</span> <span class="n">moving</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">simulated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RigidMapping&#39;</span><span class="p">)</span>
+
+    <span class="c1">#### Visualization subnode for the floor</span>
+    <span class="n">floorVisu</span> <span class="o">=</span> <span class="n">floor</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="s2">&quot;VisualModel&quot;</span><span class="p">)</span>
+    <span class="n">floorVisu</span><span class="o">.</span><span class="n">loader</span> <span class="o">=</span> <span class="n">floorVisu</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MeshOBJLoader&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;loader&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;mesh/floor.obj&quot;</span><span class="p">)</span>
+    <span class="n">floorVisu</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;OglModel&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;@loader&quot;</span><span class="p">,</span> <span class="n">scale3d</span><span class="o">=</span><span class="p">[</span><span class="mf">5.0</span><span class="p">]</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="n">updateNormals</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">floorVisu</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RigidMapping&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/exampleScene_step3.gif"><img alt="This is what you should see in Sofa at this stage" class="align-center" src="../_images/exampleScene_step3.gif" style="height: 250pt;" /></a>
+<p>A floor has now been added to the scene. It is a stationnary object, it won’t move during the simulation. When you click on the Animate button, you can see that the sphere goes through the floor, as if there were nothing there. That is because there is no collision modeling in the scene yet.</p>
+</section>
+<section id="add-a-collision-pipeline">
+<h3>Add a collision pipeline<a class="headerlink" href="#add-a-collision-pipeline" title="Permalink to this heading"></a></h3>
+<p>We first add a collision model for the scene in general, that is stating how a contact between the objects is handled: here the objects must not be able to go through one another. Potential collisions are looked for within an alarmDistance radius from the objet. If a collision situation is detected, the collision model computes the behaviour of the objects, which are stopped at a ContactDistance from each other.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Collision pipeline</span>
+<span class="n">rootNode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;DefaultPipeline&#39;</span><span class="p">)</span>
+<span class="n">rootNode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;FreeMotionAnimationLoop&#39;</span><span class="p">)</span>
+<span class="n">rootNode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;GenericConstraintSolver&#39;</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="s2">&quot;1e-6&quot;</span><span class="p">,</span> <span class="n">maxIterations</span><span class="o">=</span><span class="s2">&quot;1000&quot;</span><span class="p">)</span>
+<span class="n">rootNode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;BruteForceBroadPhase&#39;</span><span class="p">)</span>
+<span class="n">rootNode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;BVHNarrowPhase&#39;</span><span class="p">)</span>
+<span class="n">rootNode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RuleBasedContactManager&#39;</span><span class="p">,</span> <span class="n">responseParams</span><span class="o">=</span><span class="s2">&quot;mu=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Response&#39;</span><span class="p">,</span> <span class="n">response</span><span class="o">=</span><span class="s1">&#39;FrictionContactConstraint&#39;</span><span class="p">)</span>
+<span class="n">rootNode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;LocalMinDistance&#39;</span><span class="p">,</span> <span class="n">alarmDistance</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">contactDistance</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">angleCone</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We add a new child node to the sphere, that will be in charge of processing the collision.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Collision subnode for the sphere</span>
+<span class="n">collision</span> <span class="o">=</span> <span class="n">sphere</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="s1">&#39;collision&#39;</span><span class="p">)</span>
+<span class="n">collision</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MeshOBJLoader&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;loader&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;mesh/ball.obj&quot;</span><span class="p">,</span> <span class="n">triangulate</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">45.0</span><span class="p">)</span>
+<span class="n">collision</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MeshTopology&#39;</span><span class="p">,</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;@loader&quot;</span><span class="p">)</span>
+<span class="n">collision</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MechanicalObject&#39;</span><span class="p">)</span>
+<span class="n">collision</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;TriangleCollisionModel&#39;</span><span class="p">)</span>
+<span class="n">collision</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;LineCollisionModel&#39;</span><span class="p">)</span>
+<span class="n">collision</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;PointCollisionModel&#39;</span><span class="p">)</span>
+<span class="n">collision</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RigidMapping&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We do the same for the floor, but we also specify that the floor is a stationnary object that shouldn’t move.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Collision subnode for the floor</span>
+<span class="n">floorCollis</span> <span class="o">=</span> <span class="n">floor</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="s1">&#39;collision&#39;</span><span class="p">)</span>
+<span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MeshOBJLoader&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;loader&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;mesh/floor.obj&quot;</span><span class="p">,</span> <span class="n">triangulate</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
+<span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MeshTopology&#39;</span><span class="p">,</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;@loader&quot;</span><span class="p">)</span>
+<span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MechanicalObject&#39;</span><span class="p">)</span>
+<span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;TriangleCollisionModel&#39;</span><span class="p">,</span> <span class="n">moving</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">simulated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;LineCollisionModel&#39;</span><span class="p">,</span> <span class="n">moving</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">simulated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;PointCollisionModel&#39;</span><span class="p">,</span> <span class="n">moving</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">simulated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RigidMapping&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/exampleScene_step4.gif"><img alt="This is what you should see in Sofa at this stage" class="align-center" src="../_images/exampleScene_step4.gif" style="height: 250pt;" /></a>
+<p>Now, the sphere is stopped by the floor, as it should be.
+Congratulations! You made your first SOFA scene in Python3!</p>
+<p>For more information on how to use the SOFA modules bindings in python, visit this page: <span class="xref std std-doc">SofaModule</span></p>
+</section>
+<section id="full-scene">
+<h3>Full scene<a class="headerlink" href="#full-scene" title="Permalink to this heading"></a></h3>
+<p>Here is the entire code of the scene :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">Sofa</span>
+<span class="kn">import</span> <span class="nn">Sofa.Gui</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="c1"># Call the SOFA function to create the root node</span>
+<span class="n">root</span> <span class="o">=</span> <span class="n">Sofa</span><span class="o">.</span><span class="n">Core</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;root&quot;</span><span class="p">)</span>
+
+<span class="c1"># Call the createScene function, as runSofa does</span>
+<span class="n">createScene</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+<span class="c1"># Once defined, initialization of the scene graph</span>
+<span class="n">Sofa</span><span class="o">.</span><span class="n">Simulation</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+<span class="c1"># Launch the GUI (qt or qglviewer)</span>
+<span class="n">Sofa</span><span class="o">.</span><span class="n">Gui</span><span class="o">.</span><span class="n">GUIManager</span><span class="o">.</span><span class="n">Init</span><span class="p">(</span><span class="s2">&quot;myscene&quot;</span><span class="p">,</span> <span class="s2">&quot;qglviewer&quot;</span><span class="p">)</span>
+<span class="n">Sofa</span><span class="o">.</span><span class="n">Gui</span><span class="o">.</span><span class="n">GUIManager</span><span class="o">.</span><span class="n">createGUI</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">)</span>
+<span class="n">Sofa</span><span class="o">.</span><span class="n">Gui</span><span class="o">.</span><span class="n">GUIManager</span><span class="o">.</span><span class="n">SetDimension</span><span class="p">(</span><span class="mi">1080</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span>
+
+<span class="c1"># Initialization of the scene will be done here</span>
+<span class="n">Sofa</span><span class="o">.</span><span class="n">Gui</span><span class="o">.</span><span class="n">GUIManager</span><span class="o">.</span><span class="n">MainLoop</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+<span class="n">Sofa</span><span class="o">.</span><span class="n">Gui</span><span class="o">.</span><span class="n">GUIManager</span><span class="o">.</span><span class="n">closeGUI</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">createScene</span><span class="p">(</span><span class="n">rootNode</span><span class="p">):</span>
+
+        <span class="n">rootNode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s2">&quot;VisualGrid&quot;</span><span class="p">,</span> <span class="n">nbSubdiv</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+
+        <span class="c1"># Define the root node properties</span>
+        <span class="n">rootNode</span><span class="o">.</span><span class="n">gravity</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span><span class="o">-</span><span class="mf">9.81</span><span class="p">,</span><span class="mf">0.0</span><span class="p">]</span>
+        <span class="n">rootNode</span><span class="o">.</span><span class="n">dt</span><span class="o">=</span><span class="mf">0.01</span>
+
+        <span class="c1"># Loading all required SOFA modules</span>
+        <span class="n">confignode</span> <span class="o">=</span> <span class="n">rootNode</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="s2">&quot;Config&quot;</span><span class="p">)</span>
+        <span class="n">confignode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RequiredPlugin&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sofa.Component.AnimationLoop&quot;</span><span class="p">,</span> <span class="n">printLog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">confignode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RequiredPlugin&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sofa.Component.Collision.Detection.Algorithm&quot;</span><span class="p">,</span> <span class="n">printLog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">confignode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RequiredPlugin&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sofa.Component.Collision.Detection.Intersection&quot;</span><span class="p">,</span> <span class="n">printLog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">confignode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RequiredPlugin&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sofa.Component.Collision.Geometry&quot;</span><span class="p">,</span> <span class="n">printLog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">confignode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RequiredPlugin&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sofa.Component.Collision.Response.Contact&quot;</span><span class="p">,</span> <span class="n">printLog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">confignode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RequiredPlugin&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sofa.Component.Constraint.Lagrangian.Correction&quot;</span><span class="p">,</span> <span class="n">printLog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">confignode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RequiredPlugin&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sofa.Component.Constraint.Lagrangian.Solver&quot;</span><span class="p">,</span> <span class="n">printLog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">confignode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RequiredPlugin&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sofa.Component.IO.Mesh&quot;</span><span class="p">,</span> <span class="n">printLog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">confignode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RequiredPlugin&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sofa.Component.LinearSolver.Iterative&quot;</span><span class="p">,</span> <span class="n">printLog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">confignode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RequiredPlugin&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sofa.Component.Mapping.NonLinear&quot;</span><span class="p">,</span> <span class="n">printLog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">confignode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RequiredPlugin&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sofa.Component.Mass&quot;</span><span class="p">,</span> <span class="n">printLog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">confignode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RequiredPlugin&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sofa.Component.ODESolver.Backward&quot;</span><span class="p">,</span> <span class="n">printLog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">confignode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RequiredPlugin&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sofa.Component.StateContainer&quot;</span><span class="p">,</span> <span class="n">printLog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">confignode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RequiredPlugin&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sofa.Component.Topology.Container.Constant&quot;</span><span class="p">,</span> <span class="n">printLog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">confignode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RequiredPlugin&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sofa.Component.Visual&quot;</span><span class="p">,</span> <span class="n">printLog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">confignode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RequiredPlugin&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sofa.GL.Component.Rendering3D&quot;</span><span class="p">,</span> <span class="n">printLog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">confignode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;OglSceneFrame&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;Arrows&quot;</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="s2">&quot;TopRight&quot;</span><span class="p">)</span>
+
+
+        <span class="c1"># Collision pipeline</span>
+        <span class="n">rootNode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;DefaultPipeline&#39;</span><span class="p">)</span>
+        <span class="n">rootNode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;FreeMotionAnimationLoop&#39;</span><span class="p">)</span>
+        <span class="n">rootNode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;GenericConstraintSolver&#39;</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="s2">&quot;1e-6&quot;</span><span class="p">,</span> <span class="n">maxIterations</span><span class="o">=</span><span class="s2">&quot;1000&quot;</span><span class="p">)</span>
+        <span class="n">rootNode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;BruteForceBroadPhase&#39;</span><span class="p">)</span>
+        <span class="n">rootNode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;BVHNarrowPhase&#39;</span><span class="p">)</span>
+        <span class="n">rootNode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RuleBasedContactManager&#39;</span><span class="p">,</span> <span class="n">responseParams</span><span class="o">=</span><span class="s2">&quot;mu=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Response&#39;</span><span class="p">,</span> <span class="n">response</span><span class="o">=</span><span class="s1">&#39;FrictionContactConstraint&#39;</span><span class="p">)</span>
+        <span class="n">rootNode</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;LocalMinDistance&#39;</span><span class="p">,</span> <span class="n">alarmDistance</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">contactDistance</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">angleCone</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+
+
+        <span class="n">totalMass</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">volume</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">inertiaMatrix</span><span class="o">=</span><span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]</span>
+
+        <span class="c1"># Creating the falling sphere object</span>
+        <span class="n">sphere</span> <span class="o">=</span> <span class="n">rootNode</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="s2">&quot;sphere&quot;</span><span class="p">)</span>
+        <span class="n">sphere</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;EulerImplicitSolver&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;odesolver&#39;</span><span class="p">)</span>
+        <span class="n">sphere</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;CGLinearSolver&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Solver&#39;</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">)</span>
+        <span class="n">sphere</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MechanicalObject&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mstate&quot;</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="s2">&quot;Rigid3&quot;</span><span class="p">,</span> <span class="n">translation2</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="n">rotation2</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="n">showObjectScale</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+        <span class="n">sphere</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;UniformMass&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="n">vertexMass</span><span class="o">=</span><span class="p">[</span><span class="n">totalMass</span><span class="p">,</span> <span class="n">volume</span><span class="p">,</span> <span class="n">inertiaMatrix</span><span class="p">[:]])</span>
+        <span class="n">sphere</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;UncoupledConstraintCorrection&#39;</span><span class="p">)</span>
+
+        <span class="c1">#### Collision subnode for the sphere</span>
+        <span class="n">collision</span> <span class="o">=</span> <span class="n">sphere</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="s1">&#39;collision&#39;</span><span class="p">)</span>
+        <span class="n">collision</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MeshOBJLoader&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;loader&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;mesh/ball.obj&quot;</span><span class="p">,</span> <span class="n">triangulate</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">45.0</span><span class="p">)</span>
+        <span class="n">collision</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MeshTopology&#39;</span><span class="p">,</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;@loader&quot;</span><span class="p">)</span>
+        <span class="n">collision</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MechanicalObject&#39;</span><span class="p">)</span>
+        <span class="n">collision</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;TriangleCollisionModel&#39;</span><span class="p">)</span>
+        <span class="n">collision</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;LineCollisionModel&#39;</span><span class="p">)</span>
+        <span class="n">collision</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;PointCollisionModel&#39;</span><span class="p">)</span>
+        <span class="n">collision</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RigidMapping&#39;</span><span class="p">)</span>
+
+        <span class="c1">#### Visualization subnode for the sphere</span>
+        <span class="n">sphereVisu</span> <span class="o">=</span> <span class="n">sphere</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="s2">&quot;VisualModel&quot;</span><span class="p">)</span>
+        <span class="n">sphereVisu</span><span class="o">.</span><span class="n">loader</span> <span class="o">=</span> <span class="n">sphereVisu</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MeshOBJLoader&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;loader&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;mesh/ball.obj&quot;</span><span class="p">)</span>
+        <span class="n">sphereVisu</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;OglModel&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;@loader&quot;</span><span class="p">,</span> <span class="n">scale3d</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">]</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="n">updateNormals</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">sphereVisu</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RigidMapping&#39;</span><span class="p">)</span>
+
+
+        <span class="c1"># Creating the floor object</span>
+        <span class="n">floor</span> <span class="o">=</span> <span class="n">rootNode</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="s2">&quot;floor&quot;</span><span class="p">)</span>
+
+        <span class="n">floor</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MechanicalObject&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mstate&quot;</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="s2">&quot;Rigid3&quot;</span><span class="p">,</span> <span class="n">translation2</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span><span class="o">-</span><span class="mf">300.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">],</span> <span class="n">rotation2</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="n">showObjectScale</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
+        <span class="n">floor</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;UniformMass&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="n">vertexMass</span><span class="o">=</span><span class="p">[</span><span class="n">totalMass</span><span class="p">,</span> <span class="n">volume</span><span class="p">,</span> <span class="n">inertiaMatrix</span><span class="p">[:]])</span>
+
+        <span class="c1">#### Collision subnode for the floor</span>
+        <span class="n">floorCollis</span> <span class="o">=</span> <span class="n">floor</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="s1">&#39;collision&#39;</span><span class="p">)</span>
+        <span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MeshOBJLoader&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;loader&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;mesh/floor.obj&quot;</span><span class="p">,</span> <span class="n">triangulate</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
+        <span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MeshTopology&#39;</span><span class="p">,</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;@loader&quot;</span><span class="p">)</span>
+        <span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MechanicalObject&#39;</span><span class="p">)</span>
+        <span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;TriangleCollisionModel&#39;</span><span class="p">,</span> <span class="n">moving</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">simulated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;LineCollisionModel&#39;</span><span class="p">,</span> <span class="n">moving</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">simulated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;PointCollisionModel&#39;</span><span class="p">,</span> <span class="n">moving</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">simulated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">floorCollis</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RigidMapping&#39;</span><span class="p">)</span>
+
+        <span class="c1">#### Visualization subnode for the floor</span>
+        <span class="n">floorVisu</span> <span class="o">=</span> <span class="n">floor</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="s2">&quot;VisualModel&quot;</span><span class="p">)</span>
+        <span class="n">floorVisu</span><span class="o">.</span><span class="n">loader</span> <span class="o">=</span> <span class="n">floorVisu</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;MeshOBJLoader&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;loader&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;mesh/floor.obj&quot;</span><span class="p">)</span>
+        <span class="n">floorVisu</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;OglModel&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;@loader&quot;</span><span class="p">,</span> <span class="n">scale3d</span><span class="o">=</span><span class="p">[</span><span class="mf">5.0</span><span class="p">]</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="n">updateNormals</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">floorVisu</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s1">&#39;RigidMapping&#39;</span><span class="p">)</span>
+
+
+        <span class="k">return</span> <span class="n">rootNode</span>
+
+
+<span class="c1"># Function used only if this script is called from a python environment</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="accessing-data">
+<h2>Accessing data<a class="headerlink" href="#accessing-data" title="Permalink to this heading"></a></h2>
+<p>One major advantage of coupling SOFA simulation and python is to access and process data before the simulation starts, while it is running and once the simulation ended. All components in SOFA have so-called data. A data is a public attribute of a Component (C++ class) visible to the user in the SOFA user interface and any data can also be accessed though python.</p>
+<section id="read-access">
+<h3>Read access<a class="headerlink" href="#read-access" title="Permalink to this heading"></a></h3>
+<p>Let’s consider the full scene introduced just <a class="reference external" href="https://sofapython3.readthedocs.io/en/latest/menu/Compilation.html#full-scene">above in-tree</a> and try to access data using the <code class="docutils literal notranslate"><span class="pre">.value</span></code> acessor once the GUI is closed:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">Sofa</span>
+<span class="kn">import</span> <span class="nn">Sofa.Gui</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+
+<span class="o">...</span>
+
+<span class="c1"># Initialization of the scene will be done here</span>
+<span class="n">Sofa</span><span class="o">.</span><span class="n">Gui</span><span class="o">.</span><span class="n">GUIManager</span><span class="o">.</span><span class="n">MainLoop</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+<span class="n">Sofa</span><span class="o">.</span><span class="n">Gui</span><span class="o">.</span><span class="n">GUIManager</span><span class="o">.</span><span class="n">closeGUI</span><span class="p">()</span>
+
+<span class="c1"># Accessing and printing the final time of simulation</span>
+<span class="c1"># &quot;time&quot; being the name of a Data available in all Nodes</span>
+<span class="n">finalTime</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">value</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">finalTime</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that:
+* accessing the Data “time” doing <code class="docutils literal notranslate"><span class="pre">root.time</span></code> would only return the python pointer and not the value of the Data
+* Data which are vectors can be casted as numpy arrays</p>
+</section>
+<section id="write-access">
+<h3>Write access<a class="headerlink" href="#write-access" title="Permalink to this heading"></a></h3>
+<p>In the same way, Data can be modified (write access) using the <code class="docutils literal notranslate"><span class="pre">.value</span></code> accessor. Here is an example (without GUI) computing 10 time steps, then setting the world gravity to zero and recomputing 10 time steps:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+
+<span class="c1"># Call the SOFA function to create the root node</span>
+<span class="n">root</span> <span class="o">=</span> <span class="n">Sofa</span><span class="o">.</span><span class="n">Core</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;root&quot;</span><span class="p">)</span>
+
+<span class="c1"># Call the createScene function, as runSofa does</span>
+<span class="n">createScene</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+<span class="c1"># Once defined, initialization of the scene graph</span>
+<span class="n">Sofa</span><span class="o">.</span><span class="n">Simulation</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+<span class="c1"># Run the simulation for 10 steps</span>
+<span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">Sofa</span><span class="o">.</span><span class="n">Simulation</span><span class="o">.</span><span class="n">animate</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+<span class="c1"># Print the position of the falling sphere</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">sphere</span><span class="o">.</span><span class="n">mstate</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+<span class="c1"># Increase the gravity</span>
+<span class="n">root</span><span class="o">.</span><span class="n">gravity</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># Run the simulation for 10 steps MORE</span>
+<span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">Sofa</span><span class="o">.</span><span class="n">Simulation</span><span class="o">.</span><span class="n">animate</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+<span class="c1"># Print the position of the falling sphere</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">sphere</span><span class="o">.</span><span class="n">mstate</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">.value</span></code> accessor works for simple Data structures such as a string, an integer, a floating-point numbers or a vector of these.</p>
+<p>For more complex Data such as Data related to the degrees of freedom (e.g. Coord/Deriv, VecCoord/VecDeriv), the <code class="docutils literal notranslate"><span class="pre">.writeableArray()</span></code> write accessor must be used. Let’s consider a scene graph that would have a <em>ConstantForceField</em> named “CFF” in the sphere node, and that we would like to modify the Data “totalForce” (a Deriv defined in <a class="reference external" href="https://github.com/sofa-framework/sofa/blob/master/Sofa/Component/MechanicalLoad/src/sofa/component/mechanicalload/ConstantForceField.h#L66">ConstantForceField.h</a>), we should then write something like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">root</span><span class="o">.</span><span class="n">sphere</span><span class="o">.</span><span class="n">CFF</span><span class="o">.</span><span class="n">totalForce</span><span class="o">.</span><span class="n">writeableArray</span><span class="p">()</span> <span class="k">as</span> <span class="n">wa</span><span class="p">:</span>
+<span class="n">wa</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.01</span> <span class="c1"># modify the first entry of the Deriv Data &quot;totalForce&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="more-simulation-examples">
+<h2>More simulation examples<a class="headerlink" href="#more-simulation-examples" title="Permalink to this heading"></a></h2>
+<p>Many <a class="reference external" href="https://github.com/sofa-framework/SofaPython3/tree/master/examples">additional examples</a> are available within the SofaPython3 plugin in the <em>examples/</em> folder:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/sofa-framework/SofaPython3/blob/master/examples/basic.py">basic.py</a> : basic scene with a rigid particle without a GUI</p></li>
+<li><p><a class="reference external" href="https://github.com/sofa-framework/SofaPython3/blob/master/examples/basic-addGUI.py">basic-addGUI.py</a> : same basic scene with a rigid particle with a GUI</p></li>
+<li><p><a class="reference external" href="https://github.com/sofa-framework/SofaPython3/blob/master/examples/emptyController.py">emptyController.py</a> : example displaying all possible functions available in python controllers</p></li>
+<li><p><a class="reference external" href="https://github.com/sofa-framework/SofaPython3/blob/master/examples/access_matrix.py">access_matrix.py</a> : example on how to access the system matrix and vector</p></li>
+<li><p><a class="reference external" href="https://github.com/sofa-framework/SofaPython3/blob/master/examples/access_mass_matrix.py">access_mass_matrix.py</a> : example on how to access the mass matrix</p></li>
+<li><p><a class="reference external" href="https://github.com/sofa-framework/SofaPython3/blob/master/examples/access_stiffness_matrix.py">access_stiffness_matrix.py</a> : example on how to access the stiffness matrix</p></li>
+<li><p><a class="reference external" href="https://github.com/sofa-framework/SofaPython3/blob/master/examples/access_compliance_matrix.py">access_compliance_matrix.py</a> : example on how to access the compliance matrix used in constraint problems</p></li>
+</ul>
+<p>Do not hesitate to take a look and get inspiration!</p>
+</section>
+<section id="technical-support">
+<h2>Technical support<a class="headerlink" href="#technical-support" title="Permalink to this heading"></a></h2>
+<p>To freely get help from the community, please do not hesitate to join the <a class="reference external" href="https://github.com/sofa-framework/sofapython3/discussions">SofaPython3 GitHub forum</a> and post there any question related to SofaPython3.</p>
+<p>To quickly level up on SOFA, never hesitate to request <a class="reference external" href="https://www.sofa-framework.org/sofa-events/sofa-training-sessions/">SOFA training sessions</a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Compilation.html" class="btn btn-neutral float-left" title="Compilation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Modules.html" class="btn btn-neutral float-right" title="Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, SOFA Framework.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

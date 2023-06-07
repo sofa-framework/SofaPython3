@@ -23,6 +23,7 @@ interpreter without requiring the load of the plugin.
 .. toctree::
     
     content/Compilation
+    content/UsingThePlugin
     content/Modules
     content/PythonLibraries
     content/CustomModule
