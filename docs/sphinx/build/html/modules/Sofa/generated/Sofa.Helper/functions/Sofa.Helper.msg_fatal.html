@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sofa.Helper.msg_fatal &mdash; SofaPython3 20.12.00 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/contentui.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../../_static/contentui.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link rel="next" title="Sofa.Helper.msg_info" href="Sofa.Helper.msg_info.html" />
+    <link rel="prev" title="Sofa.Helper.msg_error" href="Sofa.Helper.msg_error.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            SofaPython3
+          </a>
+              <div class="version">
+                20.12
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+<a href="../../../../../index.html">Overview</a>
+
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../index.html">Modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html">Sofa</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.Simulation.html">Sofa.Simulation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.animate.html">Sofa.Simulation.animate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.animateNSteps.html">Sofa.Simulation.animateNSteps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.init.html">Sofa.Simulation.init</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.initTextures.html">Sofa.Simulation.initTextures</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.initVisual.html">Sofa.Simulation.initVisual</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.load.html">Sofa.Simulation.load</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.print.html">Sofa.Simulation.print</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.reset.html">Sofa.Simulation.reset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.unload.html">Sofa.Simulation.unload</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.updateVisual.html">Sofa.Simulation.updateVisual</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.Gui.html">Sofa.Gui</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Gui/classes/Sofa.Gui.BaseGUI.html">Sofa.Gui.BaseGUI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Gui/classes/Sofa.Gui.GUIManager.html">Sofa.Gui.GUIManager</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../Sofa.Helper.html">Sofa.Helper</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="Sofa.Helper.msg_deprecated.html">Sofa.Helper.msg_deprecated</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Sofa.Helper.msg_error.html">Sofa.Helper.msg_error</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Sofa.Helper.msg_fatal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Sofa.Helper.msg_info.html">Sofa.Helper.msg_info</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Sofa.Helper.msg_warning.html">Sofa.Helper.msg_warning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../classes/Sofa.Helper.MessageHandler.html">Sofa.Helper.MessageHandler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../classes/Sofa.Helper.StdVectorBaseData.html">Sofa.Helper.StdVectorBaseData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../classes/Sofa.Helper.StdVectordouble.html">Sofa.Helper.StdVectordouble</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../classes/Sofa.Helper.StdVectorfloat.html">Sofa.Helper.StdVectorfloat</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../classes/Sofa.Helper.StdVectorint.html">Sofa.Helper.StdVectorint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../classes/Sofa.Helper.StdVectorlong.html">Sofa.Helper.StdVectorlong</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../classes/Sofa.Helper.StdVectoruint.html">Sofa.Helper.StdVectoruint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../classes/Sofa.Helper.StdVectorulong.html">Sofa.Helper.StdVectorulong</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../classes/Sofa.Helper.VectorBaseData.html">Sofa.Helper.VectorBaseData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../classes/Sofa.Helper.Vectordouble.html">Sofa.Helper.Vectordouble</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../classes/Sofa.Helper.Vectorfloat.html">Sofa.Helper.Vectorfloat</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../classes/Sofa.Helper.Vectorint.html">Sofa.Helper.Vectorint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../classes/Sofa.Helper.Vectorlong.html">Sofa.Helper.Vectorlong</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../classes/Sofa.Helper.Vectoruint.html">Sofa.Helper.Vectoruint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../classes/Sofa.Helper.Vectorulong.html">Sofa.Helper.Vectorulong</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.Types.html">Sofa.Types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Types/classes/Sofa.Types.BoundingBox.html">Sofa.Types.BoundingBox</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.SofaTypes.html">Sofa.SofaTypes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaTypes/submodules/Sofa.SofaTypes.SofaTypes.html">Sofa.SofaTypes.SofaTypes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.prefab.html">Sofa.prefab</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.prefab/classes/Sofa.prefab.Prefab.html">Sofa.prefab.Prefab</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.constants.html">Sofa.constants</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.constants/submodules/Sofa.constants.KeyCode.html">Sofa.constants.KeyCode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.constants/submodules/Sofa.constants.Key.html">Sofa.constants.Key</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.msg_error.html">Sofa.msg_error</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.msg_info.html">Sofa.msg_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.msg_warning.html">Sofa.msg_warning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.msg_deprecated.html">Sofa.msg_deprecated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.SofaBaseTopology.html">Sofa.SofaBaseTopology</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaBaseTopology/classes/Sofa.SofaBaseTopology.RegularGridTopology.html">Sofa.SofaBaseTopology.RegularGridTopology</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaBaseTopology/classes/Sofa.SofaBaseTopology.SparseGridTopology.html">Sofa.SofaBaseTopology.SparseGridTopology</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.SofaConstraintSolver.html">Sofa.SofaConstraintSolver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaConstraintSolver/classes/Sofa.SofaConstraintSolver.ConstraintSolverImpl.html">Sofa.SofaConstraintSolver.ConstraintSolverImpl</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.SofaDeformable.html">Sofa.SofaDeformable</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaDeformable/classes/Sofa.SofaDeformable.LinearSpring.html">Sofa.SofaDeformable.LinearSpring</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Rigid3d.html">Sofa.SofaDeformable.SpringForceField_Rigid3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Vec1d.html">Sofa.SofaDeformable.SpringForceField_Vec1d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Vec2d.html">Sofa.SofaDeformable.SpringForceField_Vec2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Vec3d.html">Sofa.SofaDeformable.SpringForceField_Vec3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Vec6d.html">Sofa.SofaDeformable.SpringForceField_Vec6d</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.SofaGL.html">Sofa.SofaGL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaGL/functions/Sofa.SofaGL.draw.html">Sofa.SofaGL.draw</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaGL/functions/Sofa.SofaGL.glewInit.html">Sofa.SofaGL.glewInit</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../SofaExporter/generated/SofaExporter.html">SofaExporter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaExporter/generated/SofaExporter/classes/SofaExporter.STLExporter.html">SofaExporter.STLExporter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaExporter/generated/SofaExporter/classes/SofaExporter.VisualModelOBJExporter.html">SofaExporter.VisualModelOBJExporter</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../SofaRuntime/index.html">SofaRuntime</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.importPlugin.html">SofaRuntime.importPlugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.unloadModules.html">SofaRuntime.unloadModules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.formatStackForSofa.html">SofaRuntime.formatStackForSofa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.getStackForSofa.html">SofaRuntime.getStackForSofa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.getPythonCallingPointAsString.html">SofaRuntime.getPythonCallingPointAsString</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.getPythonCallingPoint.html">SofaRuntime.getPythonCallingPoint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.sendMessageFromException.html">SofaRuntime.sendMessageFromException</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.sofaFormatHandler.html">SofaRuntime.sofaFormatHandler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.sofaExceptHandler.html">SofaRuntime.sofaExceptHandler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.getSofaFormattedStringFromException.html">SofaRuntime.getSofaFormattedStringFromException</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">SofaPython3</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Modules</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Sofa</a></li>
+          <li class="breadcrumb-item"><a href="../../Sofa.Helper.html">Sofa.Helper</a></li>
+      <li class="breadcrumb-item active">Sofa.Helper.msg_fatal</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../_sources/modules/Sofa/generated/Sofa.Helper/functions/Sofa.Helper.msg_fatal.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sofa-helper-msg-fatal">
+<h1>Sofa.Helper.msg_fatal<a class="headerlink" href="#sofa-helper-msg-fatal" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="Sofa.Helper.msg_fatal">
+<span class="sig-prename descclassname"><span class="pre">Sofa.Helper.</span></span><span class="sig-name descname"><span class="pre">msg_fatal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#Sofa.Helper.msg_fatal" title="Permalink to this definition"></a></dt>
+<dd><p>Emit a fatal error message from python.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Sofa.Helper.msg_error.html" class="btn btn-neutral float-left" title="Sofa.Helper.msg_error" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Sofa.Helper.msg_info.html" class="btn btn-neutral float-right" title="Sofa.Helper.msg_info" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, SOFA Framework.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

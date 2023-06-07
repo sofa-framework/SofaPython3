@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Types.BoundingBox
+======================
+
+.. currentmodule:: Sofa.Types
+
+.. autoclass:: BoundingBox
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

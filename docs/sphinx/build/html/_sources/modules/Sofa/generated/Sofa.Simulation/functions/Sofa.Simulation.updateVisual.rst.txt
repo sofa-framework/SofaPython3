@@ -1,0 +1,9 @@
+..
+  base.rst
+
+Sofa.Simulation.updateVisual
+============================
+
+.. currentmodule:: Sofa.Simulation
+
+.. autofunction:: updateVisual

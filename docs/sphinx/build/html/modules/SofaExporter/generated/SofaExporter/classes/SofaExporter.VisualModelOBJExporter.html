@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SofaExporter.VisualModelOBJExporter &mdash; SofaPython3 20.12.00 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/contentui.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../../_static/contentui.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link rel="next" title="SofaRuntime" href="../../../../SofaRuntime/index.html" />
+    <link rel="prev" title="SofaExporter.STLExporter" href="SofaExporter.STLExporter.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            SofaPython3
+          </a>
+              <div class="version">
+                20.12
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+<a href="../../../../../index.html">Overview</a>
+
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../index.html">Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../../Sofa/index.html">Sofa</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Simulation.html">Sofa.Simulation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.animate.html">Sofa.Simulation.animate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.animateNSteps.html">Sofa.Simulation.animateNSteps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.init.html">Sofa.Simulation.init</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.initTextures.html">Sofa.Simulation.initTextures</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.initVisual.html">Sofa.Simulation.initVisual</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.load.html">Sofa.Simulation.load</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.print.html">Sofa.Simulation.print</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.reset.html">Sofa.Simulation.reset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.unload.html">Sofa.Simulation.unload</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Simulation/functions/Sofa.Simulation.updateVisual.html">Sofa.Simulation.updateVisual</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Gui.html">Sofa.Gui</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Gui/classes/Sofa.Gui.BaseGUI.html">Sofa.Gui.BaseGUI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Gui/classes/Sofa.Gui.GUIManager.html">Sofa.Gui.GUIManager</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper.html">Sofa.Helper</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/functions/Sofa.Helper.msg_deprecated.html">Sofa.Helper.msg_deprecated</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/functions/Sofa.Helper.msg_error.html">Sofa.Helper.msg_error</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/functions/Sofa.Helper.msg_fatal.html">Sofa.Helper.msg_fatal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/functions/Sofa.Helper.msg_info.html">Sofa.Helper.msg_info</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/functions/Sofa.Helper.msg_warning.html">Sofa.Helper.msg_warning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/classes/Sofa.Helper.MessageHandler.html">Sofa.Helper.MessageHandler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/classes/Sofa.Helper.StdVectorBaseData.html">Sofa.Helper.StdVectorBaseData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/classes/Sofa.Helper.StdVectordouble.html">Sofa.Helper.StdVectordouble</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/classes/Sofa.Helper.StdVectorfloat.html">Sofa.Helper.StdVectorfloat</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/classes/Sofa.Helper.StdVectorint.html">Sofa.Helper.StdVectorint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/classes/Sofa.Helper.StdVectorlong.html">Sofa.Helper.StdVectorlong</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/classes/Sofa.Helper.StdVectoruint.html">Sofa.Helper.StdVectoruint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/classes/Sofa.Helper.StdVectorulong.html">Sofa.Helper.StdVectorulong</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/classes/Sofa.Helper.VectorBaseData.html">Sofa.Helper.VectorBaseData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/classes/Sofa.Helper.Vectordouble.html">Sofa.Helper.Vectordouble</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/classes/Sofa.Helper.Vectorfloat.html">Sofa.Helper.Vectorfloat</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/classes/Sofa.Helper.Vectorint.html">Sofa.Helper.Vectorint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/classes/Sofa.Helper.Vectorlong.html">Sofa.Helper.Vectorlong</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/classes/Sofa.Helper.Vectoruint.html">Sofa.Helper.Vectoruint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Helper/classes/Sofa.Helper.Vectorulong.html">Sofa.Helper.Vectorulong</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Types.html">Sofa.Types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.Types/classes/Sofa.Types.BoundingBox.html">Sofa.Types.BoundingBox</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../Sofa/generated/Sofa.SofaTypes.html">Sofa.SofaTypes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.SofaTypes/submodules/Sofa.SofaTypes.SofaTypes.html">Sofa.SofaTypes.SofaTypes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../Sofa/generated/Sofa.prefab.html">Sofa.prefab</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.prefab/classes/Sofa.prefab.Prefab.html">Sofa.prefab.Prefab</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../Sofa/generated/Sofa.constants.html">Sofa.constants</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.constants/submodules/Sofa.constants.KeyCode.html">Sofa.constants.KeyCode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.constants/submodules/Sofa.constants.Key.html">Sofa.constants.Key</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../Sofa/generated/Sofa.msg_error.html">Sofa.msg_error</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../Sofa/generated/Sofa.msg_info.html">Sofa.msg_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../Sofa/generated/Sofa.msg_warning.html">Sofa.msg_warning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../Sofa/generated/Sofa.msg_deprecated.html">Sofa.msg_deprecated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../Sofa/generated/Sofa.SofaBaseTopology.html">Sofa.SofaBaseTopology</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.SofaBaseTopology/classes/Sofa.SofaBaseTopology.RegularGridTopology.html">Sofa.SofaBaseTopology.RegularGridTopology</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.SofaBaseTopology/classes/Sofa.SofaBaseTopology.SparseGridTopology.html">Sofa.SofaBaseTopology.SparseGridTopology</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../Sofa/generated/Sofa.SofaConstraintSolver.html">Sofa.SofaConstraintSolver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.SofaConstraintSolver/classes/Sofa.SofaConstraintSolver.ConstraintSolverImpl.html">Sofa.SofaConstraintSolver.ConstraintSolverImpl</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../Sofa/generated/Sofa.SofaDeformable.html">Sofa.SofaDeformable</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.SofaDeformable/classes/Sofa.SofaDeformable.LinearSpring.html">Sofa.SofaDeformable.LinearSpring</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Rigid3d.html">Sofa.SofaDeformable.SpringForceField_Rigid3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Vec1d.html">Sofa.SofaDeformable.SpringForceField_Vec1d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Vec2d.html">Sofa.SofaDeformable.SpringForceField_Vec2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Vec3d.html">Sofa.SofaDeformable.SpringForceField_Vec3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Vec6d.html">Sofa.SofaDeformable.SpringForceField_Vec6d</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../Sofa/generated/Sofa.SofaGL.html">Sofa.SofaGL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.SofaGL/functions/Sofa.SofaGL.draw.html">Sofa.SofaGL.draw</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../Sofa/generated/Sofa.SofaGL/functions/Sofa.SofaGL.glewInit.html">Sofa.SofaGL.glewInit</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../SofaExporter.html">SofaExporter</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="SofaExporter.STLExporter.html">SofaExporter.STLExporter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">SofaExporter.VisualModelOBJExporter</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../SofaRuntime/index.html">SofaRuntime</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.importPlugin.html">SofaRuntime.importPlugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.unloadModules.html">SofaRuntime.unloadModules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.formatStackForSofa.html">SofaRuntime.formatStackForSofa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.getStackForSofa.html">SofaRuntime.getStackForSofa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.getPythonCallingPointAsString.html">SofaRuntime.getPythonCallingPointAsString</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.getPythonCallingPoint.html">SofaRuntime.getPythonCallingPoint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.sendMessageFromException.html">SofaRuntime.sendMessageFromException</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.sofaFormatHandler.html">SofaRuntime.sofaFormatHandler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.sofaExceptHandler.html">SofaRuntime.sofaExceptHandler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.getSofaFormattedStringFromException.html">SofaRuntime.getSofaFormattedStringFromException</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">SofaPython3</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Modules</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">&lt;no title&gt;</a></li>
+          <li class="breadcrumb-item"><a href="../../SofaExporter.html">SofaExporter</a></li>
+      <li class="breadcrumb-item active">SofaExporter.VisualModelOBJExporter</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../_sources/modules/SofaExporter/generated/SofaExporter/classes/SofaExporter.VisualModelOBJExporter.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sofaexporter-visualmodelobjexporter">
+<h1>SofaExporter.VisualModelOBJExporter<a class="headerlink" href="#sofaexporter-visualmodelobjexporter" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">SofaExporter.</span></span><span class="sig-name descname"><span class="pre">VisualModelOBJExporter</span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.addData">
+<span class="sig-name descname"><span class="pre">addData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.addData" title="Permalink to this definition"></a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic">
+<li><p>addData(self: object, name: str, value: object = None, default: object = None, help: str = ‘’, group: str = ‘’, type: str = ‘’) -&gt; sofa::core::objectmodel::BaseData</p>
+<blockquote>
+<div><p>Create a data field, then adds it to the base.
+Note that this method should only be called if the field was not initialized with the initData method
+:param self: the base itself
+:param name: the name of the data to be added
+:param value: the value from which the data can be created
+:param help: help message that describes the data to be created
+:param group: the group the data belongs to
+:param type: the type of the data
+:type self: object
+:type name: string
+:type value: object
+:type help: string
+:type group: string
+:type type: string</p>
+</div></blockquote>
+</li>
+<li><p>addData(self: Sofa.Core.Base, arg0: object) -&gt; sofa::core::objectmodel::BaseData</p>
+<blockquote>
+<div><p>Add a data field.
+Note that this method should only be called if the field was not initialized with the initData method
+:param self: the base itself
+:param d: the data to be added
+:type self: Base*
+:type d: object</p>
+</div></blockquote>
+</li>
+</ol>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.addLink">
+<span class="sig-name descname"><span class="pre">addLink</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">sofa::core::objectmodel::BaseLink</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.addLink" title="Permalink to this definition"></a></dt>
+<dd><p>Create a Link to a SOFA component and adds it to the base.
+Note that this method should only be called if the field was not initialized with the initLink method
+:param self: the base itself
+:param name: the name of the link to be added
+:param value: the value from which the data can be created (either a pathname or a SofaBase)
+:param help: help message that describes the link to be created
+:type self: object
+:type name: string
+:type value: object
+:type help: string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.addSlave">
+<span class="sig-name descname"><span class="pre">addSlave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.addSlave" title="Permalink to this definition"></a></dt>
+<dd><p>Add a slave to the master BaseObject.
+:param slave: the slave to be added.
+:type slave: BaseObject</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.bwdInit">
+<span class="sig-name descname"><span class="pre">bwdInit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.bwdInit" title="Permalink to this definition"></a></dt>
+<dd><p>Initialization method called at graph creation and modification, during bottom-up traversal.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.cleanup" title="Permalink to this definition"></a></dt>
+<dd><p>Called just before deleting this object
+Any object in the tree bellow this object that are to be removed will be removed only after this call,
+so any references this object holds should still be valid.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.clearLoggedMessages">
+<span class="sig-name descname"><span class="pre">clearLoggedMessages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.clearLoggedMessages" title="Permalink to this definition"></a></dt>
+<dd><p>Remove all logged messages in the object’s logs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.computeBBox">
+<span class="sig-name descname"><span class="pre">computeBBox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.computeBBox" title="Permalink to this definition"></a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic">
+<li><p>computeBBox(self: Sofa.Core.Object) -&gt; None</p>
+<blockquote>
+<div><p>Bounding Box computation method.
+Default to empty method.</p>
+</div></blockquote>
+</li>
+<li><p>computeBBox(self: Sofa.Core.Object, arg0: sofa::core::ExecParams, arg1: bool) -&gt; None</p>
+<blockquote>
+<div><p>Bounding Box computation method.
+Default to empty method.</p>
+</div></blockquote>
+</li>
+</ol>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.countLoggedMessages">
+<span class="sig-name descname"><span class="pre">countLoggedMessages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.countLoggedMessages" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the number of messages in the object’s logs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.findData">
+<span class="sig-name descname"><span class="pre">findData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">sofa::core::objectmodel::BaseData</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.findData" title="Permalink to this definition"></a></dt>
+<dd><p>Find a data field given its name.
+Return NULL if not found.
+If more than one field is found (due to aliases), only the first is returned.
+:param name
+:type name: string
+:return: the data field</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.findLink">
+<span class="sig-name descname"><span class="pre">findLink</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">sofa::core::objectmodel::BaseLink</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.findLink" title="Permalink to this definition"></a></dt>
+<dd><p>Find a link given its name.
+Return NULL if not found.
+If more than one link is found (due to aliases), only the first is returned.
+:param name: the name of the link
+:type name: string
+:return: the link</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getAsACreateObjectParameter">
+<span class="sig-name descname"><span class="pre">getAsACreateObjectParameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getAsACreateObjectParameter" title="Permalink to this definition"></a></dt>
+<dd><p>Return the full path name of this baseObject with an extra prefix ‘&#64;’
+:rtype: string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getCategories">
+<span class="sig-name descname"><span class="pre">getCategories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getCategories" title="Permalink to this definition"></a></dt>
+<dd><p>Return the list of categories the current object belongs to.
+:rtype: list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getClass">
+<span class="sig-name descname"><span class="pre">getClass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">sofa::core::objectmodel::BaseClass</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getClass" title="Permalink to this definition"></a></dt>
+<dd><p>Return the class of the object</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getClassName">
+<span class="sig-name descname"><span class="pre">getClassName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getClassName" title="Permalink to this definition"></a></dt>
+<dd><p>Get the name of the class of the Base.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getContext">
+<span class="sig-name descname"><span class="pre">getContext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getContext" title="Permalink to this definition"></a></dt>
+<dd><p>Return the conext of the baseObject.
+:rtype: BaseContext</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getData">
+<span class="sig-name descname"><span class="pre">getData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getData" title="Permalink to this definition"></a></dt>
+<dd><p>Get the data field given its name.
+:param self:
+:param s:
+:type self: Base&amp;
+:type s: string
+:return: the first data found of this name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getDataFields">
+<span class="sig-name descname"><span class="pre">getDataFields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getDataFields" title="Permalink to this definition"></a></dt>
+<dd><p>Accessor to the vector containing all the fields of this object
+:return: A vector containing the data fields</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getDefinitionSourceFileName">
+<span class="sig-name descname"><span class="pre">getDefinitionSourceFileName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getDefinitionSourceFileName" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the name of the file that contains the object definition.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getDefinitionSourceFilePos">
+<span class="sig-name descname"><span class="pre">getDefinitionSourceFilePos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getDefinitionSourceFilePos" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the line number where the object is defined.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getInstanciationFileName">
+<span class="sig-name descname"><span class="pre">getInstanciationFileName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getInstanciationFileName" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the line number where the object is instanciatiated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getInstanciationSourceFilePos">
+<span class="sig-name descname"><span class="pre">getInstanciationSourceFilePos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getInstanciationSourceFilePos" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the line number where the object is instanciatiated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getLinkPath">
+<span class="sig-name descname"><span class="pre">getLinkPath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getLinkPath" title="Permalink to this definition"></a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic">
+<li><p>getLinkPath(self: Sofa.Core.Object) -&gt; str</p>
+<blockquote>
+<div><p>Return the link of the baseObject
+:param self: the baseObject itself
+:type self: baseObject
+:rtype: string</p>
+</div></blockquote>
+</li>
+<li><p>getLinkPath(self: Sofa.Core.Object) -&gt; str</p>
+<blockquote>
+<div><p>Return the full path name of this baseObject with an extra prefix ‘&#64;’
+:rtype: string</p>
+</div></blockquote>
+</li>
+</ol>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getLinks">
+<span class="sig-name descname"><span class="pre">getLinks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getLinks" title="Permalink to this definition"></a></dt>
+<dd><p>Accessor to the vector containing all the links of this object
+:return: A vector containing the links</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getLoggedMessagesAsString">
+<span class="sig-name descname"><span class="pre">getLoggedMessagesAsString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getLoggedMessagesAsString" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a single string with all the messages logged in the internal buffer of a sofa object.
+Return empty string if there is no messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getMaster">
+<span class="sig-name descname"><span class="pre">getMaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getMaster" title="Permalink to this definition"></a></dt>
+<dd><p>Return the master of the baseObject.
+:rtype: BaseObject</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getName">
+<span class="sig-name descname"><span class="pre">getName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getName" title="Permalink to this definition"></a></dt>
+<dd><p>Return the name of the entity
+:rtype: string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getPathName">
+<span class="sig-name descname"><span class="pre">getPathName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getPathName" title="Permalink to this definition"></a></dt>
+<dd><p>Return the full path name of this baseObject
+:rtype: string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getSlaves">
+<span class="sig-name descname"><span class="pre">getSlaves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getSlaves" title="Permalink to this definition"></a></dt>
+<dd><p>Return the slaves of the baseObject.
+:rtype: list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getTarget">
+<span class="sig-name descname"><span class="pre">getTarget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getTarget" title="Permalink to this definition"></a></dt>
+<dd><p>Return the target (plugin) that contains the current baseObject.
+:rtype: string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.getTemplateName">
+<span class="sig-name descname"><span class="pre">getTemplateName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.getTemplateName" title="Permalink to this definition"></a></dt>
+<dd><p>Get the name of the template of the Base.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.init">
+<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialization method called at graph creation and modification, during top-down traversal.Initialize data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.reinit">
+<span class="sig-name descname"><span class="pre">reinit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.reinit" title="Permalink to this definition"></a></dt>
+<dd><p>Update method called when variables used in precomputation are modified.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.reset" title="Permalink to this definition"></a></dt>
+<dd><p>Reset to initial state.
+To save the initial state, see storeResetState().</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.setDataValues">
+<span class="sig-name descname"><span class="pre">setDataValues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.setDataValues" title="Permalink to this definition"></a></dt>
+<dd><p>Set values for a the given data field, multiple pairs of args are allowed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.setDefinitionSourceFileName">
+<span class="sig-name descname"><span class="pre">setDefinitionSourceFileName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.setDefinitionSourceFileName" title="Permalink to this definition"></a></dt>
+<dd><p>set the name of the file that contains the object definition.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.setDefinitionSourceFilePos">
+<span class="sig-name descname"><span class="pre">setDefinitionSourceFilePos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.setDefinitionSourceFilePos" title="Permalink to this definition"></a></dt>
+<dd><p>Set the line number where the object is defined.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.setInstanciationSourceFileName">
+<span class="sig-name descname"><span class="pre">setInstanciationSourceFileName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.setInstanciationSourceFileName" title="Permalink to this definition"></a></dt>
+<dd><p>Set the line number where the object is instanciatiated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.setInstanciationSourceFilePos">
+<span class="sig-name descname"><span class="pre">setInstanciationSourceFilePos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.setInstanciationSourceFilePos" title="Permalink to this definition"></a></dt>
+<dd><p>Set the line number where the object is instanciatiated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.setName">
+<span class="sig-name descname"><span class="pre">setName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.setName" title="Permalink to this definition"></a></dt>
+<dd><p>Set the name of this object
+:param n
+:type n: string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.setSrc">
+<span class="sig-name descname"><span class="pre">setSrc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.setSrc" title="Permalink to this definition"></a></dt>
+<dd><p>Set a source Object and parses it to collect dependent Data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.storeResetState">
+<span class="sig-name descname"><span class="pre">storeResetState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.storeResetState" title="Permalink to this definition"></a></dt>
+<dd><p>Save the initial state for later uses in reset()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="SofaExporter.VisualModelOBJExporter.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#SofaExporter.VisualModelOBJExporter" title="SofaExporter.VisualModelOBJExporter"><span class="pre">SofaExporter.VisualModelOBJExporter</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#SofaExporter.VisualModelOBJExporter.write" title="Permalink to this definition"></a></dt>
+<dd><section id="exports-an-obj-file">
+<h2>Exports an OBJ file<a class="headerlink" href="#exports-an-obj-file" title="Permalink to this heading"></a></h2>
+<p>Will export a binary or ascii file depending on the binary flag of VisualModelOBJExporter
+Will auto-number the exported files</p>
+<dl>
+<dt>Example of use:</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">Sofa</span>
+<span class="kn">import</span> <span class="nn">SofaExporter</span>
+
+<span class="c1"># Create a new node</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">Sofa</span><span class="o">.</span><span class="n">Core</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;root&quot;&quot;)</span>
+
+<span class="c1"># Add STLExporter</span>
+<span class="n">n</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s2">&quot;VisualModelOBJExporter&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;exporter&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+
+<span class="c1"># writes down the stl file</span>
+<span class="n">n</span><span class="o">.</span><span class="n">exporter</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="SofaExporter.STLExporter.html" class="btn btn-neutral float-left" title="SofaExporter.STLExporter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../../../SofaRuntime/index.html" class="btn btn-neutral float-right" title="SofaRuntime" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, SOFA Framework.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

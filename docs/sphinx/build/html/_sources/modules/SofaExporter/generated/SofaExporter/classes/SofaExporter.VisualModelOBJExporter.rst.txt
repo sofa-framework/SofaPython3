@@ -1,0 +1,15 @@
+..
+  class.rst
+
+SofaExporter.VisualModelOBJExporter
+===================================
+
+.. currentmodule:: SofaExporter
+
+.. autoclass:: VisualModelOBJExporter
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

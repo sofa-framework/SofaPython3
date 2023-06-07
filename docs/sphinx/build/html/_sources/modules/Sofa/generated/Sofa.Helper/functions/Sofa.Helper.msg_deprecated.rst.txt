@@ -1,0 +1,9 @@
+..
+  base.rst
+
+Sofa.Helper.msg\_deprecated
+===========================
+
+.. currentmodule:: Sofa.Helper
+
+.. autofunction:: msg_deprecated

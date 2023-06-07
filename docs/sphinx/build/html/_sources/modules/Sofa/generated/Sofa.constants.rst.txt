@@ -1,0 +1,40 @@
+﻿..
+  sub-module.rst
+
+Sofa.constants
+==============
+
+General description
+-------------------
+
+.. automodule:: Sofa.constants
+
+
+API Table of Content
+--------------------
+
+
+    
+    .. rubric:: Sub-modules
+    .. autosummary::
+        :toctree: Sofa.constants/submodules
+        
+        Sofa.constants.KeyCode
+        Sofa.constants.Key
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+
+
