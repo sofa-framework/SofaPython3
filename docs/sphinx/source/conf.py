@@ -40,6 +40,7 @@ extensions = [
     ]
 
 import sys
+import os
 import re
 from pathlib import Path
 
@@ -71,28 +72,11 @@ project = u'SofaPython3'
 copyright = u'2021, SOFA Framework'
 author = u'consortium@sofa-framework.org'
 
-# The version info for the project you're documenting, acts as replacement for
-# |version| and |release|, also used in various other places throughout the
-# built documents.
-#
-# The short X.Y version.
-_cmake_version_re = re.compile(r'project[^\S\n]*\(\w*[^\S\n]*VERSION[^\S\n]+(\w+).(\w+).(\w+)[^\S\n]*\)')
-
-version_major = 0
-version_minor = 0
-version_patch = 0
-for line in open('../../../CMakeLists.txt'):
-    version = _cmake_version_re.search(line)
-    if version:
-        version_major, version_minor, version_patch = version.group(1), version.group(2), version.group(3)
-        break
-
-version = f'{version_major}.{version_minor}'
-# The full version, including alpha/beta/rc tags.
-release = f'{version}.{version_patch}'
+stream = os.popen("git rev-parse --abbrev-ref HEAD")
+version = stream.read()
 
 html_context = {
- 'current_version': release,
+ 'current_version': version,
 }
 
 
@@ -130,6 +114,10 @@ html_theme_path = ["_themes", ]
 # documentation.
 #
 html_theme_options = {
+    'display_version': True,
+    'prev_next_buttons_location': 'bottom',
+    'style_external_links': False,
+
     # Toc options
     'collapse_navigation': False,
     'navigation_depth': 10,

@@ -1,9 +1,0 @@
-..
-  base.rst
-
-Sofa.SofaGL.glewInit
-====================
-
-.. currentmodule:: Sofa.SofaGL
-
-.. autofunction:: glewInit

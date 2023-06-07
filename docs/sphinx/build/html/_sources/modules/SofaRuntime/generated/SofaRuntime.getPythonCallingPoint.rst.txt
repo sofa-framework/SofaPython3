@@ -1,9 +1,0 @@
-﻿..
-  base.rst
-
-SofaRuntime.getPythonCallingPoint
-=================================
-
-.. currentmodule:: SofaRuntime
-
-.. autofunction:: getPythonCallingPoint

@@ -1,9 +1,0 @@
-﻿..
-  base.rst
-
-SofaRuntime.sofaExceptHandler
-=============================
-
-.. currentmodule:: SofaRuntime
-
-.. autofunction:: sofaExceptHandler

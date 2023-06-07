@@ -22,5 +22,9 @@ interpreter without requiring the load of the plugin.
 
 .. toctree::
     
-    modules/index
+    content/Compilation
+    content/Modules
+    content/PythonLibraries
+    content/CustomModule
+    content/Contributing 
 
