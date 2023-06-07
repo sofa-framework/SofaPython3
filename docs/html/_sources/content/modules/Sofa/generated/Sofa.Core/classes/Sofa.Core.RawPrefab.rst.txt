@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Core.RawPrefab
+===================
+
+.. currentmodule:: Sofa.Core
+
+.. autoclass:: RawPrefab
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

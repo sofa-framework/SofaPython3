@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Core.PointSetTopologyModifier
+==================================
+
+.. currentmodule:: Sofa.Core
+
+.. autoclass:: PointSetTopologyModifier
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

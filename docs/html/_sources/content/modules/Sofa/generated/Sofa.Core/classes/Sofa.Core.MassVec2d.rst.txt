@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Core.MassVec2d
+===================
+
+.. currentmodule:: Sofa.Core
+
+.. autoclass:: MassVec2d
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

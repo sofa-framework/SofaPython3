@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Core.BaseContext
+=====================
+
+.. currentmodule:: Sofa.Core
+
+.. autoclass:: BaseContext
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

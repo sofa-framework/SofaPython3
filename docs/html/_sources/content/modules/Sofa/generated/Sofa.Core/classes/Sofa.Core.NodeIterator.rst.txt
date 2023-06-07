@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Core.NodeIterator
+======================
+
+.. currentmodule:: Sofa.Core
+
+.. autoclass:: NodeIterator
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

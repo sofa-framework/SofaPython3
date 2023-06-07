@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Core.ObjectFactory
+=======================
+
+.. currentmodule:: Sofa.Core
+
+.. autoclass:: ObjectFactory
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

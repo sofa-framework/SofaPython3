@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Core.DataContainer
+=======================
+
+.. currentmodule:: Sofa.Core
+
+.. autoclass:: DataContainer
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

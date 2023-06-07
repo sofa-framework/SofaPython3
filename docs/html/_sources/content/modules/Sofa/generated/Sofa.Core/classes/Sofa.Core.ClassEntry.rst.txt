@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Core.ClassEntry
+====================
+
+.. currentmodule:: Sofa.Core
+
+.. autoclass:: ClassEntry
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

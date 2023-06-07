@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Core.DataContainerContextManager
+=====================================
+
+.. currentmodule:: Sofa.Core
+
+.. autoclass:: DataContainerContextManager
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

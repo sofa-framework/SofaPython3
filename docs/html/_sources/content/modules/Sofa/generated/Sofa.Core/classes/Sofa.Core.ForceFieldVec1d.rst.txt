@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Core.ForceFieldVec1d
+=========================
+
+.. currentmodule:: Sofa.Core
+
+.. autoclass:: ForceFieldVec1d
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

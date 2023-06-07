@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Core.Controller
+====================
+
+.. currentmodule:: Sofa.Core
+
+.. autoclass:: Controller
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

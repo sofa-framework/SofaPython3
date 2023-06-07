@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Core.BaseMeshTopology
+==========================
+
+.. currentmodule:: Sofa.Core
+
+.. autoclass:: BaseMeshTopology
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

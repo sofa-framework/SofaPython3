@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Core.ContactListener
+=========================
+
+.. currentmodule:: Sofa.Core
+
+.. autoclass:: ContactListener
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

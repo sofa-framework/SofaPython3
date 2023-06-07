@@ -13,6 +13,7 @@ Sub-modules
    :recursive:
 
    Simulation
+   Core
    Gui
    Helper
    Types

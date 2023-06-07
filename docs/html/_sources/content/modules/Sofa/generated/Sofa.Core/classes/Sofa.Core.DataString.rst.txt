@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Core.DataString
+====================
+
+.. currentmodule:: Sofa.Core
+
+.. autoclass:: DataString
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

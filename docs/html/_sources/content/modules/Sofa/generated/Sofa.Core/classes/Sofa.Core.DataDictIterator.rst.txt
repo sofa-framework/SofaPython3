@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Core.DataDictIterator
+==========================
+
+.. currentmodule:: Sofa.Core
+
+.. autoclass:: DataDictIterator
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+
