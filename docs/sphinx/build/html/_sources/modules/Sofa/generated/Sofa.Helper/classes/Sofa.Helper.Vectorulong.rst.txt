@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Helper.Vectorulong
+=======================
+
+.. currentmodule:: Sofa.Helper
+
+.. autoclass:: Vectorulong
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

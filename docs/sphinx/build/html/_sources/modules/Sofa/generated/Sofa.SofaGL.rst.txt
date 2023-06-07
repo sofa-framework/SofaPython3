@@ -1,0 +1,42 @@
+﻿..
+  sub-module.rst
+
+Sofa.SofaGL
+===========
+
+General description
+-------------------
+
+.. automodule:: Sofa.SofaGL
+
+
+API Table of Content
+--------------------
+
+
+    
+
+
+    
+
+
+    
+        .. rubric:: Functions
+        .. autosummary::
+            :toctree: Sofa.SofaGL/functions
+            :nosignatures:
+            :template: autosummary/base.rst
+            
+            draw
+            glewInit
+    
+
+
+    
+
+
+    
+
+
+
+

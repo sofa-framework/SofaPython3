@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Helper.StdVectordouble
+===========================
+
+.. currentmodule:: Sofa.Helper
+
+.. autoclass:: StdVectordouble
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

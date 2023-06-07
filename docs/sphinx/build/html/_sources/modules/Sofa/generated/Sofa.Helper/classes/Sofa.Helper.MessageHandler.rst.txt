@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Helper.MessageHandler
+==========================
+
+.. currentmodule:: Sofa.Helper
+
+.. autoclass:: MessageHandler
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

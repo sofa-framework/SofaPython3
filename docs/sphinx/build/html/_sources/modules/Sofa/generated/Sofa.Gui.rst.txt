@@ -1,0 +1,43 @@
+﻿..
+  sub-module.rst
+
+Sofa.Gui
+========
+
+General description
+-------------------
+
+.. automodule:: Sofa.Gui
+
+
+API Table of Content
+--------------------
+
+
+    
+
+
+    
+
+
+    
+
+
+    
+        .. rubric:: Classes
+        .. autosummary::
+            :toctree: Sofa.Gui/classes
+            :nosignatures:
+            :template: autosummary/class.rst
+            :recursive:
+            
+            BaseGUI
+            GUIManager
+    
+
+
+    
+
+
+
+

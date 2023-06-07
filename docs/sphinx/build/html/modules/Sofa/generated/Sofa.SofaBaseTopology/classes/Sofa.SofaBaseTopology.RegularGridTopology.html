@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sofa.SofaBaseTopology.RegularGridTopology &mdash; SofaPython3 20.12.00 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/contentui.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../../_static/contentui.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link rel="next" title="Sofa.SofaBaseTopology.SparseGridTopology" href="Sofa.SofaBaseTopology.SparseGridTopology.html" />
+    <link rel="prev" title="Sofa.SofaBaseTopology" href="../../Sofa.SofaBaseTopology.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            SofaPython3
+          </a>
+              <div class="version">
+                20.12
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+<a href="../../../../../index.html">Overview</a>
+
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../index.html">Modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html">Sofa</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.Simulation.html">Sofa.Simulation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.animate.html">Sofa.Simulation.animate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.animateNSteps.html">Sofa.Simulation.animateNSteps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.init.html">Sofa.Simulation.init</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.initTextures.html">Sofa.Simulation.initTextures</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.initVisual.html">Sofa.Simulation.initVisual</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.load.html">Sofa.Simulation.load</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.print.html">Sofa.Simulation.print</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.reset.html">Sofa.Simulation.reset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.unload.html">Sofa.Simulation.unload</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Simulation/functions/Sofa.Simulation.updateVisual.html">Sofa.Simulation.updateVisual</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.Gui.html">Sofa.Gui</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Gui/classes/Sofa.Gui.BaseGUI.html">Sofa.Gui.BaseGUI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Gui/classes/Sofa.Gui.GUIManager.html">Sofa.Gui.GUIManager</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.Helper.html">Sofa.Helper</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/functions/Sofa.Helper.msg_deprecated.html">Sofa.Helper.msg_deprecated</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/functions/Sofa.Helper.msg_error.html">Sofa.Helper.msg_error</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/functions/Sofa.Helper.msg_fatal.html">Sofa.Helper.msg_fatal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/functions/Sofa.Helper.msg_info.html">Sofa.Helper.msg_info</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/functions/Sofa.Helper.msg_warning.html">Sofa.Helper.msg_warning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/classes/Sofa.Helper.MessageHandler.html">Sofa.Helper.MessageHandler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/classes/Sofa.Helper.StdVectorBaseData.html">Sofa.Helper.StdVectorBaseData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/classes/Sofa.Helper.StdVectordouble.html">Sofa.Helper.StdVectordouble</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/classes/Sofa.Helper.StdVectorfloat.html">Sofa.Helper.StdVectorfloat</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/classes/Sofa.Helper.StdVectorint.html">Sofa.Helper.StdVectorint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/classes/Sofa.Helper.StdVectorlong.html">Sofa.Helper.StdVectorlong</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/classes/Sofa.Helper.StdVectoruint.html">Sofa.Helper.StdVectoruint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/classes/Sofa.Helper.StdVectorulong.html">Sofa.Helper.StdVectorulong</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/classes/Sofa.Helper.VectorBaseData.html">Sofa.Helper.VectorBaseData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/classes/Sofa.Helper.Vectordouble.html">Sofa.Helper.Vectordouble</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/classes/Sofa.Helper.Vectorfloat.html">Sofa.Helper.Vectorfloat</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/classes/Sofa.Helper.Vectorint.html">Sofa.Helper.Vectorint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/classes/Sofa.Helper.Vectorlong.html">Sofa.Helper.Vectorlong</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/classes/Sofa.Helper.Vectoruint.html">Sofa.Helper.Vectoruint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Helper/classes/Sofa.Helper.Vectorulong.html">Sofa.Helper.Vectorulong</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.Types.html">Sofa.Types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.Types/classes/Sofa.Types.BoundingBox.html">Sofa.Types.BoundingBox</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.SofaTypes.html">Sofa.SofaTypes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaTypes/submodules/Sofa.SofaTypes.SofaTypes.html">Sofa.SofaTypes.SofaTypes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.prefab.html">Sofa.prefab</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.prefab/classes/Sofa.prefab.Prefab.html">Sofa.prefab.Prefab</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.constants.html">Sofa.constants</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.constants/submodules/Sofa.constants.KeyCode.html">Sofa.constants.KeyCode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.constants/submodules/Sofa.constants.Key.html">Sofa.constants.Key</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.msg_error.html">Sofa.msg_error</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.msg_info.html">Sofa.msg_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.msg_warning.html">Sofa.msg_warning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.msg_deprecated.html">Sofa.msg_deprecated</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../Sofa.SofaBaseTopology.html">Sofa.SofaBaseTopology</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Sofa.SofaBaseTopology.RegularGridTopology</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Sofa.SofaBaseTopology.SparseGridTopology.html">Sofa.SofaBaseTopology.SparseGridTopology</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.SofaConstraintSolver.html">Sofa.SofaConstraintSolver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaConstraintSolver/classes/Sofa.SofaConstraintSolver.ConstraintSolverImpl.html">Sofa.SofaConstraintSolver.ConstraintSolverImpl</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.SofaDeformable.html">Sofa.SofaDeformable</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaDeformable/classes/Sofa.SofaDeformable.LinearSpring.html">Sofa.SofaDeformable.LinearSpring</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Rigid3d.html">Sofa.SofaDeformable.SpringForceField_Rigid3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Vec1d.html">Sofa.SofaDeformable.SpringForceField_Vec1d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Vec2d.html">Sofa.SofaDeformable.SpringForceField_Vec2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Vec3d.html">Sofa.SofaDeformable.SpringForceField_Vec3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaDeformable/classes/Sofa.SofaDeformable.SpringForceField_Vec6d.html">Sofa.SofaDeformable.SpringForceField_Vec6d</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../Sofa.SofaGL.html">Sofa.SofaGL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaGL/functions/Sofa.SofaGL.draw.html">Sofa.SofaGL.draw</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Sofa.SofaGL/functions/Sofa.SofaGL.glewInit.html">Sofa.SofaGL.glewInit</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../SofaExporter/generated/SofaExporter.html">SofaExporter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaExporter/generated/SofaExporter/classes/SofaExporter.STLExporter.html">SofaExporter.STLExporter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaExporter/generated/SofaExporter/classes/SofaExporter.VisualModelOBJExporter.html">SofaExporter.VisualModelOBJExporter</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../SofaRuntime/index.html">SofaRuntime</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.importPlugin.html">SofaRuntime.importPlugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.unloadModules.html">SofaRuntime.unloadModules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.formatStackForSofa.html">SofaRuntime.formatStackForSofa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.getStackForSofa.html">SofaRuntime.getStackForSofa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.getPythonCallingPointAsString.html">SofaRuntime.getPythonCallingPointAsString</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.getPythonCallingPoint.html">SofaRuntime.getPythonCallingPoint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.sendMessageFromException.html">SofaRuntime.sendMessageFromException</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.sofaFormatHandler.html">SofaRuntime.sofaFormatHandler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.sofaExceptHandler.html">SofaRuntime.sofaExceptHandler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../SofaRuntime/generated/SofaRuntime.getSofaFormattedStringFromException.html">SofaRuntime.getSofaFormattedStringFromException</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">SofaPython3</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Modules</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Sofa</a></li>
+          <li class="breadcrumb-item"><a href="../../Sofa.SofaBaseTopology.html">Sofa.SofaBaseTopology</a></li>
+      <li class="breadcrumb-item active">Sofa.SofaBaseTopology.RegularGridTopology</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../_sources/modules/Sofa/generated/Sofa.SofaBaseTopology/classes/Sofa.SofaBaseTopology.RegularGridTopology.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sofa-sofabasetopology-regulargridtopology">
+<h1>Sofa.SofaBaseTopology.RegularGridTopology<a class="headerlink" href="#sofa-sofabasetopology-regulargridtopology" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Sofa.SofaBaseTopology.</span></span><span class="sig-name descname"><span class="pre">RegularGridTopology</span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Object</span></code></p>
+<p>Regular grid of hexahedral cells in space.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.addData">
+<span class="sig-name descname"><span class="pre">addData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.addData" title="Permalink to this definition"></a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic">
+<li><p>addData(self: object, name: str, value: object = None, default: object = None, help: str = ‘’, group: str = ‘’, type: str = ‘’) -&gt; sofa::core::objectmodel::BaseData</p>
+<blockquote>
+<div><p>Create a data field, then adds it to the base.
+Note that this method should only be called if the field was not initialized with the initData method
+:param self: the base itself
+:param name: the name of the data to be added
+:param value: the value from which the data can be created
+:param help: help message that describes the data to be created
+:param group: the group the data belongs to
+:param type: the type of the data
+:type self: object
+:type name: string
+:type value: object
+:type help: string
+:type group: string
+:type type: string</p>
+</div></blockquote>
+</li>
+<li><p>addData(self: Sofa.Core.Base, arg0: object) -&gt; sofa::core::objectmodel::BaseData</p>
+<blockquote>
+<div><p>Add a data field.
+Note that this method should only be called if the field was not initialized with the initData method
+:param self: the base itself
+:param d: the data to be added
+:type self: Base*
+:type d: object</p>
+</div></blockquote>
+</li>
+</ol>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.addLink">
+<span class="sig-name descname"><span class="pre">addLink</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">sofa::core::objectmodel::BaseLink</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.addLink" title="Permalink to this definition"></a></dt>
+<dd><p>Create a Link to a SOFA component and adds it to the base.
+Note that this method should only be called if the field was not initialized with the initLink method
+:param self: the base itself
+:param name: the name of the link to be added
+:param value: the value from which the data can be created (either a pathname or a SofaBase)
+:param help: help message that describes the link to be created
+:type self: object
+:type name: string
+:type value: object
+:type help: string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.addSlave">
+<span class="sig-name descname"><span class="pre">addSlave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.addSlave" title="Permalink to this definition"></a></dt>
+<dd><p>Add a slave to the master BaseObject.
+:param slave: the slave to be added.
+:type slave: BaseObject</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.bwdInit">
+<span class="sig-name descname"><span class="pre">bwdInit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.bwdInit" title="Permalink to this definition"></a></dt>
+<dd><p>Initialization method called at graph creation and modification, during bottom-up traversal.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.cleanup" title="Permalink to this definition"></a></dt>
+<dd><p>Called just before deleting this object
+Any object in the tree bellow this object that are to be removed will be removed only after this call,
+so any references this object holds should still be valid.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.clearLoggedMessages">
+<span class="sig-name descname"><span class="pre">clearLoggedMessages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.clearLoggedMessages" title="Permalink to this definition"></a></dt>
+<dd><p>Remove all logged messages in the object’s logs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.computeBBox">
+<span class="sig-name descname"><span class="pre">computeBBox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.computeBBox" title="Permalink to this definition"></a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic">
+<li><p>computeBBox(self: Sofa.Core.Object) -&gt; None</p>
+<blockquote>
+<div><p>Bounding Box computation method.
+Default to empty method.</p>
+</div></blockquote>
+</li>
+<li><p>computeBBox(self: Sofa.Core.Object, arg0: sofa::core::ExecParams, arg1: bool) -&gt; None</p>
+<blockquote>
+<div><p>Bounding Box computation method.
+Default to empty method.</p>
+</div></blockquote>
+</li>
+</ol>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.countLoggedMessages">
+<span class="sig-name descname"><span class="pre">countLoggedMessages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.countLoggedMessages" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the number of messages in the object’s logs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.findData">
+<span class="sig-name descname"><span class="pre">findData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">sofa::core::objectmodel::BaseData</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.findData" title="Permalink to this definition"></a></dt>
+<dd><p>Find a data field given its name.
+Return NULL if not found.
+If more than one field is found (due to aliases), only the first is returned.
+:param name
+:type name: string
+:return: the data field</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.findLink">
+<span class="sig-name descname"><span class="pre">findLink</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">sofa::core::objectmodel::BaseLink</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.findLink" title="Permalink to this definition"></a></dt>
+<dd><p>Find a link given its name.
+Return NULL if not found.
+If more than one link is found (due to aliases), only the first is returned.
+:param name: the name of the link
+:type name: string
+:return: the link</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getAsACreateObjectParameter">
+<span class="sig-name descname"><span class="pre">getAsACreateObjectParameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getAsACreateObjectParameter" title="Permalink to this definition"></a></dt>
+<dd><p>Return the full path name of this baseObject with an extra prefix ‘&#64;’
+:rtype: string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getCategories">
+<span class="sig-name descname"><span class="pre">getCategories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getCategories" title="Permalink to this definition"></a></dt>
+<dd><p>Return the list of categories the current object belongs to.
+:rtype: list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getClass">
+<span class="sig-name descname"><span class="pre">getClass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">sofa::core::objectmodel::BaseClass</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getClass" title="Permalink to this definition"></a></dt>
+<dd><p>Return the class of the object</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getClassName">
+<span class="sig-name descname"><span class="pre">getClassName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getClassName" title="Permalink to this definition"></a></dt>
+<dd><p>Get the name of the class of the Base.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getContext">
+<span class="sig-name descname"><span class="pre">getContext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getContext" title="Permalink to this definition"></a></dt>
+<dd><p>Return the conext of the baseObject.
+:rtype: BaseContext</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getData">
+<span class="sig-name descname"><span class="pre">getData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getData" title="Permalink to this definition"></a></dt>
+<dd><p>Get the data field given its name.
+:param self:
+:param s:
+:type self: Base&amp;
+:type s: string
+:return: the first data found of this name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getDataFields">
+<span class="sig-name descname"><span class="pre">getDataFields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getDataFields" title="Permalink to this definition"></a></dt>
+<dd><p>Accessor to the vector containing all the fields of this object
+:return: A vector containing the data fields</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getDefinitionSourceFileName">
+<span class="sig-name descname"><span class="pre">getDefinitionSourceFileName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getDefinitionSourceFileName" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the name of the file that contains the object definition.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getDefinitionSourceFilePos">
+<span class="sig-name descname"><span class="pre">getDefinitionSourceFilePos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getDefinitionSourceFilePos" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the line number where the object is defined.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getInstanciationFileName">
+<span class="sig-name descname"><span class="pre">getInstanciationFileName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getInstanciationFileName" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the line number where the object is instanciatiated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getInstanciationSourceFilePos">
+<span class="sig-name descname"><span class="pre">getInstanciationSourceFilePos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getInstanciationSourceFilePos" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the line number where the object is instanciatiated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getLinkPath">
+<span class="sig-name descname"><span class="pre">getLinkPath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getLinkPath" title="Permalink to this definition"></a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic">
+<li><p>getLinkPath(self: Sofa.Core.Object) -&gt; str</p>
+<blockquote>
+<div><p>Return the link of the baseObject
+:param self: the baseObject itself
+:type self: baseObject
+:rtype: string</p>
+</div></blockquote>
+</li>
+<li><p>getLinkPath(self: Sofa.Core.Object) -&gt; str</p>
+<blockquote>
+<div><p>Return the full path name of this baseObject with an extra prefix ‘&#64;’
+:rtype: string</p>
+</div></blockquote>
+</li>
+</ol>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getLinks">
+<span class="sig-name descname"><span class="pre">getLinks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getLinks" title="Permalink to this definition"></a></dt>
+<dd><p>Accessor to the vector containing all the links of this object
+:return: A vector containing the links</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getLoggedMessagesAsString">
+<span class="sig-name descname"><span class="pre">getLoggedMessagesAsString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getLoggedMessagesAsString" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a single string with all the messages logged in the internal buffer of a sofa object.
+Return empty string if there is no messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getMaster">
+<span class="sig-name descname"><span class="pre">getMaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getMaster" title="Permalink to this definition"></a></dt>
+<dd><p>Return the master of the baseObject.
+:rtype: BaseObject</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getName">
+<span class="sig-name descname"><span class="pre">getName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getName" title="Permalink to this definition"></a></dt>
+<dd><p>Return the name of the entity
+:rtype: string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getPathName">
+<span class="sig-name descname"><span class="pre">getPathName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getPathName" title="Permalink to this definition"></a></dt>
+<dd><p>Return the full path name of this baseObject
+:rtype: string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getPoint">
+<span class="sig-name descname"><span class="pre">getPoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#Sofa.SofaBaseTopology.RegularGridTopology" title="Sofa.SofaBaseTopology.RegularGridTopology"><span class="pre">Sofa.SofaBaseTopology.RegularGridTopology</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SofaTypes.SofaTypes.Vec3d</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getPoint" title="Permalink to this definition"></a></dt>
+<dd><p>Get the position of node of the grid from its index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int</em>) – The index of the node.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A vector3 containing the position of the given node index.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Vector3</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getSlaves">
+<span class="sig-name descname"><span class="pre">getSlaves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getSlaves" title="Permalink to this definition"></a></dt>
+<dd><p>Return the slaves of the baseObject.
+:rtype: list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getTarget">
+<span class="sig-name descname"><span class="pre">getTarget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getTarget" title="Permalink to this definition"></a></dt>
+<dd><p>Return the target (plugin) that contains the current baseObject.
+:rtype: string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.getTemplateName">
+<span class="sig-name descname"><span class="pre">getTemplateName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.getTemplateName" title="Permalink to this definition"></a></dt>
+<dd><p>Get the name of the template of the Base.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.init">
+<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.init" title="Permalink to this definition"></a></dt>
+<dd><p>Initialization method called at graph creation and modification, during top-down traversal.Initialize data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.reinit">
+<span class="sig-name descname"><span class="pre">reinit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.reinit" title="Permalink to this definition"></a></dt>
+<dd><p>Update method called when variables used in precomputation are modified.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.reset" title="Permalink to this definition"></a></dt>
+<dd><p>Reset to initial state.
+To save the initial state, see storeResetState().</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.setDataValues">
+<span class="sig-name descname"><span class="pre">setDataValues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.setDataValues" title="Permalink to this definition"></a></dt>
+<dd><p>Set values for a the given data field, multiple pairs of args are allowed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.setDefinitionSourceFileName">
+<span class="sig-name descname"><span class="pre">setDefinitionSourceFileName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.setDefinitionSourceFileName" title="Permalink to this definition"></a></dt>
+<dd><p>set the name of the file that contains the object definition.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.setDefinitionSourceFilePos">
+<span class="sig-name descname"><span class="pre">setDefinitionSourceFilePos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.setDefinitionSourceFilePos" title="Permalink to this definition"></a></dt>
+<dd><p>Set the line number where the object is defined.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.setInstanciationSourceFileName">
+<span class="sig-name descname"><span class="pre">setInstanciationSourceFileName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.setInstanciationSourceFileName" title="Permalink to this definition"></a></dt>
+<dd><p>Set the line number where the object is instanciatiated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.setInstanciationSourceFilePos">
+<span class="sig-name descname"><span class="pre">setInstanciationSourceFilePos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.setInstanciationSourceFilePos" title="Permalink to this definition"></a></dt>
+<dd><p>Set the line number where the object is instanciatiated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.setName">
+<span class="sig-name descname"><span class="pre">setName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.setName" title="Permalink to this definition"></a></dt>
+<dd><p>Set the name of this object
+:param n
+:type n: string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.setSrc">
+<span class="sig-name descname"><span class="pre">setSrc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.setSrc" title="Permalink to this definition"></a></dt>
+<dd><p>Set a source Object and parses it to collect dependent Data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Sofa.SofaBaseTopology.RegularGridTopology.storeResetState">
+<span class="sig-name descname"><span class="pre">storeResetState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sofa.Core.Object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#Sofa.SofaBaseTopology.RegularGridTopology.storeResetState" title="Permalink to this definition"></a></dt>
+<dd><p>Save the initial state for later uses in reset()</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../Sofa.SofaBaseTopology.html" class="btn btn-neutral float-left" title="Sofa.SofaBaseTopology" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Sofa.SofaBaseTopology.SparseGridTopology.html" class="btn btn-neutral float-right" title="Sofa.SofaBaseTopology.SparseGridTopology" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, SOFA Framework.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

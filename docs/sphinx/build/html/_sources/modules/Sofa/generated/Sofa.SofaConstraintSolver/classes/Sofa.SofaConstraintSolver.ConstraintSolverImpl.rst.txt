@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.SofaConstraintSolver.ConstraintSolverImpl
+==============================================
+
+.. currentmodule:: Sofa.SofaConstraintSolver
+
+.. autoclass:: ConstraintSolverImpl
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+

@@ -1,0 +1,15 @@
+..
+  class.rst
+
+Sofa.Gui.GUIManager
+===================
+
+.. currentmodule:: Sofa.Gui
+
+.. autoclass:: GUIManager
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+
+
