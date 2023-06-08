@@ -15,4 +15,4 @@ build:
     - mkdir --parents $READTHEDOCS_OUTPUT/html/
     - wget https://github.com/sofa-framework/SofaPython3/releases/download/release-v22.12/SofaPython3_v22.12_docs.zip
     - unzip SofaPython3_v22.12_docs.zip
-    - cp -r build/html/ $READTHEDOCS_OUTPUT/html/
+    - cp --recursive build/html/ $READTHEDOCS_OUTPUT/html/
