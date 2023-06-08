@@ -1,9 +1,0 @@
-..
-  base.rst
-
-Sofa.Simulation.animateNSteps
-=============================
-
-.. currentmodule:: Sofa.Simulation
-
-.. autofunction:: animateNSteps

@@ -1,9 +1,0 @@
-..
-  base.rst
-
-Sofa.Simulation.print
-=====================
-
-.. currentmodule:: Sofa.Simulation
-
-.. autofunction:: print

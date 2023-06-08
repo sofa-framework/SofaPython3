@@ -1,9 +1,0 @@
-..
-  base.rst
-
-Sofa.Simulation.initVisual
-==========================
-
-.. currentmodule:: Sofa.Simulation
-
-.. autofunction:: initVisual

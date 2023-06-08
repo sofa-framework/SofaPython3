@@ -1,9 +1,0 @@
-..
-  base.rst
-
-Sofa.Simulation.unload
-======================
-
-.. currentmodule:: Sofa.Simulation
-
-.. autofunction:: unload

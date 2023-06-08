@@ -1,9 +1,0 @@
-﻿..
-  base.rst
-
-Sofa.msg\_deprecated
-====================
-
-.. currentmodule:: Sofa
-
-.. autofunction:: msg_deprecated

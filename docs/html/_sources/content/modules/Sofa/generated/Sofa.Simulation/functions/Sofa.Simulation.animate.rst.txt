@@ -1,9 +1,0 @@
-..
-  base.rst
-
-Sofa.Simulation.animate
-=======================
-
-.. currentmodule:: Sofa.Simulation
-
-.. autofunction:: animate
