@@ -13,7 +13,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaExporter/Module_SofaExporter.cpp
 )
 
-sofa_find_package(SofaExporter REQUIRED)
+sofa_find_package(Sofa.Component.IO.Mesh REQUIRED)
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
@@ -21,7 +21,7 @@ SP3_add_python_module(
     DESTINATION  .
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
-    DEPENDS      SofaExporter SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
+    DEPENDS      Sofa.Component.IO.Mesh SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
 )
 
 sofa_create_component_in_package_with_targets(
