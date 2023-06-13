@@ -256,7 +256,7 @@ void PythonEnvironment::Init()
     // case where both env vars are set
     else if (pathVar != nullptr && deprecatedPathVar != nullptr)
     {
-        msg_deprecated("SofaPython3") << deprecatedEnvVarName << " and " << envVarName << " environment variables are both set."
+        msg_deprecated("SofaPython3") << deprecatedEnvVarName << " and " << envVarName << " environment variables are both set.";
         msg_deprecated("SofaPython3") << deprecatedEnvVarName << " is deprecated, and only " << envVarName << " will be used.";
     }
     
