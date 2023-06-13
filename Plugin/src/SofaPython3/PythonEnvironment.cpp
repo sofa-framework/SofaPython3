@@ -337,7 +337,7 @@ void PythonEnvironment::addPythonModulePath(const std::string& path)
 {
     if (!(FileSystem::exists(path) && FileSystem::isDirectory(path)))
     {
-        msg_warning("SofaPython3") << "Could not add '" + path + "'" << "(does not exist or is not a directory)";
+        msg_warning("SofaPython3") << "Could not add '" + path + "'" << " to sys.path (it does not exist or is not a directory)";
         return;
     }
 
