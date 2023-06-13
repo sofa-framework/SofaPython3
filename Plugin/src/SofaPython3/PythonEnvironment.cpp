@@ -240,15 +240,26 @@ void PythonEnvironment::Init()
 
     /// Add the directories listed in the SOFAPYTHON3_PLUGINS_PATH environnement
     /// variable to sys.path
-    std::string envVarName = "SOFAPYTHON3_PLUGINS_PATH";
+    const std::string envVarName = "SOFAPYTHON3_PLUGINS_PATH";
     const std::string deprecatedEnvVarName = "SOFAPYTHON_PLUGINS_PATH";
+    std::string usedEnvVarName = envVarName;
 
-    char* pathVar = getenv(deprecatedEnvVarName.c_str());
-    if (pathVar != nullptr)
+    char* deprecatedPathVar = getenv(deprecatedEnvVarName.c_str());
+    char* pathVar = getenv(envVarName.c_str());
+    
+    // case where only the deprecated env var is set
+    if (pathVar != nullptr && deprecatedPathVar == nullptr)
     {
-        msg_deprecated("SofaPython3") << deprecatedEnvVarName << " environment variable is deprecated, use SOFAPYTHON3_PLUGINS_PATH instead.";
-        envVarName = "SOFAPYTHON_PLUGINS_PATH";
+        msg_deprecated("SofaPython3") << deprecatedEnvVarName << " environment variable is deprecated, use " << envVarName << " instead.";
+        usedEnvVarName = "SOFAPYTHON_PLUGINS_PATH";
     }
+    // case where both env vars are set
+    else if (pathVar != nullptr && deprecatedPathVar != nullptr)
+    {
+        msg_deprecated("SofaPython3") << deprecatedEnvVarName << " and " << envVarName << " environment variables are both set."
+        msg_deprecated("SofaPython3") << deprecatedEnvVarName << " is deprecated, and only " << envVarName << " will be used.";
+    }
+    
     sofa::helper::system::FileRepository pluginPathsRepository(envVarName.c_str());
     const auto& pluginPaths = pluginPathsRepository.getPaths();
     for (auto pluginPath : pluginPaths)
