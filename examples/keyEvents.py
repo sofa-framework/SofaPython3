@@ -45,6 +45,8 @@ class KeyPressedController(Sofa.Core.Controller):
     def onKeyreleasedEvent(self, event):
         print("You released a key!")
 
-def createScene(rootNode):
-    rootNode.addObject(KeyPressedController(name = "MyController"))
-    return rootNode
+def createScene(root):
+    root.bbox = [[-1, -1, -1],[1,1,1]]
+    root.addObject('DefaultAnimationLoop')
+    root.addObject(KeyPressedController(name = "MyController"))
+    return root

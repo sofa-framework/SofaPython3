@@ -17,7 +17,10 @@ def createScene(root):
                                                  "Sofa.Component.Mapping.MappedMatrix",
                                                  "Sofa.Component.Mass",
                                                  "Sofa.Component.ODESolver.Backward",
-                                                 "Sofa.Component.Topology.Container.Dynamic"])
+                                                 "Sofa.Component.Topology.Container.Dynamic",
+                                                 "Sofa.Component.Mapping.NonLinear",
+                                                 "Sofa.Component.StateContainer"
+                                                 ])
 
     root.addObject("FreeMotionAnimationLoop", solveVelocityConstraintFirst=True)
     constraint_solver = root.addObject("GenericConstraintSolver", tolerance=1e-9, maxIterations=1000)
@@ -27,7 +30,7 @@ def createScene(root):
     root.addObject("SparseCholeskySolver")
     root.addObject("GenericConstraintCorrection")
 
-    root.addObject("EdgeSetTopologyContainer", position="@loader.position", edges="@loader.edges")
+    root.addObject("EdgeSetTopologyContainer", name="topo", position="@loader.position", edges="@loader.edges")
     root.addObject("MechanicalObject", name="defoDOF", template="Vec3d")
     root.addObject("EdgeSetGeometryAlgorithms", drawEdges=True)
     root.addObject("FixedConstraint", indices=[0])
@@ -35,7 +38,7 @@ def createScene(root):
 
     ext = root.addChild("extensionsNode")
     ext.addObject("MechanicalObject", template="Vec1d", name="extensionsDOF")
-    ext.addObject("DistanceMapping", name="distanceMapping")
+    ext.addObject("DistanceMapping", name="distanceMapping", topology="@topo")
     ext.addObject("UniformConstraint", template="Vec1d", iterative=True)
 
     root.addObject(MatrixAccessController('MatrixAccessor', name='matrixAccessor', constraint_solver=constraint_solver))
