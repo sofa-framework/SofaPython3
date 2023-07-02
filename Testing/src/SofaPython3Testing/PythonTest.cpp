@@ -106,7 +106,6 @@ void PythonTest::run( const PythonTestData& data )
 
     {
         EXPECT_MSG_NOEMIT(Error);
-        sofa::simulation::setSimulation(simpleapi::createSimulation().get());
 
         try{
             py::module unittest = py::module::import("unittest");
