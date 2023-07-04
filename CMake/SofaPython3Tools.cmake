@@ -34,12 +34,11 @@ macro(SP3_get_python_user_site)
     endif()
 endmacro()
 
-# - Create a python package by copying the source directory to the destination directory. Every files within the
-#   source directory will be configured with the current cmake variables available (see CMake configure_file documentation)
+# - Create a python package by copying the source directory to the destination directory.
 #
 # SP3_add_python_package(PACKAGE_NAME SOURCE_DIRECTORY TARGET_DIRECTORY)
-#  SOURCE_DIRECTORY   - (input) the source path of the directory to be configured and copied to the target directory.
-#  TARGET_DIRECTORY   - (input) the target path of the directory that will contain the configured files.
+#  SOURCE_DIRECTORY   - (input) the source path of the directory to be copied to the target directory.
+#  TARGET_DIRECTORY   - (input) the target path of the directory that will contain the copied files.
 #                               Files will be at LIBRARY_OUTPUT_DIRECTORY/SP3_PYTHON_PACKAGES_DIRECTORY/TARGET_DIRECTORY.
 function(SP3_add_python_package)
     set(options)
@@ -53,11 +52,7 @@ function(SP3_add_python_package)
     file(GLOB_RECURSE files RELATIVE ${A_SOURCE_DIRECTORY} ${A_SOURCE_DIRECTORY}/*)
     foreach(file_relative_path ${files})
         set(file_absolute_path ${A_SOURCE_DIRECTORY}/${file_relative_path})
-        configure_file(
-            ${file_absolute_path}
-            ${OUTPUT_DIRECTORY}/${file_relative_path}
-            @ONLY
-        )
+        file(COPY ${file_absolute_path} DESTINATION ${OUTPUT_DIRECTORY}/${file_relative_path})
         get_filename_component(relative_directory ${file_relative_path} DIRECTORY)
         install(
             FILES "${OUTPUT_DIRECTORY}/${file_relative_path}"
