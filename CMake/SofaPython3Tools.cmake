@@ -52,8 +52,8 @@ function(SP3_add_python_package)
     file(GLOB_RECURSE files RELATIVE ${A_SOURCE_DIRECTORY} ${A_SOURCE_DIRECTORY}/*)
     foreach(file_relative_path ${files})
         set(file_absolute_path ${A_SOURCE_DIRECTORY}/${file_relative_path})
-        file(COPY ${file_absolute_path} DESTINATION ${OUTPUT_DIRECTORY}/${file_relative_path})
         get_filename_component(relative_directory ${file_relative_path} DIRECTORY)
+        file(COPY ${file_absolute_path} DESTINATION ${OUTPUT_DIRECTORY}/${relative_directory})
         install(
             FILES "${OUTPUT_DIRECTORY}/${file_relative_path}"
             DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}/${relative_directory}"
