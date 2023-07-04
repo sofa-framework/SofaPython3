@@ -50,32 +50,14 @@ function(SP3_add_python_package)
 
     set(OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY})
 
-    set(KNOWN_BINARY_EXTENSIONS ".stl" ".vtk")
-
     file(GLOB_RECURSE files RELATIVE ${A_SOURCE_DIRECTORY} ${A_SOURCE_DIRECTORY}/*)
     foreach(file_relative_path ${files})
         set(file_absolute_path ${A_SOURCE_DIRECTORY}/${file_relative_path})
-        get_filename_component(extension ${file_relative_path} EXT)
-        set(IS_KNOWN_BINARY_FILE BOOL FALSE)
-        if (${extension})
-            list(FIND KNOWN_BINARY_EXTENSIONS ${extension} _index)
-            if (${_index} GREATER -1)
-                set(IS_KNOWN_BINARY_FILE TRUE)
-            endif()
-        endif()
-        if (IS_KNOWN_BINARY_FILE)
-            configure_file(
-                ${file_absolute_path}
-                ${OUTPUT_DIRECTORY}/${file_relative_path}
-                COPYONLY
-            )
-        else()
-            configure_file(
-                ${file_absolute_path}
-                ${OUTPUT_DIRECTORY}/${file_relative_path}
-                @ONLY
-            )
-        endif()
+        configure_file(
+            ${file_absolute_path}
+            ${OUTPUT_DIRECTORY}/${file_relative_path}
+            @ONLY
+        )
         get_filename_component(relative_directory ${file_relative_path} DIRECTORY)
         install(
             FILES "${OUTPUT_DIRECTORY}/${file_relative_path}"
