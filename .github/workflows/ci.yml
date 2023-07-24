@@ -18,8 +18,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-11, windows-2019]
-        sofa_branch: [master]
+        os: [ubuntu-20.04, windows-2019]
+        sofa_branch: [v23.06]
         python_version: ['3.8']
 
     steps:
@@ -209,7 +209,7 @@ jobs:
           echo "RELEASE_DATE=$RELEASE_DATE" | tee -a $GITHUB_ENV
 
       - name: Delete old release
-        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        uses: dev-drprasad/delete-tag-and-release@v0.2.1
         with:
           tag_name: ${{ env.RELEASE_TAGNAME }}
           delete_release: true
