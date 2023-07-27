@@ -9,6 +9,7 @@ def createScene(root):
     root.addObject("DefaultAnimationLoop")
     root.addObject("DefaultVisualManagerLoop")
     root.addObject("RequiredPlugin", name="Sofa.Component.Topology.Container.Dynamic")
+    root.addObject('RequiredPlugin', name='Sofa.Component.StateContainer')
 
     container = root.addObject("PointSetTopologyContainer", points=[[0, 0, 0], [1, 0, 0]])
     modifier = root.addObject("PointSetTopologyModifier")

@@ -14,6 +14,17 @@ def createScene(root):
 
     root.addObject('VisualStyle', displayFlags="showBehaviorModels showForceFields")
 
+    root.addObject("RequiredPlugin", pluginName=['Sofa.Component.Constraint.Projective',
+    'Sofa.Component.Engine.Select',
+    'Sofa.Component.LinearSolver.Direct',
+    'Sofa.Component.Mass',
+    'Sofa.Component.ODESolver.Backward',
+    'Sofa.Component.SolidMechanics.FEM.Elastic',
+    'Sofa.Component.StateContainer',
+    'Sofa.Component.Topology.Container.Grid',
+    'Sofa.Component.Visual'
+    ])
+
     root.addObject('DefaultAnimationLoop')
     root.addObject('DefaultVisualManagerLoop')
 
