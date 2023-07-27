@@ -6,8 +6,20 @@ from Sofa import SofaDeformable
 def createScene(root):
     root.gravity = [0, -9.81, 0]
 
+    root.addObject("RequiredPlugin", pluginName=[    'Sofa.Component.IO.Mesh',
+    'Sofa.Component.LinearSolver.Iterative',
+    'Sofa.Component.Mapping.NonLinear',
+    'Sofa.Component.Mass',
+    'Sofa.Component.MechanicalLoad',
+    'Sofa.Component.ODESolver.Backward',
+    'Sofa.Component.SolidMechanics.Spring',
+    'Sofa.Component.StateContainer',
+    'Sofa.GL.Component.Rendering3D'
+    ])
+
+
+
     root.addObject('DefaultAnimationLoop')
-    root.addObject('DefaultVisualManagerLoop')
 
     surface_node = root.addChild('Surface')
     surface_loader = surface_node.addObject('MeshOBJLoader', name='surface_loader', filename='mesh/ball.obj')

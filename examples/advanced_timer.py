@@ -43,7 +43,21 @@ def createScene(root):
     root.dt = 0.01
 
     # List of required plugins
-    root.addObject('RequiredPlugin', name='Sofa.Component')
+    root.addObject("RequiredPlugin", pluginName=['Sofa.Component.Constraint.Projective',
+    'Sofa.Component.Engine.Select',
+    'Sofa.Component.LinearSolver.Iterative',
+    'Sofa.Component.MechanicalLoad',
+    'Sofa.Component.ODESolver.Backward',
+    'Sofa.Component.SolidMechanics.FEM.Elastic',
+    'Sofa.Component.StateContainer',
+    'Sofa.Component.Topology.Container.Dynamic',
+    'Sofa.Component.Topology.Container.Grid',
+    'Sofa.Component.Visual'
+    ])
+
+
+    # AnimationLoop
+    root.addObject('DefaultAnimationLoop')
 
     # Visual style
     root.addObject('VisualStyle', displayFlags='showBehaviorModels showForceFields')

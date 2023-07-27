@@ -11,5 +11,7 @@ class MyController(Sofa.Core.Controller):
         print("Handled event received: " + str(params))    
 
 def createScene(node):
+        node.bbox = [[-1, -1, -1],[1,1,1]]
+        node.addObject('DefaultAnimationLoop')
         node.addObject( MyController() )
         return node

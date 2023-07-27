@@ -90,7 +90,7 @@ def createScene(root):
     root.name = 'root'
     root.gravity = [0.0, 9.8, 0.0]
 
-    loader = root.addObject('MeshObjLoader', name='loader',
+    loader = root.addObject('MeshOBJLoader', name='loader',
                             filename="mesh/liver.obj")
     te = root.addObject("TransformEngine", name="te",
                         input_position=loader.position.getLinkPath(), rotation=[0,0,0])

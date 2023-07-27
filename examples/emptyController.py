@@ -85,6 +85,7 @@ class EmptyController(Sofa.Core.Controller):
 
 def createScene(root):
     root.dt = 0.01
+    root.bbox = [[-1, -1, -1],[1,1,1]]
     root.addObject('DefaultVisualManagerLoop')
     root.addObject('DefaultAnimationLoop')
 
