@@ -44,7 +44,7 @@ def main():
         for iteration in range(500):
             Sofa.Simulation.animate(root, root.dt.value)
         end = time.time()
-        print(end - start, "seconds")
+        print("500 iterations computed in " + str(end - start) + " seconds")
 
     print("Stopping...")
     TaskScheduler.stop()
