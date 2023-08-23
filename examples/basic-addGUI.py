@@ -10,8 +10,6 @@ def main():
     import SofaRuntime
     import Sofa.Gui
     # Make sure to load all SOFA libraries
-    SofaRuntime.importPlugin("Sofa.Component.StateContainer")
-    SofaRuntime.importPlugin("SofaOpenglVisual")
 
     #Create the root node
     root = Sofa.Core.Node("root")
@@ -39,8 +37,8 @@ def main():
 
 # Function called when the scene graph is being created
 def createScene(root):
-    # Scene must now include a VisualLoop
-    root.addObject('DefaultVisualManagerLoop')
+
+    root.addObject('RequiredPlugin', name='Sofa.Component.StateContainer')
 
     # Scene must now include a AnimationLoop
     root.addObject('DefaultAnimationLoop')
