@@ -1,9 +1,0 @@
-..
-  base.rst
-
-Sofa.SofaGL.draw
-================
-
-.. currentmodule:: Sofa.SofaGL
-
-.. autofunction:: draw

@@ -1,9 +1,0 @@
-..
-  base.rst
-
-Sofa.Simulation.initTextures
-============================
-
-.. currentmodule:: Sofa.Simulation
-
-.. autofunction:: initTextures

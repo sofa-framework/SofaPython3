@@ -1,9 +1,0 @@
-﻿..
-  base.rst
-
-Sofa.msg\_warning
-=================
-
-.. currentmodule:: Sofa
-
-.. autofunction:: msg_warning
