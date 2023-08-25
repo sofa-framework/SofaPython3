@@ -25,13 +25,13 @@ class TimerController(Sofa.Core.Controller):
         else:
             records = Timer.getRecords("cg_timer")
 
-        step_time = records['AnimateVisitor']['Mechanical (meca)']['total_time']
+        step_time = records['solve']['Mechanical (meca)']['total_time']
         print(f"Step took {step_time:.2f} ms")
 
-        nb_iterations = records['AnimateVisitor']['Mechanical (meca)']['StaticSolver::Solve']['nb_iterations']
+        nb_iterations = records['solve']['Mechanical (meca)']['StaticSolver::Solve']['nb_iterations']
         for i in range(int(nb_iterations)):
-            total_time = records['AnimateVisitor']['Mechanical (meca)']['StaticSolver::Solve']['NewtonStep'][i]['total_time']
-            CG_iterations = records['AnimateVisitor']['Mechanical (meca)']['StaticSolver::Solve']['NewtonStep'][i]['MBKSolve']['CG iterations']
+            total_time = records['solve']['Mechanical (meca)']['StaticSolver::Solve']['NewtonStep'][i]['total_time']
+            CG_iterations = records['solve']['Mechanical (meca)']['StaticSolver::Solve']['NewtonStep'][i]['MBKSolve']['CG iterations']
             print(f"  Newton iteration #{i} took {total_time:.2f} ms using {int(CG_iterations)} CG iterations")
 
         if not self.use_sofa_profiler_timer:
@@ -66,7 +66,7 @@ def createScene(root):
     root.addObject( TimerController() )
 
     # Create a grid topology of 10x10x60 centered on (0,0,0)
-    root.addObject('RegularGridTopology', name='grid', min=[-5, -5, -30], max=[5, 5, 30], n=[11, 11, 61])
+    root.addObject('RegularGridTopology', name='grid', min=[-5, -5, -30], max=[5, 5, 30], n=[6, 6, 16])
 
     # Create our mechanical node
     root.addChild("meca")
