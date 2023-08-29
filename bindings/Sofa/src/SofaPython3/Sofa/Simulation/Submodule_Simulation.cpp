@@ -81,7 +81,12 @@ PYBIND11_MODULE(Simulation, simulation)
             sofa::simulation::getSimulation()->animate(n, dt); //Execute one timestep. If dt is 0, the dt parameter in the graph will be used
         }
     }, sofapython3::doc::simulation::animateNSteps, py::arg("root_node"), py::arg("n_steps") = 1, py::arg("dt") = 0.0);
-    simulation.def("updateVisual", [](Node* n){ sofa::simulation::getSimulation()->updateVisual(n); });
+
+    simulation.def("updateVisual", [](Node* n)
+    {
+        sofa::simulation::getSimulation()->updateVisual(n);
+    });
+
     simulation.def("initTextures", [](Node* n)
     {
         sofa::simulation::getSimulation()->initTextures(n);

@@ -20,6 +20,17 @@
 
 #pragma once
 
+namespace sofapython3::doc::SofaExporter
+{
+
+static auto docstring =
+        R"(
+        Exports an STL file
+        -------------------
+        )";
+}
+
+
 namespace sofapython3::doc::SofaExporter::STLExporter::write
 {
 

@@ -24,7 +24,7 @@ namespace sofapython3::doc::linkpath
 {
 static auto linkpath =
         R"doc(
-        Hold a linkpath to an object or a data.
+        Hold a linkpath to an object or a data
 
         Example of use:
             node.addObject('MechanicalObject", name='o')

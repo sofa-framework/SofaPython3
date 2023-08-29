@@ -24,7 +24,7 @@ namespace sofapython3::doc::contactListener {
 
 static auto contactListenerClass =
         R"(
-        ContactListener is an API dedicated to the monitoring of two collision models.
+        Component dedicated to the monitoring of the collision information between models
 
         :Example of use:
 

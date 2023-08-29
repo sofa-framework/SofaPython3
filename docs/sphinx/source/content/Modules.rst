@@ -2,7 +2,7 @@ Modules
 =======
 
 .. toctree::
-    :maxdepth: 10
+    :maxdepth: 2
     
     modules/Sofa/index
     modules/SofaExporter/index

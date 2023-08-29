@@ -24,6 +24,8 @@ namespace sofapython3::doc::baseLink
 {
 static auto baseLinkClass =
         R"(
+        Corresponds to connection created between Data instances of two different Components
+
         A Link allows you to access a sofa component from another one anywhere in the simulation graph.
         In your scene creation file, it usually appear as : input=@../component.
 

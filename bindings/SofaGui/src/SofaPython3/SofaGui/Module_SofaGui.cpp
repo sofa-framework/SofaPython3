@@ -53,7 +53,7 @@ namespace sofapython3 {
 PYBIND11_MODULE(Gui, m) {
 
     m.doc() = R"doc(
-            Control the graphical user interface
+            Controls the graphical user interface
 
             Example of use
             --------------

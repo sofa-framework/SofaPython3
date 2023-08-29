@@ -24,7 +24,7 @@ namespace sofapython3::doc::SofaDeformable {
 
 static auto LinearSpringClass =
 R"(
-A spring connecting two obects (Linear deformation law)
+A linear spring connecting pair of nodes of two different objects
 )";
 
 static auto LinearSpringInit =

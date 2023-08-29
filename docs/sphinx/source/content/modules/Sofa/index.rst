@@ -33,8 +33,8 @@ Utility Functions
    msg_warning
    msg_deprecated
 
-Plugins
--------
+Additional modules
+------------------
 .. autosummary::
    :toctree: generated
    :template: autosummary/sub-modules.rst

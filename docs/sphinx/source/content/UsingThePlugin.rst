@@ -1,11 +1,11 @@
 Using the plugin
-================
+################
 
 The SofaPython3 plugins allows you to embed a python3 interpreter into an exising SOFA application (eg: runSofa) and to create/launch SOFA simulations from a python environment.
 
 
 Prerequisites
--------------
+*************
 
 If you downloaded and installed SOFA and its headers from the `SOFA website <https://www.sofa-framework.org/download/>`_, make sure to have python3.8 installed on your computed.
 
@@ -60,7 +60,7 @@ If you downloaded and installed SOFA and its headers from the `SOFA website <htt
 
 
 Run a python script
--------------------
+*******************
 
 Within runSofa
 ^^^^^^^^^^^^^^
@@ -68,7 +68,7 @@ Within runSofa
 Using SofaPython3 in runSofa requires loading the SofaPython3 plugin in your runSofa environment.
     
 
-* If you downloaded and installed SOFA and its headers from the `SOFA website <https://www.sofa-framework.org/download/>`_, or if you `compiled SofaPython3 in-tree <https://sofapython3.readthedocs.io/en/latest/menu/Compilation.html#in-tree-build>`_, you can load the SofaPython3 plugin using the PluginManager (in the GUI) or by auto-loading the plugin in runSofa: simply copy the file **plugin_list.conf.default** in *<SOFA_build>/lib*, and rename it **plugin_list.conf**, then add the line:
+* If you downloaded and installed SOFA and its headers from the `SOFA website <https://www.sofa-framework.org/download/>`_, or if you `compiled SofaPython3 in-tree <https://sofapython3.readthedocs.io/en/latest/content/Compilation.html#in-tree-build>`_, you can load the SofaPython3 plugin using the PluginManager (in the GUI) or by auto-loading the plugin in runSofa: simply copy the file **plugin_list.conf.default** in *<SOFA_build>/lib*, and rename it **plugin_list.conf**, then add the line:
 
 	.. code-block:: bash
 
@@ -83,7 +83,7 @@ Using SofaPython3 in runSofa requires loading the SofaPython3 plugin in your run
 
 		<SOFA_build>/bin/runSofa <your_python_file>
 
-* If you `compiled SofaPython3 out-of-tree <https://sofapython3.readthedocs.io/en/latest/menu/Compilation.html#out-of-tree-build>`_, you can load the SofaPython3 following one of this step:
+* If you `compiled SofaPython3 out-of-tree <https://sofapython3.readthedocs.io/en/latest/content/Compilation.html#out-of-tree-build>`_, you can load the SofaPython3 following one of this step:
 
   * use the "-l" of runSofa: ``runSofa -l /path/to/SofaPython3_build/lib/libSofaPython3.so <scene>``
   * or use the environment variable ``SOFA_PLUGIN_PATH=/path/to/SofaPython3_build/``
@@ -151,7 +151,7 @@ The following code should cover most basic SOFA elements:
 
 
 Create a simulation
--------------------
+*******************
 
 A scene in SOFA is an ordered tree of nodes representing objects (example of node: hand), with parent/child relationship (example of hand's child: finger). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is usually called "rootNode" or "root". More about how to create a simulation scene can be found in the `SOFA online documentation <https://www.sofa-framework.org/community/doc/using-sofa/lexicography/>`_
 
@@ -164,15 +164,15 @@ If a python script is loaded within the runSofa executable, make sure the SofaPy
 .. code-block:: python
 		
 	def createScene(rootNode):
-		#Doesn't do anything yet
-		return rootNode
+            #Doesn't do anything yet
+            return rootNode
 
 
 
 Within a python3 interpreter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-With the SofaPython3 plugin, it is also possible to execute a python script. However, to run a SOFA simulation from a python3 interpreter, the python environment must be aware of the SOFA python modules and their location. To do so, make sure to read the "`Within a python3 interpreter <https://sofapython3.readthedocs.io/en/latest/menu/SofaPlugin.html#within-a-python3-interpreter>`_" section.
+With the SofaPython3 plugin, it is also possible to execute a python script. However, to run a SOFA simulation from a python3 interpreter, the python environment must be aware of the SOFA python modules and their location. To do so, make sure to read the "`Within a python3 interpreter <https://sofapython3.readthedocs.io/en/latest/content/SofaPlugin.html#within-a-python3-interpreter>`_" section.
 
 Within a python3 interpreter, your simulation requires more than only the ``createScene()`` function. Indeed, the python environment does not pre-generate a root node as the runSofa executable is. One must therefore create it and then call the ``createScene()`` function:
 
@@ -184,24 +184,24 @@ Within a python3 interpreter, your simulation requires more than only the ``crea
 
 
 	def main():
-		# Call the SOFA function to create the root node
-		root = Sofa.Core.Node("root")
+            # Call the SOFA function to create the root node
+            root = Sofa.Core.Node("root")
 
-		# Call the createScene function, as runSofa does
-		createScene(root)
+            # Call the createScene function, as runSofa does
+            createScene(root)
 
-		# Once defined, initialization of the scene graph
-		Sofa.Simulation.init(root)
+            # Once defined, initialization of the scene graph
+            Sofa.Simulation.init(root)
 
-		# Run as many simulation steps (here 10 steps are computed)
-		for iteration in range(10):
-			Sofa.Simulation.animate(root, root.dt.value)
+            # Run as many simulation steps (here 10 steps are computed)
+            for iteration in range(10):
+                Sofa.Simulation.animate(root, root.dt.value)
 
 
 	# Same createScene function as in the previous case
 	def createScene(rootNode):
-		#Doesn't do anything yet
-		return rootNode
+            #Doesn't do anything yet
+            return rootNode
 
 
 	# Function used only if this script is called from a python environment
@@ -245,7 +245,7 @@ We first propose to add a visual grid, in order to see things more clearly. To d
 .. code-block:: python 
 
 	def createScene(rootNode):
-		rootNode.addObject("VisualGrid", nbSubdiv=10, size=1000)
+            rootNode.addObject("VisualGrid", nbSubdiv=10, size=1000)
 
 Now, we create a new child node, in order to add the general configuration of the scene : required plugins (here SofaPython3) and other tools (like a system of axes).
 
@@ -260,14 +260,14 @@ Finally, we add the sphere itself, which consists of two parts : the mechanical 
 .. code-block:: python
 
     # Creating the falling sphere object
-	sphere = rootNode.addChild("sphere")
-	sphere.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0., 0., 0.], rotation2=[0., 0., 0.], showObjectScale=50)
+    sphere = rootNode.addChild("sphere")
+    sphere.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0., 0., 0.], rotation2=[0., 0., 0.], showObjectScale=50)
 
-	#### Visualization subnode for the sphere
-	sphereVisu = sphere.addChild("VisualModel")
-	sphereVisu.loader = sphereVisu.addObject('MeshOBJLoader', name="loader", filename="mesh/ball.obj")
-	sphereVisu.addObject('OglModel', name="model", src="@loader", scale3d=[50]*3, color=[0., 1., 0.], updateNormals=False)
-	sphereVisu.addObject('RigidMapping')
+    #### Visualization subnode for the sphere
+    sphereVisu = sphere.addChild("VisualModel")
+    sphereVisu.loader = sphereVisu.addObject('MeshOBJLoader', name="loader", filename="mesh/ball.obj")
+    sphereVisu.addObject('OglModel', name="model", src="@loader", scale3d=[50]*3, color=[0., 1., 0.], updateNormals=False)
+    sphereVisu.addObject('RigidMapping')
 
 .. image:: ../images/exampleScene_step1.png
 	:alt: This is what you should see in Sofa at this stage
@@ -324,26 +324,26 @@ Let's add a second element, a floor, to see how they interact :
 .. code-block:: python
 
     # Creating the floor object
-	floor = rootNode.addChild("floor")
+    floor = rootNode.addChild("floor")
 
-	floor.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0.0,-300.0,0.0], rotation2=[0., 0., 0.], showObjectScale=5.0)
-	floor.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
+    floor.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0.0,-300.0,0.0], rotation2=[0., 0., 0.], showObjectScale=5.0)
+    floor.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
 
-	#### Collision subnode for the floor
-	floorCollis = floor.addChild('collision')
-	floorCollis.addObject('MeshOBJLoader', name="loader", filename="mesh/floor.obj", triangulate="true", scale=5.0)
-	floorCollis.addObject('MeshTopology', src="@loader")
-	floorCollis.addObject('MechanicalObject')
-	floorCollis.addObject('TriangleCollisionModel', moving=False, simulated=False)
-	floorCollis.addObject('LineCollisionModel', moving=False, simulated=False)
-	floorCollis.addObject('PointCollisionModel', moving=False, simulated=False)
-	floorCollis.addObject('RigidMapping')
+    #### Collision subnode for the floor
+    floorCollis = floor.addChild('collision')
+    floorCollis.addObject('MeshOBJLoader', name="loader", filename="mesh/floor.obj", triangulate="true", scale=5.0)
+    floorCollis.addObject('MeshTopology', src="@loader")
+    floorCollis.addObject('MechanicalObject')
+    floorCollis.addObject('TriangleCollisionModel', moving=False, simulated=False)
+    floorCollis.addObject('LineCollisionModel', moving=False, simulated=False)
+    floorCollis.addObject('PointCollisionModel', moving=False, simulated=False)
+    floorCollis.addObject('RigidMapping')
 
-	#### Visualization subnode for the floor
-	floorVisu = floor.addChild("VisualModel")
-	floorVisu.loader = floorVisu.addObject('MeshOBJLoader', name="loader", filename="mesh/floor.obj")
-	floorVisu.addObject('OglModel', name="model", src="@loader", scale3d=[5.0]*3, color=[1., 1., 0.], updateNormals=False)
-	floorVisu.addObject('RigidMapping')
+    #### Visualization subnode for the floor
+    floorVisu = floor.addChild("VisualModel")
+    floorVisu.loader = floorVisu.addObject('MeshOBJLoader', name="loader", filename="mesh/floor.obj")
+    floorVisu.addObject('OglModel', name="model", src="@loader", scale3d=[5.0]*3, color=[1., 1., 0.], updateNormals=False)
+    floorVisu.addObject('RigidMapping')
         
 .. image:: ../images/exampleScene_step3.gif
 	:alt: This is what you should see in Sofa at this stage
@@ -411,6 +411,7 @@ Congratulations! You made your first SOFA scene in Python3!
 For more information on how to use the SOFA modules bindings in python, visit this page: :doc:`SofaModule`
 
 
+.. _fullscene:
 
 Full scene
 ^^^^^^^^^^
@@ -444,96 +445,96 @@ Here is the entire code of the scene :
 
 	def createScene(rootNode):
 
-		rootNode.addObject("VisualGrid", nbSubdiv=10, size=1000)
+            rootNode.addObject("VisualGrid", nbSubdiv=10, size=1000)
 
-		# Define the root node properties
-		rootNode.gravity=[0.0,-9.81,0.0]
-		rootNode.dt=0.01
+            # Define the root node properties
+            rootNode.gravity=[0.0,-9.81,0.0]
+            rootNode.dt=0.01
 
-		# Loading all required SOFA modules
-		confignode = rootNode.addChild("Config")
-		confignode.addObject('RequiredPlugin', name="Sofa.Component.AnimationLoop", printLog=False)
-        confignode.addObject('RequiredPlugin', name="Sofa.Component.Collision.Detection.Algorithm", printLog=False)
-        confignode.addObject('RequiredPlugin', name="Sofa.Component.Collision.Detection.Intersection", printLog=False)
-        confignode.addObject('RequiredPlugin', name="Sofa.Component.Collision.Geometry", printLog=False)
-        confignode.addObject('RequiredPlugin', name="Sofa.Component.Collision.Response.Contact", printLog=False)
-        confignode.addObject('RequiredPlugin', name="Sofa.Component.Constraint.Lagrangian.Correction", printLog=False)
-        confignode.addObject('RequiredPlugin', name="Sofa.Component.Constraint.Lagrangian.Solver", printLog=False)
-        confignode.addObject('RequiredPlugin', name="Sofa.Component.IO.Mesh", printLog=False)
-        confignode.addObject('RequiredPlugin', name="Sofa.Component.LinearSolver.Iterative", printLog=False)
-        confignode.addObject('RequiredPlugin', name="Sofa.Component.Mapping.NonLinear", printLog=False)
-        confignode.addObject('RequiredPlugin', name="Sofa.Component.Mass", printLog=False)
-        confignode.addObject('RequiredPlugin', name="Sofa.Component.ODESolver.Backward", printLog=False)
-        confignode.addObject('RequiredPlugin', name="Sofa.Component.StateContainer", printLog=False)
-        confignode.addObject('RequiredPlugin', name="Sofa.Component.Topology.Container.Constant", printLog=False)
-        confignode.addObject('RequiredPlugin', name="Sofa.Component.Visual", printLog=False)
-        confignode.addObject('RequiredPlugin', name="Sofa.GL.Component.Rendering3D", printLog=False)
-		confignode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
-
-
-	 	# Collision pipeline
-		rootNode.addObject('DefaultPipeline')
-		rootNode.addObject('FreeMotionAnimationLoop')
-		rootNode.addObject('GenericConstraintSolver', tolerance="1e-6", maxIterations="1000")
-		rootNode.addObject('BruteForceBroadPhase')
-		rootNode.addObject('BVHNarrowPhase')
-		rootNode.addObject('RuleBasedContactManager', responseParams="mu="+str(0.0), name='Response', response='FrictionContactConstraint')
-		rootNode.addObject('LocalMinDistance', alarmDistance=10, contactDistance=5, angleCone=0.01)
+            # Loading all required SOFA modules
+            confignode = rootNode.addChild("Config")
+            confignode.addObject('RequiredPlugin', name="Sofa.Component.AnimationLoop", printLog=False)
+            confignode.addObject('RequiredPlugin', name="Sofa.Component.Collision.Detection.Algorithm", printLog=False)
+            confignode.addObject('RequiredPlugin', name="Sofa.Component.Collision.Detection.Intersection", printLog=False)
+            confignode.addObject('RequiredPlugin', name="Sofa.Component.Collision.Geometry", printLog=False)
+            confignode.addObject('RequiredPlugin', name="Sofa.Component.Collision.Response.Contact", printLog=False)
+            confignode.addObject('RequiredPlugin', name="Sofa.Component.Constraint.Lagrangian.Correction", printLog=False)
+            confignode.addObject('RequiredPlugin', name="Sofa.Component.Constraint.Lagrangian.Solver", printLog=False)
+            confignode.addObject('RequiredPlugin', name="Sofa.Component.IO.Mesh", printLog=False)
+            confignode.addObject('RequiredPlugin', name="Sofa.Component.LinearSolver.Iterative", printLog=False)
+            confignode.addObject('RequiredPlugin', name="Sofa.Component.Mapping.NonLinear", printLog=False)
+            confignode.addObject('RequiredPlugin', name="Sofa.Component.Mass", printLog=False)
+            confignode.addObject('RequiredPlugin', name="Sofa.Component.ODESolver.Backward", printLog=False)
+            confignode.addObject('RequiredPlugin', name="Sofa.Component.StateContainer", printLog=False)
+            confignode.addObject('RequiredPlugin', name="Sofa.Component.Topology.Container.Constant", printLog=False)
+            confignode.addObject('RequiredPlugin', name="Sofa.Component.Visual", printLog=False)
+            confignode.addObject('RequiredPlugin', name="Sofa.GL.Component.Rendering3D", printLog=False)
+            confignode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
 
 
-		totalMass = 1.0
-		volume = 1.0
-		inertiaMatrix=[1., 0., 0., 0., 1., 0., 0., 0., 1.]
-		
-		# Creating the falling sphere object
-		sphere = rootNode.addChild("sphere")
-		sphere.addObject('EulerImplicitSolver', name='odesolver')
-		sphere.addObject('CGLinearSolver', name='Solver', iterations=25, tolerance=1e-05, threshold=1e-05)
-		sphere.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0., 0., 0.], rotation2=[0., 0., 0.], showObjectScale=50)
-		sphere.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
-		sphere.addObject('UncoupledConstraintCorrection')
-
-		#### Collision subnode for the sphere
-		collision = sphere.addChild('collision')
-		collision.addObject('MeshOBJLoader', name="loader", filename="mesh/ball.obj", triangulate="true", scale=45.0)
-		collision.addObject('MeshTopology', src="@loader")
-		collision.addObject('MechanicalObject')
-		collision.addObject('TriangleCollisionModel')
-		collision.addObject('LineCollisionModel')
-		collision.addObject('PointCollisionModel')
-		collision.addObject('RigidMapping')
-
-		#### Visualization subnode for the sphere
-		sphereVisu = sphere.addChild("VisualModel")
-		sphereVisu.loader = sphereVisu.addObject('MeshOBJLoader', name="loader", filename="mesh/ball.obj")
-		sphereVisu.addObject('OglModel', name="model", src="@loader", scale3d=[50]*3, color=[0., 1., 0.], updateNormals=False)
-		sphereVisu.addObject('RigidMapping')
+            # Collision pipeline
+            rootNode.addObject('DefaultPipeline')
+            rootNode.addObject('FreeMotionAnimationLoop')
+            rootNode.addObject('GenericConstraintSolver', tolerance="1e-6", maxIterations="1000")
+            rootNode.addObject('BruteForceBroadPhase')
+            rootNode.addObject('BVHNarrowPhase')
+            rootNode.addObject('RuleBasedContactManager', responseParams="mu="+str(0.0), name='Response', response='FrictionContactConstraint')
+            rootNode.addObject('LocalMinDistance', alarmDistance=10, contactDistance=5, angleCone=0.01)
 
 
-		# Creating the floor object
-		floor = rootNode.addChild("floor")
-
-		floor.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0.0,-300.0,0.0], rotation2=[0., 0., 0.], showObjectScale=5.0)
-		floor.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
-
-		#### Collision subnode for the floor
-		floorCollis = floor.addChild('collision')
-		floorCollis.addObject('MeshOBJLoader', name="loader", filename="mesh/floor.obj", triangulate="true", scale=5.0)
-		floorCollis.addObject('MeshTopology', src="@loader")
-		floorCollis.addObject('MechanicalObject')
-		floorCollis.addObject('TriangleCollisionModel', moving=False, simulated=False)
-		floorCollis.addObject('LineCollisionModel', moving=False, simulated=False)
-		floorCollis.addObject('PointCollisionModel', moving=False, simulated=False)
-		floorCollis.addObject('RigidMapping')
-
-		#### Visualization subnode for the floor
-		floorVisu = floor.addChild("VisualModel")
-		floorVisu.loader = floorVisu.addObject('MeshOBJLoader', name="loader", filename="mesh/floor.obj")
-		floorVisu.addObject('OglModel', name="model", src="@loader", scale3d=[5.0]*3, color=[1., 1., 0.], updateNormals=False)
-		floorVisu.addObject('RigidMapping')
+            totalMass = 1.0
+            volume = 1.0
+            inertiaMatrix=[1., 0., 0., 0., 1., 0., 0., 0., 1.]
 
 
-		return rootNode
+            sphere = rootNode.addChild("sphere")
+            sphere.addObject('EulerImplicitSolver', name='odesolver')
+            sphere.addObject('CGLinearSolver', name='Solver', iterations=25, tolerance=1e-05, threshold=1e-05)
+            sphere.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0., 0., 0.], rotation2=[0., 0., 0.], showObjectScale=50)
+            sphere.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
+            sphere.addObject('UncoupledConstraintCorrection')
+
+            #### Collision subnode for the sphere
+            collision = sphere.addChild('collision')
+            collision.addObject('MeshOBJLoader', name="loader", filename="mesh/ball.obj", triangulate="true", scale=45.0)
+            collision.addObject('MeshTopology', src="@loader")
+            collision.addObject('MechanicalObject')
+            collision.addObject('TriangleCollisionModel')
+            collision.addObject('LineCollisionModel')
+            collision.addObject('PointCollisionModel')
+            collision.addObject('RigidMapping')
+
+            #### Visualization subnode for the sphere
+            sphereVisu = sphere.addChild("VisualModel")
+            sphereVisu.loader = sphereVisu.addObject('MeshOBJLoader', name="loader", filename="mesh/ball.obj")
+            sphereVisu.addObject('OglModel', name="model", src="@loader", scale3d=[50]*3, color=[0., 1., 0.], updateNormals=False)
+            sphereVisu.addObject('RigidMapping')
+
+
+            # Creating the floor object
+            floor = rootNode.addChild("floor")
+
+            floor.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0.0,-300.0,0.0], rotation2=[0., 0., 0.], showObjectScale=5.0)
+            floor.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
+
+            #### Collision subnode for the floor
+            floorCollis = floor.addChild('collision')
+            floorCollis.addObject('MeshOBJLoader', name="loader", filename="mesh/floor.obj", triangulate="true", scale=5.0)
+            floorCollis.addObject('MeshTopology', src="@loader")
+            floorCollis.addObject('MechanicalObject')
+            floorCollis.addObject('TriangleCollisionModel', moving=False, simulated=False)
+            floorCollis.addObject('LineCollisionModel', moving=False, simulated=False)
+            floorCollis.addObject('PointCollisionModel', moving=False, simulated=False)
+            floorCollis.addObject('RigidMapping')
+
+            #### Visualization subnode for the floor
+            floorVisu = floor.addChild("VisualModel")
+            floorVisu.loader = floorVisu.addObject('MeshOBJLoader', name="loader", filename="mesh/floor.obj")
+            floorVisu.addObject('OglModel', name="model", src="@loader", scale3d=[5.0]*3, color=[1., 1., 0.], updateNormals=False)
+            floorVisu.addObject('RigidMapping')
+
+
+            return rootNode
 
 
 	# Function used only if this script is called from a python environment
@@ -542,8 +543,8 @@ Here is the entire code of the scene :
 
 
 
-Accessing data
---------------
+Accessing data: read and write
+******************************
 
 One major advantage of coupling SOFA simulation and python is to access and process data before the simulation starts, while it is running and once the simulation ended. All components in SOFA have so-called data. A data is a public attribute of a Component (C++ class) visible to the user in the SOFA user interface and any data can also be accessed though python.
 
@@ -551,7 +552,7 @@ One major advantage of coupling SOFA simulation and python is to access and proc
 Read access
 ^^^^^^^^^^^
 
-Let's consider the full scene introduced just `above in-tree <https://sofapython3.readthedocs.io/en/latest/menu/Compilation.html#full-scene>`_ and try to access data using the ``.value`` acessor once the GUI is closed:
+Let's update the :ref:`fullscene` just introduced above in order to access data using the ``.value`` acessor once the GUI is closed:
 
 
 .. code-block:: python
@@ -630,7 +631,7 @@ For more complex Data such as Data related to the degrees of freedom (e.g. Coord
 
 
 More simulation examples
-------------------------
+************************
 
 Many `additional examples <https://github.com/sofa-framework/SofaPython3/tree/master/examples>`_ are available within the SofaPython3 plugin in the *examples/* folder:
 
@@ -645,9 +646,9 @@ Many `additional examples <https://github.com/sofa-framework/SofaPython3/tree/ma
 Do not hesitate to take a look and get inspiration!
 
 
-Technical support
------------------
+Get support
+***********
 
-To freely get help from the community, please do not hesitate to join the `SofaPython3 GitHub forum <https://github.com/sofa-framework/sofapython3/discussions>`_ and post there any question related to SofaPython3.
+To freely get technical assistance from the community, please do not hesitate to join the `SofaPython3 GitHub forum <https://github.com/sofa-framework/sofapython3/discussions>`_ and post there any question related to SofaPython3.
 
 To quickly level up on SOFA, never hesitate to request `SOFA training sessions <https://www.sofa-framework.org/sofa-events/sofa-training-sessions/>`_.

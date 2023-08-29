@@ -24,7 +24,7 @@ namespace sofapython3::doc::base
 {
 static auto BaseClass =
         R"(
-        Root class of the scene graph hierarchy
+        Base class of the scene graph hierarchy
 
         All objects are in-heriting from this one.
         )";

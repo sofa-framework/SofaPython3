@@ -1,11 +1,8 @@
 """
-All the key components supported by the sofa-consortium
+All SOFA key components supported by the SOFA consortium
 
-General description
--------------------
-
-Example of use
---------------
+Example of use:
+^^^^^^^^^^^^^^^
   .. code-block:: python
 
     import Sofa.Core
@@ -270,18 +267,26 @@ def pyType2sofaType(v):
 
 
 def msg_error(target, message):
+    """API emitting error messages
+    """
     frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
     Sofa.Helper.msg_error(target, message, frameinfo.filename, frameinfo.lineno)
 
 def msg_info(target, message):
+    """API emitting information messages
+    """
     frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
     Sofa.Helper.msg_info(target, message, frameinfo.filename, frameinfo.lineno)
 
 def msg_warning(target, message):
+    """API emitting warning messages
+    """
     frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
     Sofa.Helper.msg_warning(target, message, frameinfo.filename, frameinfo.lineno)
 
 def msg_deprecated(target, message):
+    """API emitting deprecation messages
+    """
     frameinfo = inspect.getframeinfo(inspect.currentframe().f_back)
     Sofa.Helper.msg_deprecated(target, message, frameinfo.filename, frameinfo.lineno)
 

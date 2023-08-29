@@ -1,16 +1,17 @@
 Compilation
-===========
+###########
 
 The compilation of the SofaPython3 can be done automatically when `building SOFA <https://www.sofa-framework.org/community/doc/getting-started/build/linux/>`_,
 or it can be done independently using an already compiled/installed SOFA:
 
-* the former is called an *in-tree build*, which is, the compilation of SofaPython3 is included inside the build tree of SOFA
-* the latter is called an *out-of-tree build*, hence the compilation of SofaPython3 is done in its own build tree, usually placed somewhere else than SOFA. 
+* the former is called an :ref:`intree`, which is, the compilation of SofaPython3 is included inside the build tree of SOFA
+* the latter is called an :ref:`outtree`, hence the compilation of SofaPython3 is done in its own build tree, usually placed somewhere else than SOFA. 
 
 
+.. _prerequisites:
 
 Prerequisites
--------------
+*************
 
 The compilation of SofaPython3 requires the installation of some dependencies. The following table lists all of those
 prerequisites.
@@ -105,9 +106,10 @@ prerequisites.
 
 
 
+.. _intree:
 
 In-tree build
--------------
+*************
 
 We use here the term *in-tree build* to indicate that we wish to compile SofaPython3 in the same build tree as SOFA, which is,
 compiling SOFA will automatically compile SofaPython3 as an internal subproject. In this case, the compilation of the
@@ -160,11 +162,12 @@ of python and pybind11 used for the compilation of the plugin:
 At this point, you are ready to start the compilation of SOFA and the SofaPython3 plugin.
 
 
+.. _outtree:
 
 Out-of-tree build
------------------
+*****************
 
-As detailed above in the `Prerequisite <https://sofapython3.readthedocs.io/en/latest/menu/Compilation.html#prerequisites>`_ section, you must have an installed version of SOFA in order to compile the SofaPython3 plugin *out-of-tree*. Not only must the sources be compiled following the SOFA documentation, but you have to make sure to have an **install** directory, i.e. to execute the installation (e.g. by runnin the command ``cmake --install .`` from the SOFA build directory)
+As detailed above in the :ref:`prerequisites`  section, you must have an installed version of SOFA in order to compile the SofaPython3 plugin *out-of-tree*. Not only must the sources be compiled following the SOFA documentation, but you have to make sure to have an **install** directory, i.e. to execute the installation (e.g. by runnin the command ``cmake --install .`` from the SOFA build directory)
 
 Once done, export the installation path of SOFA inside the ``SOFA_ROOT`` environment variable. For example,
 

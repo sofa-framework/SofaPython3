@@ -30,9 +30,6 @@ namespace sofapython3
 PYBIND11_MODULE(SofaExporter, m) {
     m.doc() = R"doc(
               Export in STL or OBJ from from a SOFA simulation
-              ------------------------------------------------
-
-              SofaExporter is a SOFA plugin exporting STL and OBJ.
 
               Example of use:
 

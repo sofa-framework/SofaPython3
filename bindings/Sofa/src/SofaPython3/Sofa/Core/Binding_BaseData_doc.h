@@ -24,7 +24,7 @@ namespace sofapython3::doc::baseData
 {
 static auto BaseDataClass =
         R"(
-        The purpose of a data is to store the attributs of your component.
+        Public attribute of a Component (C++ class) visible and accessible to the user (read/write)
 
         :Create a data field:
 

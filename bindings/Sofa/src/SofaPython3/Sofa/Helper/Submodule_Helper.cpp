@@ -112,9 +112,9 @@ PYBIND11_MODULE(Helper, helper)
     sofa::helper::init();
 
     helper.doc() = R"doc(
-            Tooling to print messages or create vectors of different type.
+            Allows to create vectors of different types, or to print messages
 
-            Sofa provides a fully feature messaging system allowing to emit messages.
+            SOFA provides a fully feature messaging system allowing to emit messages.
             The way the message are printed depends on the application. Messages can be routed the console, log files,
             GUI or ignored.
 
@@ -141,16 +141,16 @@ PYBIND11_MODULE(Helper, helper)
        )doc";
 
     helper.def("msg_info", [](py::args args) { MESSAGE_DISPATCH(msg_info); },
-            R"(Emit an info message from python.)"
+            R"(Emit an info message from python)"
             );
     helper.def("msg_warning", [](py::args args) { MESSAGE_DISPATCH(msg_warning); },
-    R"(Emit a warning message from python.)");
+    R"(Emit a warning message from python)");
     helper.def("msg_error", [](py::args args) { MESSAGE_DISPATCH(msg_error); },
-    R"(Emit an error message from python.)");
+    R"(Emit an error message from python)");
     helper.def("msg_deprecated", [](py::args args) { MESSAGE_DISPATCH(msg_deprecated); },
-    R"(Emit a deprecated message from python.)");
+    R"(Emit a deprecated message from python)");
     helper.def("msg_fatal", [](py::args args) { MESSAGE_DISPATCH(msg_fatal); },
-    R"(Emit a fatal error message from python.)");
+    R"(Emit a fatal error message from python)");
 
     moduleAddMessageHandler(helper);
     moduleAddVector(helper);

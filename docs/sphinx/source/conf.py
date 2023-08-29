@@ -37,7 +37,9 @@ extensions = [
     'sphinxcontrib.contentui',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
-    'sphinx_search.extension'
+#    'sphinx_search.extension',
+    'sphinx.ext.autosectionlabel',
+#    'sphinxcontrib.osexample'
     ]
 
 import sys
@@ -70,7 +72,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'SofaPython3'
-copyright = u'2021, SOFA Framework'
+copyright = u'2023, SOFA Framework'
 author = u'consortium@sofa-framework.org'
 
 stream = os.popen("git rev-parse --abbrev-ref HEAD")
@@ -109,6 +111,7 @@ todo_include_todos = False
 
 html_theme = "sphinx_rtd_theme"
 html_theme_path = ["_themes", ]
+html_title = 'SofaPython3 plugin documentation'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -122,7 +125,7 @@ html_theme_options = {
     # Toc options
     'collapse_navigation': False,
     'navigation_depth': 10,
-    'titles_only': True
+    'titles_only': False
 }
 
 

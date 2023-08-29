@@ -1,7 +1,10 @@
+SofaPython3 plugin documentation
+################################
+
 The SofaPython3 project brings python bindings for the `SOFA simulation framework <https://www.sofa-framework.org>`_.
 Thereby, it allows users to use most of the components and features found in SOFA directly into their python scripts.
 
-This project is composed of two modules: 1. a *SOFA plugin* in the *SofaPython3/Plugin/* repository and 2. several *python modules* in the *SofaPython3/bindings/* repository.
+This project is composed of two modules: a *SOFA plugin* in the *SofaPython3/Plugin/* repository & several *python modules* in the *SofaPython3/bindings/* repository.
 
 1. The **SofaPython3 plugin** embeds a python interpreter and a SOFA scene loader. This plugin allows one to load a python
 script as the main simulation scene file. The scene loader will automatically detect the ".py", ".py3", ".py3scn" or
@@ -20,8 +23,14 @@ interpreter without requiring the load of the plugin.
     :align: center
     :width: 400
 
+
+Table of content
+----------------
+
 .. toctree::
-    
+    :maxdepth: 1
+    :caption: User Documentation
+
     content/Compilation
     content/UsingThePlugin
     content/Modules

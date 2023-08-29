@@ -24,7 +24,7 @@ namespace sofapython3::doc::dataDict {
 
 static auto Class =
         R"(
-        DataDict exposes the data of a sofa object in a way similar to a normal python dictionnary.
+        Exposes the data of a sofa object in a way similar to a normal python dictionnary
 
         :Example:
             .. code-block:: python
@@ -57,7 +57,7 @@ namespace sofapython3::doc::dataDictIterator {
 static auto Class =
         R"(
 
-        Iterator reimplemented to fit dataDict.
+        Iterator reimplemented to fit dataDict
 
         )";
 }
