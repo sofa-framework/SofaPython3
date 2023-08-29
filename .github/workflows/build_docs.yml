@@ -1,0 +1,44 @@
+name: Build and Trigger ReadTheDocs Webhook
+
+on:
+  release:
+    types:
+      - created
+  workflow_dispatch:  # This allows manual triggering
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8  # Replace with your desired Python version
+
+      - name: Install dependencies
+        run: |
+          cd docs/sphinx/
+          pip install -r source/requirements.txt  # Replace with your project's requirements file
+
+      - name: Build Sphinx documentation
+        run: |
+          mkdir build/
+          sphinx-build -b html -a -E source/ build/  # Replace with your documentation source and build directories
+
+      - name: Zip Documentation
+        run: |
+          # Create a zip file of the documentation
+          cd build/
+          zip -r SofaPython3_${{ steps.branch_name.outputs.branch_name }}_docs.zip .
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            SofaPython3_${{ steps.branch_name.outputs.branch_name }}_docs.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
