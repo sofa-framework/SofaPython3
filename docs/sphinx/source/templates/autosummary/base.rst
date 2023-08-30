@@ -1,7 +1,7 @@
 ..
   base.rst
 
-{{ fullname | escape | underline }}
+{{ fullname | escape | underline | replace("=", '"') }}
 
 .. currentmodule:: {{ module }}
 

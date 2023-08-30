@@ -1,16 +1,16 @@
 ..
   sub-module.rst
 
-{{ fullname | escape | underline }}
+{{ fullname | escape | underline | replace("=", "-") }}
 
 General description
--------------------
+^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: {{ fullname }}
 
 
 API Table of Content
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
 {% block modules %}
     {% if modules %}

@@ -1,3 +1,4 @@
+###########
 Compilation
 ###########
 
@@ -8,8 +9,7 @@ or it can be done independently using an already compiled/installed SOFA:
 * the latter is called an :ref:`outtree`, hence the compilation of SofaPython3 is done in its own build tree, usually placed somewhere else than SOFA. 
 
 
-.. _prerequisites:
-
+*************
 Prerequisites
 *************
 

@@ -1,5 +1,5 @@
 SofaRuntime
-===========
+***********
 
 .. currentmodule:: SofaRuntime
 

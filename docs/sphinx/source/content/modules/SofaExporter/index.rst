@@ -1,3 +1,6 @@
+SofaExporter
+************
+
 .. autosummary::
    :toctree: generated
    :template: autosummary/sub-modules.rst

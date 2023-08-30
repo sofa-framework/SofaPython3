@@ -1,12 +1,12 @@
 Sofa
-====
+****
 
 .. currentmodule:: Sofa
 
 .. automodule:: Sofa
 
 Sub-modules
------------
+===========
 .. autosummary::
    :toctree: generated
    :template: autosummary/sub-modules.rst
@@ -22,7 +22,7 @@ Sub-modules
    constants
 
 Utility Functions
------------------
+=================
 .. autosummary::
    :toctree: generated
    :template: autosummary/base.rst
@@ -34,7 +34,7 @@ Utility Functions
    msg_deprecated
 
 Additional modules
-------------------
+==================
 .. autosummary::
    :toctree: generated
    :template: autosummary/sub-modules.rst

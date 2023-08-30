@@ -1,11 +1,14 @@
+################
 Using the plugin
 ################
 
-The SofaPython3 plugins allows you to embed a python3 interpreter into an exising SOFA application (eg: runSofa) and to create/launch SOFA simulations from a python environment.
+The SofaPython3 plugins allows you to embed a python3 interpreter into an existing SOFA application (eg: runSofa) and to create/launch SOFA simulations from a python environment.
 
 
+*************
 Prerequisites
 *************
+
 
 If you downloaded and installed SOFA and its headers from the `SOFA website <https://www.sofa-framework.org/download/>`_, make sure to have python3.8 installed on your computed.
 

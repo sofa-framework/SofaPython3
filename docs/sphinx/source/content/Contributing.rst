@@ -1,11 +1,13 @@
+############
 Contributing
-============
+############
 
 We welcome any contribution.
 The SofaPython3 plugin, bindings and this documentation can be directly improved following a pull-request process in the GitHub repository.
 
+*************
 Pull requests
--------------
+*************
 
 If you are able to patch a bug, add the feature yourself, add new examples or simply fix a typo – fantastic, make a pull request with the code! Be sure you have read any documents on contributing and you understand `the SOFA license <https://github.com/sofa-framework/sofa/blob/master/LICENCE.txt>`_. Once you have submitted a pull request the maintainer(s) can compare your branch to the existing one and decide whether or not to incorporate (pull in) your changes.
 
