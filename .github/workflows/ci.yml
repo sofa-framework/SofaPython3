@@ -209,7 +209,7 @@ jobs:
           echo "RELEASE_DATE=$RELEASE_DATE" | tee -a $GITHUB_ENV
 
       - name: Delete old release
-        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        uses: dev-drprasad/delete-tag-and-release@v0.2.1
         with:
           tag_name: ${{ env.RELEASE_TAGNAME }}
           delete_release: true
@@ -222,7 +222,8 @@ jobs:
         with:
           name: ${{ env.RELEASE_NAME }}
           tag_name: ${{ env.RELEASE_TAGNAME }}
-          fail_on_unmatched_files: true
+          fail_on_unmatched_files: false
+          target_commitish: ${{ env.RELEASE_NAME }}
           body: |
             Last updated on ${{ env.RELEASE_DATE }}
           files: |

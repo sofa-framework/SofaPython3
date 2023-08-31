@@ -9,6 +9,12 @@ def createScene(root):
 
     root.addObject('VisualStyle', displayFlags="showBehaviorModels showForceFields")
 
+    root.addObject("RequiredPlugin", pluginName=['Sofa.Component.Mass',
+                                                    'Sofa.Component.StateContainer',
+                                                    'Sofa.Component.Topology.Container.Grid',
+                                                    'Sofa.Component.Visual'
+                                                    ])
+
     root.addObject('DefaultAnimationLoop')
     root.addObject('DefaultVisualManagerLoop')
 

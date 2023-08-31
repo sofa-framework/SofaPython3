@@ -18,44 +18,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#pragma once
+
 #include <pybind11/pybind11.h>
-
-#include <sofa/simulation/Node.h>
-using sofa::simulation::Node;
-
-#include <sofa/core/visual/VisualParams.h>
-
-#include <sofa/simulation/Simulation.h>
-#include <sofa/gl/DrawToolGL.h>
-
-#include <SofaPython3/SofaGL/Binding_DrawToolGL.h>
-#include <SofaPython3/SofaGL/Binding_DrawToolGL_doc.h>
-
 
 namespace sofapython3 {
 
-using DrawToolGL = sofa::gl::DrawToolGL;
+pybind11::module moduleAddTaskScheduler(pybind11::module& m);
 
-
-namespace py { using namespace pybind11; }
-
-sofa::core::visual::VisualParams* vparam = nullptr;
-sofa::gl::DrawToolGL *drawtool = new sofa::gl::DrawToolGL();
-
-void moduleAddDrawToolGL(pybind11::module& m) {
-    m.def("draw", [](Node* node){
-      if (!vparam)
-      {
-        vparam = sofa::core::visual::VisualParams::defaultInstance();
-        vparam->drawTool() = drawtool;
-        vparam->setSupported(sofa::core::visual::API_OpenGL);
-      }
-      sofa::simulation::node::draw(vparam, node);
-    }, doc::SofaGL::draw);
-
-    m.def("glewInit", [](){
-      glewInit();
-    }, doc::SofaGL::glewInit);
-}
-
-} // namespace sofapython3
+} /// namespace sofapython3

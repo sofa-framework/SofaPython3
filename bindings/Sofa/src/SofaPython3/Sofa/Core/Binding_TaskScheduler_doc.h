@@ -18,44 +18,23 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <pybind11/pybind11.h>
+#pragma once
 
-#include <sofa/simulation/Node.h>
-using sofa::simulation::Node;
+namespace sofapython3::doc::taskscheduler
+{
 
-#include <sofa/core/visual/VisualParams.h>
+static auto init =
+    R"(
+    Initialize the main task scheduler with a number of threads.
+    )";
 
-#include <sofa/simulation/Simulation.h>
-#include <sofa/gl/DrawToolGL.h>
+static auto getThreadCount =
+    R"(
+    Returns the number of threads used by the main task scheduler.
+    )";
 
-#include <SofaPython3/SofaGL/Binding_DrawToolGL.h>
-#include <SofaPython3/SofaGL/Binding_DrawToolGL_doc.h>
-
-
-namespace sofapython3 {
-
-using DrawToolGL = sofa::gl::DrawToolGL;
-
-
-namespace py { using namespace pybind11; }
-
-sofa::core::visual::VisualParams* vparam = nullptr;
-sofa::gl::DrawToolGL *drawtool = new sofa::gl::DrawToolGL();
-
-void moduleAddDrawToolGL(pybind11::module& m) {
-    m.def("draw", [](Node* node){
-      if (!vparam)
-      {
-        vparam = sofa::core::visual::VisualParams::defaultInstance();
-        vparam->drawTool() = drawtool;
-        vparam->setSupported(sofa::core::visual::API_OpenGL);
-      }
-      sofa::simulation::node::draw(vparam, node);
-    }, doc::SofaGL::draw);
-
-    m.def("glewInit", [](){
-      glewInit();
-    }, doc::SofaGL::glewInit);
+static auto GetHardwareThreadsCount =
+    R"(
+    Assuming 2 concurrent threads by CPU core, return the number of CPU cores on the system
+    )";
 }
-
-} // namespace sofapython3
