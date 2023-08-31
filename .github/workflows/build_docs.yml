@@ -4,6 +4,7 @@ on:
   release:
     types:
       - created
+      - edited 
   workflow_dispatch:  # This allows manual triggering
 
 jobs:
