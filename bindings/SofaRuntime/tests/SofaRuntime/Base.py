@@ -11,6 +11,6 @@ class Test(unittest.TestCase):
     def test_getCategoriesmethod(self):
         import SofaRuntime
         SofaRuntime.importPlugin("Sofa.Component")
-        t = SofaRuntime.getCategories("MeshObjLoader")
+        t = SofaRuntime.getCategories("MeshOBJLoader")
         self.assertEquals(len(t),1)
         self.assertIsInstance(t, list)
