@@ -30,7 +30,7 @@ static auto Class =
             .. code-block:: python
 
                 for k,v in anObject.__data__.items():
-                print("Data name :"+k+" value:" +str(v)))
+                    print("Data name :"+k+" value:" +str(v)))
         )";
 
 static auto keys =
@@ -48,7 +48,7 @@ static auto items =
             .. code-block:: python
 
                 for k,v in anObject.__data__.items():
-                print("Data name :"+k+" value:" +str(v)))
+                    print("Data name :"+k+" value:" +str(v)))
         )";
 }
 

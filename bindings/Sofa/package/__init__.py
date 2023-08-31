@@ -227,14 +227,18 @@ def getSofaFormattedStringFromException(e):
 
 def sofaExceptHandler(type, value, tb):
     global oldexcepthook
-    """This exception handler, convert python exceptions & traceback into more classical sofa error messages of the form:
-       Message Description
-       Python Stack (most recent are at the end)
-          File file1.py line 4  ...
-          File file1.py line 10 ...
-          File file1.py line 40 ...
-          File file1.py line 23 ...
-            faulty line
+    """This exception handler converts python exceptions & traceback into classical SOFA error messages
+
+       Message:
+
+        .. code-block:: text
+
+            Python Stack (most recent are at the end)
+            File file1.py line 4  ...
+            File file1.py line 10 ...
+            File file1.py line 40 ...
+            File file1.py line 23 ...
+
     """
     h = type.__name__
 

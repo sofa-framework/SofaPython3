@@ -60,6 +60,7 @@ static auto animate =
         Execute one timestep
         If dt is 0, the dt parameter in the graph will be used.
         :param dt: the duration of the step.
+
         )";
 
 static auto reset =
@@ -71,9 +72,9 @@ static auto load =
         Load a scene from a file
 
         :param filename: name of the file to be loaded
-        :param reload: default to false. It signals if the scene is being reloaded or loaded for
-        the first time.
+        :param reload: default to false. It signals if the scene is being reloaded or loaded for the first time.
         :param sceneArgs: default to an empty vector. Contains the arguments of the scene.
+
         )";
 
 static auto unload =

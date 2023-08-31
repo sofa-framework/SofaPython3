@@ -88,7 +88,6 @@ static auto getPathName =
             b = a.addObject("Camera", name="camera")
             b.getPathName() # should returns "/root/camera"
 
-        ```
         )";
 static auto setDataValues =
         R"(

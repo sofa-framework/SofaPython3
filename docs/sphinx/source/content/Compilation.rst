@@ -9,6 +9,8 @@ or it can be done independently using an already compiled/installed SOFA:
 * the latter is called an :ref:`outtree`, hence the compilation of SofaPython3 is done in its own build tree, usually placed somewhere else than SOFA. 
 
 
+.. _compilation.prerequisites:
+
 *************
 Prerequisites
 *************
@@ -169,7 +171,7 @@ At this point, you are ready to start the compilation of SOFA and the SofaPython
 Out-of-tree build
 *****************
 
-As detailed above in the :ref:`prerequisites`  section, you must have an installed version of SOFA in order to compile the SofaPython3 plugin *out-of-tree*. Not only must the sources be compiled following the SOFA documentation, but you have to make sure to have an **install** directory, i.e. to execute the installation (e.g. by runnin the command ``cmake --install .`` from the SOFA build directory)
+As detailed above in the :ref:`compilation.prerequisites`  section, you must have an installed version of SOFA in order to compile the SofaPython3 plugin *out-of-tree*. Not only must the sources be compiled following the SOFA documentation, but you have to make sure to have an **install** directory, i.e. to execute the installation (e.g. by runnin the command ``cmake --install .`` from the SOFA build directory)
 
 Once done, export the installation path of SOFA inside the ``SOFA_ROOT`` environment variable. For example,
 

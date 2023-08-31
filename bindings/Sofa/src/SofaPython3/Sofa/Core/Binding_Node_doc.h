@@ -114,36 +114,43 @@ static auto initSofa =
 static auto addKwargs =
         R"(
         Add an prefab,
-        Example:
-            def Cube(parentNodes, name="Cube"):
-                cube = parentNode.addChild(name)
-                cube.addObject("MechanicalObject")
-                return cube
 
-            node.add(Cube, name="MyCube"")
+        Example:
+            .. code-block:: python
+
+                def Cube(parentNodes, name="Cube"):
+                    cube = parentNode.addChild(name)
+                    cube.addObject("MechanicalObject")
+                    return cube
+
+                node.add(Cube, name="MyCube"")
+
         )";
 
 
 static auto addObjectKwargs =
         R"(
         Add an object.
-        Detect the implemented interfaces and add the object to the corresponding lists.
-        :param self: the node itself
-        :param type: type of the object
-        :param kwargs
-        :type self: Sofa.Simulation.Node*
-        :type type: string&
-        :type kwargs: kwargs&
+
+        :param component_type: the Sofa component's type name to add
+        :type component_type: str
+
+        :param kwargs: additional keyword arguments
+        :type kwargs: dict
+
+        :rtype: the created :class: Sofa.Core.Object
+
         )";
 
 static auto addObject =
         R"(
-        Add an object.
-        Detect the implemented interfaces and add the object to the corresponding lists.
-        :param self: the node itself
-        :param object: the object to be added
-        :type self: Sofa.Simulation.Node&
-        :type object: Sofa.Simulation.BaseObject*
+        Add an existing sofa object.
+
+        :param component: The Sofa component
+        :type component: :class: Sofa.Core.Object
+
+        :rtype: the added :class: Sofa.Core.Object
+
         )";
 
 static auto createObject =
@@ -165,14 +172,14 @@ static auto getObject =
         R"(
         Get a sofa component hold by a node.
 
-        :param n
-        :param name
+        :param name:
         :type n: Sofa.Simulation.Node
         :type name: string
         :return: the component with 'name', None otherwise
 
         .. note::
-        The extra arguments allowed in the SofaPython (warning=True/False) binding are not supported SofaPython3.
+
+            The extra arguments allowed in the SofaPython (warning=True/False) binding are not supported SofaPython3.
 
         .. code-block:: python
 
@@ -188,28 +195,28 @@ static auto getObject =
 
         )";
 
-static auto addChildKwargs =
-        R"(
-        Add a child node
-        :param self: the node itself
-        :param name: name of the child to be added
-        :param kwargs
-        :type self: Sofa.Simulation.Node*
-        :type name: string&
-        :type kwargs: kwargs&
-        :rtype: Sofa.Simulation.Node
-        )";
+static auto addChildKwargs = R"(
+        Add a new node as a child
 
-static auto addChild =
-        R"(
-        Add a child node
+        :param name: name of the child node to be added
+        :type name: str
 
-        :param self : the node itself
-        :param child : the child to be added
-        :type self: Sofa.Simulation.Node*
-        :type child: Sofa.Simulation.Node*
-        :rtype: Sofa.Simulation.Node
-        )";
+        :param kwargs: Extra parameters passed to the created Sofa.Node
+        :type kwargs: dict
+
+        :rtype: the created :class: Sofa.Simulation.Node
+
+)";
+
+static auto addChild = R"(
+        Add an existing node as child
+
+        :param node: the node to be added
+        :type node: :class: Sofa.Simulation.Node
+
+        :rtype: the added :class: Sofa.Simulation.Node
+
+)";
 
 static auto createChild =
         R"(
@@ -220,8 +227,8 @@ static auto getChild =
         R"(
         Get the child of a node.
 
-        :param n
-        :param name
+        :param n:
+        :param name:
         :type n: Sofa.Simulation.Node
         :type name: string
         :return: the child with 'name', None otherwise
@@ -232,8 +239,8 @@ static auto removeChild =
         Remove a child of a node.
         :param self: the node itself
         :param n: the child to remove
-        :type self: Sofa.Simulation.Node&
-        :type n: Sofa.Simulation.Node&
+        :type self: Sofa.Simulation.Node
+        :type n: Sofa.Simulation.Node
         Example:
         >>> node1.removeChild(node2)
         )";
@@ -264,7 +271,7 @@ static auto getPathName =
 static auto getLinkPath =
         R"(
         Get the link of the current node
-        :param node
+        :param node:
         :type node: Sofa.Simulation.Node*
         )";
 

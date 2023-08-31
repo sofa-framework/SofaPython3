@@ -1,11 +1,10 @@
 """Control of the application runtime
 
-Example:
-    .. code-block:: python
+   Example:
+        .. code-block:: python
 
-        import SofaRuntime
-        SofaRuntime.importPlugin("Sofa.Component.LinearSolver")
-
+            import SofaRuntime
+            SofaRuntime.importPlugin("Sofa.Component.LinearSolver")
 """
 
 import SofaRuntime.SofaRuntime as cpp
@@ -108,13 +107,16 @@ def getSofaFormattedStringFromException(e):
 def sofaFormatHandler(type, value, tb):
     """This exception handler forwards python exceptions & traceback
 
-       Message Description
-       Python Stack (most recent are at the end)
-          File file1.py line 4  ...
-          File file1.py line 10 ...
-          File file1.py line 40 ...
-          File file1.py line 23 ...
-            faulty line
+       Example of formatting:
+
+            .. code-block:: text
+
+                Python Stack (most recent are at the end)
+                File file1.py line 4  ...
+                File file1.py line 10 ...
+                File file1.py line 40 ...
+                File file1.py line 23 ...
+
     """
     global oldexcepthook
 
@@ -134,13 +136,16 @@ def sendMessageFromException(e):
 def sofaExceptHandler(type, value, tb):
     """This exception handler converts python exceptions & traceback into classical SOFA error messages
 
-       Message Description
-       Python Stack (most recent are at the end)
-          File file1.py line 4  ...
-          File file1.py line 10 ...
-          File file1.py line 40 ...
-          File file1.py line 23 ...
-            faulty line
+       Message:
+
+       .. code-block:: text
+
+            Python Stack (most recent are at the end)
+            File file1.py line 4  ...
+            File file1.py line 10 ...
+            File file1.py line 40 ...
+            File file1.py line 23 ...
+
     """
     global oldexcepthook
 
