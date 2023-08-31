@@ -2,8 +2,7 @@
 Constant library for an easier keyboard interaction.
 
 
-Example of use:
-^^^^^^^^^^^^^^^
+Example:
 The following scene creates a Controller that will print a custom message in the command line when a key is pressed,
 using constants from Sofa.constants.Key
 

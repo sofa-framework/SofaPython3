@@ -59,26 +59,22 @@ PYBIND11_MODULE(Core, core)
     core.doc() = R"doc(
         Contains the general object hierarchy and data structures
 
-        General description
-        -------------------
-
         A SOFA simulation is referred as a "scene". A scene contains several object. Each object is implemented as the
         aggregation of components. Groups of component are grouped and organized logically using a specific container called
         Node. Nodes are hierarchically organized in a scene graph.
         For more, see the `SOFA lexicography <https://www.sofa-framework.org/community/doc/using-sofa/lexicography/>`_.
+
         Commonly used classes:
             .. autosummary::
                 :nosignatures:
 
                 Node
                 Object
-                ObjectFactory
                 Controller
-                Camera
+                ForceFieldVec3d
                 Data
 
-        Example of use
-        --------------
+        Example:
             .. code-block:: python
 
                 import Sofa.Core

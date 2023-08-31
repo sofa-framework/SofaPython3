@@ -64,7 +64,7 @@ PYBIND11_MODULE(Simulation, simulation)
     simulation.def("print", [](Node* n){ sofa::simulation::getSimulation()->print(n); }, sofapython3::doc::simulation::print);
     simulation.def("animate", [](Node* n, SReal dt=0.0){ sofa::simulation::getSimulation()->animate(n, dt); },sofapython3::doc::simulation::animate);
     simulation.def("init", [](Node* n){ sofa::simulation::getSimulation()->init(n); }, sofapython3::doc::simulation::init);
-    simulation.def("initVisual", [](Node* n){ n->getVisualLoop()->initStep(sofa::core::visual::VisualParams::defaultInstance()); });
+    simulation.def("initVisual", [](Node* n){ n->getVisualLoop()->initStep(sofa::core::visual::VisualParams::defaultInstance()); }, sofapython3::doc::simulation::initVisual);
     simulation.def("reset", [](Node* n){ sofa::simulation::getSimulation()->reset(n); }, sofapython3::doc::simulation::reset);
     simulation.def("load", [](const std::string & name) {
         sofa::simulation::Node::SPtr node = sofa::simulation::getSimulation()->load(name);
@@ -85,12 +85,12 @@ PYBIND11_MODULE(Simulation, simulation)
     simulation.def("updateVisual", [](Node* n)
     {
         sofa::simulation::getSimulation()->updateVisual(n);
-    });
+    }, sofapython3::doc::simulation::updateVisual);
 
     simulation.def("initTextures", [](Node* n)
     {
         sofa::simulation::getSimulation()->initTextures(n);
-    });
+    }, sofapython3::doc::simulation::initTextures);
 }
 
 } /// namespace sofapython3

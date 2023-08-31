@@ -37,9 +37,6 @@ extensions = [
     'sphinxcontrib.contentui',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
-#    'sphinx_search.extension',
-    'sphinx.ext.autosectionlabel',
-#    'sphinxcontrib.osexample'
     ]
 
 import sys
@@ -51,7 +48,7 @@ from pathlib import Path
 ## Default: alphabetically ('alphabetical')
 # autodoc_member_order = 'bysource'
 # autodoc_class_signature = "separated"
-autoclass_content = "init"
+autoclass_content = "both"
 autodoc_default_flags = []
 
 ## Generate autodoc stubs with summaries from code

@@ -31,8 +31,7 @@ static auto Class =
         Each simulation object is related to a context, which gives access to all available external data.
         It is able to process events, if listening enabled (default is false).
 
-        :Example of use:
-
+        Example of use:
         .. code-block:: python
 
             import Sofa.Core

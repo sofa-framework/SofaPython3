@@ -26,7 +26,7 @@ static auto Class =
         R"(
         Exposes the data of a sofa object in a way similar to a normal python dictionnary
 
-        :Example:
+        Example:
             .. code-block:: python
 
                 for k,v in anObject.__data__.items():
@@ -44,7 +44,7 @@ static auto values =
 static auto items =
         R"(
         Expose the data, both the key and the value of each item.
-        :Example:
+        Example:
             .. code-block:: python
 
                 for k,v in anObject.__data__.items():

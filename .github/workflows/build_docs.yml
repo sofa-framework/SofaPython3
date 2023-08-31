@@ -1,4 +1,4 @@
-name: Build and Trigger ReadTheDocs Webhook
+name: Build, zip and upload documentation for release
 
 on:
   release:

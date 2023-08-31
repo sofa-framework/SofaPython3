@@ -1,6 +1,17 @@
+SofaExporter
+============
+
+.. currentmodule:: SofaExporter
+
+.. automodule:: SofaExporter
+
+API Table of Content
+--------------------
+
 .. autosummary::
    :toctree: generated
-   :template: autosummary/sub-modules.rst
+   :template: autosummary/base.rst
    :recursive:
-   
-   SofaExporter
+
+   STLExporter
+   VisualModelOBJExporter

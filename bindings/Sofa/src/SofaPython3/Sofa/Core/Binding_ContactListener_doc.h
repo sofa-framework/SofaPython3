@@ -26,8 +26,7 @@ static auto contactListenerClass =
         R"(
         Component dedicated to the monitoring of the collision information between models
 
-        :Example of use:
-
+        Example of use:
         .. code-block:: python
 
             import Sofa.Core

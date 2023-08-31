@@ -32,7 +32,7 @@ static auto Class =
         The different simulated objects are described in separate nodes, and different representations
         of a same object can be done in different sub-nodes.
 
-        Example of use:
+        Example:
           .. code-block:: python
 
                 import Sofa.Core
@@ -53,7 +53,7 @@ static auto Class =
 
         The child nodes, components and parents can be accessed using generator attributes.
 
-        Example of use:
+        Example:
           .. code-block:: python
 
              # ...
@@ -67,7 +67,7 @@ static auto Class =
 
         Accessing children or object from the current node is easy thanks to the generalized access
         API.
-        Example of use:
+        Example:
         .. code-block:: python
 
              # ...
@@ -113,7 +113,7 @@ static auto initSofa =
 static auto addKwargs =
         R"(
         Add an prefab,
-        example:
+        Example:
             def Cube(parentNodes, name="Cube"):
                 cube = parentNode.addChild(name)
                 cube.addObject("MechanicalObject")
@@ -235,7 +235,7 @@ static auto removeChild =
         :param n: the child to remove
         :type self: Sofa.Simulation.Node&
         :type n: Sofa.Simulation.Node&
-        :Examples:
+        Example:
         >>> node1.removeChild(node2)
         )";
 
@@ -246,7 +246,7 @@ static auto removeChildWithName =
         :param name: the name of the child to remove
         :type n: Sofa.Simulation.Node&
         :type name: string
-        :Examples:
+        Example:
         >>> node1.removeChild("nameNode2")
         )";
 
@@ -275,7 +275,7 @@ static auto children =
         The returned object is a iteratable featuring the following operations:
         len, remove_at, __contains__, get_at
 
-        :Example:
+        Example:
         >>> n = Sofa.Core.Node("MyNode")
         >>> n.addChild("child1")
         >>> for child in n.children:
@@ -292,7 +292,7 @@ static auto parents =
         The returned object is a iteratable featuring the following operations:
         len, remove_at, __contains__, get_at
 
-        :Example:
+        Example:
         >>> n = Sofa.Core.Node("parent1")
         >>> c = n.addChild("child1")
         >>> for parent in c.parents:
@@ -308,7 +308,7 @@ static auto objects =
         The returned object is a iteratable featuring the following operations:
         len, remove_at, __contains__, get_at
 
-        :Example:
+        Example:
         >>> n = Sofa.Core.Node("MyNode")
         >>> n.addObject("MechanicalObject", name="object1")
         >>> n.addObject("MechanicalObject", name="object2")

@@ -26,8 +26,7 @@ static auto baseCameraClass =
         R"(
         API dedicated to the control of the Camera in SOFA
 
-        :Example of use:
-
+        Example:
         .. code-block:: python
 
             import Sofa.Core
@@ -47,7 +46,7 @@ static auto baseCameraClass =
         ctrl+x to move backward, ctrl+d to translate on the right, ctrl+q to translate on the left.
         The code for this example is available in the folder examples under the name BaseCamera.py of the SofaPython3 GitHub repository.
 
-        .. image:: ../../../../../images/baseCamera.gif
+        .. image:: ../../../../../../docs/sphinx/source/images/baseCamera.gif
             :alt: Example of a controller for a BaseCamera
             :align: center
             :height: 250pt

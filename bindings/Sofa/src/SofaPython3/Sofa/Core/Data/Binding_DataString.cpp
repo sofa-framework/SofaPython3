@@ -74,7 +74,7 @@ py::object DataString::__getitem__(const py::size_t index)
 
 void moduleAddDataString(py::module& m)
 {
-    py::class_<DataString, BaseData, std::unique_ptr<DataString, py::nodelete>> s(m, "DataString");
+    py::class_<DataString, BaseData, std::unique_ptr<DataString, py::nodelete>> s(m, "DataString", "Data of type string");
 
     PythonFactory::registerType("DataString", [](BaseData* data) -> py::object {
         return py::cast(reinterpret_cast<DataString*>(data));
