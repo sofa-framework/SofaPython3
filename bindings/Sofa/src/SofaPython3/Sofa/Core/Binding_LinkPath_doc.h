@@ -26,7 +26,7 @@ static auto linkpath =
         R"doc(
         Hold a linkpath to an object or a data
 
-        Example of use:
+        Example:
             node.addObject('MechanicalObject", name='o')
             node.addObject(position=node.o.position.linkpath)
 

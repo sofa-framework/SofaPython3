@@ -24,7 +24,8 @@ namespace sofapython3::doc::prefab
 {
 
 static auto Prefab = R"(
-	Prefabs are python templates for a SOFA scene.
-	They allow to simplify the design of a simulation by using pre-structured python script.
-         )";
+            Prefabs are python templates for a SOFA scene
+
+            They allow to simplify the design of a simulation by using pre-structured python script.
+            )";
 }

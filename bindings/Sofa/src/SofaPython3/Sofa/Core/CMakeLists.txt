@@ -45,6 +45,8 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseCamera_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Topology.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseMeshTopology.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_TaskScheduler.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_TaskScheduler_doc.h
 )
 
 set(SOURCE_FILES
@@ -75,6 +77,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseLink.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Topology.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseMeshTopology.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_TaskScheduler.cpp
 )
 
 if (NOT TARGET SofaPython3::Plugin)

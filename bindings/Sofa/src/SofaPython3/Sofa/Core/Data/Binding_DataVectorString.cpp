@@ -67,7 +67,7 @@ py::object DataVectorString::__getitem__(const py::size_t index)
 
 void moduleAddDataVectorString(py::module& m)
 {
-    py::class_<DataVectorString, BaseData, std::unique_ptr<DataVectorString, py::nodelete>> s(m, "DataVectorString");
+    py::class_<DataVectorString, BaseData, std::unique_ptr<DataVectorString, py::nodelete>> s(m, "DataVectorString", "Data of type vector<string>");
 
     PythonFactory::registerType("DataVectorString", [](BaseData* data) -> py::object {
         return py::cast(reinterpret_cast<DataVectorString*>(data));

@@ -20,6 +20,7 @@
 
 #include <sstream>
 #include <fstream>
+#include <sofa/simulation/Simulation.h>
 
 #include <sofa/simulation/graph/DAGNode.h>
 using sofa::simulation::graph::DAGNode;
@@ -88,9 +89,14 @@ bool SceneLoaderPY3::syntaxForAddingRequiredPlugin(const std::string& pluginName
 
 sofa::simulation::Node::SPtr SceneLoaderPY3::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
 {
-    sofa::simulation::Node::SPtr root = sofa::simulation::Node::create("root");
-    loadSceneWithArguments(filename.c_str(), sceneArgs, root);
-    return root;
+    if (sofa::simulation::Simulation* simulation = sofa::simulation::getSimulation())
+    {
+        sofa::simulation::Node::SPtr root = simulation->createNewNode("root");
+        loadSceneWithArguments(filename.c_str(), sceneArgs, root);
+        return root;
+    }
+
+    return nullptr;
 }
 
 

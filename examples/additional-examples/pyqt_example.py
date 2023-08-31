@@ -110,7 +110,7 @@ class SofaSim():
         root.addObject("VisualStyle", displayFlags="showBehaviorModels showAll")
         root.addObject("MeshGmshLoader", name="meshLoaderCoarse",
                        filename="mesh/liver.msh")
-        root.addObject("MeshObjLoader", name="meshLoaderFine",
+        root.addObject("MeshOBJLoader", name="meshLoaderFine",
                        filename="mesh/liver-smooth.obj")
 
         root.addObject("EulerImplicitSolver")
@@ -134,7 +134,7 @@ class SofaSim():
         liver.addObject("FixedConstraint", indices="2 3 50")
 
         visual = liver.addChild("visual")
-        visual.addObject('MeshObjLoader', name="meshLoader_0", filename="mesh/liver-smooth.obj", handleSeams="1")
+        visual.addObject('MeshOBJLoader', name="meshLoader_0", filename="mesh/liver-smooth.obj", handleSeams="1")
         visual.addObject('OglModel', name="VisualModel", src="@meshLoader_0", color='red')
         visual.addObject('BarycentricMapping', input="@..", output="@VisualModel", name="visual mapping")
 

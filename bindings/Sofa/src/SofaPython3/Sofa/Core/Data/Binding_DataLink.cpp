@@ -60,14 +60,14 @@ py::str DataLink::__repr__()
 
 void moduleAddDataLink(py::module &m)
 {
-    py::class_<PrefabLink, std::unique_ptr<PrefabLink, py::nodelete>> l(m, "PrefabLink");
+    py::class_<PrefabLink, std::unique_ptr<PrefabLink, py::nodelete>> l(m, "PrefabLink", "Link to a prefab");
     l.def(py::init<const Base::SPtr&>());
     l.def(py::init<BaseLink*>());
     l.def(py::init<const std::string&>());
     l.def("getTargetBase", &getTargetBase);
     l.def("getTargetPath", &getTargetPath);
 
-    py::class_<DataLink, BaseData, std::unique_ptr<DataLink, py::nodelete>> d(m, "DataLink");
+    py::class_<DataLink, BaseData, std::unique_ptr<DataLink, py::nodelete>> d(m, "DataLink", "Stores the connection between two object of type Data");
 
     PythonFactory::registerType("DataLink", [](BaseData* data) -> py::object {
         return py::cast(reinterpret_cast<DataLink*>(data));

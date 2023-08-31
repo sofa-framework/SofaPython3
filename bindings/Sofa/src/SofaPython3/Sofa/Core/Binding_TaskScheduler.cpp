@@ -18,32 +18,55 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaExporter/Binding_STLExporter.h>
-#include <SofaExporter/Binding_STLExporter_doc.h>
+#include <SofaPython3/Sofa/Core/Binding_TaskScheduler.h>
+#include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/TaskScheduler.h>
+#include <SofaPython3/Sofa/Core/Binding_TaskScheduler_doc.h>
 
-#include <SofaPython3/PythonFactory.h>
-#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
-#include <sofa/component/io/mesh/STLExporter.h>
-
-using  sofa::component::io::mesh::STLExporter;
 
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
 
-namespace sofapython3 {
-
-void moduleAddSTLExporter(py::module &m)
+namespace sofapython3
 {
-    PythonFactory::registerType<STLExporter>(
-                [](sofa::core::objectmodel::Base* object)
+py::module moduleAddTaskScheduler(py::module& m)
+{
+    py::module taskSchedulerModule = m.def_submodule("TaskScheduler");
+
+    taskSchedulerModule.doc() = R"doc(
+        TaskScheduler
+        -----------------------
+
+        Configuration of the main task scheduler.
+    )doc";
+
+
+    taskSchedulerModule.def("init", [](const unsigned int nbThreads)
     {
-        return py::cast(dynamic_cast<STLExporter*>(object));
+        auto* const taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
+        assert(taskScheduler);
+        taskScheduler->init(nbThreads);
+    }, sofapython3::doc::taskscheduler::init);
+
+    taskSchedulerModule.def("getThreadCount", []()
+    {
+        const auto* const taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
+        assert(taskScheduler);
+        return taskScheduler->getThreadCount();
+    }, sofapython3::doc::taskscheduler::getThreadCount);
+
+    taskSchedulerModule.def("stop", []()
+    {
+        auto* const taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
+        assert(taskScheduler);
+        return taskScheduler->stop();
     });
 
-    py::class_<STLExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<STLExporter>> p(m, "STLExporter", sofapython3::doc::SofaExporter::STLExporter::docstring);
+    taskSchedulerModule.def("GetHardwareThreadsCount", []()
+    {
+        return sofa::simulation::TaskScheduler::GetHardwareThreadsCount();
+    }, sofapython3::doc::taskscheduler::GetHardwareThreadsCount);
 
-    p.def("write", &STLExporter::write);
+    return taskSchedulerModule;
 }
-
-} // namespace sofapython3
+}

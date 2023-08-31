@@ -52,7 +52,7 @@ static auto init =
 
 static auto initVisual =
         R"(
-        Initialize the textures, or other graphical resources.
+        Initialize the textures and other graphical resources
         )";
 
 static auto animate =
@@ -98,6 +98,4 @@ static auto initTextures =
         R"(
         Initialize the textures
         )";
-
-
 }

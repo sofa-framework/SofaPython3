@@ -1,8 +1,7 @@
 """
 All SOFA key components supported by the SOFA consortium
 
-Example of use:
-^^^^^^^^^^^^^^^
+Example:
   .. code-block:: python
 
     import Sofa.Core

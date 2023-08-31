@@ -20,29 +20,18 @@
 
 #pragma once
 
-namespace sofapython3::doc::SofaExporter
+
+namespace sofapython3::doc::SofaExporter::STLExporter
 {
 
 static auto docstring =
         R"(
         Exports an STL file
-        -------------------
-        )";
-}
-
-
-namespace sofapython3::doc::SofaExporter::STLExporter::write
-{
-
-static auto docstring =
-        R"(
-        Exports an STL file
-        ---------------------------------------
 
         Will export a binary or ascii file depending on the binary flag of STLExporter
         Will auto-number the exported files
 
-        Example of use:
+        Example:
           .. code-block:: python
 
              import Sofa

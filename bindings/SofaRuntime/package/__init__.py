@@ -1,6 +1,6 @@
 """Control of the application runtime
 
-Example of use:
+Example:
     .. code-block:: python
 
         import SofaRuntime
@@ -37,7 +37,8 @@ def importPlugin(a):
     return cpp.importPlugin(a)
 
 def unloadModules():
-    """ call this function to unload python modules and to force their reload
+    """ Call this function to unload python modules and to force their reload
+
         (useful to take into account their eventual modifications since
         their last import).
     """
@@ -51,7 +52,7 @@ def unloadModules():
 ################################################################
 
 def formatStackForSofa(o):
-    """ format the stack trace provided as parameter.
+    """ Format the stack trace provided as parameter
 
         The parameter is converted into a string like that
 
@@ -73,14 +74,14 @@ def formatStackForSofa(o):
 
 
 def getStackForSofa():
-    """returns the current stack with a "informal" formatting. """
+    """Returns the current stack with a "informal" formatting """
     ## we exclude the first level in the stack because it is the getStackForSofa() function itself.
     ss=inspect.stack()[1:]
     return formatStackForSofa(ss)
 
 
 def getPythonCallingPointAsString():
-    """returns the last entry with an "informal" formatting. """
+    """Returns the last entry with an "informal" formatting """
 
     ## we exclude the first level in the stack because it is the getStackForSofa() function itself.
     ss=inspect.stack()[-1:]
@@ -88,7 +89,7 @@ def getPythonCallingPointAsString():
 
 
 def getPythonCallingPoint():
-    """returns the tupe with closest filename & line. """
+    """Returns the tupe with closest filename and line """
     ## we exclude the first level in the stack because it is the getStackForSofa() function itself.
     ss=inspect.stack()[1]
     tmp=(os.path.abspath(ss[1]), ss[2])
@@ -99,14 +100,14 @@ def getPythonCallingPoint():
 ###################### EXCEPTION HANDLING (NECESSARY?) ######################
 #############################################################################
 
-def sendMessageFromException(e):
+def getSofaFormattedStringFromException(e):
+    """Function handling exception using `sofaFormatHandler()` (python stack)"""
     exc_type, exc_value, exc_tb = sys.exc_info()
-    sofaExceptHandler(exc_type, exc_value, exc_tb)
-
+    return sofaFormatHandler(exc_type, exc_value, exc_tb)
 
 def sofaFormatHandler(type, value, tb):
-    global oldexcepthook
-    """This exception handler, convert python exceptions & traceback into more classical sofa error messages of the form:
+    """This exception handler forwards python exceptions & traceback
+
        Message Description
        Python Stack (most recent are at the end)
           File file1.py line 4  ...
@@ -115,6 +116,8 @@ def sofaFormatHandler(type, value, tb):
           File file1.py line 23 ...
             faulty line
     """
+    global oldexcepthook
+
     s="\nPython Stack (most recent are at the end): \n"
     for line in traceback.format_tb(tb):
         s += line
@@ -122,13 +125,15 @@ def sofaFormatHandler(type, value, tb):
     return repr(value)+" "+s
 
 
-def getSofaFormattedStringFromException(e):
+def sendMessageFromException(e):
+    """Function handling exception using `sofaExceptHandler()` (SOFA format)"""
     exc_type, exc_value, exc_tb = sys.exc_info()
-    return sofaFormatHandler(exc_type, exc_value, exc_tb)
+    sofaExceptHandler(exc_type, exc_value, exc_tb)
+
 
 def sofaExceptHandler(type, value, tb):
-    global oldexcepthook
-    """This exception handler, convert python exceptions & traceback into more classical sofa error messages of the form:
+    """This exception handler converts python exceptions & traceback into classical SOFA error messages
+
        Message Description
        Python Stack (most recent are at the end)
           File file1.py line 4  ...
@@ -137,6 +142,8 @@ def sofaExceptHandler(type, value, tb):
           File file1.py line 23 ...
             faulty line
     """
+    global oldexcepthook
+
     h = type.__name__
 
     if str(value) != '':

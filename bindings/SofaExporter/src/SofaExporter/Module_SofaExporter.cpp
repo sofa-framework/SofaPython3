@@ -31,11 +31,10 @@ PYBIND11_MODULE(SofaExporter, m) {
     m.doc() = R"doc(
               Export in STL or OBJ from from a SOFA simulation
 
-              Example of use:
+              Example:
+                  .. code-block:: python
 
-              .. code-block:: python
-
-                import SofaExporter
+                      import SofaExporter
 
               )doc";
 

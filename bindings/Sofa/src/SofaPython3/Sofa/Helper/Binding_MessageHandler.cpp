@@ -85,7 +85,7 @@ namespace sofapython3
 
 
     void moduleAddMessageHandler(py::module &m) {
-        py::class_<PyMessageHandler, MessageHandler_Trampoline> f(m, "MessageHandler", py::dynamic_attr());
+        py::class_<PyMessageHandler, MessageHandler_Trampoline> f(m, "MessageHandler", py::dynamic_attr(), "Manages and processes messages");
 
         m.doc() = "Manages the message API";
 

@@ -18,18 +18,23 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/core/objectmodel/Context.h>
-#include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaPython3/Sofa/Core/Binding_BaseContext.h>
-#include <SofaPython3/Sofa/Core/Binding_Context.h>
+#pragma once
 
-using namespace sofa::core::objectmodel;
-namespace py { using namespace pybind11; }
+namespace sofapython3::doc::taskscheduler
+{
 
-namespace sofapython3 {
+static auto init =
+    R"(
+    Initialize the main task scheduler with a number of threads.
+    )";
 
-void moduleAddContext(py::module& m) {
-    py::class_<Context, BaseContext, py_shared_ptr<Context>> (m, "Context", "Implementation of BaseContext, storing all shared parameters in Datas");
+static auto getThreadCount =
+    R"(
+    Returns the number of threads used by the main task scheduler.
+    )";
+
+static auto GetHardwareThreadsCount =
+    R"(
+    Assuming 2 concurrent threads by CPU core, return the number of CPU cores on the system
+    )";
 }
-
-} // namespace sofapython3

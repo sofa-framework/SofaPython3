@@ -55,9 +55,7 @@ PYBIND11_MODULE(Gui, m) {
     m.doc() = R"doc(
             Controls the graphical user interface
 
-            Example of use
-            --------------
-
+            Example:
                 .. code-block:: python
 
                     import Sofa.Gui

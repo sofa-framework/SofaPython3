@@ -39,9 +39,9 @@ void moduleAddVisualModelOBJExporter(py::module &m)
         return py::cast(dynamic_cast<VisualModelOBJExporter*>(object));
     });
 
-    py::class_<VisualModelOBJExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<VisualModelOBJExporter>> p(m, "VisualModelOBJExporter");
+    py::class_<VisualModelOBJExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<VisualModelOBJExporter>> p(m, "VisualModelOBJExporter", sofapython3::doc::SofaExporter::VisualModelOBJExporter::docstring);
 
-    p.def("write", &VisualModelOBJExporter::write, sofapython3::doc::SofaExporter::VisualModelOBJExporter::write::docstring);
+    p.def("write", &VisualModelOBJExporter::write);
 }
 
 } // namespace sofapython3

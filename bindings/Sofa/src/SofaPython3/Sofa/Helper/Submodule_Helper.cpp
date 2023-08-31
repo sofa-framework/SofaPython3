@@ -126,9 +126,7 @@ PYBIND11_MODULE(Helper, helper)
             The 'deprecated' messages are indicating that some feature are now deprecated and thus be fixed as soon as possible.
             In general we provide updates tips with deprecated messages.
 
-            Examples of use
-            ---------------
-
+            Example:
              .. code-block:: python
 
                msg_error("something bad happens")
