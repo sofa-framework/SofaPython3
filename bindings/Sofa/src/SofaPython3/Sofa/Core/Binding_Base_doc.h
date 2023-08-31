@@ -73,17 +73,21 @@ static auto getLinkPath =
         Returns the path name as a parsable string
 
         .. code-block:: python
-            if object.getLinkName() is "/child1/object"
-            then the linkPath is @"/child1/object"
+
+            # returns is @"/child1/object" if getPathName() is @"/child1/object"
+            print(object.linkPath)
+
         )";
 static auto getPathName =
         R"(
         Returns the path name as a string
 
         .. code-block:: python
+
             a = Sofa.Core.Node("root")
-            b.addObject("Camera", name="camera")
+            b = a.addObject("Camera", name="camera")
             b.getPathName() # should returns "/root/camera"
+
         ```
         )";
 static auto setDataValues =

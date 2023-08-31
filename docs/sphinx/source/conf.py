@@ -37,9 +37,6 @@ extensions = [
     'sphinxcontrib.contentui',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
-#    'sphinx_search.extension',
-    'sphinx.ext.autosectionlabel',
-#    'sphinxcontrib.osexample'
     ]
 
 import sys
@@ -57,8 +54,6 @@ autodoc_default_flags = []
 ## Generate autodoc stubs with summaries from code
 autosummary_generate = True
 autosummary_ignore_module_all = False
-
-autosectionlabel_prefix_document=True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['templates']

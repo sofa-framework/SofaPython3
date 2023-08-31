@@ -108,6 +108,7 @@ prerequisites.
 
 .. _intree:
 
+*************
 In-tree build
 *************
 
@@ -164,6 +165,7 @@ At this point, you are ready to start the compilation of SOFA and the SofaPython
 
 .. _outtree:
 
+*****************
 Out-of-tree build
 *****************
 

@@ -33,7 +33,8 @@ static auto Class =
         of a same object can be done in different sub-nodes.
 
         Example of use:
-          .. code-block:: python
+
+        .. code-block:: python
 
                 import Sofa.Core
 
@@ -54,7 +55,8 @@ static auto Class =
         The child nodes, components and parents can be accessed using generator attributes.
 
         Example of use:
-          .. code-block:: python
+
+        .. code-block:: python
 
              # ...
              n = Sofa.Core.Node("MyNode")
@@ -67,7 +69,9 @@ static auto Class =
 
         Accessing children or object from the current node is easy thanks to the generalized access
         API.
+
         Example of use:
+
         .. code-block:: python
 
              # ...
@@ -174,9 +178,6 @@ static auto getObject =
         The extra arguments allowed in the SofaPython (warning=True/False) binding are not supported SofaPython3.
 
         .. code-block:: python
-            # SofaPython2:
-            if node.getObject("MyObject",warning=False):
-                pass
 
             # SofaPython3:
             if node.getObject("MyObject") != None:
@@ -187,6 +188,7 @@ static auto getObject =
 
             if "MyObject" in node.objects:
                 pass
+
         )";
 
 static auto addChildKwargs =

@@ -64,7 +64,8 @@ PYBIND11_MODULE(Core, core)
         Node. Nodes are hierarchically organized in a scene graph.
         For more, see the `SOFA lexicography <https://www.sofa-framework.org/community/doc/using-sofa/lexicography/>`_.
         Commonly used classes:
-            .. autosummary::
+
+        .. autosummary::
                 :nosignatures:
 
                 Node
@@ -76,7 +77,8 @@ PYBIND11_MODULE(Core, core)
 
         Example of use
         --------------
-            .. code-block:: python
+
+        .. code-block:: python
 
                 import Sofa.Core
 
@@ -93,6 +95,7 @@ PYBIND11_MODULE(Core, core)
 
                 Sofa.Simulation.init(root)
                 Sofa.Simulation.print(root)
+
        )doc";
 
     moduleAddPythonScriptEvent();
