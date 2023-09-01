@@ -213,3 +213,10 @@ Let's now pull the source code of the plugin, configure the build and start the 
 
 That's it, you are now ready to use SofaPython3. Keep the environment variable **SOFA_ROOT** and **SP3_ROOT** close by
 for the upcoming sections.
+
+* If you `compiled SofaPython3 out-of-tree <https://sofapython3.readthedocs.io/en/latest/content/Compilation.html#out-of-tree-build>`_, you can load the SofaPython3 following one of this step:
+
+  * use the "-l" of runSofa: ``runSofa -l /path/to/SofaPython3_build/lib/libSofaPython3.so <scene>``
+  * or use the environment variable ``SOFA_PLUGIN_PATH=/path/to/SofaPython3_build/``
+  * or add the component ``<AddPluginRepository path="/path/to/SofaPython3_build/"/>`` in your scene
+  * or start runSofa, manually load the SofaPython3 library using *Edit->Plugin Manager->Add* , then restart runSofa: the plugin should load automatically

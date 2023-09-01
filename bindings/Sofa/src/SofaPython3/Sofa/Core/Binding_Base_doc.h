@@ -74,7 +74,7 @@ static auto getLinkPath =
 
         .. code-block:: python
 
-            # returns is @"/child1/object" if getPathName() is @"/child1/object"
+            # prints @"/child1/object" if getPathName() is "/child1/object"
             print(object.linkPath)
 
         )";

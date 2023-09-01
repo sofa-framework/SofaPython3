@@ -5,12 +5,16 @@ Sofa
 
 .. automodule:: Sofa
 
-Sub-modules
-===========
+
+.. toctree::
+   :hidden:
+
+   submodules
+
+**Sub-modules**
+
 .. autosummary::
-   :toctree: generated
    :template: autosummary/sub-modules.rst
-   :recursive:
 
    Simulation
    Core
@@ -19,26 +23,32 @@ Sub-modules
    Types
    SofaTypes
    prefab
-   constants
+   constants   
 
-Utility Functions
-=================
+.. toctree::
+   :hidden:
+
+   utilityfunctions
+
+**Utility Functions**
+
 .. autosummary::
-   :toctree: generated
    :template: autosummary/base.rst
-   :recursive:
 
    msg_error
    msg_info
    msg_warning
    msg_deprecated
 
-Additional modules
-==================
+.. toctree::
+   :hidden:
+
+   additionalmodules
+
+**Additional modules**
+
 .. autosummary::
-   :toctree: generated
    :template: autosummary/sub-modules.rst
-   :recursive:
 
    SofaBaseTopology
    SofaConstraintSolver

@@ -37,6 +37,7 @@ extensions = [
     'sphinxcontrib.contentui',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
+    'sphinx_search.extension',
     ]
 
 import sys

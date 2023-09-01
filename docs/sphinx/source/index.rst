@@ -1,3 +1,6 @@
+Welcome to SofaPython3 documentation !
+======================================
+
 The SofaPython3 project brings python bindings for the `SOFA simulation framework <https://www.sofa-framework.org>`_.
 Thereby, it allows users to use most of the components and features found in SOFA directly into their python scripts.
 
@@ -21,15 +24,21 @@ interpreter without requiring the load of the plugin.
     :width: 400
 
 .. toctree::
+    :hidden:
     :maxdepth: 5
     :caption: Content
-    :includehidden:
-    :numbered:
+    :numbered: 3
     
-    content/Compilation
-    content/UsingThePlugin
+    content/Installation
+    content/FirstSteps
     content/Modules
     content/PythonLibraries
     content/CustomModule
+    content/Compilation
     content/Contributing 
 
+Indices and tables
+==================
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
