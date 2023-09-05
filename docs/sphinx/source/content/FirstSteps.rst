@@ -16,7 +16,7 @@ You can load a python based simulation directly in runSofa by using the command
 
 Let's now open ``examples/example1.py`` to have more insight. 
 The first important thin to notice is that the python script is importing modules called ``Sofa``, this module, and few other are containing 
-all Sofa specific component. Then the script is defining a ``createScene()`` function. This function is the entry point of your simulation and 
+all SOFA specific component. Then the script is defining a ``createScene()`` function. This function is the entry point of your simulation and
 is automatically called by the runSofa application when a python file is loaded. 
 
 We will look with more details in this ``createScene()`` but first let's how we can execute the same file without using ``runSofa``.
@@ -25,8 +25,8 @@ We will look with more details in this ``createScene()`` but first let's how we 
 With the python3 interpreter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Before being able to execute a simulation from a python interpreter (including jupyter notebook) be sure you read the "`Within a python3 interpreter <https://sofapython3.readthedocs.io/en/latest/content/SofaPlugin.html#within-a-python3-interpreter>`_" section so your 
-python environment is properly configured and has access to the Sofa specific modules. 
+Before being able to execute a simulation from a python interpreter (including jupyter notebook) be sure you read the "`Setup your python3 environment <https://sofapython3.readthedocs.io/en/latest/content/Installation.html#using-python3>`_" section
+so your python environment is properly configured and has access to the SOFA specific python modules.
 
 When working a python3 interpreter, your simulation requires more than only the ``createScene()`` function. 
 Indeed, the python environment does not pre-generate a root node as the runSofa executable is. 

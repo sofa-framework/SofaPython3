@@ -18,10 +18,10 @@ that the python version is compatible. Hence, the python interpreter embedded in
 to load these binding modules. In addition, one could load the binding modules directly inside their own python
 interpreter without requiring the load of the plugin.
 
-.. figure:: images/SP3_global_arch.png
+.. figure:: images/SofaPython3-logo.png
     :alt: How SP3 fits in the SOFA usage pipeline
     :align: center
-    :width: 400
+    :width: 300
 
 .. toctree::
     :hidden:

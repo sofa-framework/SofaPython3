@@ -1,8 +1,8 @@
-###########
-Compilation
-###########
+##################
+Manual compilation
+##################
 
-The compilation of the SofaPython3 can be done automatically when `building SOFA <https://www.sofa-framework.org/community/doc/getting-started/build/linux/>`_,
+The compilation of the SofaPython3 can be done when `building SOFA <https://www.sofa-framework.org/community/doc/getting-started/build/linux/>`_,
 or it can be done independently using an already compiled/installed SOFA:
 
 * the former is called an :ref:`intree`, which is, the compilation of SofaPython3 is included inside the build tree of SOFA
@@ -18,10 +18,9 @@ Prerequisites
 The compilation of SofaPython3 requires the installation of some dependencies. The following table lists all of those
 prerequisites.
 
-.. content-tabs::
+.. tabs::
 
-    .. tab-container:: tab1
-        :title: Ubuntu
+    .. tab:: Ubuntu
 
         .. list-table::
             :widths: 15 10 30 45
@@ -46,8 +45,7 @@ prerequisites.
               -
 
 
-    .. tab-container:: tab2
-        :title: MacOS
+    .. tab:: MacOS
 
         .. list-table::
             :widths: 15 10 30 45
@@ -72,8 +70,7 @@ prerequisites.
               -
 
 
-    .. tab-container:: tab3
-        :title: Windows
+    .. tab:: Windows
 
         .. list-table::
             :widths: 15 10 30 45
@@ -171,6 +168,9 @@ At this point, you are ready to start the compilation of SOFA and the SofaPython
 Out-of-tree build
 *****************
 
+Compilation
+^^^^^^^^^^^
+
 As detailed above in the :ref:`compilation.prerequisites`  section, you must have an installed version of SOFA in order to compile the SofaPython3 plugin *out-of-tree*. Not only must the sources be compiled following the SOFA documentation, but you have to make sure to have an **install** directory, i.e. to execute the installation (e.g. by runnin the command ``cmake --install .`` from the SOFA build directory)
 
 Once done, export the installation path of SOFA inside the ``SOFA_ROOT`` environment variable. For example,
@@ -211,12 +211,20 @@ Let's now pull the source code of the plugin, configure the build and start the 
     $ cmake --build $SP3_BUILD
     $ cmake --install $SP3_BUILD
 
-That's it, you are now ready to use SofaPython3. Keep the environment variable **SOFA_ROOT** and **SP3_ROOT** close by
-for the upcoming sections.
+Keep the environment variable **SOFA_ROOT** and **SP3_ROOT** close by for the upcoming sections.
 
-* If you `compiled SofaPython3 out-of-tree <https://sofapython3.readthedocs.io/en/latest/content/Compilation.html#out-of-tree-build>`_, you can load the SofaPython3 following one of this step:
+
+Setup using runSofa
+^^^^^^^^^^^^^^^^^^^
+
+Using SofaPython3 built out-of-tree (as explained just previously), you can load the SofaPython3 plugin in runSofa following one of this step:
 
   * use the "-l" of runSofa: ``runSofa -l /path/to/SofaPython3_build/lib/libSofaPython3.so <scene>``
   * or use the environment variable ``SOFA_PLUGIN_PATH=/path/to/SofaPython3_build/``
   * or add the component ``<AddPluginRepository path="/path/to/SofaPython3_build/"/>`` in your scene
   * or start runSofa, manually load the SofaPython3 library using *Edit->Plugin Manager->Add* , then restart runSofa: the plugin should load automatically
+
+Setup using python3
+^^^^^^^^^^^^^^^^^^^
+
+See the `Setup your environment using python3 <https://sofapython3.readthedocs.io/en/latest/content/Installation.html#using-python3>`_ section

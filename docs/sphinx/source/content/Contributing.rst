@@ -19,3 +19,16 @@ If you are able to patch a bug, add the feature yourself, add new examples or si
 * Make your changes.
 * Pull in changes from upstream often to `synchronize your fork <https://help.github.com/articles/syncing-a-fork/>`_ so that merge conflicts will be less likely in your pull request.
 * `Create a pull request <https://help.github.com/articles/creating-a-pull-request-from-a-fork/>`_ when you are ready to propose your changes into the main project.
+
+
+***********************
+Share your achievements
+***********************
+
+Discovering what you achieve using SOFA and SofaPython3 is rewarding for the project.
+We would be most grateful in case you:
+
+* `Cite SOFA <https://www.sofa-framework.org/applications/publications/#CiteSOFA>`_ in your publications
+* `Share your achievements <https://github.com/sofa-framework/sofa/discussions/categories/share-your-achievements>`_ with the community
+* Join the `SOFA annual conference <https://www.sofa-framework.org/sofa-events/sofa-week/>`_ and present your work
+* Share new `open-source plugins <https://www.sofa-framework.org/applications/plugins/>`_

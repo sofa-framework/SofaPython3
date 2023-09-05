@@ -12,10 +12,9 @@ Prerequisites
 
 If you downloaded and installed SOFA and its headers from the `SOFA website <https://www.sofa-framework.org/download/>`_, make sure to have python3.8 installed on your computed.
 
-.. content-tabs::
+.. tabs::
 
-	.. tab-container:: tab1
-		:title: Ubuntu
+        .. tab:: Ubuntu
 
 			Run in a terminal:
 
@@ -32,8 +31,7 @@ If you downloaded and installed SOFA and its headers from the `SOFA website <htt
 				sudo apt install libopengl0
 
 
-	.. tab-container:: tab2
-		:title: MacOS
+        .. tab:: MacOS
 
 			Run in a terminal:
 
@@ -56,8 +54,7 @@ If you downloaded and installed SOFA and its headers from the `SOFA website <htt
 				pip3 install numpy
 
 
-	.. tab-container:: tab3
-		:title: Windows
+        .. tab:: Windows
 
 		Download and install `Python 3.8 64bit <https://www.python.org/ftp/python/3.8.10/python-3.8.10-amd64.exe>`_
 
@@ -101,10 +98,9 @@ Within a python3 interpreter
 Before running your simulations, you must make sure to define the following environment variables:
 
 
-.. content-tabs::
+.. tabs::
 
-	.. tab-container:: tab1
-		:title: Ubuntu
+        .. tab:: Ubuntu
 
 			Run in a terminal:
 
@@ -113,8 +109,7 @@ Before running your simulations, you must make sure to define the following envi
 				export SOFA_ROOT=/path/to/SOFA_install
 				export PYTHONPATH=/path/to/SofaPython3/lib/python3/site-packages:$PYTHONPATH
 
-	.. tab-container:: tab2
-		:title: MacOS
+        .. tab:: MacOS
 
 			Run in a terminal:
 
@@ -125,8 +120,7 @@ Before running your simulations, you must make sure to define the following envi
 				export PATH="/usr/local/opt/python@3.8/bin/:$PATH"
 
 
-	.. tab-container:: tab3
-		:title: Windows
+        .. tab:: Windows
 
 		    * Create a system variable **SOFA_ROOT** and set it to ``<SOFA-install-directory>``
 		    * Create a system variable **PYTHON_ROOT** and set it to ``<Python3-install-directory>``

@@ -38,6 +38,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
     'sphinx_search.extension',
+    'sphinx_tabs.tabs',
     ]
 
 import sys

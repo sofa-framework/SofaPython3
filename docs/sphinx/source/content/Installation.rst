@@ -5,23 +5,25 @@ Install
 The SofaPython3 plugins allows you to embed a python3 interpreter into an existing SOFA application (eg: runSofa) and to create/launch SOFA simulations from a python environment.
 Depending on your use case you may have different step to follow to get a fully working SofaPython3 environnement.
 
+.. _getsofapython3:
+
 ***************
 Get SofaPython3
 ***************
 
-Latest version of the SofaPython3 plugins are now shipped directly by the Sofa-Constortium directly from the `Sofa website <https://www.sofa-framework.org/download/>`
+Latest version of the SofaPython3 plugins are now shipped within the binary SOFA release supported by the SOFA Constortium.
+All you need is therefore to download these SOFA binaries from the `SOFA website <https://www.sofa-framework.org/download/>`_.
 
 
-*****
-Setup
-*****
+********************
+Get python installed
+********************
 
-First make sure you have the same version of python installed on your computer as the one that is used in the binary version.
+First, make sure you have the same version of python installed on your computer as the one that is used in the binary version.
 
-.. content-tabs::
+.. tabs::
 
-	.. tab-container:: tab1
-		:title: Ubuntu
+        .. tab:: Ubuntu
 
 			Run in a terminal:
 
@@ -38,8 +40,7 @@ First make sure you have the same version of python installed on your computer a
 				sudo apt install libopengl0
 
 
-	.. tab-container:: tab2
-		:title: MacOS
+        .. tab:: Ubuntu
 
 			Run in a terminal:
 
@@ -62,23 +63,19 @@ First make sure you have the same version of python installed on your computer a
 				pip3 install numpy
 
 
-	.. tab-container:: tab3
-		:title: Windows
+        .. tab:: Windows
 
 		Download and install `Python 3.8 64bit <https://www.python.org/ftp/python/3.8.10/python-3.8.10-amd64.exe>`_
 
 
-***************************
-Check everything is correct
-***************************
+**********************
+Setup your environment
+**********************
 
 using runSofa
 *************
 
-Using SofaPython3 in runSofa requires loading the SofaPython3 plugin in your runSofa environment.
-    
-
-* If you downloaded and installed SOFA and its headers from the `SOFA website <https://www.sofa-framework.org/download/>`_, or if you `compiled SofaPython3 in-tree <https://sofapython3.readthedocs.io/en/latest/content/Compilation.html#in-tree-build>`_, you can load the SofaPython3 plugin using the PluginManager (in the GUI) or by auto-loading the plugin in runSofa: simply copy the file **plugin_list.conf.default** in *<SOFA_build>/lib*, and rename it **plugin_list.conf**, then add the line:
+Using SofaPython3 in runSofa requires loading the SofaPython3 plugin in your runSofa environment. If you downloaded and installed SOFA from the SOFA website (as explained above, see :ref:`getsofapython3`), you can load the SofaPython3 plugin using the PluginManager (in the GUI) or by auto-loading the plugin in runSofa: simply copy the file **plugin_list.conf.default** in *<SOFA_build>/lib*, and rename it **plugin_list.conf**, then add the line:
 
 	.. code-block:: text 
 
@@ -87,7 +84,7 @@ Using SofaPython3 in runSofa requires loading the SofaPython3 plugin in your run
 	..
 		Note that adding the line to the file **plugin_list.conf.default** in *<SOFA_build>/lib* would work, but you would need to add the line everytime you compile the code.
 
-	Having the SofaPython3 plugin active will allow you to open scene files using the ".py, .py3, .pyscn, .pyscn3" file extension in runSofa, with the command :
+Having the SofaPython3 plugin active will allow you to open scene files using the ".py, .py3, .pyscn, .pyscn3" file extension in runSofa, with the command :
 
 	.. code-block:: bash
 
@@ -100,10 +97,9 @@ using python3
 Before running your simulations, you must make sure to define the following environment variables:
 
 
-.. content-tabs::
+.. tabs::
 
-	.. tab-container:: tab1
-		:title: Ubuntu
+        .. tab:: Ubuntu
 
 			Run in a terminal:
 
@@ -112,8 +108,7 @@ Before running your simulations, you must make sure to define the following envi
 				export SOFA_ROOT=/path/to/SOFA_install
 				export PYTHONPATH=/path/to/SofaPython3/lib/python3/site-packages:$PYTHONPATH
 
-	.. tab-container:: tab2
-		:title: MacOS
+        .. tab:: MacOS
 
 			Run in a terminal:
 
@@ -124,8 +119,7 @@ Before running your simulations, you must make sure to define the following envi
 				export PATH="/usr/local/opt/python@3.8/bin/:$PATH"
 
 
-	.. tab-container:: tab3
-		:title: Windows
+        .. tab:: Windows
 
 		    * Create a system variable **SOFA_ROOT** and set it to ``<SOFA-install-directory>``
 		    * Create a system variable **PYTHON_ROOT** and set it to ``<Python3-install-directory>``
