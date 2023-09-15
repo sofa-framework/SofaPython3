@@ -22,4 +22,7 @@
 
 #include <SofaPython3/config.h>
 
-
+namespace sofapython3
+{
+    SOFAPYTHON3_API void init();
+}
