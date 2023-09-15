@@ -23,6 +23,8 @@
 #include "PythonEnvironment.h"
 using sofapython3::PythonEnvironment;
 
+#include <SofaPython3/initModule.h>
+
 #include <sofa/core/init.h>
 #include <sofa/defaulttype/init.h>
 #include <sofa/simulation/init.h>
@@ -44,11 +46,11 @@ void initExternalModule()
     static bool first = true;
     if (first)
     {
-        sofa::core::init();
+        sofa::helper::init();
         sofa::defaulttype::init();
+        sofa::core::init();
         sofa::simulation::core::init();
         sofa::simulation::graph::init();
-        sofa::helper::init();
 
         PythonEnvironment::Init();
         first = false;
@@ -86,4 +88,12 @@ bool moduleIsInitialized()
     return PythonEnvironment::isInitialized();
 }
 
+}
+
+namespace sofapython3
+{
+    void init()
+    {
+        initExternalModule();
+    }
 }
