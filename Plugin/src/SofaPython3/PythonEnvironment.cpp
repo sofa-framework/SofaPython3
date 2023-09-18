@@ -238,7 +238,7 @@ void PythonEnvironment::Init()
     char* pathVar = getenv(envVarName.c_str());
     
     // case where only the deprecated env var is set
-    if (pathVar != nullptr && deprecatedPathVar == nullptr)
+    if (pathVar == nullptr && deprecatedPathVar != nullptr)
     {
         msg_deprecated("SofaPython3") << deprecatedEnvVarName << " environment variable is deprecated, use " << envVarName << " instead.";
         usedEnvVarName = "SOFAPYTHON_PLUGINS_PATH";
