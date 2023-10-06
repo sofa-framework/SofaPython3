@@ -120,7 +120,7 @@ public:
     struct SceneLoaderListerner : public SceneLoader::Listener
     {
         /// possibly unload python modules to force importing their eventual modifications
-        virtual void rightBeforeLoadingScene();
+        virtual void rightBeforeLoadingScene() override;
         static SceneLoaderListerner* getInstance() {
             static SceneLoaderListerner sceneLoaderListerner;
             return &sceneLoaderListerner; }
