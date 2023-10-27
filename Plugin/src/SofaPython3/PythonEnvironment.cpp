@@ -180,16 +180,6 @@ void PythonEnvironment::Init()
         SceneLoaderFactory::getInstance()->addEntry(new SceneLoaderPY3());
     }
 
-#if defined(__linux__)
-    // WARNING: workaround to be able to import python libraries on linux (like
-    // numpy), at least on Ubuntu (see http://bugs.python.org/issue4434). It is
-    // not fixing the real problem, but at least it is working for now.
-    // dmarchal: The problem still exists python3 10/10/2018.
-    std::string pythonLibraryName = "libpython" + std::string(pythonVersion,0,3) + "m.so";
-    dlopen( pythonLibraryName.c_str(), RTLD_LAZY|RTLD_GLOBAL );
-    msg_info("SofaPython3") << "Shared library name is '" << pythonLibraryName << "'" ;
-#endif
-
     /// Prevent the python terminal from being buffered, not to miss or mix up traces.
     if( putenv( (char*)"PYTHONUNBUFFERED=1" ) )
         msg_warning("SofaPython3") << "failed to set environment variable PYTHONUNBUFFERED";
