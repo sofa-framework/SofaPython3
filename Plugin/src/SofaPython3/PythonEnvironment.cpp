@@ -386,10 +386,19 @@ void PythonEnvironment::addPythonModulePathsFromDirectory(const std::string& dir
         return;
     }
 
+    // Using python<MAJOR>.<MINOR> directory suffix for modules paths is now the recommanded
+    // standard location: https://docs.python.org/3.11/install/#how-installation-works and
+    // https://docs.python.org/3.11/library/site.html#module-site 
+    const auto pythonVersionFull = std::string{Py_GetVersion()};
+    const auto pythonVersion = pythonVersionFull.substr(0, pythonVersionFull.find(" ")); // contains major.minor.patch
+    const auto pythonVersionMajorMinor = pythonVersion.substr(0, pythonVersion.rfind(".")); // contains only manjor.minor
+    const auto pythonMajorMinorSuffix = "/python" + pythonVersionMajorMinor;
+
     std::vector<std::string> searchDirs = {
         directory,
         directory + "/lib",
-        directory + "/python3"
+        directory + pythonMajorMinorSuffix,
+        directory + "/python3" // deprecated
     };
 
     // Iterate in the pluginsDirectory and add each sub directory with a 'python' name
@@ -401,7 +410,18 @@ void PythonEnvironment::addPythonModulePathsFromDirectory(const std::string& dir
         const std::string subdir = directory + "/" + *i;
         if (FileSystem::exists(subdir) && FileSystem::isDirectory(subdir))
         {
-            searchDirs.push_back(subdir + "/python3");
+            const std::vector<std::string> suffixes = {
+              pythonMajorMinorSuffix,
+              "/python3" // deprecated
+            };
+            for (const auto& suffix : suffixes)
+            {
+              const auto pythonSubdir = subdir + suffix;
+              if (FileSystem::exists(pythonSubdir) && FileSystem::isDirectory(pythonSubdir))
+              {
+                searchDirs.push_back(pythonSubdir);
+              }
+            }
         }
     }
 
