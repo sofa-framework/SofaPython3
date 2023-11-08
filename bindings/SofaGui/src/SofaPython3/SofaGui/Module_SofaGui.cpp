@@ -37,6 +37,16 @@ using sofa::helper::system::FileSystem;
 #define HAS_GUI_QT
 #endif
 
+#if __has_include(<SofaGLFW/init.h>)
+#include <SofaGLFW/init.h>
+#define HAS_GUI_SOFAGLFW
+#endif
+
+#if __has_include(<SofaImGui/init.h>)
+#include <SofaImGui/init.h>
+#define HAS_GUI_SOFAIMGUI
+#endif
+
 #if __has_include(<sofa/gui/headlessrecorder/init.h>)
 #include <sofa/gui/headlessrecorder/init.h>
 #define HAS_GUI_HEADLESSRECORDER
@@ -105,6 +115,12 @@ PYBIND11_MODULE(Gui, m) {
 #endif
 #ifdef HAS_GUI_HEADLESSRECORDER
     sofa::gui::headlessrecorder::init();
+#endif
+#ifdef HAS_GUI_SOFAGLFW
+    sofaglfw::init();
+#endif
+#ifdef HAS_GUI_SOFAIMGUI
+    sofaimgui::init();
 #endif
 
     sofa::core::init();

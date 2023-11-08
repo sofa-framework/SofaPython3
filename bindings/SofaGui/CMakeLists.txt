@@ -23,6 +23,17 @@ sofa_find_package(Sofa.GUI.Qt QUIET)
 if(Sofa.GUI.Qt_FOUND)
      list(APPEND SUPPORTED_GUIS Sofa.GUI.Qt)
 endif()
+
+
+sofa_find_package(SofaGLFW QUIET)
+if(SofaGLFW_FOUND)
+     list(APPEND SUPPORTED_GUIS SofaGLFW)
+endif()
+sofa_find_package(SofaImGui QUIET)
+if(SofaImGui_FOUND)
+    list(APPEND SUPPORTED_GUIS SofaImGui)
+endif()
+
 sofa_find_package(Sofa.GUI.HeadlessRecorder QUIET)
 if(Sofa.GUI.HeadlessRecorder_FOUND)
      list(APPEND SUPPORTED_GUIS Sofa.GUI.HeadlessRecorder)
