@@ -107,6 +107,20 @@ PYBIND11_MODULE(Gui, m) {
     sofa::gui::headlessrecorder::init();
 #endif
 
+    const auto listAdditionalGUIs = { "SofaGLFW", "SofaImGui" };
+
+    for (const auto& gui : listAdditionalGUIs)
+    {
+        try
+        {
+            py::module_ sys = py::module_::import(gui);
+        }
+        catch (const py::error_already_set& e)
+        {
+            dmsg_info("Sofa.Gui") << gui << " could not be loaded. Reason: " << e.what();
+        }
+    }
+
     sofa::core::init();
 
     moduleAddBaseGui(m);
