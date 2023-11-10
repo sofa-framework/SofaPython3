@@ -113,7 +113,7 @@ PYBIND11_MODULE(Gui, m) {
     {
         try
         {
-            py::module_ sys = py::module_::import(gui);
+            py::module sys = py::module::import(gui);
         }
         catch (const py::error_already_set& e)
         {
