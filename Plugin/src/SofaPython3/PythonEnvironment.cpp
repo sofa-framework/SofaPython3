@@ -289,7 +289,7 @@ void PythonEnvironment::Init()
     for( const auto& elem : map)
     {
         Plugin p = elem.second;
-        if ( p.getModuleName() == sofa_tostring(SOFA_TARGET) )
+        if ( strcmp(p.getModuleName(), sofa_tostring(SOFA_TARGET)) == 0 )
         {
             pluginLibraryPath = elem.first;
         }

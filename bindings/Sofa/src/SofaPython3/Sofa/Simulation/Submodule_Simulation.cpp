@@ -56,9 +56,6 @@ PYBIND11_MODULE(Simulation, simulation)
     sofa::simulation::core::init();
     sofa::simulation::graph::init();
 
-    if(!sofa::simulation::getSimulation())
-        sofa::simulation::setSimulation(new DAGSimulation());
-
     simulation.doc() =sofapython3::doc::simulation::Class;
 
     simulation.def("print", [](Node* n){ sofa::simulation::node::print(n); }, sofapython3::doc::simulation::print);
