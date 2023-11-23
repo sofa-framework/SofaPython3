@@ -9,8 +9,7 @@ This project is composed of a Sofa plugin to embed a python interpreter into a S
 ## Installation 
 
 ### Requirement Install
-- pybind11 (minimal 2.3)
-Install with ```sudo apt -y install python3-pybind11``` and not with ```pip3 install pybind11``` to insure compatibility
+- pybind11 (minimal 2.3 - Install with ```sudo apt -y install python3-pybind11``` and not with ```pip3 install pybind11``` to insure compatibility)
 - cmake (minimal 3.11)
 - developement package for python3 (python3-dev)
 
