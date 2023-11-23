@@ -27,7 +27,7 @@ def createScene(root):
     root.addObject("StringMeshCreator", name="loader", resolution="20")
 
     root.addObject("EulerImplicitSolver")
-    root.addObject("SparseCholeskySolver")
+    root.addObject("EigenSimplicialLLT")
     root.addObject("GenericConstraintCorrection")
 
     root.addObject("EdgeSetTopologyContainer", name="topo", position="@loader.position", edges="@loader.edges")

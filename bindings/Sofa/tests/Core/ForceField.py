@@ -23,7 +23,7 @@ def createSolver(node, use_iterative_solver):
         node.addObject('CGLinearSolver', name='linearSolver',
                        iterations=30, tolerance=1.e-9, threshold=1.e-9)
     else:
-        node.addObject('SparseCholeskySolver', name='ldlSolver')
+        node.addObject('EigenSimplicialLLT', name='ldlSolver')
 
 
 def createParticle(node, node_name, use_implicit_scheme, use_iterative_solver):
