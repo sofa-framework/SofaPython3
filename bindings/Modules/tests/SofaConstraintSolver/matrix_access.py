@@ -25,7 +25,7 @@ class Test(unittest.TestCase):
         root.addObject("StringMeshCreator", name="loader", resolution="20")
 
         root.addObject("EulerImplicitSolver")
-        root.addObject("SparseCholeskySolver")
+        root.addObject("EigenSimplicialLLT")
         root.addObject("GenericConstraintCorrection")
 
         root.addObject("EdgeSetTopologyContainer", position="@loader.position", edges="@loader.edges")
