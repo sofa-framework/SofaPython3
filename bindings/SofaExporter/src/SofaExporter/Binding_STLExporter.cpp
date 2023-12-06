@@ -41,9 +41,9 @@ void moduleAddSTLExporter(py::module &m)
         return py::cast(dynamic_cast<STLExporter*>(object));
     });
 
-    py::class_<STLExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<STLExporter>> p(m, "STLExporter");
+    py::class_<STLExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<STLExporter>> p(m, "STLExporter", sofapython3::doc::SofaExporter::STLExporter::docstring);
 
-    p.def("write", &STLExporter::write, sofapython3::doc::SofaExporter::STLExporter::write::docstring);
+    p.def("write", &STLExporter::write);
 }
 
 } // namespace sofapython3

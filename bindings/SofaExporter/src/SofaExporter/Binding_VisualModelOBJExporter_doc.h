@@ -20,17 +20,16 @@
 
 #pragma once
 
-namespace sofapython3::doc::SofaExporter::VisualModelOBJExporter::write {
+namespace sofapython3::doc::SofaExporter::VisualModelOBJExporter {
 
 static auto docstring =
         R"(
-        Exports an OBJ file
-        ---------------------------------------
+        Export all VisualModels of a simulation with the .obj format
 
         Will export a binary or ascii file depending on the binary flag of VisualModelOBJExporter
         Will auto-number the exported files
 
-        Example of use:
+        Example:
           .. code-block:: python
 
              import Sofa

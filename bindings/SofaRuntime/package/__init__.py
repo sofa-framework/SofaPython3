@@ -1,10 +1,13 @@
-"""
-SofaRuntime package
------------------------
+"""Control of the application runtime
 
+   Example:
+        .. code-block:: python
+
+            import SofaRuntime
+            SofaRuntime.importPlugin("Sofa.Component.LinearSolver")
 """
 
-from .SofaRuntime import *
+import SofaRuntime.SofaRuntime as cpp
 
 import Sofa
 
@@ -28,9 +31,13 @@ except:
     # e.g. plugin's modules defined from c++
     __SofaPythonEnvironment_modulesExcludedFromReload = []
 
+def importPlugin(a):
+    """ Import a plugin"""
+    return cpp.importPlugin(a)
 
 def unloadModules():
-    """ call this function to unload python modules and to force their reload
+    """ Call this function to unload python modules and to force their reload
+
         (useful to take into account their eventual modifications since
         their last import).
     """
@@ -44,13 +51,19 @@ def unloadModules():
 ################################################################
 
 def formatStackForSofa(o):
-    """ format the stack trace provided as a parameter into a string like that:
-        in filename.py:10:functioname()
-          -> the line of code.
-        in filename2.py:101:functioname1()
-            -> the line of code.
-        in filename3.py:103:functioname2()
-              -> the line of code.
+    """ Format the stack trace provided as parameter
+
+        The parameter is converted into a string like that
+
+        .. code-block:: text
+
+            in filename.py:10:functioname()
+                -> the line of code.
+            in filename2.py:101:functioname1()
+                -> the line of code.
+            in filename3.py:103:functioname2()
+                -> the line of code.
+
     """
     ss='Python Stack: \n'
     for entry in o:
@@ -60,14 +73,14 @@ def formatStackForSofa(o):
 
 
 def getStackForSofa():
-    """returns the current stack with a "informal" formatting. """
+    """Returns the current stack with a "informal" formatting """
     ## we exclude the first level in the stack because it is the getStackForSofa() function itself.
     ss=inspect.stack()[1:]
     return formatStackForSofa(ss)
 
 
 def getPythonCallingPointAsString():
-    """returns the last entry with an "informal" formatting. """
+    """Returns the last entry with an "informal" formatting """
 
     ## we exclude the first level in the stack because it is the getStackForSofa() function itself.
     ss=inspect.stack()[-1:]
@@ -75,7 +88,7 @@ def getPythonCallingPointAsString():
 
 
 def getPythonCallingPoint():
-    """returns the tupe with closest filename & line. """
+    """Returns the tupe with closest filename and line """
     ## we exclude the first level in the stack because it is the getStackForSofa() function itself.
     ss=inspect.stack()[1]
     tmp=(os.path.abspath(ss[1]), ss[2])
@@ -86,22 +99,27 @@ def getPythonCallingPoint():
 ###################### EXCEPTION HANDLING (NECESSARY?) ######################
 #############################################################################
 
-def sendMessageFromException(e):
+def getSofaFormattedStringFromException(e):
+    """Function handling exception using `sofaFormatHandler()` (python stack)"""
     exc_type, exc_value, exc_tb = sys.exc_info()
-    sofaExceptHandler(exc_type, exc_value, exc_tb)
-
+    return sofaFormatHandler(exc_type, exc_value, exc_tb)
 
 def sofaFormatHandler(type, value, tb):
-    global oldexcepthook
-    """This exception handler, convert python exceptions & traceback into more classical sofa error messages of the form:
-       Message Description
-       Python Stack (most recent are at the end)
-          File file1.py line 4  ...
-          File file1.py line 10 ...
-          File file1.py line 40 ...
-          File file1.py line 23 ...
-            faulty line
+    """This exception handler forwards python exceptions & traceback
+
+       Example of formatting:
+
+            .. code-block:: text
+
+                Python Stack (most recent are at the end)
+                File file1.py line 4  ...
+                File file1.py line 10 ...
+                File file1.py line 40 ...
+                File file1.py line 23 ...
+
     """
+    global oldexcepthook
+
     s="\nPython Stack (most recent are at the end): \n"
     for line in traceback.format_tb(tb):
         s += line
@@ -109,21 +127,28 @@ def sofaFormatHandler(type, value, tb):
     return repr(value)+" "+s
 
 
-def getSofaFormattedStringFromException(e):
+def sendMessageFromException(e):
+    """Function handling exception using `sofaExceptHandler()` (SOFA format)"""
     exc_type, exc_value, exc_tb = sys.exc_info()
-    return sofaFormatHandler(exc_type, exc_value, exc_tb)
+    sofaExceptHandler(exc_type, exc_value, exc_tb)
+
 
 def sofaExceptHandler(type, value, tb):
-    global oldexcepthook
-    """This exception handler, convert python exceptions & traceback into more classical sofa error messages of the form:
-       Message Description
-       Python Stack (most recent are at the end)
-          File file1.py line 4  ...
-          File file1.py line 10 ...
-          File file1.py line 40 ...
-          File file1.py line 23 ...
-            faulty line
+    """This exception handler converts python exceptions & traceback into classical SOFA error messages
+
+       Message:
+
+       .. code-block:: text
+
+            Python Stack (most recent are at the end)
+            File file1.py line 4  ...
+            File file1.py line 10 ...
+            File file1.py line 40 ...
+            File file1.py line 23 ...
+
     """
+    global oldexcepthook
+
     h = type.__name__
 
     if str(value) != '':

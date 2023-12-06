@@ -9,16 +9,10 @@ version: 2
 sphinx:
   configuration: docs/sphinx/source/conf.py
 
-# Build documentation with MkDocs
-#mkdocs:
-#  configuration: mkdocs.yml
-
-# Optionally build your docs in additional formats such as PDF
-formats:
-  - pdf
-
-# Optionally set the version of Python and requirements required to build your docs
-python:
-  version: 3.7
-  install:
-    - requirements: docs/sphinx/source/requirements.txt
+build:
+  os: "ubuntu-22.04"
+  commands:
+    - mkdir --parents $READTHEDOCS_OUTPUT/html/
+    - wget https://github.com/sofa-framework/SofaPython3/releases/download/release-v23.06/SofaPython3_v23.06_docs.zip
+    - unzip SofaPython3_v23.06_docs.zip
+    - cp --recursive build/html/* $READTHEDOCS_OUTPUT/html/

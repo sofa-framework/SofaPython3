@@ -72,7 +72,7 @@ void Prefab_Trampoline::doReInit()
 void moduleAddPrefab(py::module &m) {
     py::class_<sofa::core::objectmodel::BasePrefab,
             sofa::simulation::Node,
-            py_shared_ptr<sofa::core::objectmodel::BasePrefab>>(m, "BasePrefab");
+            py_shared_ptr<sofa::core::objectmodel::BasePrefab>>(m, "BasePrefab", "Base class for prefabs (for more see Sofa.prefab)");
 
     py::class_<Prefab,
             Prefab_Trampoline,

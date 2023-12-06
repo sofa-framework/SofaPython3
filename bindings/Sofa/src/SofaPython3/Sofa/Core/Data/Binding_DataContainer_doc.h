@@ -24,7 +24,7 @@ namespace sofapython3::doc::datacontainer
 {
 static auto Class =
         R"(
-        Classic python container implemented for SOFA data fields.
+        Classic python container implemented for SOFA data fields
 
         )";
 

@@ -34,7 +34,7 @@ using namespace sofa::core::objectmodel;
 namespace sofapython3 {
 
 void moduleAddBaseContext(py::module& m) {
-    py::class_<BaseContext, Base, py_shared_ptr<BaseContext>> c (m, "BaseContext");
+    py::class_<BaseContext, Base, py_shared_ptr<BaseContext>> c (m, "BaseContext", "Base class for Context classes, storing shared variables and parameters");
 
     py::enum_<BaseContext::SearchDirection>(c, "SearchDirection")
         .value("SearchUp",      BaseContext::SearchDirection::SearchUp)

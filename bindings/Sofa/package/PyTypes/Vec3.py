@@ -29,7 +29,7 @@ class Vec3(numpy.ndarray):
     def __new__(cls, *args):
         """ Vec3 constructor expects zero, one or three arguments.
 
-        Examples:
+        Example:
 
         >>> v = Vec3()
         >>> print(v)
@@ -125,7 +125,7 @@ class Vec3(numpy.ndarray):
     def translate(self, *args):
         """ Function translate of class Vec3 expects one or three arguments. Note that you can also use the '+' and '-' operators.
 
-        Examples:
+        Example:
 
         >>> v = Vec3([0.,0.,0.])
         >>> v.translate(1.)
@@ -209,7 +209,7 @@ class Vec3(numpy.ndarray):
     def scale(self, *args):
         """ Function scale of class Vec3 expects one or three arguments. Note that you can also use the '*' and '/' operators.
 
-        Examples:
+        Example:
 
         >>> v = Vec3([1.,2.,3.])
         >>> v.scale(2.)

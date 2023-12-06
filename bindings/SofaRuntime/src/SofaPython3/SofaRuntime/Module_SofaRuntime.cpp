@@ -113,24 +113,7 @@ static SofaInitializer s;
 
 /// The first parameter must be named the same as the module file to load.
 PYBIND11_MODULE(SofaRuntime, m) {
-
-    m.doc() = R"doc(
-              Expose aspect specific to the application/runtime
-              -------------------------------------------------
-
-              .. autosummary::
-                  :toctree:_autosummary/_autosummary
-
-                  SofaRuntime.importPlugin
-
-
-              Example of use:
-                .. code-block:: python
-
-                   import SofaRuntime
-                   SofaRuntime.importPlugin("Sofa.Component.LinearSolver")
-
-              )doc";
+    m.doc() = R"doc(Control of the SofaRuntime)doc";
 
     // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
     sofa::core::init();
