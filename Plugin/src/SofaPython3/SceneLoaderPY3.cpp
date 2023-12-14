@@ -129,9 +129,18 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
         root_out->setInstanciationSourceFilePos(0);
     }catch(py::error_already_set& e)
     {
-        msg_error() << "Unable to completely load the scene from file '"<< filename << "'." << msgendl
-                    << "Python exception: " << msgendl
-                    << "  " << e.what();
+        if( py::isinstance(e.type(), py::eval("type(DeprecationWarning)")) )
+        {
+            msg_deprecated() << "Unable to completely load the scene from file '"<< filename << "'." << msgendl
+                        << "Python exception: " << msgendl
+                        << "  " << e.what();
+        }else
+        {
+            msg_error() << "Unable to completely load the scene from file '"<< filename << "'." << msgendl
+                        << "Python exception: " << msgendl
+                        << "  " << e.what();
+        }
+
     }
 
 }
