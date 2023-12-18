@@ -28,7 +28,7 @@ class Test(unittest.TestCase):
         root.addObject("EigenSimplicialLLT")
         root.addObject("GenericConstraintCorrection")
 
-        root.addObject("EdgeSetTopologyContainer", position="@loader.position", edges="@loader.edges")
+        root.addObject("EdgeSetTopologyContainer", name="edge_container", position="@loader.position", edges="@loader.edges")
         root.addObject("MechanicalObject", name="defoDOF", template="Vec3d")
         root.addObject("EdgeSetGeometryAlgorithms", drawEdges=True)
         root.addObject("FixedConstraint", indices=[0])
@@ -36,7 +36,7 @@ class Test(unittest.TestCase):
 
         ext = root.addChild("extensionsNode")
         ext.addObject("MechanicalObject", template="Vec1d", name="extensionsDOF")
-        ext.addObject("DistanceMapping", name="distanceMapping")
+        ext.addObject("DistanceMapping", name="distanceMapping", topology="@../edge_container")
         ext.addObject("UniformConstraint", template="Vec1d", iterative=True)
 
         Sofa.Simulation.init(root)
