@@ -80,7 +80,6 @@ public:
     SofaInitializer(){
         sofa::simulation::common::init();
         sofa::simulation::graph::init();
-        sofa::simulation::setSimulation(new DAGSimulation());
     }
 
     ~SofaInitializer(){
