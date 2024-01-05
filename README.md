@@ -1,4 +1,4 @@
-# plugin.SofaPython3
+# SofaPython3 plugin
 
 [![Documentation](https://img.shields.io/badge/doc-on_website-green.svg)](https://sofapython3.readthedocs.io/en/latest/index.html)
 [![Gitter](https://img.shields.io/badge/chat-on_Gitter-ff69b4.svg)](https://gitter.im/sofa-framework/plugin.SofaPython3)
