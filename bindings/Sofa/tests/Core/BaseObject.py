@@ -64,8 +64,12 @@ class Test(unittest.TestCase):
 
     def test_getCategories(self):
         root = create_scene("rootNode")
-        c = root.addObject("MechanicalObject", name="t")
-        self.assertEqual(c.getCategories(), ["MechanicalState"])
+
+        mecha = root.addObject("MechanicalObject", name="t")
+        self.assertEqual(mecha.getCategories(), ["MechanicalState"])
+
+        topo = root.addObject("MeshTopology", name="topology")
+        self.assertEqual(topo.getCategories(), ["Topology"])
 
     def test_getPathName(self):
         root = create_scene("rootNode")
