@@ -37,7 +37,7 @@ using namespace sofa::core::topology;
 namespace sofapython3 {
 
 void moduleAddBaseMeshTopology(py::module& m) {
-    py::class_<BaseMeshTopology, Base, py_shared_ptr<BaseMeshTopology>> c (m, "BaseMeshTopology");
+    py::class_<BaseMeshTopology, Topology, py_shared_ptr<BaseMeshTopology>> c (m, "BaseMeshTopology");
 
     /// register the BaseMeshTopology binding in the downcasting subsystem
     PythonFactory::registerType<BaseMeshTopology>([](sofa::core::objectmodel::Base* object)

@@ -36,7 +36,7 @@ using namespace sofa::core::topology;
 namespace sofapython3 {
 
 void moduleAddTopology(py::module& m) {
-    py::class_<Topology, Base, py_shared_ptr<Topology>> c (m, "Topology");
+    py::class_<Topology, BaseObject, py_shared_ptr<Topology>> c (m, "Topology");
 }
 
 } // namespace sofapython3
