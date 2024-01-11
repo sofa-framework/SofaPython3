@@ -35,7 +35,12 @@ add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAPYTHON3")
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Graph)
-target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::module pybind11::embed)
+
+if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+  target_link_libraries(${PROJECT_NAME} PRIVATE pybind11::embed)
+else()
+  target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::embed)
+endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME SofaPython3)
 
