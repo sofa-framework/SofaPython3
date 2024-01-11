@@ -16,6 +16,11 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Testing SofaPython3::Plugin)
+# We wan't the pybind11 dependency to propagate to SofaPython3Testing consumers,
+# here Bindings.*.Tests
+if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+  target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::embed)
+endif()
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAPYTHON3")
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Testing)
 
