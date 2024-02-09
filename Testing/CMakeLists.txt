@@ -1,6 +1,7 @@
 project(SofaPython3Testing VERSION 1.0)
 
 find_package(Sofa.Testing REQUIRED)
+find_package(Sofa.SimpleApi REQUIRED)
 
 set(HEADER_FILES
     src/SofaPython3Testing/config.h.in
