@@ -53,20 +53,8 @@ def simple_render(rootNode):
 def createScene(root):
     # Register all the common component in the factory.
     SofaRuntime.PluginRepository.addFirstPath(os.path.join(sofa_directory, 'bin'))
-    root.addObject("RequiredPlugin", name="SofaOpenglVisual")  # visual stuff
-    root.addObject("RequiredPlugin", name="SofaLoader")  # geometry loaders
-    root.addObject("RequiredPlugin", name="SofaSimpleFem")  # diffusion fem
-    root.addObject("RequiredPlugin", name="SofaBoundaryCondition")  # constraints
-    root.addObject("RequiredPlugin", name="SofaEngine")  # Box Roi
-    root.addObject("RequiredPlugin", name="SofaImplicitOdeSolver")  # implicit solver
-    root.addObject("RequiredPlugin", name="SofaMiscForceField")  # meshmatrix
-    root.addObject("RequiredPlugin", name="SofaGeneralEngine")  # TextureInterpolation
-    root.addObject("RequiredPlugin", name="CImgPlugin")  # for loading a bmp image for texture
-    root.addObject("RequiredPlugin", name="SofaBaseLinearSolver")
-    root.addObject("RequiredPlugin", name="SofaGeneralVisual")
-    root.addObject("RequiredPlugin", name="SofaTopologyMapping")
-    root.addObject("RequiredPlugin", name="SofaGeneralTopology")
-    root.addObject("RequiredPlugin", name="SofaGeneralLoader")
+    root.addObject("RequiredPlugin", name="Sofa.Component")
+    root.addObject("RequiredPlugin", name="Sofa.GL.Component")
 
     ### these are just some things that stay still and move around
     # so you know the animation is actually happening

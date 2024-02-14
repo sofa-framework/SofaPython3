@@ -108,8 +108,9 @@ def createScene(root):
 
 def main():
     # Load the required plugins
-    SofaRuntime.importPlugin("SofaOpenglVisual")
-    SofaRuntime.importPlugin("SofaGeneralEngine")
+    SofaRuntime.importPlugin("Sofa.GL.Component")
+    SofaRuntime.importPlugin("Sofa.Component")
+
 
     # Check and save if the script is called from python environment
     global _runAsPythonScript
