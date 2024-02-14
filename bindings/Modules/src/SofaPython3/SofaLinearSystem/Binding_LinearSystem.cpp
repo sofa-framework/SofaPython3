@@ -60,7 +60,8 @@ template<class TBlock>
 void bindLinearSystems(py::module &m)
 {
     using CRS = sofa::linearalgebra::CompressedRowSparseMatrix<TBlock>;
-    using CRSLinearSystem = sofa::component::linearsystem::TypedMatrixLinearSystem<CRS, sofa::linearalgebra::FullVector<SReal> >;
+    using Real = typename CRS::Real;
+    using CRSLinearSystem = sofa::component::linearsystem::TypedMatrixLinearSystem<CRS, sofa::linearalgebra::FullVector<Real> >;
 
     const std::string typeName = CRSLinearSystem::GetClass()->className + CRSLinearSystem::GetCustomTemplateName();
 
