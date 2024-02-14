@@ -51,6 +51,7 @@ EigenSparseMatrix toEigen(sofa::linearalgebra::CompressedRowSparseMatrix<TBlock>
 template<>
 EigenSparseMatrix toEigen<SReal>(sofa::linearalgebra::CompressedRowSparseMatrix<SReal>& matrix)
 {
+    matrix.compress();
     return EigenMatrixMap(matrix.rows(), matrix.cols(), matrix.getColsValue().size(),
                     (EigenMatrixMap::StorageIndex*)matrix.rowBegin.data(), (EigenMatrixMap::StorageIndex*)matrix.colsIndex.data(), matrix.colsValue.data());
 }
