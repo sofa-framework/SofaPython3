@@ -33,27 +33,41 @@ namespace py { using namespace pybind11; }
 
 namespace sofapython3 {
 
-using EigenSparseMatrix = Eigen::SparseMatrix<SReal, Eigen::RowMajor>;
-using EigenMatrixMap = Eigen::Map<Eigen::SparseMatrix<SReal, Eigen::RowMajor> >;
-using Vector = Eigen::Matrix<SReal,Eigen::Dynamic, 1>;
-using EigenVectorMap = Eigen::Map<Vector>;
+template<class Real>
+using EigenSparseMatrix = Eigen::SparseMatrix<Real, Eigen::RowMajor>;
+
+template<class Real>
+using EigenMatrixMap = Eigen::Map<Eigen::SparseMatrix<Real, Eigen::RowMajor> >;
+
+template<class Real>
+using Vector = Eigen::Matrix<Real,Eigen::Dynamic, 1>;
+
+template<class Real>
+using EigenVectorMap = Eigen::Map<Vector<Real>>;
 
 template<class TBlock>
-EigenSparseMatrix toEigen(sofa::linearalgebra::CompressedRowSparseMatrix<TBlock>& matrix)
+EigenSparseMatrix<typename sofa::linearalgebra::CompressedRowSparseMatrix<TBlock>::Real>
+toEigen(sofa::linearalgebra::CompressedRowSparseMatrix<TBlock>& matrix)
 {
-    sofa::linearalgebra::CompressedRowSparseMatrix<typename TBlock::Real> filtered;
-    filtered.copyNonZeros(matrix);
-    filtered.compress();
-    return EigenMatrixMap(filtered.rows(), filtered.cols(), filtered.getColsValue().size(),
-            (EigenMatrixMap::StorageIndex*)filtered.rowBegin.data(), (EigenMatrixMap::StorageIndex*)filtered.colsIndex.data(), filtered.colsValue.data());
-}
-
-template<>
-EigenSparseMatrix toEigen<SReal>(sofa::linearalgebra::CompressedRowSparseMatrix<SReal>& matrix)
-{
-    matrix.compress();
-    return EigenMatrixMap(matrix.rows(), matrix.cols(), matrix.getColsValue().size(),
-                    (EigenMatrixMap::StorageIndex*)matrix.rowBegin.data(), (EigenMatrixMap::StorageIndex*)matrix.colsIndex.data(), matrix.colsValue.data());
+    using Real = typename sofa::linearalgebra::CompressedRowSparseMatrix<TBlock>::Real;
+    if constexpr (std::is_same_v<TBlock, Real>)
+    {
+        matrix.compress();
+        return EigenMatrixMap<Real>(matrix.rows(), matrix.cols(), matrix.getColsValue().size(),
+                        (typename EigenMatrixMap<Real>::StorageIndex*)matrix.rowBegin.data(),
+                        (typename EigenMatrixMap<Real>::StorageIndex*)matrix.colsIndex.data(),
+                        matrix.colsValue.data());
+    }
+    else
+    {
+        sofa::linearalgebra::CompressedRowSparseMatrix<typename TBlock::Real> filtered;
+        filtered.copyNonZeros(matrix);
+        filtered.compress();
+        return EigenMatrixMap<Real>(filtered.rows(), filtered.cols(), filtered.getColsValue().size(),
+                (typename EigenMatrixMap<Real>::StorageIndex*)filtered.rowBegin.data(),
+                (typename EigenMatrixMap<Real>::StorageIndex*)filtered.colsIndex.data(),
+                filtered.colsValue.data());
+    }
 }
 
 template<class TBlock>
@@ -69,7 +83,7 @@ void bindLinearSystems(py::module &m)
                sofa::core::objectmodel::BaseObject,
                sofapython3::py_shared_ptr<CRSLinearSystem> > c(m, typeName.c_str(), sofapython3::doc::linearsystem::linearSystemClass);
 
-    c.def("A", [](CRSLinearSystem& self) -> EigenSparseMatrix
+    c.def("A", [](CRSLinearSystem& self) -> EigenSparseMatrix<Real>
     {
         if (CRS* matrix = self.getSystemMatrix())
         {
@@ -78,20 +92,20 @@ void bindLinearSystems(py::module &m)
         return {};
     }, sofapython3::doc::linearsystem::linearSystem_A);
 
-    c.def("b", [](CRSLinearSystem& self) -> Vector
+    c.def("b", [](CRSLinearSystem& self) -> Vector<Real>
     {
         if (auto* vector = self.getRHSVector())
         {
-            return EigenVectorMap(vector->ptr(), vector->size());
+            return EigenVectorMap<Real>(vector->ptr(), vector->size());
         }
         return {};
     }, sofapython3::doc::linearsystem::linearSystem_b);
 
-    c.def("x", [](CRSLinearSystem& self) -> Vector
+    c.def("x", [](CRSLinearSystem& self) -> Vector<Real>
     {
         if (auto* vector = self.getSolutionVector())
         {
-            return EigenVectorMap(vector->ptr(), vector->size());
+            return EigenVectorMap<Real>(vector->ptr(), vector->size());
         }
         return {};
     }, sofapython3::doc::linearsystem::linearSystem_x);
