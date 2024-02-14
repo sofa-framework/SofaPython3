@@ -96,14 +96,9 @@ class SofaSim():
     def __init__(self):
         # Register all the common component in the factory.
         SofaRuntime.PluginRepository.addFirstPath(os.path.join(sofa_directory, 'bin'))
-        SofaRuntime.importPlugin('SofaOpenglVisual')
-        SofaRuntime.importPlugin("SofaComponentAll")
-        SofaRuntime.importPlugin("SofaGeneralLoader")
-        SofaRuntime.importPlugin("SofaImplicitOdeSolver")
-        SofaRuntime.importPlugin("SofaLoader")
-        SofaRuntime.importPlugin("SofaSimpleFem")
-        SofaRuntime.importPlugin("SofaBoundaryCondition")
-        SofaRuntime.importPlugin("SofaMiscForceField")
+        SofaRuntime.importPlugin('Sofa.GL.Component')
+        SofaRuntime.importPlugin("Sofa.Component")
+
         self.root = Sofa.Core.Node("Root")
         root = self.root
         root.gravity = [0, -1., 0]
