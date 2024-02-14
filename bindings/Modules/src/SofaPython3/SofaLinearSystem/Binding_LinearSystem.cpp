@@ -87,6 +87,10 @@ void bindLinearSystems(py::module &m)
     {
         if (CRS* matrix = self.getSystemMatrix())
         {
+            if (matrix->colsValue.empty()) //null matrix: contains no entries
+            {
+                return EigenSparseMatrix<Real>{matrix->rows(), matrix->cols()};
+            }
             return toEigen(*matrix);
         }
         return {};
