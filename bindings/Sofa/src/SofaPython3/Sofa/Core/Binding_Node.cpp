@@ -27,7 +27,7 @@
 #include <sofa/core/objectmodel/BaseData.h>
 using sofa::core::objectmodel::BaseData;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 namespace simpleapi = sofa::simpleapi;
 
 #include <sofa/helper/logging/Messaging.h>

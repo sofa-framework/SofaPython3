@@ -25,7 +25,7 @@ namespace py = pybind11;
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Simulation;
 
-#include <sofa/simulation/graph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 namespace simpleapi = sofa::simpleapi;
 
 #include <sofa/helper/Utils.h>
