@@ -117,7 +117,7 @@ function(SP3_add_python_module)
     # We are doing manually what's usually done with pybind11_add_module(${A_TARGET} SHARED "${A_SOURCES}")
     # since we got some problems on MacOS using recent versions of pybind11 where the SHARED argument wasn't taken
     # into account
-    python_add_library(${A_TARGET} SHARED "${A_SOURCES}")
+    python_add_library(${A_TARGET} SHARED ${A_HEADERS} ${A_SOURCES})
     add_library(SofaPython3::${A_TARGET} ALIAS ${A_TARGET})
 
     if ("${pybind11_VERSION}" VERSION_GREATER_EQUAL "2.6.0")
