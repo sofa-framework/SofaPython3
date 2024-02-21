@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                              SofaPython3 plugin                             *
 *                  (c) 2021 CNRS, University of Lille, INRIA                  *
 *                                                                             *
@@ -17,35 +17,21 @@
 *******************************************************************************
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #pragma once
 
 #include <pybind11/pybind11.h>
 namespace py = pybind11;
-using namespace pybind11::literals;
 
+#include <sofa/type/Transform.h>
+#include "Binding_Quat.h"
 
-#include <sofa/type/Quat.h>
-
-void moduleAddQuat(py::module& m);
-
-namespace pyQuat
+namespace sofapython3::SofaTypes
 {
-template <class T>
-std::string __str__(const sofa::type::Quat<T> &self, bool repr = false)
-{
-    std::string s;
-    if (repr)
-    {
-        s += "Quat";
-    }
-    s += "(";
-    s += std::to_string(self[0])
-            + ", " + std::to_string(self[1])
-            + ", " + std::to_string(self[2])
-            + ", " + std::to_string(self[3])
-            + ")";
-    return s;
+void moduleAddTransform(py::module &m);
 }
 
-} // namespace pyQuat
+namespace pyTransform
+{
+template<class TReal>
+std::string __str__(const sofa::type::Transform<TReal>& self, bool repr);
+}
