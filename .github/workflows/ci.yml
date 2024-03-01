@@ -51,8 +51,7 @@ jobs:
           cmake_options="-GNinja \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INSTALL_PREFIX="$WORKSPACE_INSTALL_PATH" \
-            -DCMAKE_MODLE_PATH=$pybind11_DIR \
-            -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake" \
+            -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake:$pybind11_DIR" \
             -DPYTHON_ROOT=$PYTHON_ROOT -DPython_ROOT=$PYTHON_ROOT \
             -DPYTHON_EXECUTABLE=$PYTHON_EXE -DPython_EXECUTABLE=$PYTHON_EXE"
           if [ -e "$(command -v ccache)" ]; then
