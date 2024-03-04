@@ -35,7 +35,17 @@ add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAPYTHON3")
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Graph)
-target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::module pybind11::embed)
+
+# The public linking with pybind lead to have a link with libpython which
+# propagates in the python module .so. On macOS, this extra link with libpython
+# lead to segv when importing the python module in versions of python that don't
+# have a dynamic link with libpython (such as the one provided by conda which is linked
+# statically), but works fine with versions that have such link.
+if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+  target_link_libraries(${PROJECT_NAME} PRIVATE pybind11::pybind11 pybind11::python_link_helper)
+else()
+  target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::embed)
+endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME SofaPython3)
 
