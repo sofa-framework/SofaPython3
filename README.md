@@ -1,7 +1,7 @@
 # SofaPython3 plugin
 
 [![Documentation](https://img.shields.io/badge/doc-on_website-green.svg)](https://sofapython3.readthedocs.io/en/latest/index.html)
-[![Discord](https://img.shields.io/badge/chat-on_Discord-darkred.svg)](https://discord.gg/muqNzQpv)
+[![Discord](https://img.shields.io/badge/chat-on_Discord-darkred.svg)](https://discord.com/channels/1196920567614419024/1196922833968824370)
 [![Support](https://img.shields.io/badge/support-on_GitHub_Discussions-blue.svg)](https://github.com/sofa-framework/sofa/discussions/categories/sofapython3)
 
 This project is composed of a Sofa plugin to embed a python interpreter into a Sofa based simulation as well as several python modules that exposes the different c++ components used in Sofa. The binding is designed to be idiomatic python3 API with tight integration for numpy. This project is in a WIP state, please use it only if you are willing to help in the developement. 
