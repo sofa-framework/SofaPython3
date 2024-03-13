@@ -109,6 +109,7 @@ if(EXISTS "${Python_INCLUDE_DIR}")
 elseif(EXISTS "${Python_INCLUDE_DIRS}")
     set(PYTHON_INCLUDE_DIR "${Python_INCLUDE_DIRS}" CACHE INTERNAL "" FORCE)
 endif()
+string(REGEX MATCH "[0-9]+\.[0-9]+" PythonMAJMIN "${Python_VERSION}")
 
 # Set the minimum pybind11 version to 2.3 (before that the pybind11::embed target did not exist)
 find_package(pybind11 2.3 CONFIG QUIET REQUIRED)
@@ -145,6 +146,8 @@ message(STATUS "Python:
     Libraries: ${Python_LIBRARIES}
     User site: ${PYTHON_USER_SITE}"
 )
+
+
 message(STATUS "pybind11:
     Version: ${pybind11_VERSION}
     Config: ${pybind11_CONFIG}"
