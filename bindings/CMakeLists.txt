@@ -2,8 +2,7 @@ project(Bindings)
 
 set(BINDINGS_MODULE_LIST Sofa SofaRuntime SofaTypes Modules)
 
-sofa_find_package(Sofa.GUI.Common QUIET)
-if(Sofa.GUI.Common_FOUND)
+if(SP3_WITH_SOFAGUI)
     list(APPEND BINDINGS_MODULE_LIST SofaGui)
 endif()
 

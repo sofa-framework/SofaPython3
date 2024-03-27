@@ -44,6 +44,11 @@ endif()
 sofa_find_package(Sofa.Component.IO.Mesh QUIET)
 CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAEXPORTER "Bind the SOFA exporter component." ON "Sofa.Component.IO.Mesh_FOUND" OFF)
 
+
+sofa_find_package(Sofa.GUI.Common QUIET)
+CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAGUI "Bind the SOFA exporter component." ON "Sofa.GUI.Common_FOUND" OFF)
+
+
 # BUILD OPTIONS
 if (NOT SP3_COMPILED_AS_SUBPROJECT)
     if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
