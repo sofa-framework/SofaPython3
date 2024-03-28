@@ -83,7 +83,7 @@ jobs:
           if [[ "${{ github.event.inputs.is_nightly }}" == "true" ]]; then
             ARTIFACT_VERSION="${ARTIFACT_VERSION}-nightly"
           fi
-          ARTIFACT_NAME="${PROJECT_NAME}_${ARTIFACT_VERSION}_python-${{ matrix.python_version }}_for-SOFA-${{ matrix.sofa_branch }}_${{ runner.os }}"
+          ARTIFACT_NAME="${PROJECT_NAME}_${ARTIFACT_VERSION}_python-${{ matrix.python_version }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}"
           echo "ARTIFACT_NAME=$ARTIFACT_NAME" | tee -a $GITHUB_ENV
 
       - name: Create artifact
@@ -162,7 +162,7 @@ jobs:
 
   deploy:
     name: Deploy artifacts
-    if: always() && startsWith(github.ref, 'refs/heads/') # we are on a branch (not a PR)
+    if: always() && startsWith(github.repository, 'sofa-framework') && (startsWith(github.ref, 'refs/heads/') || startsWith(github.ref, 'refs/tags/')) # we are not on a fork and on a branch or a tag (not a PR)
     needs: [build-and-test]
     runs-on: ubuntu-latest
     continue-on-error: true
