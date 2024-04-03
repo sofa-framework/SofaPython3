@@ -25,14 +25,25 @@
 #******************************************************************************/
 
 import traceback
-import imp
 import types
 import gc
 import os
 
+import importlib.util
+import importlib.machinery
+
+def load_source(modname, filename):
+    loader = importlib.machinery.SourceFileLoader(modname, filename)
+    spec = importlib.util.spec_from_file_location(modname, filename, loader=loader)
+    module = importlib.util.module_from_spec(spec)
+    # The module is always executed and not cached in sys.modules.
+    # Uncomment the following line to cache the module.
+    # sys.modules[module.__name__] = module
+    loader.exec_module(module)
+    return module
+
 def mimport(modulename, filename):
-    f = open(filename, 'r')
-    return imp.load_module(modulename, f, filename, (modulename, 'r', imp.PY_SOURCE))
+    return load_source(modulename,filename)
 
 def mreload(modulepath):
         try:
