@@ -209,7 +209,7 @@ jobs:
           name: ${{ env.RELEASE_NAME }}
           tag_name: ${{ env.RELEASE_TAGNAME }}
           fail_on_unmatched_files: false
-          target_commitish: ${{ github.hash }}
+          target_commitish: ${{ github.sha }}
           body: |
             Last updated on ${{ env.RELEASE_DATE }}
           files: |
