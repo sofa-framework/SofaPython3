@@ -11,22 +11,22 @@ set(SOURCE_FILES
 
 set(PYTHON_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Components/Components.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseData.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Base.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseData.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseLink.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseObject.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Events.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Controller.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/DataEngine.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Events.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/ForceField.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Mass.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/DataEngine.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/MyRestShapeForceField.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseLink.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Helper/Message.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/Types/RGBAColor.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/Types/Vec3.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/Types/BoundingBox.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Simulation/Node.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Simulation/Simulation.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/Types/BoundingBox.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/Types/RGBAColor.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/Types/Vec3.py
     ${CMAKE_CURRENT_SOURCE_DIR}/bench_datacontainer.py
     ${CMAKE_CURRENT_SOURCE_DIR}/bench_node.py
     ${CMAKE_CURRENT_SOURCE_DIR}/benchmark.py
