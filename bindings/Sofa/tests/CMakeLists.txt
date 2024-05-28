@@ -14,6 +14,7 @@ set(PYTHON_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Base.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseData.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseLink.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseMeshTopology.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseObject.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Controller.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/DataEngine.py
