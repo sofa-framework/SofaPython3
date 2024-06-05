@@ -7,7 +7,7 @@ The SofaPython3 plugins allows you to embed a python3 interpreter into an exisin
 Prerequisites
 -------------
 
-If you downloaded and installed SOFA and its headers from the `SOFA website <https://www.sofa-framework.org/download/>`_, make sure to have python3.8 installed on your computed.
+If you downloaded and installed SOFA and its headers from the `SOFA website <https://www.sofa-framework.org/download/>`_, make sure to have python3.10 installed on your computed.
 
 .. content-tabs::
 
@@ -19,8 +19,8 @@ If you downloaded and installed SOFA and its headers from the `SOFA website <htt
 			.. code-block:: bash
 
 				sudo add-apt-repository ppa:deadsnakes/ppa
-				sudo apt install libpython3.8 python3.8 python3-pip
-				python3.8 -m pip install numpy
+				sudo apt install libpython3.10 python3.10 python3-pip
+				python3.10 -m pip install numpy
 
 			if you want to launch the runSofa:
 
@@ -36,15 +36,15 @@ If you downloaded and installed SOFA and its headers from the `SOFA website <htt
 
 			.. code-block:: bash
 
-				brew install python@3.8
-				export PATH="/usr/local/opt/python@3.8/bin/:$PATH"
+				brew install python@3.10
+				export PATH="/usr/local/opt/python@3.10/bin/:$PATH"
 
 			BigSur only:
 
 			.. code-block:: bash
 
 				pip3 install --upgrade pip
-				python3.8 -m pip install numpy
+				python3.10 -m pip install numpy
 
 			Catalina only:
 
@@ -56,7 +56,7 @@ If you downloaded and installed SOFA and its headers from the `SOFA website <htt
 	.. tab-container:: tab3
 		:title: Windows
 
-		Download and install `Python 3.8 64bit <https://www.python.org/ftp/python/3.8.10/python-3.8.10-amd64.exe>`_
+		Download and install `Python 3.10 64bit <https://www.python.org/ftp/python/3.10.10/python-3.10.10-amd64.exe>`_
 
 
 Run a python script
@@ -119,7 +119,7 @@ Before running your simulations, you must make sure to define the following envi
 
 				export SOFA_ROOT=/path/to/SOFA_install
 				export PYTHONPATH=/path/to/SofaPython3/lib/python3/site-packages:$PYTHONPATH
-				export PATH="/usr/local/opt/python@3.8/bin/:$PATH"
+				export PATH="/usr/local/opt/python@3.10/bin/:$PATH"
 
 
 	.. tab-container:: tab3
