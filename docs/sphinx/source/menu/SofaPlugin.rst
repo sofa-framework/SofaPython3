@@ -7,7 +7,7 @@ The SofaPython3 plugins allows you to embed a python3 interpreter into an exisin
 Prerequisites
 -------------
 
-If you downloaded and installed SOFA and its headers from the `SOFA website <https://www.sofa-framework.org/download/>`_, make sure to have python3.10 installed on your computed.
+If you downloaded and installed SOFA and its headers from the `SOFA website <https://www.sofa-framework.org/download/>`_, make sure to have python3.10 installed on your computer.
 
 .. content-tabs::
 
