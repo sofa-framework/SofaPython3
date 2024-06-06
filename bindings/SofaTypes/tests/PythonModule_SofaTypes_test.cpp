@@ -42,6 +42,8 @@ namespace
     }
   } python_tests;
 
+  GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST(PythonTest);
+
   /// run test list using the custom name function getTestName.
   /// this allows to do gtest_filter=*FileName*
   INSTANTIATE_TEST_SUITE_P(Batch,
