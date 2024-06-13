@@ -575,6 +575,13 @@ py::object getMechanicalState(Node *self)
 }
 
 
+py::object hasODESolver(Node *self)
+{
+    bool hasODE = self->solver.size();
+    return py::cast(hasODE);
+}
+
+
 py::object getMechanicalMapping(Node *self)
 {
     sofa::core::BaseMapping* mapping = self->mechanicalMapping.get();
