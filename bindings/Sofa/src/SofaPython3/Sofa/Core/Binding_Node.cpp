@@ -655,6 +655,7 @@ void moduleAddNode(py::module &m) {
     p.def("getAsACreateObjectParameter", &getLinkPath, sofapython3::doc::sofa::core::Node::getAsACreateObjectParameter);
     p.def("detachFromGraph", &Node::detachFromGraph, sofapython3::doc::sofa::core::Node::detachFromGraph);
     p.def("getMass", &getMass, sofapython3::doc::sofa::core::Node::getMass);
+    p.def("hasODESolver", &hasODESolver, sofapython3::doc::sofa::core::Node::hasODESolver);
     p.def("getForceField", &getForceField, sofapython3::doc::sofa::core::Node::getForceField);
     p.def("getMechanicalState", &getMechanicalState, sofapython3::doc::sofa::core::Node::getMechanicalState);
     p.def("getMechanicalMapping", &getMechanicalMapping, sofapython3::doc::sofa::core::Node::getMechanicalMapping);
