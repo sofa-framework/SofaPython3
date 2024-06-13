@@ -577,7 +577,7 @@ py::object getMechanicalState(Node *self)
 
 py::object hasODESolver(Node *self)
 {
-    bool hasODE = self->solver.size();
+    const bool hasODE = self->solver.size() > 0;
     return py::cast(hasODE);
 }
 
