@@ -375,7 +375,7 @@ static auto getMechanicalState =
 
 static auto hasODESolver =
         R"(
-        Return true of the node includes an ODE Solver
+        Return true if the node includes an ODE Solver
         )";
 
 static auto getMechanicalMapping =
