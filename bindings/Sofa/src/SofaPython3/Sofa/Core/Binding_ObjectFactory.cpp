@@ -223,7 +223,7 @@ void moduleAddObjectFactory(py::module &m) {
         return getTargets(*ObjectFactory::getInstance());
     }, doc::objectmodel::ObjectFactory_targets);
 
-    factory.def_property_readonly_static("dump_json", [](){
+    factory.def_static("dump_json", [](){
         return sofa::core::ObjectFactoryJson::dump(ObjectFactory::getInstance());
     }, doc::objectmodel::ObjectFactory_targets);
 }
