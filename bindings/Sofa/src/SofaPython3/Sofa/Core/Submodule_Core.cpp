@@ -137,10 +137,13 @@ PYBIND11_MODULE(Core, core)
     auto atexit = py::module_::import("atexit");
     atexit.attr("register")(py::cpp_function([]() {
 
+        clearCache();
+
         sofa::core::cleanup();
 
         msg_info("SofaPython3.Core") << "Sofa.Core unload()";
     }));
+
 }
 
 } ///namespace sofapython3

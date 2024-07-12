@@ -23,6 +23,7 @@
 #include <vector>
 #include <string>
 #include <sofa/helper/logging/FileInfo.h>
+#include <SofaPython3/DataHelper.h>
 
 /// Fixes compile errors:
 /// removing all slots macros is necessary if embedded in a Qt project
