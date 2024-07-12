@@ -130,6 +130,10 @@ PYBIND11_MODULE(Core, core)
     moduleAddBaseMeshTopology(core);
     moduleAddPointSetTopologyModifier(core);
     moduleAddTaskScheduler(core);
+
+    //Make sure the cache is cleaned up when exiting the app
+    core.add_object("_cleanup", py::capsule([](){clearCache();}));
+
 }
 
 } ///namespace sofapython3
