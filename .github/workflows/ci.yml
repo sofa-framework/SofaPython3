@@ -25,7 +25,7 @@ jobs:
     steps:
       - name: Setup SOFA and environment
         id: sofa
-        uses: sofa-framework/sofa-setup-action@v5
+        uses: fredroy/sofa-setup-action@v5-custom
         with:
           sofa_root: ${{ github.workspace }}/sofa
           sofa_version: ${{ matrix.sofa_branch }}
