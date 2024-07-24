@@ -19,6 +19,7 @@
 ******************************************************************************/
 
 #include <pybind11/eval.h>
+#include <sofa/helper/system/PluginManager.h>
 namespace py = pybind11;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -157,6 +158,28 @@ PYBIND11_MODULE(SofaRuntime, m) {
     {
         return simpleapi::importPlugin(name);
     }, "import a sofa plugin into the current environment");
+
+    m.def("load_plugins_from_ini_file", [](const std::string& iniFile)
+    {
+        auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
+        pluginManager.readFromIniFile(iniFile);
+    }, "import a list of plugins defined in a file");
+
+    m.def("auto_load_plugins", []()
+    {
+        std::string configPluginPath = "plugin_list.conf";
+        std::string defaultConfigPluginPath = "plugin_list.conf.default";
+        if (sofa::helper::system::PluginRepository.findFile(configPluginPath, "", nullptr))
+        {
+            msg_info("SofaRuntime") << "Loading automatically plugin list in " << configPluginPath;
+            sofa::helper::system::PluginManager::getInstance().readFromIniFile(configPluginPath);
+        }
+        if (sofa::helper::system::PluginRepository.findFile(defaultConfigPluginPath, "", nullptr))
+        {
+            msg_info("SofaRuntime") << "Loading automatically plugin list in " << defaultConfigPluginPath;
+            sofa::helper::system::PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
+        }
+    }, "automatically load plugins from configuration files");
 
     m.def("init", []() {
         MessageDispatcher::clearHandlers();
