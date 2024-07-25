@@ -51,6 +51,8 @@ using sofa::helper::logging::Message;
 #include <SofaPython3/Sofa/Core/Data/Binding_DataVectorString.h>
 #include <SofaPython3/Sofa/Core/Data/Binding_DataContainer.h>
 
+#include <sofa/core/init.h>
+
 namespace sofapython3
 {
 
@@ -130,6 +132,15 @@ PYBIND11_MODULE(Core, core)
     moduleAddBaseMeshTopology(core);
     moduleAddPointSetTopologyModifier(core);
     moduleAddTaskScheduler(core);
+
+    // called when the module is unloaded
+    auto atexit = py::module_::import("atexit");
+    atexit.attr("register")(py::cpp_function([]() {
+
+        sofa::core::cleanup();
+
+        msg_info("SofaPython3.Core") << "Sofa.Core unload()";
+    }));
 }
 
 } ///namespace sofapython3
