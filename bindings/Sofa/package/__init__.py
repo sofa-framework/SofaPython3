@@ -93,23 +93,33 @@ if sofa_root and sys.platform == 'win32':
     sofa_bin_candidates = [sofa_bin_path] + sofa_bin_compilation_modes
     sofapython3_bin_candidates = [sofapython3_bin_path] + sofapython3_bin_compilation_modes
 
+    sofa_helper_dll = ["Sofa.Helper.dll", "Sofa.Helper_d.dll"]
+
+    sofa_file_test = ""
     for candidate in sofa_bin_candidates:
-        sofa_file_test = os.path.join(candidate, "Sofa.Helper.dll")
-        if os.path.isfile(sofa_file_test):
-            print("Found Sofa.Helper.dll in " + candidate)
-            sofa_bin_path = candidate
-            break
+        for dll in sofa_helper_dll:
+            sofa_file_test = os.path.join(candidate, dll)
+            if os.path.isfile(sofa_file_test):
+                print(f"Found {dll} in {candidate}")
+                sofa_bin_path = candidate
+                break
+        else:
+            continue
+        break
 
-    sofa_file_test = os.path.join(sofa_bin_path, "Sofa.Helper.dll")
+    sofa_python3_dll = ["SofaPython3.dll", "SofaPython3_d.dll"]
 
+    sofapython3_file_test = ""
     for candidate in sofapython3_bin_candidates:
-        sofapython3_file_test = os.path.join(candidate, "SofaPython3.dll")
-        if os.path.isfile(sofapython3_file_test):
-            print("Found SofaPython3.dll in " + candidate)
-            sofapython3_bin_path = candidate
-            break
-
-    sofapython3_file_test = os.path.join(sofapython3_bin_path, "SofaPython3.dll")
+        for dll in sofa_python3_dll:
+            sofapython3_file_test = os.path.join(candidate, dll)
+            if os.path.isfile(sofapython3_file_test):
+                print(f"Found {dll} in {candidate}")
+                sofapython3_bin_path = candidate
+                break
+        else:
+            continue
+        break
 
     if not os.path.isfile(sofa_file_test):
         print("Warning: environment variable SOFA_ROOT is set but seems invalid.",
