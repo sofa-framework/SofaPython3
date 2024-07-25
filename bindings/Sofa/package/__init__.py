@@ -78,8 +78,7 @@ if sofa_root and sys.platform == 'win32':
 
     # A user using a build configuration could have a multiple-configuration type build
     # which is typical on Windows and MSVC; and MacOS with XCode
-    # Previously the setup was arbitrarily choosing the first configuration it could find.
-    # Now, if the user set the env.var SOFA_BUILD_CONFIGURATION, he can choose a preferred configuration.
+    # If the user set the env.var SOFA_BUILD_CONFIGURATION, he can choose a preferred configuration.
     # If it is not found, it is considered as an error.
     sofa_build_configuration = os.environ.get('SOFA_BUILD_CONFIGURATION')
     compilation_modes = []
