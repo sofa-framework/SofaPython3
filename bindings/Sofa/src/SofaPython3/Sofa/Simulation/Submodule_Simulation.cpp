@@ -42,6 +42,7 @@ using sofa::simulation::Simulation;
 
 #include <sofa/core/init.h>
 #include <sofa/simulation/init.h>
+#include <sofa/simulation/common/init.h>
 #include <sofa/simulation/graph/init.h>
 
 namespace py = pybind11;
@@ -83,6 +84,17 @@ PYBIND11_MODULE(Simulation, simulation)
     {
         sofa::simulation::node::initTextures(n);
     });
+
+    // called when the module is unloaded
+    auto atexit = py::module_::import("atexit");
+    atexit.attr("register")(py::cpp_function([]() {
+
+        sofa::simulation::core::cleanup();
+        sofa::simulation::common::cleanup();
+        sofa::simulation::graph::cleanup();
+
+        msg_info("SofaPython3.Simulation") << "Sofa.Simulation unload()";
+    }));
 }
 
 } /// namespace sofapython3

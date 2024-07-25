@@ -18,7 +18,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/core/init.h>
 #include <sofa/helper/init.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <SofaPython3/PythonEnvironment.h>
@@ -108,7 +107,6 @@ static void parse_emitter_message_then(py::args args, const Action& action) {
 PYBIND11_MODULE(Helper, helper)
 {
     // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
-    sofa::core::init();
     sofa::helper::init();
 
     helper.doc() = R"doc(
@@ -155,6 +153,12 @@ PYBIND11_MODULE(Helper, helper)
     moduleAddMessageHandler(helper);
     moduleAddVector(helper);
     moduleAddSystem(helper);
+
+    auto atexit = py::module_::import("atexit");
+    atexit.attr("register")(py::cpp_function([]() {
+        sofa::helper::cleanup();
+        msg_info("SofaPython3.Helper") << "Sofa.Helper unload()";
+    }));
 }
 
 } ///namespace sofapython3
