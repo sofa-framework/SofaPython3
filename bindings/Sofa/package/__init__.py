@@ -76,7 +76,19 @@ if sofa_root and sys.platform == 'win32':
     sofa_bin_path = os.path.join(sofa_root, "bin")
     sofapython3_bin_path = os.path.join(sofapython3_root, "bin")
 
-    compilation_modes = ["Release", "RelWithDebInfo", "Debug", "MinSizeRel"]
+    # A user using a build configuration could have a multiple-configuration type build
+    # which is typical on Windows and MSVC; and MacOS with XCode
+    # Previously the setup was arbitrarily choosing the first configuration it could find.
+    # Now, if the user set the env.var SOFA_BUILD_CONFIGURATION, he can choose a preferred configuration.
+    # If it is not found, it is considered as an error.
+    sofa_build_configuration = os.environ.get('SOFA_BUILD_CONFIGURATION')
+    compilation_modes = []
+    if sofa_build_configuration:
+        print("SOFA_BUILD_CONFIGURATION is set to " + sofa_build_configuration)
+        compilation_modes = [sofa_build_configuration]
+    else:
+        compilation_modes = ["Release", "RelWithDebInfo", "Debug", "MinSizeRel"] # Standard multi-configuration modes in CMake
+
     sofa_bin_compilation_modes = []
     sofapython3_bin_compilation_modes = []
     for mode in compilation_modes:
@@ -94,7 +106,7 @@ if sofa_root and sys.platform == 'win32':
     sofapython3_bin_candidates = [sofapython3_bin_path] + sofapython3_bin_compilation_modes
 
     sofa_helper_dll = ["Sofa.Helper.dll", "Sofa.Helper_d.dll"]
-
+    
     sofa_file_test = ""
     for candidate in sofa_bin_candidates:
         for dll in sofa_helper_dll:
