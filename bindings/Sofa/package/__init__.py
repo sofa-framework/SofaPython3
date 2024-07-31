@@ -105,7 +105,6 @@ if sofa_root and sys.platform == 'win32':
     sofapython3_bin_candidates = [sofapython3_bin_path] + sofapython3_bin_compilation_modes
 
     sofa_helper_dll = ["Sofa.Helper.dll", "Sofa.Helper_d.dll"]
-    
     sofa_file_test = ""
     for candidate in sofa_bin_candidates:
         for dll in sofa_helper_dll:
