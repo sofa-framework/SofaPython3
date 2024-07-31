@@ -116,7 +116,7 @@ Try it: ```python python3 minimalscene.py```
 - Data access & code cleaning (Bruno)
 ```python3
 c1 = root.addChild("child1")
-c2 = root.addChdil("child2")
+c2 = root.addChild("child2")
 o1 = root.addObject("MechanicalObject", dofs)
 p = root.child1.child2.dofs.position         ## Slow acces to data 
 p = root["child1.child2.dofs.position"]      ## Ffast access
