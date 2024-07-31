@@ -147,6 +147,16 @@ void moduleAddGuiManager(py::module& m)
     )doc";
     guiManager.def_static("SetDimension", &sofa::gui::common::GUIManager::SetDimension, setDimensionDoc);
 
+    /*
+     * Sofa.Gui.GUIManager.CenterWindow
+     */
+    const auto centerWindowDoc = R"doc(
+        Center the GUI's window on screen .
+
+        This must be called after Sofa.Gui.GUIManager.createGUI
+
+    )doc";
+    guiManager.def_static("CenterWindow", &sofa::gui::common::GUIManager::CenterWindow, centerWindowDoc);
 
     /*
      * Sofa.Gui.GUIManager.SetFullScreen
