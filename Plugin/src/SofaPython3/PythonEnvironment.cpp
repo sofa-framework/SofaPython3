@@ -482,6 +482,12 @@ void PythonEnvironment::addPluginManagerCallback()
             }
         }
     );
+    PluginManager::getInstance().addOnPluginCleanupCallbacks(pluginLibraryPath,
+        []()
+        {
+            PythonEnvironment::Release();
+        }
+    );
 }
 
 void PythonEnvironment::removePluginManagerCallback()

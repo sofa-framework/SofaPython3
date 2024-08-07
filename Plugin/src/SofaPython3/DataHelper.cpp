@@ -249,8 +249,15 @@ py::slice toSlice(const py::object& o)
 
 std::map<void*, std::pair<int, py::array>>& getObjectCache()
 {
-    static std::map<void*, std::pair<int, py::array>> s_objectcache {} ;
+    static std::map<void*, std::pair<int, py::array>>  s_objectcache{};
     return s_objectcache;
+}
+
+
+void clearCache()
+{
+    msg_info("SofaPython3") << "Clearing Sofa.Core cache...";
+    getObjectCache().clear();
 }
 
 void trimCache()
