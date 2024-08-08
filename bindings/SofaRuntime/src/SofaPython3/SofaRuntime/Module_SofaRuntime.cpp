@@ -159,6 +159,12 @@ PYBIND11_MODULE(SofaRuntime, m) {
         return simpleapi::importPlugin(name);
     }, "import a sofa plugin into the current environment");
 
+    m.def("unload_plugin", [](const std::string& name)
+    {
+        auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
+        pluginManager.unloadPlugin(name);
+    }, "unload a sofa plugin");
+
     m.def("load_plugins_from_ini_file", [](const std::string& iniFile)
     {
         auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
