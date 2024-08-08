@@ -225,7 +225,7 @@ void moduleAddObjectFactory(py::module &m) {
 
     factory.def_static("dump_json", [](){
         return sofa::core::ObjectFactoryJson::dump(ObjectFactory::getInstance());
-    }, doc::objectmodel::ObjectFactory_targets);
+    }, doc::objectmodel::ObjectFactory_dump_json);
 }
 
 } /// namespace sofapython3
