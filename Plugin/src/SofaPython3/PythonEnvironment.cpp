@@ -193,8 +193,6 @@ void PythonEnvironment::Init()
         static const PyThreadState* init = PyEval_SaveThread(); (void) init;
     }
 
-    PyEval_InitThreads();
-
     // Required for sys.path, used in addPythonModulePath().
     executePython([]{ PyRun_SimpleString("import sys");});
 
