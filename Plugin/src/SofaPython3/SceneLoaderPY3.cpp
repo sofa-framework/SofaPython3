@@ -133,7 +133,7 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
         ss << "Unable to completely load the scene from file '"<< filename << "'." << msgendl
             << "Python exception: " << msgendl
             << "  " << e.what();
-        if( py::isinstance(e.type(), py::eval("type(DeprecationWarning)")) )
+        if( py::isinstance(e.type(), py::eval("type(DeprecationWarning)")) && !py::isinstance(e.type(), py::eval("type(AttributeError)")))
         {
             msg_deprecated() << ss.str();
         }else
