@@ -80,7 +80,7 @@ def createScene(root):
     root.meca.addObject('BoxROI', name='base_roi', box=[-5.01, -5.01, -30.01, 30.01, 30.01, -29.99])
     root.meca.addObject('BoxROI', name='top_roi',  box=[-5.01, -5.01, +29.99, 5.01, 5.01, +30.01], quad='@mechanical_topology.quads')
 
-    root.meca.addObject('FixedConstraint', indices='@base_roi.indices')
+    root.meca.addObject('FixedProjectiveConstraint', indices='@base_roi.indices')
     root.meca.addObject('QuadSetGeometryAlgorithms')
     root.meca.addObject('QuadPressureForceField', pressure=[0, -30, 0], quadList='@top_roi.quadInROI', showForces=False)
 

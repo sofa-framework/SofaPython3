@@ -25,7 +25,7 @@ def createScene(root):
     root.addObject('UniformMass', vertexMass=1)
     root.addObject('RegularGridTopology', nx=8, ny=8, nz=40, xmin=-1.5, xmax=1.5, ymin=-1.5, ymax=1.5, zmin=0, zmax=19)
     root.addObject('BoxROI', box=[-1.5, -1.5, 0, 1.5, 1.5, 0.0001], name="box")
-    root.addObject('FixedConstraint', indices="@box.indices")
+    root.addObject('FixedProjectiveConstraint', indices="@box.indices")
     root.addObject('ParallelHexahedronFEMForceField', youngModulus=400000, poissonRatio=0.4, method="large", updateStiffnessMatrix=False)
 
 
