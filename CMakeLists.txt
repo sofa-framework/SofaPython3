@@ -46,7 +46,7 @@ CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAEXPORTER "Bind the SOFA exporter component."
 
 
 sofa_find_package(Sofa.GUI.Common QUIET)
-CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAGUI "Bind the SOFA exporter component." ON "Sofa.GUI.Common_FOUND" OFF)
+CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAGUI "Bind the SOFA gui component." ON "Sofa.GUI.Common_FOUND" OFF)
 
 
 # BUILD OPTIONS
