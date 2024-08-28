@@ -385,11 +385,11 @@ def PrefabBuilder(f):
     return SofaPrefabF
 
 def import_sofa_python_scene(path_to_scene : str):
-    """Return a python module containing a sofa scene"""
-    spec = importlib.util.spec_from_file_location("sofa.scene", path_to_scene)
-    foo = importlib.util.module_from_spec(spec)
-    sys.modules["module.name"] = foo
-    spec.loader.exec_module(foo)
+    """Return a python module containing a SOFA scene"""
+    spec_from_location = importlib.util.spec_from_file_location("sofa.scene", path_to_scene)
+    module_name = importlib.util.module_from_spec(spec_from_location)
+    sys.modules["module.name"] = module_name
+    spec_from_location.loader.exec_module(module_name)
 
     if not hasattr(foo, "createScene"):
         raise Exception("Unable to find 'createScene' in module "+path_to_scene)
