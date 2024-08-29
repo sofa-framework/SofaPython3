@@ -106,9 +106,12 @@ jobs:
             echo "$WORKSPACE_ARTIFACT_PATH/lib" >> $GITHUB_PATH
             echo "$WORKSPACE_ARTIFACT_PATH/bin" >> $GITHUB_PATH
           elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            echo "SOFA_PLUGIN_PATH=$WORKSPACE_ARTIFACT_PATH/lib" | tee -a $GITHUB_ENV
             echo "DYLD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
+          else  # Linux
+            echo "SOFA_PLUGIN_PATH=$WORKSPACE_ARTIFACT_PATH/lib" | tee -a $GITHUB_ENV
+            echo "LD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           fi
-          echo "LD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           echo "PYTHONPATH=$WORKSPACE_ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
           # Add execution right on the tests
           chmod +x $WORKSPACE_ARTIFACT_PATH/bin/*.Tests${{ steps.sofa.outputs.exe }}

@@ -72,23 +72,6 @@ using sofa::helper::logging::MainConsoleMessageHandler;
 namespace sofapython3
 {
 
-
-class SofaInitializer
-{
-public:
-    // TODO, ces trucs sont fort laid. Normalement ce devrait être une joli plugin qui
-    // appelle le init.
-    SofaInitializer(){
-        sofa::simulation::common::init();
-        sofa::simulation::graph::init();
-    }
-
-    ~SofaInitializer(){
-        sofa::simulation::common::cleanup();
-        sofa::simulation::graph::cleanup();
-    }
-};
-
 static std::vector<std::string>  getCategories(const std::string& className)
 {
     std::vector<std::string> categories;
@@ -108,8 +91,6 @@ static std::vector<std::string>  getCategories(const std::string& className)
     }
     return categories ;
 }
-
-static SofaInitializer s;
 
 /// The first parameter must be named the same as the module file to load.
 PYBIND11_MODULE(SofaRuntime, m) {
@@ -131,13 +112,6 @@ PYBIND11_MODULE(SofaRuntime, m) {
                    SofaRuntime.importPlugin("Sofa.Component.LinearSolver")
 
               )doc";
-
-    // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
-    sofa::core::init();
-    sofa::helper::init();
-    sofa::simulation::core::init();
-    sofa::simulation::graph::init();
-    sofa::simulation::common::init();
 
     // Add the plugin directory to PluginRepository
     const std::string& pluginDir = Utils::getExecutableDirectory();
@@ -198,6 +172,7 @@ PYBIND11_MODULE(SofaRuntime, m) {
     m.def("getCategories", &getCategories);
 
     addSubmoduleTimer(m);
+
 }
 
 }  // namespace sofapython3

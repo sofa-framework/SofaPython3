@@ -324,7 +324,10 @@ void PythonEnvironment::Release()
 {
     /// Finish the Python Interpreter
     /// obviously can't use raii here
-    if(  Py_IsInitialized() ) {
+    static bool isReleased = false;
+    if(  Py_IsInitialized() && !isReleased) {
+        isReleased = true;
+
         PyGILState_Ensure();
         py::finalize_interpreter();
         getStaticData()->reset();
@@ -478,6 +481,12 @@ void PythonEnvironment::addPluginManagerCallback()
                     return;
                 }
             }
+        }
+    );
+    PluginManager::getInstance().addOnPluginCleanupCallbacks(pluginLibraryPath,
+        []()
+        {
+            PythonEnvironment::Release();
         }
     );
 }
