@@ -92,7 +92,7 @@ public:
     void reset()
     {
         for(auto s : m_argv){
-            PyMem_Free(s);
+            PyMem_RawFree(s);
         }
         m_argv.clear();
         addedPath.clear();
