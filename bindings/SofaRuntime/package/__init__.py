@@ -29,13 +29,6 @@ except ModuleNotFoundError as error:
     Sofa.msg_error("SofaRuntime", 'numpy is mandatory for SofaPython3')
     sys.exit(1)
 
-try:
-    import scipy
-except ModuleNotFoundError as error:
-    Sofa.msg_warning("SofaRuntime",str(error))
-    Sofa.msg_warning("SofaRuntime", "scipy is strongly recommended for SofaPython3")
-    pass
-
 # Keep a list of the modules always imported in the Sofa-PythonEnvironment
 try:
     __SofaPythonEnvironment_importedModules__
