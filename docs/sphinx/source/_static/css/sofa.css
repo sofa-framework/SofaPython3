@@ -1,0 +1,59 @@
+/** css/yourtheme.css **/
+
+/* This line is theme specific - it includes the base theme CSS */
+@import './theme.css';  /* for Alabaster */
+/*@import 'theme.css';       /* for the Read the Docs theme */
+
+.wy-side-nav-search {
+  display:block;
+  width:300px;
+  padding:.809em;
+  margin-bottom:.809em;
+  z-index:200;
+  background-color:rgb(20, 21, 26);
+  text-align:center;
+  color:#fcfcfc
+}
+
+@media screen and (min-width:1100px) {
+  .wy-nav-content-wrap {
+    background:rgba(1,1,1,.05)
+  }
+  .wy-nav-content {
+    margin:0;
+    background:hsla(225deg,15%,14%,1);
+  }
+  
+  
+.wy-nav-content {
+  padding:1.618em 3.236em;
+  height:100%;
+  max-width:2000px;
+  margin:auto
+}
+}
+
+.wy-nav-side {
+  position:fixed;
+  top:0;
+  bottom:0;
+  left:0;
+  padding-bottom:2em;
+  width:300px;
+  overflow-x:hidden;
+  overflow-y:hidden;
+  min-height:100%;
+  color:#9b9b9b;
+  background:hsla(225deg,15%,14%,1);
+  z-index:200
+}
+
+body {
+  font-family:Lato,proxima-nova,Helvetica Neue,Arial,sans-serif;
+  font-weight:400;
+  color:rgba(226, 228, 233, 0.82);
+  min-height:100%;
+  background:hsla(225deg,15%,14%,1);
+  background-color:hsla(225deg,15%,14%,1);
+
+}
