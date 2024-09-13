@@ -92,7 +92,7 @@ public:
     void reset()
     {
         for(auto s : m_argv){
-            PyMem_Free(s);
+            PyMem_RawFree(s);
         }
         m_argv.clear();
         addedPath.clear();
@@ -180,16 +180,6 @@ void PythonEnvironment::Init()
         SceneLoaderFactory::getInstance()->addEntry(new SceneLoaderPY3());
     }
 
-#if defined(__linux__)
-    // WARNING: workaround to be able to import python libraries on linux (like
-    // numpy), at least on Ubuntu (see http://bugs.python.org/issue4434). It is
-    // not fixing the real problem, but at least it is working for now.
-    // dmarchal: The problem still exists python3 10/10/2018.
-    std::string pythonLibraryName = "libpython" + std::string(pythonVersion,0,3) + "m.so";
-    dlopen( pythonLibraryName.c_str(), RTLD_LAZY|RTLD_GLOBAL );
-    msg_info("SofaPython3") << "Shared library name is '" << pythonLibraryName << "'" ;
-#endif
-
     /// Prevent the python terminal from being buffered, not to miss or mix up traces.
     if( putenv( (char*)"PYTHONUNBUFFERED=1" ) )
         msg_warning("SofaPython3") << "failed to set environment variable PYTHONUNBUFFERED";
@@ -202,8 +192,6 @@ void PythonEnvironment::Init()
         // is initialized.
         static const PyThreadState* init = PyEval_SaveThread(); (void) init;
     }
-
-    PyEval_InitThreads();
 
     // Required for sys.path, used in addPythonModulePath().
     executePython([]{ PyRun_SimpleString("import sys");});
@@ -248,7 +236,7 @@ void PythonEnvironment::Init()
     char* pathVar = getenv(envVarName.c_str());
     
     // case where only the deprecated env var is set
-    if (pathVar != nullptr && deprecatedPathVar == nullptr)
+    if (pathVar == nullptr && deprecatedPathVar != nullptr)
     {
         msg_deprecated("SofaPython3") << deprecatedEnvVarName << " environment variable is deprecated, use " << envVarName << " instead.";
         usedEnvVarName = "SOFAPYTHON_PLUGINS_PATH";
@@ -289,7 +277,7 @@ void PythonEnvironment::Init()
     for( const auto& elem : map)
     {
         Plugin p = elem.second;
-        if ( p.getModuleName() == sofa_tostring(SOFA_TARGET) )
+        if ( strcmp(p.getModuleName(), sofa_tostring(SOFA_TARGET)) == 0 )
         {
             pluginLibraryPath = elem.first;
         }
@@ -336,7 +324,10 @@ void PythonEnvironment::Release()
 {
     /// Finish the Python Interpreter
     /// obviously can't use raii here
-    if(  Py_IsInitialized() ) {
+    static bool isReleased = false;
+    if(  Py_IsInitialized() && !isReleased) {
+        isReleased = true;
+
         PyGILState_Ensure();
         py::finalize_interpreter();
         getStaticData()->reset();
@@ -386,10 +377,19 @@ void PythonEnvironment::addPythonModulePathsFromDirectory(const std::string& dir
         return;
     }
 
+    // Using python<MAJOR>.<MINOR> directory suffix for modules paths is now the recommanded
+    // standard location: https://docs.python.org/3.11/install/#how-installation-works and
+    // https://docs.python.org/3.11/library/site.html#module-site 
+    const auto pythonVersionFull = std::string{Py_GetVersion()};
+    const auto pythonVersion = pythonVersionFull.substr(0, pythonVersionFull.find(" ")); // contains major.minor.patch
+    const auto pythonVersionMajorMinor = pythonVersion.substr(0, pythonVersion.rfind(".")); // contains only manjor.minor
+    const auto pythonMajorMinorSuffix = "/python" + pythonVersionMajorMinor;
+
     std::vector<std::string> searchDirs = {
         directory,
         directory + "/lib",
-        directory + "/python3"
+        directory + pythonMajorMinorSuffix,
+        directory + "/python3" // deprecated
     };
 
     // Iterate in the pluginsDirectory and add each sub directory with a 'python' name
@@ -401,7 +401,18 @@ void PythonEnvironment::addPythonModulePathsFromDirectory(const std::string& dir
         const std::string subdir = directory + "/" + *i;
         if (FileSystem::exists(subdir) && FileSystem::isDirectory(subdir))
         {
-            searchDirs.push_back(subdir + "/python3");
+            const std::vector<std::string> suffixes = {
+              pythonMajorMinorSuffix,
+              "/python3" // deprecated
+            };
+            for (const auto& suffix : suffixes)
+            {
+              const auto pythonSubdir = subdir + suffix;
+              if (FileSystem::exists(pythonSubdir) && FileSystem::isDirectory(pythonSubdir))
+              {
+                searchDirs.push_back(pythonSubdir);
+              }
+            }
         }
     }
 
@@ -470,6 +481,12 @@ void PythonEnvironment::addPluginManagerCallback()
                     return;
                 }
             }
+        }
+    );
+    PluginManager::getInstance().addOnPluginCleanupCallbacks(pluginLibraryPath,
+        []()
+        {
+            PythonEnvironment::Release();
         }
     );
 }

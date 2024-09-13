@@ -96,7 +96,7 @@ def createScene(root):
 def main():
     import SofaRuntime
     import Sofa.Gui
-    SofaRuntime.importPlugin("SofaOpenglVisual")
+
     root=Sofa.Core.Node("root")
     createScene(root)
 

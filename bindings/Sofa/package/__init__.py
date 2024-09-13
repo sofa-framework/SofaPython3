@@ -67,7 +67,18 @@ if sofa_root and sys.platform == 'win32':
     sofa_bin_path = os.path.join(sofa_root, "bin")
     sofapython3_bin_path = os.path.join(sofapython3_root, "bin")
 
-    compilation_modes = ["Release", "RelWithDebInfo", "Debug", "MinSizeRel"]
+    # A user using a build configuration could have a multiple-configuration type build
+    # which is typical on Windows and MSVC; and MacOS with XCode
+    # If the user set the env.var SOFA_BUILD_CONFIGURATION, he can choose a preferred configuration.
+    # If it is not found, it is considered as an error.
+    sofa_build_configuration = os.environ.get('SOFA_BUILD_CONFIGURATION')
+    compilation_modes = []
+    if sofa_build_configuration:
+        print("SOFA_BUILD_CONFIGURATION is set to " + sofa_build_configuration)
+        compilation_modes = [sofa_build_configuration]
+    else:
+        compilation_modes = ["Release", "RelWithDebInfo", "Debug", "MinSizeRel"] # Standard multi-configuration modes in CMake
+
     sofa_bin_compilation_modes = []
     sofapython3_bin_compilation_modes = []
     for mode in compilation_modes:
@@ -84,23 +95,32 @@ if sofa_root and sys.platform == 'win32':
     sofa_bin_candidates = [sofa_bin_path] + sofa_bin_compilation_modes
     sofapython3_bin_candidates = [sofapython3_bin_path] + sofapython3_bin_compilation_modes
 
+    sofa_helper_dll = ["Sofa.Helper.dll", "Sofa.Helper_d.dll"]
+    sofa_file_test = ""
     for candidate in sofa_bin_candidates:
-        sofa_file_test = os.path.join(candidate, "Sofa.Helper.dll")
-        if os.path.isfile(sofa_file_test):
-            print("Found Sofa.Helper.dll in " + candidate)
-            sofa_bin_path = candidate
-            break
+        for dll in sofa_helper_dll:
+            sofa_file_test = os.path.join(candidate, dll)
+            if os.path.isfile(sofa_file_test):
+                print(f"Found {dll} in {candidate}")
+                sofa_bin_path = candidate
+                break
+        else:
+            continue
+        break
 
-    sofa_file_test = os.path.join(sofa_bin_path, "Sofa.Helper.dll")
+    sofa_python3_dll = ["SofaPython3.dll", "SofaPython3_d.dll"]
 
+    sofapython3_file_test = ""
     for candidate in sofapython3_bin_candidates:
-        sofapython3_file_test = os.path.join(candidate, "SofaPython3.dll")
-        if os.path.isfile(sofapython3_file_test):
-            print("Found SofaPython3.dll in " + candidate)
-            sofapython3_bin_path = candidate
-            break
-
-    sofapython3_file_test = os.path.join(sofapython3_bin_path, "SofaPython3.dll")
+        for dll in sofa_python3_dll:
+            sofapython3_file_test = os.path.join(candidate, dll)
+            if os.path.isfile(sofapython3_file_test):
+                print(f"Found {dll} in {candidate}")
+                sofapython3_bin_path = candidate
+                break
+        else:
+            continue
+        break
 
     if not os.path.isfile(sofa_file_test):
         print("Warning: environment variable SOFA_ROOT is set but seems invalid.",
@@ -366,4 +386,16 @@ def PrefabBuilder(f):
         return selfnode
     SofaPrefabF.__dict__["__original__"] = f
     return SofaPrefabF
+
+def import_sofa_python_scene(path_to_scene : str):
+    """Return a python module containing a SOFA scene"""
+    spec_from_location = importlib.util.spec_from_file_location("sofa.scene", path_to_scene)
+    module_name = importlib.util.module_from_spec(spec_from_location)
+    sys.modules["module.name"] = module_name
+    spec_from_location.loader.exec_module(module_name)
+
+    if not hasattr(foo, "createScene"):
+        raise Exception("Unable to find 'createScene' in module "+path_to_scene)
+
+    return foo
 

@@ -194,6 +194,7 @@ SOFAPYTHON3_API std::string getPathTo(Base* b);
 SOFAPYTHON3_API const char* getFormat(const AbstractTypeInfo& nfo);
 
 SOFAPYTHON3_API std::map<void*, std::pair<int, pybind11::array>>& getObjectCache();
+SOFAPYTHON3_API void clearCache();
 SOFAPYTHON3_API void trimCache();
 
 SOFAPYTHON3_API bool hasArrayFor(BaseData* d);

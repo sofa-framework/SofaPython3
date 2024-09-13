@@ -18,29 +18,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-11, windows-2019]
+        os: [ubuntu-22.04, macos-13, windows-2022]
         sofa_branch: [master]
-        python_version: ['3.8']
+        python_version: ['3.10']
 
     steps:
-      - name: (Mac) Workaround for homebrew
-        shell: bash
-        if: runner.os == 'macOS'
-        run: |
-            rm -f /usr/local/bin/2to3
-            rm -f /usr/local/bin/idle3
-            rm -f /usr/local/bin/pydoc3
-            rm -f /usr/local/bin/python3
-            rm -f /usr/local/bin/python3-config
-            rm -f /usr/local/bin/2to3-3.11
-            rm -f /usr/local/bin/idle3.11
-            rm -f /usr/local/bin/pydoc3.11
-            rm -f /usr/local/bin/python3.11
-            rm -f /usr/local/bin/python3.11-config
-            
       - name: Setup SOFA and environment
         id: sofa
-        uses: sofa-framework/sofa-setup-action@v4
+        uses: sofa-framework/sofa-setup-action@v5
         with:
           sofa_root: ${{ github.workspace }}/sofa
           sofa_version: ${{ matrix.sofa_branch }}
@@ -66,7 +51,7 @@ jobs:
           cmake_options="-GNinja \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INSTALL_PREFIX="$WORKSPACE_INSTALL_PATH" \
-            -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake" \
+            -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake:$pybind11_DIR" \
             -DPYTHON_ROOT=$PYTHON_ROOT -DPython_ROOT=$PYTHON_ROOT \
             -DPYTHON_EXECUTABLE=$PYTHON_EXE -DPython_EXECUTABLE=$PYTHON_EXE"
           if [ -e "$(command -v ccache)" ]; then
@@ -98,7 +83,7 @@ jobs:
           if [[ "${{ github.event.inputs.is_nightly }}" == "true" ]]; then
             ARTIFACT_VERSION="${ARTIFACT_VERSION}-nightly"
           fi
-          ARTIFACT_NAME="${PROJECT_NAME}_${ARTIFACT_VERSION}_python-${{ matrix.python_version }}_for-SOFA-${{ matrix.sofa_branch }}_${{ runner.os }}"
+          ARTIFACT_NAME="${PROJECT_NAME}_${ARTIFACT_VERSION}_python-${{ matrix.python_version }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}"
           echo "ARTIFACT_NAME=$ARTIFACT_NAME" | tee -a $GITHUB_ENV
 
       - name: Create artifact
@@ -121,9 +106,12 @@ jobs:
             echo "$WORKSPACE_ARTIFACT_PATH/lib" >> $GITHUB_PATH
             echo "$WORKSPACE_ARTIFACT_PATH/bin" >> $GITHUB_PATH
           elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            echo "SOFA_PLUGIN_PATH=$WORKSPACE_ARTIFACT_PATH/lib" | tee -a $GITHUB_ENV
             echo "DYLD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
+          else  # Linux
+            echo "SOFA_PLUGIN_PATH=$WORKSPACE_ARTIFACT_PATH/lib" | tee -a $GITHUB_ENV
+            echo "LD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           fi
-          echo "LD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           echo "PYTHONPATH=$WORKSPACE_ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
           # Add execution right on the tests
           chmod +x $WORKSPACE_ARTIFACT_PATH/bin/*.Tests${{ steps.sofa.outputs.exe }}
@@ -177,7 +165,7 @@ jobs:
 
   deploy:
     name: Deploy artifacts
-    if: always() && startsWith(github.ref, 'refs/heads/') # we are on a branch (not a PR)
+    if: always() && startsWith(github.repository, 'sofa-framework') && (startsWith(github.ref, 'refs/heads/') || startsWith(github.ref, 'refs/tags/')) # we are not on a fork and on a branch or a tag (not a PR)
     needs: [build-and-test]
     runs-on: ubuntu-latest
     continue-on-error: true
@@ -199,9 +187,10 @@ jobs:
           
           RELEASE_NAME="${{ github.ref_name }}"
           RELEASE_TAGNAME="release-${{ github.ref_name }}"
+          BRANCH_NAME="$RELEASE_NAME"
           if [[ "${{ github.event.inputs.is_nightly }}" == "true" ]]; then
-              RELEASE_NAME="$RELEASE_NAME-nightly"
-              RELEASE_TAGNAME="$RELEASE_TAGNAME-nightly"
+              RELEASE_NAME="nightly-$RELEASE_NAME"
+              RELEASE_TAGNAME="nightly-$RELEASE_TAGNAME"
           fi
           RELEASE_DATE="$(date +'%Y-%m-%d (at %T UTC)')"
           echo "RELEASE_NAME=$RELEASE_NAME" | tee -a $GITHUB_ENV
@@ -223,7 +212,7 @@ jobs:
           name: ${{ env.RELEASE_NAME }}
           tag_name: ${{ env.RELEASE_TAGNAME }}
           fail_on_unmatched_files: false
-          target_commitish: ${{ env.RELEASE_NAME }}
+          target_commitish: ${{ github.sha }}
           body: |
             Last updated on ${{ env.RELEASE_DATE }}
           files: |

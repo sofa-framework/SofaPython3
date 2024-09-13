@@ -1,8 +1,8 @@
-# plugin.SofaPython3
+# SofaPython3 plugin
 
-[![Documentation Status](https://readthedocs.org/projects/ansicolortags/badge/?version=latest)](https://sofapython3.readthedocs.io/en/latest/?badge=latest)
-[![Join the chat at https://gitter.im/sofa-framework/plugin.SofaPython3](https://badges.gitter.im/sofa-framework/plugin.SofaPython3.svg)](https://gitter.im/sofa-framework/plugin.SofaPython3?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-![License: LGPL v2.1](https://img.shields.io/badge/License-LGPL%20v2.1-blue.svg)
+[![Documentation](https://img.shields.io/badge/doc-on_website-green.svg)](https://sofapython3.readthedocs.io/en/latest/index.html)
+[![Discord](https://img.shields.io/badge/chat-on_Discord-darkred.svg)](https://discord.com/channels/1196920567614419024/1196922833968824370)
+[![Support](https://img.shields.io/badge/support-on_GitHub_Discussions-blue.svg)](https://github.com/sofa-framework/sofa/discussions/categories/sofapython3)
 
 This project is composed of a Sofa plugin to embed a python interpreter into a Sofa based simulation as well as several python modules that exposes the different c++ components used in Sofa. The binding is designed to be idiomatic python3 API with tight integration for numpy. This project is in a WIP state, please use it only if you are willing to help in the developement. 
 
@@ -10,7 +10,7 @@ This project is composed of a Sofa plugin to embed a python interpreter into a S
 
 ### Requirement Install
 - pybind11 (minimal 2.3)
-- cmake (minimal 3.11)
+- cmake (minimal 3.22)
 - developement package for python3 (python3-dev)
 
 ### In-tree build
@@ -116,7 +116,7 @@ Try it: ```python python3 minimalscene.py```
 - Data access & code cleaning (Bruno)
 ```python3
 c1 = root.addChild("child1")
-c2 = root.addChdil("child2")
+c2 = root.addChild("child2")
 o1 = root.addObject("MechanicalObject", dofs)
 p = root.child1.child2.dofs.position         ## Slow acces to data 
 p = root["child1.child2.dofs.position"]      ## Ffast access

@@ -60,9 +60,6 @@ def createScene(root):
 def main():
     import SofaRuntime
     import Sofa.Gui
-    SofaRuntime.importPlugin("SofaOpenglVisual")
-    SofaRuntime.importPlugin("Sofa.Component.StateContainer")
-    SofaRuntime.importPlugin("SofaImplicitOdeSolver")
 
     root=Sofa.Core.Node("root")
     createScene(root)

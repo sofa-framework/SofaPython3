@@ -27,19 +27,19 @@ def createScene(root):
     root.addObject("StringMeshCreator", name="loader", resolution="20")
 
     root.addObject("EulerImplicitSolver")
-    root.addObject("SparseCholeskySolver")
+    root.addObject("EigenSimplicialLLT", template='CompressedRowSparseMatrixMat3x3d')
     root.addObject("GenericConstraintCorrection")
 
     root.addObject("EdgeSetTopologyContainer", name="topo", position="@loader.position", edges="@loader.edges")
     root.addObject("MechanicalObject", name="defoDOF", template="Vec3d")
     root.addObject("EdgeSetGeometryAlgorithms", drawEdges=True)
-    root.addObject("FixedConstraint", indices=[0])
+    root.addObject("FixedProjectiveConstraint", indices=[0])
     root.addObject("DiagonalMass", name="mass", totalMass="1e-3")
 
     ext = root.addChild("extensionsNode")
     ext.addObject("MechanicalObject", template="Vec1d", name="extensionsDOF")
     ext.addObject("DistanceMapping", name="distanceMapping", topology="@topo")
-    ext.addObject("UniformConstraint", template="Vec1d", iterative=True)
+    ext.addObject("UniformLagrangianConstraint", template="Vec1d", iterative=True)
 
     root.addObject(MatrixAccessController('MatrixAccessor', name='matrixAccessor', constraint_solver=constraint_solver))
 

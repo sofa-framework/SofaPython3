@@ -43,6 +43,17 @@ void moduleAddBaseGui(py::module& m)
     )doc";
     baseGUI.def("setBackgroundImage", &sofa::gui::common::BaseGUI::setBackgroundImage, SetBackgroundImageDoc);
 
+    /*
+     * Sofa.Gui.BaseGUI.SetConfigDirectoryPath
+     */
+    const auto SetConfigDirectoryPathDoc = R"doc(
+        Set the configuration directory.
+
+        :param filename: Path the configuration directory to set.
+        :type filename: str
+    )doc";
+    baseGUI.def_static("SetConfigDirectoryPath", &sofa::gui::common::BaseGUI::setConfigDirectoryPath, SetConfigDirectoryPathDoc);
+
 }
 
 } // namespace sofapython3

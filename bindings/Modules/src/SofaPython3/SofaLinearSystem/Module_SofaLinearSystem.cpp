@@ -18,39 +18,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <vector>
+#include <pybind11/pybind11.h>
+#include <SofaPython3/SofaLinearSystem/Binding_LinearSystem.h>
 
-#include <SofaPython3Testing/PythonTest.h>
-#include <sofa/helper/Utils.h>
-#include <SofaPython3Testing/PythonTestExtractor.h>
-
-using sofapython3::PythonTest ;
-using sofapython3::PythonTestExtractor ;
-using sofapython3::PrintTo ;
-using std::string;
-
-namespace
+namespace sofapython3
 {
 
-  class PythonModule_SofaTypes_test : public PythonTestExtractor
-  {
-  public:
-    PythonModule_SofaTypes_test()
-    {
-        const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
-        addTestDirectory(executable_directory+"/Bindings.SofaTypes.Tests.d/pyfiles", "SofaTypes_");
-    }
-  } python_tests;
-
-  GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST(PythonTest);
-
-  /// run test list using the custom name function getTestName.
-  /// this allows to do gtest_filter=*FileName*
-  INSTANTIATE_TEST_SUITE_P(Batch,
-			  PythonTest,
-              ::testing::ValuesIn(python_tests.extract()),
-              PythonTest::getTestName);
-
-  TEST_P(PythonTest, all_tests) { run(GetParam()); }
-
+PYBIND11_MODULE(SofaLinearSystem, m)
+{
+    moduleAddLinearSystem(m);
 }
+
+}  // namespace sofapython3
+

@@ -1,6 +1,6 @@
 /******************************************************************************
-*                              SofaPython3 plugin                             *
-*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2021 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -18,39 +18,48 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <vector>
+#pragma once
 
-#include <SofaPython3Testing/PythonTest.h>
-#include <sofa/helper/Utils.h>
-#include <SofaPython3Testing/PythonTestExtractor.h>
+namespace sofapython3::doc::linearsystem {
 
-using sofapython3::PythonTest ;
-using sofapython3::PythonTestExtractor ;
-using sofapython3::PrintTo ;
-using std::string;
+static auto linearSystemClass =
+R"(
+Linear system. Supports only CompressedRowSparseMatrix.
 
-namespace
-{
+example:
+------------
 
-  class PythonModule_SofaTypes_test : public PythonTestExtractor
-  {
-  public:
-    PythonModule_SofaTypes_test()
-    {
-        const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
-        addTestDirectory(executable_directory+"/Bindings.SofaTypes.Tests.d/pyfiles", "SofaTypes_");
-    }
-  } python_tests;
+linear_system = root.addObject('MatrixLinearSystem', template='CompressedRowSparseMatrixd')
+)";
 
-  GTEST_ALLOW_UNINSTANTIATED_PARAMETERIZED_TEST(PythonTest);
+static auto linearSystem_A =
+R"(
+Returns the global system matrix as a scipy sparse matrix
 
-  /// run test list using the custom name function getTestName.
-  /// this allows to do gtest_filter=*FileName*
-  INSTANTIATE_TEST_SUITE_P(Batch,
-			  PythonTest,
-              ::testing::ValuesIn(python_tests.extract()),
-              PythonTest::getTestName);
+example:
+------------
+linear_system = root.addObject('MatrixLinearSystem', template='CompressedRowSparseMatrixd')
+matrix = linear_system.A()
+)";
 
-  TEST_P(PythonTest, all_tests) { run(GetParam()); }
+static auto linearSystem_b =
+R"(
+Returns the global system right hand side as a numpy array
 
-}
+example:
+------------
+linear_system = root.addObject('MatrixLinearSystem', template='CompressedRowSparseMatrixd')
+matrix = linear_system.b()
+)";
+
+static auto linearSystem_x =
+R"(
+Returns the global system solution vector as a numpy array
+
+example:
+------------
+linear_system = root.addObject('MatrixLinearSystem', template='CompressedRowSparseMatrixd')
+matrix = linear_system.x()
+)";
+
+} // namespace sofapython3::doc::baseCamera

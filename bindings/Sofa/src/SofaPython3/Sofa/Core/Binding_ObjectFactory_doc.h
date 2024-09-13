@@ -64,4 +64,9 @@ static auto ObjectFactory_getInstance =
     R"(
     Get the ObjectFactory singleton instance
     )";
-} /// namespace sofapython3::doc::forceField
+
+static auto ObjectFactory_dump_json =
+    R"(
+    Dump the ObjectFactory in a json string
+    )";
+} /// namespace sofapython3::doc::objectmodel

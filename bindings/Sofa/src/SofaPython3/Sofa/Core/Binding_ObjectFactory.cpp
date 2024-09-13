@@ -24,6 +24,7 @@
 #include <numeric>
 #include <sstream>
 #include <pybind11/stl.h>
+#include <sofa/core/ObjectFactoryJson.h>
 
 using sofa::core::ObjectFactory;
 namespace py { using namespace pybind11; }
@@ -221,6 +222,10 @@ void moduleAddObjectFactory(py::module &m) {
     factory.def_property_readonly_static("targets", [](const py::object &){
         return getTargets(*ObjectFactory::getInstance());
     }, doc::objectmodel::ObjectFactory_targets);
+
+    factory.def_static("dump_json", [](){
+        return sofa::core::ObjectFactoryJson::dump(ObjectFactory::getInstance());
+    }, doc::objectmodel::ObjectFactory_dump_json);
 }
 
 } /// namespace sofapython3
