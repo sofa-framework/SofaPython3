@@ -5,13 +5,12 @@ SofaRuntime
 
 .. automodule:: SofaRuntime
    
+   
 API Table of Content
 --------------------
 
 .. autosummary::
-   :toctree: generated
    :template: autosummary/base.rst
-   :recursive:
 
    importPlugin
    unloadModules

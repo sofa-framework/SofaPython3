@@ -408,10 +408,8 @@ Congratulations! You made your first SOFA scene in Python3!
 For more information on how to use the SOFA modules bindings in python, visit this page: :doc:`Modules`
 
 
-.. _fullscene:
-
-Full scene
-^^^^^^^^^^
+Full scene example
+^^^^^^^^^^^^^^^^^^
 Here is the entire code of the scene :
 
 .. code-block:: python
