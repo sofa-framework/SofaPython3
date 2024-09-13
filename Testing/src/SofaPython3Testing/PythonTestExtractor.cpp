@@ -119,6 +119,7 @@ std::vector<PythonTestData> PythonTestExtractor::extract () const
         } catch(const std::exception& e) {
             msg_error("PythonTestExtractor") << "File skipped: " << (test.path+"/"+test.filename) << msgendl
                                         << e.what();
+            list.emplace_back(PythonTestData(filepath(test.path,test.filename), "loading_", {}));
         }
     }
 
