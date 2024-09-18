@@ -47,11 +47,12 @@ PYBIND11_MAKE_OPAQUE(std::vector<sofa::core::objectmodel::BaseData*>);
 template<typename T>
 void declareVector(py::module &m, const std::string &typestr) {
     std::string std_pyclass_name = std::string("StdVector") + typestr;
-    auto v = py::bind_vector<std::vector<T>>(m, std_pyclass_name);
+    std::string std_pyclass_doc = std::string("Standard vector of ") + typestr;
+    auto v = py::bind_vector<std::vector<T>>(m, std_pyclass_name, std_pyclass_doc.c_str());
 
     std::string pyclass_name = std::string("Vector") + typestr;
-
-    py::class_<sofa::type::vector<T>> (m, pyclass_name.c_str(), v);
+    std::string pyclass_doc = std::string("Vector of ") + typestr;
+    py::class_<sofa::type::vector<T>> (m, pyclass_name.c_str(), v, pyclass_doc.c_str());
 }
 
 namespace sofapython3 {
