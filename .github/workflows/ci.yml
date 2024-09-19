@@ -83,7 +83,7 @@ jobs:
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} \
               && cd /d ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/ \
-              && bash ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.sh ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/
+              && bash ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.sh ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/"
           else
             cd ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/
             /bin/bash ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.sh ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/
