@@ -49,6 +49,20 @@ sofa_create_component_in_package_with_targets(
     TARGETS ${PROJECT_NAME}
     )
 
+option(SP3_GENERATE_STUBS "Generate stub files at install step required for auto-completion" OFF)
+if(SP3_GENERATE_STUBS)
+    if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+        set(bash_name bash)
+    else ()
+        set(bash_name /bin/bash)
+    endif ()
+    add_custom_target(GenerateStubs ALL ${bash_name} ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/generate_stubs.sh ${CMAKE_BUILD_DIR}
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/
+        COMMENT "Generating stub files"
+    )
+    add_dependencies(GenerateStubs ${PROJECT_NAME})
+endif()
+
 #if (SP3_COMPILED_AS_SOFA_SUBPROJECT)
 #    ## Python configuration file (build tree), the lib in the source dir (easier while developping .py files)
 #    file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/plugin.SofaPython3.bindings" "${CMAKE_BINARY_DIR}/${SP3_PYTHON_PACKAGES_DIRECTORY}\n")
