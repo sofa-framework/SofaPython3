@@ -36,6 +36,10 @@ void moduleAddBoundingBox(py::module& m)
 {
     py::class_<sofa::Data<BoundingBox>, sofa::core::objectmodel::BaseData,
         std::unique_ptr<sofa::Data<BoundingBox>, pybind11::nodelete> > bbox(m, "BoundingBox");
+    bbox.doc() = R"doc(
+           A box in 3D space.
+        )doc";
+
     bbox.def("getMin", [](sofa::Data<BoundingBox>& bbox) {
         py::list list;
         list.append(bbox.getValue().minBBox()[0]);

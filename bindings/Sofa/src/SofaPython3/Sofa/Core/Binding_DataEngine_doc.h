@@ -24,7 +24,7 @@ namespace sofapython3::doc::dataengine
 {
 static auto DataEngine =
         R"(
-        DataEngine is a class that computes a set of Data outputs from a set of Data inputs.
+        Class computing a set of Data outputs from a set of Data inputs
 
         It is a trampoline class that enables python implementations
         of the C++ sofa::core::DataEngine class

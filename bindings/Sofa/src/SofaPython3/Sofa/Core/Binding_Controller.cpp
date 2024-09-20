@@ -104,7 +104,7 @@ void moduleAddController(py::module &m) {
             BaseObject,
             py_shared_ptr<Controller>> f(m, "Controller",
                                          py::dynamic_attr(),
-                                         sofapython3::doc::controller::Controller);
+                                         sofapython3::doc::controller::controllerClass);
 
     f.def(py::init([](py::args& /*args*/, py::kwargs& kwargs)
           {

@@ -47,7 +47,9 @@ void bindSpringForcefield(py::module& m) {
 
     // create a python binding for the c++ class SpringForceField from SofaDeformable
     // no init binding, because creation should be done via node.addObject("SpringForceField")
-    std::string type_name = sofa::helper::NameDecoder::getTypeName<SpringForceField>();
+    std::string type_name = SpringForceField::GetClass()->className+"_"+
+                            DataType::Name();
+
     py::class_<SpringForceField,
             sofa::core::objectmodel::BaseObject,
             py_shared_ptr<SpringForceField>> s (m, type_name.c_str(), sofapython3::doc::SofaDeformable::SpringForceFieldClass);
