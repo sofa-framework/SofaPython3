@@ -79,6 +79,9 @@ jobs:
           
           #Install stubgen
           ${{ steps.sofa.outputs.python_exe }} -m pip install mypy
+
+          #Setup env 
+          echo "PYTHONPATH=$WORKSPACE_ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
           
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} \
