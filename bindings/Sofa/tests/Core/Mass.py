@@ -15,6 +15,7 @@ class Test(unittest.TestCase):
 
         root.addObject('DefaultAnimationLoop')
 
+        root.addObject('RequiredPlugin', name='Sofa.Component.StateContainer')
         root.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Backward')
         root.addObject('RequiredPlugin', name='Sofa.Component.LinearSolver.Direct')
         root.addObject('RequiredPlugin', name='Sofa.Component.Engine.Select')
