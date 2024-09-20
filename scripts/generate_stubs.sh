@@ -16,7 +16,7 @@ cd $WORK_DIR
 
 for module_name in *; do
     echo "Generating stubgen for $module_name"
-    stubgen -p $module_name --include-docstrings  --inspect-mode
+    stubgen -v -p $module_name --include-docstrings  --inspect-mode --ignore-errors
     if [ -d "./out/$module_name/" ]; then
       rsync -a ./out/$module_name/ ./$module_name/
     fi
