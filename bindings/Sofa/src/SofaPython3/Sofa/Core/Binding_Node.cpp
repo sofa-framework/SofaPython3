@@ -295,6 +295,14 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
 }
 
 /// Implement the addObject function.
+py::object addObject2(Node* self, const py::type type, const py::kwargs& kwargs)
+{
+    auto name = py::cast<std::string>(type.attr("__name__"));
+    std::cout << "PATH TO CREATE AN OBJECT OF T>YPE 2 " << name << std::endl;
+    return addObjectKwargs(self, name, kwargs);
+}
+
+/// Implement the addObject function.
 py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& kwargs)
 {
     if(py::isinstance<BaseObject*>(callable))
@@ -629,8 +637,16 @@ void moduleAddNode(py::module &m) {
     p.def(py::init(&__init__), sofapython3::doc::sofa::core::Node::init1Arg, py::arg("name"));
     p.def("init", &init, sofapython3::doc::sofa::core::Node::initSofa );
     p.def("add", &addKwargs, sofapython3::doc::sofa::core::Node::addKwargs);
-    p.def("addObject", &addObjectKwargs, sofapython3::doc::sofa::core::Node::addObjectKwargs);
-    p.def("addObject", &addObject, sofapython3::doc::sofa::core::Node::addObject, py::keep_alive<0, 2>());
+
+    {
+        py::options options;
+        options.disable_function_signatures();
+
+        p.def("addObject", &addObject2, sofapython3::doc::sofa::core::Node::addObject2);
+        p.def("addObject", &addObjectKwargs, sofapython3::doc::sofa::core::Node::addObjectKwargs);
+        p.def("addObject", &addObject, sofapython3::doc::sofa::core::Node::addObject, py::keep_alive<0, 2>());
+    }
+
     p.def("createObject", &createObject, sofapython3::doc::sofa::core::Node::createObject, py::keep_alive<0, 2>());
     p.def("hasObject", &hasObject, sofapython3::doc::sofa::core::Node::hasObject);
     p.def("getObject", &getObject, sofapython3::doc::sofa::core::Node::getObject);

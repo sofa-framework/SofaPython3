@@ -124,6 +124,36 @@ static auto addKwargs =
         )";
 
 
+static auto addObject2 =
+        R"(addObject(*args, **kwargs)
+Overloaded function.
+
+1. addObject(self: Sofa.Core.Node, arg0: str, **kwargs) -> Sofa.Core.Object
+
+
+Add an object a real type
+
+
+2. addObject(self, arg0: type[T], **kwargs) -> T
+
+
+The dirty trick
+
+
+3. addObject(self, arg0: type[T], dict) -> T
+
+
+The dirty trick to get parameters input.
+
+
+4. addObject[T](self, component_type: T, parameters: dict) -> T
+
+
+The 3.12 version of types...
+
+
+)";
+
 static auto addObjectKwargs =
         R"(
         Add an object.
