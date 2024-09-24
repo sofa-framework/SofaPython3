@@ -1,6 +1,6 @@
 /******************************************************************************
-*                              SofaPython3 plugin                             *
-*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2021 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -18,33 +18,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/core/init.h>
-#include <sofa/defaulttype/init.h>
+#pragma once
 
-#include <SofaPython3/Sofa/Types/Binding_BoundingBox.h>
-#include <SofaPython3/Sofa/Types/Binding_CompressedRowSparseMatrix.h>
-
+#include <pybind11/pybind11.h>
 
 namespace sofapython3 {
-/// The first parameter must be named the same as the module file to load.
-PYBIND11_MODULE(Types, types)
-{
-    // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
-    sofa::core::init();
-    sofa::defaulttype::init();
 
-    types.doc() = R"doc(
-           Default data types
-           -------------------------------
-
-           .. autosummary::
-               Sofa.Types.BoundingBox
-               ...
-
-       )doc";
-
-    moduleAddBoundingBox(types);
-    moduleAddCompressedRowSparseMatrix(types);
-}
+void moduleAddCompressedRowSparseMatrix(pybind11::module& m);
 
 }  // namespace sofapython3
