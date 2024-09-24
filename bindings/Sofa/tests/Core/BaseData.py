@@ -248,6 +248,8 @@ class Test(unittest.TestCase):
         self.assertRaises(ValueError, (lambda c: t(c)), color)
 
     def test_DataAsContainerNumpyArray_testIsDirtyOnDoubleAccess_(self):
+        SofaRuntime.importPlugin("Sofa.Component.Topology.Container.Dynamic")
+        
         root = create_scene("rootNode")
 
         root.addObject("PointSetTopologyContainer", points=[[0, 0, 0], [1, 0, 0]])
