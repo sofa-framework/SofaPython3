@@ -192,10 +192,24 @@ std::string getValueTypeString(BaseData* data)
     return data->getValueTypeInfo()->name();
 }
 
+auto getPythonClassForBaseData(py::module& m)
+{
+    /// Register the BaseData binding into the pybind11 system.
+    static py::class_<BaseData, std::unique_ptr<sofa::core::objectmodel::BaseData, pybind11::nodelete>> data(m, "Data", sofapython3::doc::baseData::BaseDataClass);
+    return data;
+}
+
+void moduleForwardAddBaseData(py::module& m)
+{
+    getPythonClassForBaseData(m);
+}
+
 void moduleAddBaseData(py::module& m)
 {
     /// Register the BaseData binding into the pybind11 system.
-    py::class_<BaseData, std::unique_ptr<sofa::core::objectmodel::BaseData, pybind11::nodelete>> data(m, "Data", sofapython3::doc::baseData::BaseDataClass);
+    //py::class_<BaseData, std::unique_ptr<sofa::core::objectmodel::BaseData, pybind11::nodelete>> data(m, "Data", sofapython3::doc::baseData::BaseDataClass);
+
+    auto data =getPythonClassForBaseData(m);
     data.def("getName", [](BaseData& b){ return b.getName(); }, sofapython3::doc::baseData::getName);
     data.def("setName", [](BaseData& b, const std::string& s){ b.setName(s); }, sofapython3::doc::baseData::setName);
     data.def("getCounter", [](BaseData& self) { return self.getCounter(); }, sofapython3::doc::baseData::getCounter);

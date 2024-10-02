@@ -161,7 +161,6 @@ import Sofa.Helper
 import Sofa.Core
 import Sofa.Simulation
 import Sofa.Types
-import Sofa.Components
 import SofaTypes
 
 from .prefab import *
