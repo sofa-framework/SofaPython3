@@ -67,6 +67,8 @@ using sofa::core::objectmodel::BaseObjectDescription;
 #include <queue>
 #include <sofa/core/objectmodel/Link.h>
 
+#include <regex>
+
 // These two lines are there to handle deprecated version of pybind.
 SOFAPYTHON3_BIND_ATTRIBUTE_ERROR()
 SOFAPYTHON3_ADD_PYBIND_TYPE_FOR_OLD_VERSION()
@@ -294,7 +296,6 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
     return PythonFactory::toPython(object.get());
 }
 
-/// Implement the addObject function.
 py::object addObject2(Node* self, const py::type type, const py::kwargs& kwargs)
 {
     auto name = py::cast<std::string>(type.attr("__name__"));
@@ -613,69 +614,270 @@ void sendEvent(Node* self, py::object pyUserData, char* eventName)
     sofapython3::PythonScriptEvent event(self, eventName, pyUserData);
     self->propagateEvent(sofa::core::execparams::defaultInstance(), &event);
 }
-
 }
 
-void moduleAddNode(py::module &m) {
-    /// Register the complete parent-child relationship between Base and Node to the pybind11
-    /// typing system.
-    py::class_<sofa::core::objectmodel::BaseNode,
-            sofa::core::objectmodel::Base,
-            py_shared_ptr<sofa::core::objectmodel::BaseNode>>(m, "BaseNode");
 
-    py::class_<Node, sofa::core::objectmodel::BaseNode,
-            sofa::core::objectmodel::Context, py_shared_ptr<Node>>
-            p(m, "Node", sofapython3::doc::sofa::core::Node::Class);
-
-    PythonFactory::registerType<sofa::simulation::graph::DAGNode>(
-                [](sofa::core::objectmodel::Base* object)
+/// Implement the addObject function.
+template<typename T>
+class PythonMethod
+{
+public:
+    PythonMethod(std::function<T> cb)
     {
-        return py::cast(dynamic_cast<Node*>(object->toBaseNode()));
-    });
+        function = cb;
+    }
+    std::string signature = "def addObject(int, char*) -> T";
+    std::string docstring = "Adding an object";
+    std::function<T> function;
+};
 
-    p.def(py::init(&__init__noname), sofapython3::doc::sofa::core::Node::init);
-    p.def(py::init(&__init__), sofapython3::doc::sofa::core::Node::init1Arg, py::arg("name"));
-    p.def("init", &init, sofapython3::doc::sofa::core::Node::initSofa );
-    p.def("add", &addKwargs, sofapython3::doc::sofa::core::Node::addKwargs);
+PythonMethod<decltype(addObjectKwargs)> addObject1 { &addObjectKwargs };
 
+template<class T>
+class def_method;
+
+//template<typename T>
+//PyOverride<T> def_override(T& classI, const std::string& name_)
+//{
+//    PyOverride<T> tmp {classI, name_ };
+//    return tmp;
+//}
+
+template<typename Class>
+class def_method
+{
+public:
+    std::stringstream tmp;
+    int i=1;
+    Class classInstance;
+    py::options options;
+    std::string name;
+    std::string previous;
+    std::vector<std::string> signatures;
+    std::vector<std::string> docstrings;
+public:
+    def_method(Class classI, const std::string& name_) :
+        classInstance(classI), name(name_)
     {
-        py::options options;
-        options.disable_function_signatures();
-
-        p.def("addObject", &addObject2, sofapython3::doc::sofa::core::Node::addObject2);
-        p.def("addObject", &addObjectKwargs, sofapython3::doc::sofa::core::Node::addObjectKwargs);
-        p.def("addObject", &addObject, sofapython3::doc::sofa::core::Node::addObject, py::keep_alive<0, 2>());
     }
 
-    p.def("createObject", &createObject, sofapython3::doc::sofa::core::Node::createObject, py::keep_alive<0, 2>());
-    p.def("hasObject", &hasObject, sofapython3::doc::sofa::core::Node::hasObject);
-    p.def("getObject", &getObject, sofapython3::doc::sofa::core::Node::getObject);
-    p.def("addChild", &addChildKwargs, sofapython3::doc::sofa::core::Node::addChildKwargs);
-    p.def("addChild", &addChild, sofapython3::doc::sofa::core::Node::addChild, py::keep_alive<0, 2>());
-    p.def("createChild", &createChild, sofapython3::doc::sofa::core::Node::createChild, py::keep_alive<0, 2>());
-    p.def("getChild", &getChild, sofapython3::doc::sofa::core::Node::getChild);
-    p.def("removeChild", &removeChild, sofapython3::doc::sofa::core::Node::removeChild);
-    p.def("removeChild", &removeChildByName, sofapython3::doc::sofa::core::Node::removeChildWithName);
-    p.def("getRoot", &getRoot, sofapython3::doc::sofa::core::Node::getRoot);
-    p.def("getPathName", &Node::getPathName, sofapython3::doc::sofa::core::Node::getPathName);
-    p.def("getLinkPath", &getLinkPath, sofapython3::doc::sofa::core::Node::getLinkPath);
-    p.def_property_readonly("children", &property_children, sofapython3::doc::sofa::core::Node::children);
-    p.def_property_readonly("parents", &property_parents, sofapython3::doc::sofa::core::Node::parents);
-    p.def_property_readonly("objects", &property_objects, sofapython3::doc::sofa::core::Node::objects);
-    p.def("__getattr__", &__getattr__);
-    p.def("__getitem__", &__getitem__);
-    p.def("removeObject", &removeObject, sofapython3::doc::sofa::core::Node::removeObject);
-    p.def("getRootPath", &Node::getRootPath, sofapython3::doc::sofa::core::Node::getRootPath);
-    p.def("moveChild", &moveChild, sofapython3::doc::sofa::core::Node::moveChild);
-    p.def("isInitialized", &Node::isInitialized, sofapython3::doc::sofa::core::Node::isInitialized);
-    p.def("getAsACreateObjectParameter", &getLinkPath, sofapython3::doc::sofa::core::Node::getAsACreateObjectParameter);
-    p.def("detachFromGraph", &Node::detachFromGraph, sofapython3::doc::sofa::core::Node::detachFromGraph);
-    p.def("getMass", &getMass, sofapython3::doc::sofa::core::Node::getMass);
-    p.def("hasODESolver", &hasODESolver, sofapython3::doc::sofa::core::Node::hasODESolver);
-    p.def("getForceField", &getForceField, sofapython3::doc::sofa::core::Node::getForceField);
-    p.def("getMechanicalState", &getMechanicalState, sofapython3::doc::sofa::core::Node::getMechanicalState);
-    p.def("getMechanicalMapping", &getMechanicalMapping, sofapython3::doc::sofa::core::Node::getMechanicalMapping);
-    p.def("sendEvent", &sendEvent, sofapython3::doc::sofa::core::Node::sendEvent);
+    void parse_docstring()
+    {
+        save_docstring();
+        std::smatch m;
+        std::string last;
+        std::regex e;
+
+        if(signatures.size()==1)
+        {
+            //e = std::regex(".+");
+            return;
+        }
+
+        int idx = 0;
+        std::cout << previous << std::endl;
+        e = std::regex("(\\d+\\D )(.*)");
+        while (std::regex_search (previous, m,e))
+        {
+            for (auto x:m){
+                last = x;
+                std::cout << "Mathc " << last << std::endl;
+            }
+            signatures[idx] = last;
+            if(idx>0)
+                docstrings[idx-1] = m.prefix().str();
+            idx++;
+            previous = m.suffix().str();
+
+            e = std::regex("("+std::to_string(idx+1)+". )("+name+".*)");
+        }
+        if(!previous.empty())
+            docstrings[idx] = m.prefix().str();
+    }
+
+    template<typename T>
+    def_method& add_override(T function, const std::string& docstring)
+    {
+        i++;
+        classInstance.def(name.c_str(), function, docstring.c_str());
+
+        save_docstring();
+
+        std::smatch m;
+        std::string last;
+        std::regex e;
+        if(i==2)
+            e =std::regex(".+");
+        else
+            e = std::regex("(\\d+\\D )(.*)");
+
+        while (std::regex_search (previous,m,e))
+        {
+            for (auto x:m)
+                last = x;
+            //std::cout << "PREFIX IS " << m.prefix().str() << std::endl;
+            previous = m.suffix().str();
+        }
+
+        signatures.push_back("");
+        docstrings.push_back("");
+
+        build_and_patch_docstring();
+
+        return *this;
+    }
+
+    template<typename T>
+    def_method& add_override(const std::string& signature, T function, const std::string& docstring)
+    {
+        i++;
+        classInstance.def(name.c_str(), function, docstring.c_str());
+
+        signatures.push_back(signature);
+        docstrings.push_back("");
+
+        build_and_patch_docstring();
+        return *this;
+    }
+
+    void set()
+    {
+        parse_docstring();
+        build_and_patch_docstring();
+    }
+
+    void save_docstring(){
+        // get the raw python object out of the classInstance
+        auto method = classInstance.attr(name.c_str()).ptr();
+        // if it is an instance method get the raw CFunction
+        if(Py_TYPE(method) == &PyInstanceMethod_Type){
+            method = ((PyInstanceMethodObject*)(method))->func;
+        }
+        // if it is a CFunction, get its docstring
+        if(Py_TYPE(method) == &PyCFunction_Type){
+            auto cmethod = (PyCFunctionObject*)method;
+            previous = std::string(cmethod->m_ml->ml_doc);
+        }
+    }
+
+    void build_and_patch_docstring()
+    {
+        std::stringstream tmp;
+        if(signatures.size() == 1)
+        {
+            tmp << signatures[0] << "\n\n";
+            tmp << docstrings[0] << "\n\n";
+        }
+        else
+        {
+            tmp << name <<"(*args, **kwargs)\n";
+            tmp << "Overloaded function.\n\n";
+        }
+        for(unsigned int i=0;i<docstrings.size();i++)
+        {
+            tmp << (i+1) << ". " << signatures[i] << "\n\n";
+            tmp << docstrings[i] << "\n\n";
+        }
+        replace_docstring(tmp.str());
+    }
+
+
+    void replace_docstring(const std::string& docstring){
+        // get the raw python object out of the classInstance
+        auto method = classInstance.attr(name.c_str()).ptr();
+        // if it is an instance method get the raw CFunction
+        if(Py_TYPE(method) == &PyInstanceMethod_Type){
+            method = ((PyInstanceMethodObject*)(method))->func;
+        }
+        // if it is a CFunction, get its docstring
+        if(Py_TYPE(method) == &PyCFunction_Type){
+            auto cmethod = (PyCFunctionObject*)method;
+            cmethod->m_ml->ml_doc = strdup(docstring.c_str());
+        }
+    }
+
+};
+
+void moduleAddNode(py::module &m) {
+    {
+        /// Register the complete parent-child relationship between Base and Node to the pybind11
+        /// typing system.
+        py::class_<sofa::core::objectmodel::BaseNode,
+                sofa::core::objectmodel::Base,
+                py_shared_ptr<sofa::core::objectmodel::BaseNode>>(m, "BaseNode");
+
+        py::class_<Node, sofa::core::objectmodel::BaseNode,
+                sofa::core::objectmodel::Context, py_shared_ptr<Node>>
+                p(m, "Node", sofapython3::doc::sofa::core::Node::Class);
+
+        PythonFactory::registerType<sofa::simulation::graph::DAGNode>(
+                    [](sofa::core::objectmodel::Base* object)
+        {
+            return py::cast(dynamic_cast<Node*>(object->toBaseNode()));
+        });
+
+        p.def(py::init(&__init__noname), sofapython3::doc::sofa::core::Node::init);
+        p.def(py::init(&__init__), sofapython3::doc::sofa::core::Node::init1Arg, py::arg("name"));
+        p.def("init", &init, sofapython3::doc::sofa::core::Node::initSofa );
+        p.def("add", &addKwargs, sofapython3::doc::sofa::core::Node::addKwargs);
+
+        def_method(p, "addObject")
+                .add_override(addObjectKwargs, sofapython3::doc::sofa::core::Node::addObjectKwargs)
+                .add_override(addObject, sofapython3::doc::sofa::core::Node::addObject)
+                .add_override("def addObject1[T]() -> T", addObjectKwargs, "Magic function")
+                .add_override(addObjectKwargs,"An other one")
+                .set();
+
+        //    p.def("addObject", &addObjectKwargs);
+        //    auto method = p.attr("addObject").ptr();
+        //    if(Py_TYPE(method) == &PyInstanceMethod_Type){
+        //        method = ((PyInstanceMethodObject*)(method))->func;
+        //    }
+        //    if(Py_TYPE(method) == &PyCFunction_Type){
+        //        auto cmethod = (PyCFunctionObject*)method;
+        //        std::cout<< "STEP 1: " << cmethod->m_ml->ml_doc << std::endl;;
+        //    }
+
+        //    p.def("addObject", &addObject, py::keep_alive<0, 2>());
+        //    method = p.attr("addObject").ptr();
+        //    if(Py_TYPE(method) == &PyInstanceMethod_Type){
+        //        method = ((PyInstanceMethodObject*)(method))->func;
+        //    }
+        //    if(Py_TYPE(method) == &PyCFunction_Type){
+        //        auto cmethod = (PyCFunctionObject*)method;
+        //        std::cout<< "STEP 2: " << cmethod->m_ml->ml_doc << std::endl;;
+        //    }
+
+        p.def("createObject", &createObject, sofapython3::doc::sofa::core::Node::createObject, py::keep_alive<0, 2>());
+        p.def("hasObject", &hasObject, sofapython3::doc::sofa::core::Node::hasObject);
+        p.def("getObject", &getObject, sofapython3::doc::sofa::core::Node::getObject);
+        p.def("addChild", &addChildKwargs, sofapython3::doc::sofa::core::Node::addChildKwargs);
+        p.def("addChild", &addChild, sofapython3::doc::sofa::core::Node::addChild, py::keep_alive<0, 2>());
+        p.def("createChild", &createChild, sofapython3::doc::sofa::core::Node::createChild, py::keep_alive<0, 2>());
+        p.def("getChild", &getChild, sofapython3::doc::sofa::core::Node::getChild);
+        p.def("removeChild", &removeChild, sofapython3::doc::sofa::core::Node::removeChild);
+        p.def("removeChild", &removeChildByName, sofapython3::doc::sofa::core::Node::removeChildWithName);
+        p.def("getRoot", &getRoot, sofapython3::doc::sofa::core::Node::getRoot);
+        p.def("getPathName", &Node::getPathName, sofapython3::doc::sofa::core::Node::getPathName);
+        p.def("getLinkPath", &getLinkPath, sofapython3::doc::sofa::core::Node::getLinkPath);
+        p.def_property_readonly("children", &property_children, sofapython3::doc::sofa::core::Node::children);
+        p.def_property_readonly("parents", &property_parents, sofapython3::doc::sofa::core::Node::parents);
+        p.def_property_readonly("objects", &property_objects, sofapython3::doc::sofa::core::Node::objects);
+        p.def("__getattr__", &__getattr__);
+        p.def("__getitem__", &__getitem__);
+        p.def("removeObject", &removeObject, sofapython3::doc::sofa::core::Node::removeObject);
+        p.def("getRootPath", &Node::getRootPath, sofapython3::doc::sofa::core::Node::getRootPath);
+        p.def("moveChild", &moveChild, sofapython3::doc::sofa::core::Node::moveChild);
+        p.def("isInitialized", &Node::isInitialized, sofapython3::doc::sofa::core::Node::isInitialized);
+        p.def("getAsACreateObjectParameter", &getLinkPath, sofapython3::doc::sofa::core::Node::getAsACreateObjectParameter);
+        p.def("detachFromGraph", &Node::detachFromGraph, sofapython3::doc::sofa::core::Node::detachFromGraph);
+        p.def("getMass", &getMass, sofapython3::doc::sofa::core::Node::getMass);
+        p.def("hasODESolver", &hasODESolver, sofapython3::doc::sofa::core::Node::hasODESolver);
+        p.def("getForceField", &getForceField, sofapython3::doc::sofa::core::Node::getForceField);
+        p.def("getMechanicalState", &getMechanicalState, sofapython3::doc::sofa::core::Node::getMechanicalState);
+        p.def("getMechanicalMapping", &getMechanicalMapping, sofapython3::doc::sofa::core::Node::getMechanicalMapping);
+        p.def("sendEvent", &sendEvent, sofapython3::doc::sofa::core::Node::sendEvent);
+    }
 
 }
 } /// namespace sofapython3
