@@ -61,13 +61,12 @@ using sofapython3::PythonEnvironment;
 #include <SofaPython3/Sofa/Core/Binding_PythonScriptEvent.h>
 
 #include <SofaPython3/SpellingSuggestionHelper.h>
+#include <SofaPython3/PyBindHelper.h>
 
 using sofa::core::objectmodel::BaseObjectDescription;
 
 #include <queue>
 #include <sofa/core/objectmodel/Link.h>
-
-#include <regex>
 
 // These two lines are there to handle deprecated version of pybind.
 SOFAPYTHON3_BIND_ATTRIBUTE_ERROR()
@@ -296,10 +295,9 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
     return PythonFactory::toPython(object.get());
 }
 
-py::object addObject2(Node* self, const py::type type, const py::kwargs& kwargs)
+py::object addObjectGenericType(Node* self, const py::type type, const py::kwargs& kwargs)
 {
     auto name = py::cast<std::string>(type.attr("__name__"));
-    std::cout << "PATH TO CREATE AN OBJECT OF T>YPE 2 " << name << std::endl;
     return addObjectKwargs(self, name, kwargs);
 }
 
@@ -616,188 +614,6 @@ void sendEvent(Node* self, py::object pyUserData, char* eventName)
 }
 }
 
-
-/// Implement the addObject function.
-template<typename T>
-class PythonMethod
-{
-public:
-    PythonMethod(std::function<T> cb)
-    {
-        function = cb;
-    }
-    std::string signature = "def addObject(int, char*) -> T";
-    std::string docstring = "Adding an object";
-    std::function<T> function;
-};
-
-PythonMethod<decltype(addObjectKwargs)> addObject1 { &addObjectKwargs };
-
-template<class T>
-class def_method;
-
-//template<typename T>
-//PyOverride<T> def_override(T& classI, const std::string& name_)
-//{
-//    PyOverride<T> tmp {classI, name_ };
-//    return tmp;
-//}
-
-template<typename Class>
-class def_method
-{
-public:
-    std::stringstream tmp;
-    int i=1;
-    Class classInstance;
-    py::options options;
-    std::string name;
-    std::string previous;
-    std::vector<std::string> signatures;
-    std::vector<std::string> docstrings;
-public:
-    def_method(Class classI, const std::string& name_) :
-        classInstance(classI), name(name_)
-    {
-    }
-
-    void parse_docstring()
-    {
-        save_docstring();
-        std::smatch m;
-        std::string last;
-        std::regex e;
-
-        if(signatures.size()==1)
-        {
-            //e = std::regex(".+");
-            return;
-        }
-
-        int idx = 0;
-        std::cout << previous << std::endl;
-        e = std::regex("(\\d+\\D )(.*)");
-        while (std::regex_search (previous, m,e))
-        {
-            for (auto x:m){
-                last = x;
-                std::cout << "Mathc " << last << std::endl;
-            }
-            signatures[idx] = last;
-            if(idx>0)
-                docstrings[idx-1] = m.prefix().str();
-            idx++;
-            previous = m.suffix().str();
-
-            e = std::regex("("+std::to_string(idx+1)+". )("+name+".*)");
-        }
-        if(!previous.empty())
-            docstrings[idx] = m.prefix().str();
-    }
-
-    template<typename T>
-    def_method& add_override(T function, const std::string& docstring)
-    {
-        i++;
-        classInstance.def(name.c_str(), function, docstring.c_str());
-
-        save_docstring();
-
-        std::smatch m;
-        std::string last;
-        std::regex e;
-        if(i==2)
-            e =std::regex(".+");
-        else
-            e = std::regex("(\\d+\\D )(.*)");
-
-        while (std::regex_search (previous,m,e))
-        {
-            for (auto x:m)
-                last = x;
-            //std::cout << "PREFIX IS " << m.prefix().str() << std::endl;
-            previous = m.suffix().str();
-        }
-
-        signatures.push_back("");
-        docstrings.push_back("");
-
-        build_and_patch_docstring();
-
-        return *this;
-    }
-
-    template<typename T>
-    def_method& add_override(const std::string& signature, T function, const std::string& docstring)
-    {
-        i++;
-        classInstance.def(name.c_str(), function, docstring.c_str());
-
-        signatures.push_back(signature);
-        docstrings.push_back("");
-
-        build_and_patch_docstring();
-        return *this;
-    }
-
-    void set()
-    {
-        parse_docstring();
-        build_and_patch_docstring();
-    }
-
-    void save_docstring(){
-        // get the raw python object out of the classInstance
-        auto method = classInstance.attr(name.c_str()).ptr();
-        // if it is an instance method get the raw CFunction
-        if(Py_TYPE(method) == &PyInstanceMethod_Type){
-            method = ((PyInstanceMethodObject*)(method))->func;
-        }
-        // if it is a CFunction, get its docstring
-        if(Py_TYPE(method) == &PyCFunction_Type){
-            auto cmethod = (PyCFunctionObject*)method;
-            previous = std::string(cmethod->m_ml->ml_doc);
-        }
-    }
-
-    void build_and_patch_docstring()
-    {
-        std::stringstream tmp;
-        if(signatures.size() == 1)
-        {
-            tmp << signatures[0] << "\n\n";
-            tmp << docstrings[0] << "\n\n";
-        }
-        else
-        {
-            tmp << name <<"(*args, **kwargs)\n";
-            tmp << "Overloaded function.\n\n";
-        }
-        for(unsigned int i=0;i<docstrings.size();i++)
-        {
-            tmp << (i+1) << ". " << signatures[i] << "\n\n";
-            tmp << docstrings[i] << "\n\n";
-        }
-        replace_docstring(tmp.str());
-    }
-
-
-    void replace_docstring(const std::string& docstring){
-        // get the raw python object out of the classInstance
-        auto method = classInstance.attr(name.c_str()).ptr();
-        // if it is an instance method get the raw CFunction
-        if(Py_TYPE(method) == &PyInstanceMethod_Type){
-            method = ((PyInstanceMethodObject*)(method))->func;
-        }
-        // if it is a CFunction, get its docstring
-        if(Py_TYPE(method) == &PyCFunction_Type){
-            auto cmethod = (PyCFunctionObject*)method;
-            cmethod->m_ml->ml_doc = strdup(docstring.c_str());
-        }
-    }
-
-};
-
 void moduleAddNode(py::module &m) {
     {
         /// Register the complete parent-child relationship between Base and Node to the pybind11
@@ -822,31 +638,9 @@ void moduleAddNode(py::module &m) {
         p.def("add", &addKwargs, sofapython3::doc::sofa::core::Node::addKwargs);
 
         def_method(p, "addObject")
-                .add_override(addObjectKwargs, sofapython3::doc::sofa::core::Node::addObjectKwargs)
-                .add_override(addObject, sofapython3::doc::sofa::core::Node::addObject)
-                .add_override("def addObject1[T]() -> T", addObjectKwargs, "Magic function")
-                .add_override(addObjectKwargs,"An other one")
-                .set();
-
-        //    p.def("addObject", &addObjectKwargs);
-        //    auto method = p.attr("addObject").ptr();
-        //    if(Py_TYPE(method) == &PyInstanceMethod_Type){
-        //        method = ((PyInstanceMethodObject*)(method))->func;
-        //    }
-        //    if(Py_TYPE(method) == &PyCFunction_Type){
-        //        auto cmethod = (PyCFunctionObject*)method;
-        //        std::cout<< "STEP 1: " << cmethod->m_ml->ml_doc << std::endl;;
-        //    }
-
-        //    p.def("addObject", &addObject, py::keep_alive<0, 2>());
-        //    method = p.attr("addObject").ptr();
-        //    if(Py_TYPE(method) == &PyInstanceMethod_Type){
-        //        method = ((PyInstanceMethodObject*)(method))->func;
-        //    }
-        //    if(Py_TYPE(method) == &PyCFunction_Type){
-        //        auto cmethod = (PyCFunctionObject*)method;
-        //        std::cout<< "STEP 2: " << cmethod->m_ml->ml_doc << std::endl;;
-        //    }
+            .add_override(addObjectKwargs, sofapython3::doc::sofa::core::Node::addObjectKwargs)
+            .add_override(addObject, sofapython3::doc::sofa::core::Node::addObject)
+            .add_override("def addObject[T]() -> T", addObjectGenericType, sofapython3::doc::sofa::core::Node::addObjectGenerictype);
 
         p.def("createObject", &createObject, sofapython3::doc::sofa::core::Node::createObject, py::keep_alive<0, 2>());
         p.def("hasObject", &hasObject, sofapython3::doc::sofa::core::Node::hasObject);
