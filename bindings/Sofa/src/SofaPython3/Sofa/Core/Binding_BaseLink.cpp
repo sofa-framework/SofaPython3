@@ -91,9 +91,21 @@ void __setattr__(py::object self, const std::string& s, py::object value)
 }
 }
 
+auto getPythonClassForBaseLink(py::module& m)
+{
+    /// Register the BaseData binding into the pybind11 system.
+    static py::class_<BaseLink> link(m, "Link", sofapython3::doc::baseLink::baseLinkClass);
+    return link;
+}
+
+void moduleForwardAddBaseLink(py::module& m)
+{
+    getPythonClassForBaseLink(m);
+}
+
 void moduleAddBaseLink(py::module& m)
 {
-    py::class_<BaseLink> link(m, "Link", sofapython3::doc::baseLink::baseLinkClass);
+    auto link = getPythonClassForBaseLink(m);
     link.def("getName", &BaseLink::getName, sofapython3::doc::baseLink::getName);
     link.def("setName", &BaseLink::setName, sofapython3::doc::baseLink::setName);
     link.def("isMultiLink", &BaseLink::isMultiLink, sofapython3::doc::baseLink::isMultiLink);
