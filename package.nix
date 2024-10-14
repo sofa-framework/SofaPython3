@@ -1,8 +1,8 @@
 {
   cmake,
   lib,
-  libsForQt5,
   python3Packages,
+  qt6Packages,
   sofa,
   stdenv,
 }:
@@ -29,8 +29,8 @@ stdenv.mkDerivation {
 
   nativeBuildInputs = [
     cmake
-    libsForQt5.libqglviewer
-    libsForQt5.wrapQtAppsHook
+    qt6Packages.libqglviewer
+    qt6Packages.wrapQtAppsHook
   ];
   propagatedBuildInputs = [
     python3Packages.pybind11
