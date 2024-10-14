@@ -393,5 +393,5 @@ def import_sofa_python_scene(path_to_scene : str):
     if not hasattr(module_name, "createScene"):
         raise Exception("Unable to find 'createScene' in module "+path_to_scene)
 
-    return foo
+    return module_name
 

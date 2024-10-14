@@ -10,7 +10,6 @@ set(SOURCE_FILES
 )
 
 set(PYTHON_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/Components/Components.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Base.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseData.py
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/BaseLink.py
