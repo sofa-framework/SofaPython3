@@ -57,6 +57,8 @@ class Test(unittest.TestCase):
 
     def test_regular_grid_tetra(self):
         SofaRuntime.importPlugin("Sofa.Component.Topology.Container.Grid")
+        SofaRuntime.importPlugin("Sofa.Component.Topology.Container.Constant")
+        SofaRuntime.importPlugin("Sofa.Component.Topology.Container.Dynamic")
         SofaRuntime.importPlugin("Sofa.Component.Topology.Mapping")
 
         root = Sofa.Core.Node("rootNode")
