@@ -20,16 +20,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1728492678,
-        "narHash": "sha256-9UTxR8eukdg+XZeHgxW5hQA9fIKHsKCdOIUycTryeVw=",
-        "owner": "NixOS",
+        "lastModified": 1728930054,
+        "narHash": "sha256-mCaSyViQyiLgZKVLpDcVacbPSNjvsBzfWnGaxvhTzs8=",
+        "owner": "nim65s",
         "repo": "nixpkgs",
-        "rev": "5633bcff0c6162b9e4b5f1264264611e950c8ec7",
+        "rev": "8e906b3e2aa2274c9d0c555393b4801d3c0badee",
         "type": "github"
       },
       "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable",
+        "owner": "nim65s",
+        "ref": "qt6-libqglviewer",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -63,11 +63,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1728665652,
-        "narHash": "sha256-x/glIS3Amec9SOP6kSuMC2eAz8QGy65/iUszPV9fKGQ=",
+        "lastModified": 1729076781,
+        "narHash": "sha256-9OWCN3gaJSmwoNtj14g+Se7U5hhoj8ZDaqvmkruDYG8=",
         "owner": "nim65s",
         "repo": "sofa",
-        "rev": "58ae0644d117aea880ed284f6cc0beb7e9802f96",
+        "rev": "8808d2463a93229cc938b1bb29f362c36ba22321",
         "type": "github"
       },
       "original": {
