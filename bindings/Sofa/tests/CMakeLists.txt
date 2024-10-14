@@ -50,7 +50,6 @@ sofa_auto_set_target_rpath(
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 
 set(DIR_BINDING_LIST
-    Components
     Core
     Helper
     Simulation
