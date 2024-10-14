@@ -285,6 +285,7 @@ class Test(unittest.TestCase):
         def test_getMechanicalMapping(self):
             root = Sofa.Core.Node("root")
             root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
+            root.addObject("RequiredPlugin", name="Sofa.Component.Mapping.Linear")
             root.addObject("MechanicalObject", name="t1")
             root.addObject("MechanicalObject", name="t2")
             mm  = root.addObject("BarycentricMapping", input="@/t1", output="@/t2")
