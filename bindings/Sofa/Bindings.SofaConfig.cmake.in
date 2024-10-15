@@ -8,7 +8,7 @@ find_package(SofaPython3 QUIET REQUIRED COMPONENTS Plugin)
 # Required by Bindings.Sofa.Helper, Bindings.Sofa.Types
 find_package(Sofa.Core QUIET REQUIRED)
 
-# Required by Bindings.Sofa.Core, Bindings.Sofa.Components
+# Required by Bindings.Sofa.Core
 find_package(Sofa.Simulation.Core QUIET REQUIRED)
 
 # Required by Bindings.Sofa.Core

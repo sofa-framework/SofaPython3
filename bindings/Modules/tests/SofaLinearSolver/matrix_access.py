@@ -1,6 +1,5 @@
 import unittest
 import Sofa.Core
-import Sofa.Components
 from Sofa import SofaLinearSolver
 
 class Test(unittest.TestCase):
