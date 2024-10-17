@@ -84,8 +84,8 @@ static auto Class =
 
              # fast access.
              n["child1.child2.dofs.position"]
-
         )";
+
 static auto init =
         R"(
         Initialize the components of this node and all the nodes which depend on it.
@@ -123,27 +123,30 @@ static auto addKwargs =
             node.add(Cube, name="MyCube"")
         )";
 
-
 static auto addObjectKwargs =
         R"(
-        Add an object.
+        Creates and add a new sofa object to the node.
         Detect the implemented interfaces and add the object to the corresponding lists.
         :param self: the node itself
-        :param type: type of the object
-        :param kwargs
-        :type self: Sofa.Simulation.Node*
-        :type type: string&
-        :type kwargs: kwargs&
+        :param typename: name of the type of the object to create
+        :param kwargs: extra parameteres to initialize the created object.
+        )";
+
+static auto addObjectGenerictype =
+        R"(
+        Creates and add a new sofa object to the node.
+        :param self: the node itself
+        :param type: the component's type to add, type's name is used as sofa factory's type name
+        :return: the created component
         )";
 
 static auto addObject =
         R"(
-        Add an object.
+        Adds an existing object to the node.
         Detect the implemented interfaces and add the object to the corresponding lists.
         :param self: the node itself
-        :param object: the object to be added
-        :type self: Sofa.Simulation.Node&
-        :type object: Sofa.Simulation.BaseObject*
+        :param object: the component to add
+        :return: the added component
         )";
 
 static auto createObject =
