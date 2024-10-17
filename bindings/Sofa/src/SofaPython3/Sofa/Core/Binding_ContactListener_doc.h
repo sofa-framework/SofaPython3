@@ -24,9 +24,9 @@ namespace sofapython3::doc::contactListener {
 
 static auto contactListenerClass =
         R"(
-        ContactListener is an API dedicated to the monitoring of two collision models.
+        Component dedicated to the monitoring of the collision information between models
 
-        :Example of use:
+        Example:
 
         .. code-block:: python
 
@@ -37,11 +37,7 @@ static auto contactListenerClass =
             root = Sofa.Core.Node("root")
             model1 = root.addObject("TriangleCollisionModel")
             model2 = root.addObject("PointCollisionModel")
-            listener = root.addObject(
-                "ContactListener",
-                collisionModel1=model1.getLinkPath(),
-                collisionModel2=model2.getLinkPath(),
-            )
+            listener = root.addObject("ContactListener", collisionModel1=model1.getLinkPath(), collisionModel2=model2.getLinkPath())
             print(listener.getNumberOfContacts())
             print(listener.getDistances())
         )";

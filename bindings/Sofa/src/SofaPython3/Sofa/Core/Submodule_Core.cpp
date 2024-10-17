@@ -60,47 +60,43 @@ namespace sofapython3
 PYBIND11_MODULE(Core, core)
 {
     core.doc() = R"doc(
-           Scene components
-           -----------------------
+        Contains the general object hierarchy and data structures
 
-           Core components
-           ^^^^^^^^^^^^^^^
+        A SOFA simulation is referred as a "scene". A scene contains several object. Each object is implemented as the
+        aggregation of components. Groups of component are grouped and organized logically using a specific container called
+        Node. Nodes are hierarchically organized in a scene graph.
+        For more, see the `SOFA lexicography <https://www.sofa-framework.org/community/doc/using-sofa/lexicography/>`_.
 
-           .. autosummary::
-               :toctree: _autosummary/_autosummary
+        Commonly used classes:
 
-               Sofa.Core.Data
-               Sofa.Core.Link
-               Sofa.Core.Node
-               Sofa.Core.RawPrefab
-               Sofa.Core.Object
-               Sofa.Core.Camera
+        .. autosummary::
+                :nosignatures:
 
-           Overridable components
-           ^^^^^^^^^^^^^^^^^^^^^^
+                Node
+                Object
+                Controller
+                ForceFieldVec3d
+                Data
 
-           .. autosummary::
-               :toctree: _autosummary/_autosummary
+        Example:
+            .. code-block:: python
 
-               Sofa.Core.Controller
-               Sofa.Core.ForceField
-               Sofa.Core.DataEngine
+                import Sofa.Core
 
+                # Create a new node
+                n = Sofa.Core.Node("MyNode")
 
-           Utilitary classes
-           ^^^^^^^^^^^^^^^^^
+                # Create a new node
+                n = Sofa.Core.Node("MyNode"")
+                # Add a child node name 'Node2'
+                n.addChild("Node2")
 
-           .. autosummary::
-               :toctree: _autosummary/_autosummary
+                # Add a mechanical component to MyNode
+                n.addObject("MechanicalObject", name="dofs")
 
-               Sofa.Core.DataDict
-               Sofa.Core.DataDictIterator
-               Sofa.Core.DataContainer
-               Sofa.Core.DataString
-               Sofa.Core.DataVectorString
-               Sofa.Core.LinkPath
-               Sofa.Core.NodeIterator
-               #Sofa.Core.WriteAccessor
+                Sofa.Simulation.init(root)
+                Sofa.Simulation.print(root)
+
        )doc";
 
     moduleAddPythonScriptEvent();

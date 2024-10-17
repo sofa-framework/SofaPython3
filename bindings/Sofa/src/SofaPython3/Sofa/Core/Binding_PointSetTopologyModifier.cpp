@@ -37,7 +37,7 @@ using namespace sofa::core::topology;
 namespace sofapython3 {
 
 void moduleAddPointSetTopologyModifier(py::module& m) {
-  py::class_<PointSetTopologyModifier, Base, py_shared_ptr<PointSetTopologyModifier>> c(m, "PointSetTopologyModifier");
+  py::class_<PointSetTopologyModifier, Base, py_shared_ptr<PointSetTopologyModifier>> c(m, "PointSetTopologyModifier", "Topology modifications associated to a set of points");
 
   /// register the PointSetTopologyModifier binding in the downcasting subsystem
   PythonFactory::registerType<PointSetTopologyModifier>([](sofa::core::objectmodel::Base* object) {

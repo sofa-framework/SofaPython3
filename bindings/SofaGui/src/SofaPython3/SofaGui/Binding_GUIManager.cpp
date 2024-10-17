@@ -32,7 +32,7 @@ namespace sofapython3 {
 
 void moduleAddGuiManager(py::module& m)
 {
-    py::class_<sofa::gui::common::GUIManager> guiManager(m, "GUIManager");
+    py::class_<sofa::gui::common::GUIManager> guiManager(m, "GUIManager", "Class managing the GUI creation, closing and its properties");
 
     /*
      * Sofa.Gui.GUIManager.ListSupportedGUI

@@ -32,7 +32,7 @@ namespace sofapython3 {
 
 void moduleAddNodeIterator(py::module &m)
 {
-    py::class_<NodeIterator> d(m, "NodeIterator");
+    py::class_<NodeIterator> d(m, "NodeIterator", "Iterator on nodes");
 
     d.def("__getitem__", [](NodeIterator& d, size_t index) -> py::object
     {

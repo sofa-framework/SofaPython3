@@ -30,6 +30,8 @@ namespace sofapython3
 
 PYBIND11_MODULE(SofaDeformable, m)
 {
+    m.doc() = "Implements linear springs between objects";
+
     moduleAddLinearSpring(m);
     moduleAddSpringForceField(m);
 }

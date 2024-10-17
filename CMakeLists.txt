@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(SofaPython3 VERSION 20.12.00)
+project(SofaPython3 VERSION 24.12.00)
 
 find_package(Sofa.Config REQUIRED)
 
