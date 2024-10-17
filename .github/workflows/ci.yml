@@ -166,6 +166,7 @@ jobs:
   build-stubgen:
     name : "Generate stubfiles"
     needs: [build-and-test]
+    runs-on: ${{ matrix.os }}
     continue-on-error: true
     steps:
       - name: Starting bash script generate-stubfiles
