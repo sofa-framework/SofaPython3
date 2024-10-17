@@ -638,11 +638,12 @@ void moduleAddNode(py::module &m) {
         p.def("add", &addKwargs, sofapython3::doc::sofa::core::Node::addKwargs);
 
         def_method(p, "addObject")
-            .add_override("addObject(self, typename: str, **kwargs) -> Sofa.Core.Object",
-                          addObjectKwargs, sofapython3::doc::sofa::core::Node::addObjectKwargs)
-            .add_override(addObject, sofapython3::doc::sofa::core::Node::addObject)
-            .add_override("addObject[T](self, type_: type, **kwargs) -> T",
-                          addObjectGenericType, sofapython3::doc::sofa::core::Node::addObjectGenerictype);
+                .add_override("addObject(self, typename: str, **kwargs) -> Sofa.Core.Object",
+                              addObjectKwargs, sofapython3::doc::sofa::core::Node::addObjectKwargs)
+                .add_override(addObject,
+                              sofapython3::doc::sofa::core::Node::addObject, py::keep_alive<0, 2>())
+                .add_override("addObject[T](self, python_type: type, **kwargs) -> T",
+                              addObjectGenericType, sofapython3::doc::sofa::core::Node::addObjectGenerictype);
 
         p.def("createObject", &createObject, sofapython3::doc::sofa::core::Node::createObject, py::keep_alive<0, 2>());
         p.def("hasObject", &hasObject, sofapython3::doc::sofa::core::Node::hasObject);
