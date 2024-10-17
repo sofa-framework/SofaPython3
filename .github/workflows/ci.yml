@@ -73,25 +73,6 @@ jobs:
             ccache -s
           fi
 
-      - name: Generate stubfiles
-        shell: bash
-        run: |
-          
-          #Install pybind11-stubgen
-          ${{ steps.sofa.outputs.python_exe }} -m pip install pybind11-stubgen
-
-          #Setup env 
-          echo "PYTHONPATH=$WORKSPACE_ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
-          
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} \
-              && cd /d ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/ \
-              && bash ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.sh ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/"
-          else
-            cd ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/
-            /bin/bash ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.sh ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/
-          fi
-
       - name: Set env vars for artifacts
         shell: bash
         run: |
@@ -181,6 +162,25 @@ jobs:
         run: |
           cd $WORKSPACE_ARTIFACT_PATH
           ./bin/Bindings.Modules.Tests${{ steps.sofa.outputs.exe }}
+
+  build-stubgen:
+    - name: Generate stubfiles
+      shell: bash
+      run: |      
+          #Install pybind11-stubgen
+          ${{ steps.sofa.outputs.python_exe }} -m pip install pybind11-stubgen
+
+          #Setup env 
+          echo "PYTHONPATH=$WORKSPACE_ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
+          
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} \
+              && cd /d ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/ \
+              && bash ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.sh ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages Sofa"
+          else
+            cd ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/
+            /bin/bash ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.sh ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages Sofa
+          fi
 
   deploy:
     name: Deploy artifacts
