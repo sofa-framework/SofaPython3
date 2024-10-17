@@ -77,8 +77,8 @@ jobs:
         shell: bash
         run: |
           
-          #Install stubgen
-          ${{ steps.sofa.outputs.python_exe }} -m pip install mypy
+          #Install pybind11-stubgen
+          ${{ steps.sofa.outputs.python_exe }} -m pip install pybind11-stubgen
 
           #Setup env 
           echo "PYTHONPATH=$WORKSPACE_ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
