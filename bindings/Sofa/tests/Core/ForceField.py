@@ -41,6 +41,7 @@ def createParticle(node, node_name, use_implicit_scheme, use_iterative_solver):
 
 def rssffScene(use_implicit_scheme=True, use_iterative_solver=True):
     node = Sofa.Core.Node("root")
+    node.addObject('DefaultAnimationLoop')
     node.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
     node.addObject("RequiredPlugin", name="Sofa.Component.LinearSolver")
     node.addObject("RequiredPlugin", name="Sofa.Component.ODESolver")
