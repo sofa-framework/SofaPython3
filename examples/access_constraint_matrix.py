@@ -33,7 +33,7 @@ def createScene(root):
     mechanical_object = root.addObject("MechanicalObject", name="defoDOF", template="Vec3d")
     root.addObject("EdgeSetGeometryAlgorithms", drawEdges=True)
     root.addObject("FixedProjectiveConstraint", indices=[0])
-    root.addObject("MeshMatrixMass", name="mass", totalMass="1e-3", lumping=True)
+    root.addObject("DiagonalMass", name="mass", totalMass="1e-3")
 
     ext = root.addChild("extensionsNode")
     ext.addObject("MechanicalObject", template="Vec1d", name="extensionsDOF")
