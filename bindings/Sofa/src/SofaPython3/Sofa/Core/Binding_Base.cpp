@@ -449,12 +449,21 @@ py::object BindingBase::setDataValues(Base& self, py::kwargs kwargs)
     return py::none();
 }
 
+auto getBaseBinding(py::module& m)
+{
+    static py::class_<Base, py_shared_ptr<Base>> base(m, "Base", py::dynamic_attr(), doc::base::BaseClass);
+    return base;
+}
+
+void moduleForwardAddBase(py::module& m)
+{
+    getBaseBinding(m);
+}
+
 void moduleAddBase(py::module &m)
 {
-    moduleForwardAddBaseData(m);
-    moduleForwardAddBaseLink(m);
+    auto base = getBaseBinding(m);
 
-    py::class_<Base, py_shared_ptr<Base>> base(m, "Base", py::dynamic_attr(), doc::base::BaseClass);
     /// set & get the name as string. The alternative is to access the data field using
     /// obj.name.value = "aName"
     base.def("getName", [](Base& b){ return b.getName(); }, sofapython3::doc::base::getName);

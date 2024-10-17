@@ -20,13 +20,12 @@
 
 #pragma once
 
-#include <pybind11/pybind11.h>
+namespace sofapython3::doc::baseclass {
 
-namespace sofapython3 {
+static auto classdocstring =
+        R"(Class hierarchy reflection base class
+This class provides information on the class and parent classes of components.
+It is created by using the SOFA_CLASS macro on each new class declaration.
+All classes deriving from Base should use the SOFA_CLASS macro within their declaration.)";
 
-/// Forward declaration in pybind11.
-/// more details in: https://github.com/sofa-framework/SofaPython3/pull/457
-void moduleForwardAddTopology(pybind11::module &m);
-void moduleAddTopology(pybind11::module &m);
-
-} // namespace sofapython3
+}

@@ -68,7 +68,9 @@ public:
     static std::string getLinkPath(sofa::core::objectmodel::Base& self);
 };
 
-
+/// Forward declaration in pybind11.
+/// more details in: https://github.com/sofa-framework/SofaPython3/pull/457
+void moduleForwardAddBase(pybind11::module& m);
 void moduleAddBase(pybind11::module& m);
 
 } /// namespace sofapython3

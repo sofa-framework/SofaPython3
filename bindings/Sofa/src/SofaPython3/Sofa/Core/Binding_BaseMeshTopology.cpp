@@ -21,6 +21,7 @@
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseContext.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseMeshTopology.h>
 #include <SofaPython3/PythonFactory.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -36,8 +37,21 @@ using namespace sofa::core::topology;
 
 namespace sofapython3 {
 
+
+auto getPythonClassForBaseMeshTopology(py::module& m)
+{
+    /// Register the BaseData binding into the pybind11 system.
+   static py::class_<BaseMeshTopology, Topology, py_shared_ptr<BaseMeshTopology>> basemesh(m, "BaseMeshTopology");
+   return basemesh;
+}
+
+void moduleForwardAddBaseMeshTopology(py::module& m)
+{
+    getPythonClassForBaseMeshTopology(m);
+}
+
 void moduleAddBaseMeshTopology(py::module& m) {
-    py::class_<BaseMeshTopology, Topology, py_shared_ptr<BaseMeshTopology>> c (m, "BaseMeshTopology");
+    auto c = getPythonClassForBaseMeshTopology(m);
 
     /// register the BaseMeshTopology binding in the downcasting subsystem
     PythonFactory::registerType<BaseMeshTopology>([](sofa::core::objectmodel::Base* object)
