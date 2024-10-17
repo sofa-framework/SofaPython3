@@ -169,7 +169,8 @@ py::dict dataAlias(const ObjectFactory::ClassEntry &self)
 
 
 void moduleAddObjectFactory(py::module &m) {
-    py::class_<ObjectFactory> factory (m, "ObjectFactory", sofapython3::doc::objectmodel::ObjectFactoryClass);
+    py::class_<ObjectFactory> factory (m, "ObjectFactory",
+                                       sofapython3::doc::objectmodel::ObjectFactoryClass);
 
     py::class_<ObjectFactory::ClassEntry> entry(m, "ClassEntry", sofapython3::doc::objectmodel::ClassEntryClass);
     entry.def_property_readonly("className", &className);

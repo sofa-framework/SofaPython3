@@ -1,7 +1,6 @@
 project(Bindings.Sofa)
 
 set(SOFABINDINGS_MODULE_LIST
-    Components
     Core
     Helper
     Simulation

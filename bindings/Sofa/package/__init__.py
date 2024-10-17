@@ -152,7 +152,6 @@ import Sofa.Helper
 import Sofa.Core
 import Sofa.Simulation
 import Sofa.Types
-import Sofa.Components
 import SofaTypes
 
 from .prefab import *
@@ -394,8 +393,8 @@ def import_sofa_python_scene(path_to_scene : str):
     sys.modules["module.name"] = module_name
     spec_from_location.loader.exec_module(module_name)
 
-    if not hasattr(foo, "createScene"):
+    if not hasattr(module_name, "createScene"):
         raise Exception("Unable to find 'createScene' in module "+path_to_scene)
 
-    return foo
+    return module_name
 

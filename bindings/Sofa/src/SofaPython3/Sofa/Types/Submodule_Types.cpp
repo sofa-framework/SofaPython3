@@ -22,6 +22,8 @@
 #include <sofa/defaulttype/init.h>
 
 #include <SofaPython3/Sofa/Types/Binding_BoundingBox.h>
+#include <SofaPython3/Sofa/Types/Binding_CompressedRowSparseMatrix.h>
+
 
 namespace sofapython3 {
 /// The first parameter must be named the same as the module file to load.
@@ -36,6 +38,7 @@ PYBIND11_MODULE(Types, types)
        )doc";
 
     moduleAddBoundingBox(types);
+    moduleAddCompressedRowSparseMatrix(types);
 }
 
 }  // namespace sofapython3
