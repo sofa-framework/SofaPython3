@@ -22,9 +22,8 @@
 
 #include <pybind11/pybind11.h>
 
-namespace sofapython3
-{
-namespace py { using namespace pybind11; }
+namespace sofapython3 {
 
-} ///namespace sofapython3
+void moduleAddCompressedRowSparseMatrix(pybind11::module& m);
 
+}  // namespace sofapython3
