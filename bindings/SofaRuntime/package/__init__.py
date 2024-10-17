@@ -7,7 +7,7 @@
             SofaRuntime.importPlugin("Sofa.Component.LinearSolver")
 """
 
-import SofaRuntime.SofaRuntime as cpp
+from SofaRuntime.SofaRuntime import *
 
 import Sofa
 
@@ -38,10 +38,6 @@ except:
     # some modules could be added here manually and can be modified procedurally
     # e.g. plugin's modules defined from c++
     __SofaPythonEnvironment_modulesExcludedFromReload = []
-
-def importPlugin(a):
-    """ Import a plugin"""
-    return cpp.importPlugin(a)
 
 def unloadModules():
     """ Call this function to unload python modules and to force their reload
