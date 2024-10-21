@@ -73,6 +73,37 @@ jobs:
             ccache -s
           fi
 
+      - name: Set env vars for artifacts
+        shell: bash
+        run: |
+          PROJECT_NAME="${GITHUB_REPOSITORY#*/}"
+          echo "PROJECT_NAME=$PROJECT_NAME" | tee -a $GITHUB_ENV
+          
+          ARTIFACT_VERSION="${{ steps.sofa.outputs.run_branch }}"
+          if [[ "${{ github.event.inputs.is_nightly }}" == "true" ]]; then
+            ARTIFACT_VERSION="${ARTIFACT_VERSION}-nightly"
+          fi
+          ARTIFACT_NAME="${PROJECT_NAME}_${ARTIFACT_VERSION}_python-${{ matrix.python_version }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}"
+          echo "ARTIFACT_NAME=$ARTIFACT_NAME" | tee -a $GITHUB_ENV
+      
+      - name: Set env vars for tests and stub generation
+        shell: bash
+        run: |
+          # Set env vars for tests
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            echo "$WORKSPACE_ARTIFACT_PATH/lib" >> $GITHUB_PATH
+            echo "$WORKSPACE_ARTIFACT_PATH/bin" >> $GITHUB_PATH
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            echo "SOFA_PLUGIN_PATH=$WORKSPACE_ARTIFACT_PATH/lib" | tee -a $GITHUB_ENV
+            echo "DYLD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
+          else  # Linux
+            echo "SOFA_PLUGIN_PATH=$WORKSPACE_ARTIFACT_PATH/lib" | tee -a $GITHUB_ENV
+            echo "LD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
+          fi
+          echo "PYTHONPATH=$WORKSPACE_ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
+          # Add execution right on the tests
+          chmod +x $WORKSPACE_ARTIFACT_PATH/bin/*.Tests${{ steps.sofa.outputs.exe }}
+
       - name: Build python binding and sofa stubs
         shell: bash
         run: |
@@ -91,19 +122,6 @@ jobs:
             /bin/bash ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.sh ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages Sofa
           fi
 
-      - name: Set env vars for artifacts
-        shell: bash
-        run: |
-          PROJECT_NAME="${GITHUB_REPOSITORY#*/}"
-          echo "PROJECT_NAME=$PROJECT_NAME" | tee -a $GITHUB_ENV
-          
-          ARTIFACT_VERSION="${{ steps.sofa.outputs.run_branch }}"
-          if [[ "${{ github.event.inputs.is_nightly }}" == "true" ]]; then
-            ARTIFACT_VERSION="${ARTIFACT_VERSION}-nightly"
-          fi
-          ARTIFACT_NAME="${PROJECT_NAME}_${ARTIFACT_VERSION}_python-${{ matrix.python_version }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}"
-          echo "ARTIFACT_NAME=$ARTIFACT_NAME" | tee -a $GITHUB_ENV
-
       - name: Create artifact
         uses: actions/upload-artifact@v4.4.0
         with:
@@ -115,25 +133,7 @@ jobs:
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path: ${{ env.WORKSPACE_ARTIFACT_PATH }}
-      
-      - name: Set env vars for tests
-        shell: bash
-        run: |
-          # Set env vars for tests
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            echo "$WORKSPACE_ARTIFACT_PATH/lib" >> $GITHUB_PATH
-            echo "$WORKSPACE_ARTIFACT_PATH/bin" >> $GITHUB_PATH
-          elif [[ "$RUNNER_OS" == "macOS" ]]; then
-            echo "SOFA_PLUGIN_PATH=$WORKSPACE_ARTIFACT_PATH/lib" | tee -a $GITHUB_ENV
-            echo "DYLD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
-          else  # Linux
-            echo "SOFA_PLUGIN_PATH=$WORKSPACE_ARTIFACT_PATH/lib" | tee -a $GITHUB_ENV
-            echo "LD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
-          fi
-          echo "PYTHONPATH=$WORKSPACE_ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
-          # Add execution right on the tests
-          chmod +x $WORKSPACE_ARTIFACT_PATH/bin/*.Tests${{ steps.sofa.outputs.exe }}
-      
+
       - name: Check environment for tests
         shell: bash
         run: |
