@@ -86,6 +86,18 @@ jobs:
           ARTIFACT_NAME="${PROJECT_NAME}_${ARTIFACT_VERSION}_python-${{ matrix.python_version }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}"
           echo "ARTIFACT_NAME=$ARTIFACT_NAME" | tee -a $GITHUB_ENV
       
+      - name: Create artifact
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.WORKSPACE_INSTALL_PATH }}
+
+      - name: Install artifact
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.WORKSPACE_ARTIFACT_PATH }}
+
       - name: Set env vars for tests and stub generation
         shell: bash
         run: |
@@ -121,18 +133,6 @@ jobs:
             cd ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/
             /bin/bash ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.sh ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages Sofa
           fi
-
-      - name: Create artifact
-        uses: actions/upload-artifact@v4.4.0
-        with:
-          name: ${{ env.ARTIFACT_NAME }}
-          path: ${{ env.WORKSPACE_INSTALL_PATH }}
-
-      - name: Install artifact
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: ${{ env.ARTIFACT_NAME }}
-          path: ${{ env.WORKSPACE_ARTIFACT_PATH }}
 
       - name: Check environment for tests
         shell: bash
