@@ -163,12 +163,6 @@ jobs:
           cd $WORKSPACE_ARTIFACT_PATH
           ./bin/Bindings.Modules.Tests${{ steps.sofa.outputs.exe }}
 
-  build-stubgen:
-    name : "Generate stubfiles"
-    needs: [build-and-test]
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
       - name: Starting bash script generate-stubfiles
         shell: bash
         run: |
