@@ -14,6 +14,7 @@ class Test(unittest.TestCase):
                                                      "Sofa.Component.Constraint.Projective",
                                                      "Sofa.Component.IO.Mesh",
                                                      "Sofa.Component.LinearSolver.Direct",
+                                                     "Sofa.Component.Mapping.NonLinear",
                                                      "Sofa.Component.Mapping.MappedMatrix",
                                                      "Sofa.Component.Mass",
                                                      "Sofa.Component.ODESolver.Backward",
