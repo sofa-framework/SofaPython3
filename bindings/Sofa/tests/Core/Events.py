@@ -40,6 +40,7 @@ class Test(unittest.TestCase):
         """Test the BuildConstraintSystem and SolveConstraintSystem events."""
         node = Sofa.Core.Node("root")
         node.addObject("RequiredPlugin", name="Sofa.Component.AnimationLoop")
+        node.addObject("RequiredPlugin", name="Sofa.Component.Constraint.Lagrangian.Solver")
         node.addObject("FreeMotionAnimationLoop", name="loop")
         node.addObject("GenericConstraintSolver", name="constraintSolver")
         controller = node.addObject( MyController() )
