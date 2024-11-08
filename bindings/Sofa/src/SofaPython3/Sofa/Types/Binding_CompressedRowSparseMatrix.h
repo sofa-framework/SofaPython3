@@ -24,15 +24,6 @@
 
 namespace sofapython3 {
 
-<<<<<<<< HEAD:bindings/Sofa/src/SofaPython3/Sofa/Types/Binding_CompressedRowSparseMatrix.h
 void moduleAddCompressedRowSparseMatrix(pybind11::module& m);
 
 }  // namespace sofapython3
-========
-/// Forward declaration in pybind11.
-/// more details in: https://github.com/sofa-framework/SofaPython3/pull/457
-void moduleForwardAddBaseClass(pybind11::module& m);
-void moduleAddBaseClass(pybind11::module& m);
-
-} /// namespace sofapython3
->>>>>>>> xp-component-stubgen:bindings/Sofa/src/SofaPython3/Sofa/Core/Binding_BaseClass.h
