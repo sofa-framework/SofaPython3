@@ -18,15 +18,31 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#pragma once
+#include <SofaPython3/Sofa/Core/Binding_BaseClass.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseClass_doc.h>
+#include <sofa/core/objectmodel/BaseClass.h>
 
-#include <pybind11/pybind11.h>
+namespace sofapython3
+{
+using namespace sofa::core::objectmodel;
 
-namespace sofapython3 {
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
 
-/// Forward declaration in pybind11.
-/// more details in: https://github.com/sofa-framework/SofaPython3/pull/457
-void moduleForwardAddTopology(pybind11::module &m);
-void moduleAddTopology(pybind11::module &m);
+auto getBaseClassBinding(py::module& m)
+{
+    static py::class_<BaseClass, std::unique_ptr<BaseClass, py::nodelete>> base(m, "BaseClass", doc::baseclass::classdocstring);
+    return base;
+}
 
-} // namespace sofapython3
+void moduleForwardAddBaseClass(py::module& m)
+{
+    getBaseClassBinding(m);
+}
+
+void moduleAddBaseClass(py::module &m)
+{
+    // adds here the BaseClass's binded function (if any).
+}
+
+} /// namespace sofapython3

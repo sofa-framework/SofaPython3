@@ -29,6 +29,8 @@ class BaseObject;
 namespace sofapython3 {
 
 pybind11::object getItem(const sofa::core::objectmodel::BaseObject & self, const std::string& path);
+
+void moduleForwardAddBaseObject(pybind11::module &m);
 void moduleAddBaseObject(pybind11::module &m);
 
 } /// namespace sofapython
