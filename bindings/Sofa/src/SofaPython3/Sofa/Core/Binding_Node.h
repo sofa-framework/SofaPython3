@@ -23,6 +23,7 @@
 
 namespace sofapython3 {
 
+void moduleForwardAddNode(pybind11::module& m);
 void moduleAddNode(pybind11::module &m);
 
 } /// namespace sofapython3
