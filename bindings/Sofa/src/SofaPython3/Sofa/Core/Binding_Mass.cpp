@@ -94,4 +94,10 @@ void moduleAddMass(py::module &m) {
     declare_mass<sofa::defaulttype::Rigid2dTypes>(m);
 }
 
+void moduleForwardAddBaseMass(py::module& m)
+{
+    static py::class_<sofa::core::behavior::BaseMass,
+            sofa::core::Base, py_shared_ptr<sofa::core::behavior::BaseMass>> basemass(m, "BaseMass");
+}
+
 }  // namespace sofapython3
