@@ -128,14 +128,14 @@ jobs:
           python -m pip install pybind11-stubgen
 
           #Setup env
-          echo "PYTHONPATH=$WORKSPACE_ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
+          echo "PYTHONPATH=${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages" | tee -a $GITHUB_ENV
 
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} \
               && cd /d ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/ \
               && bash ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.sh ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages Sofa"
           else
-            cd ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/
+            cd ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/artifact
             /bin/bash ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.sh ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages Sofa
           fi
 
