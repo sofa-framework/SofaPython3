@@ -135,7 +135,7 @@ jobs:
               && cd /d ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/ \
               && bash ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.sh ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages Sofa"
           else
-            cd ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/artifact
+            cd ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/
             /bin/bash ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.sh ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages Sofa
           fi
 
