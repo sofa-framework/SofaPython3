@@ -26,6 +26,8 @@ namespace sofapython3
 
 PYBIND11_MODULE(SofaConstraintSolver, m)
 {
+    m.doc() = "Implements the solver for constraint problems";
+
     moduleAddConstraintSolver(m);
 }
 

@@ -68,7 +68,6 @@ void Prefab::reinit()
 
     doReInit();
 
-    /// Beurk beurk beurk
     sofa::simulation::node::init(this);
     execute<VisualInitVisitor>(sofa::core::visual::visualparams::defaultInstance());
 }

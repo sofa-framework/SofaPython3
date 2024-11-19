@@ -23,7 +23,7 @@
 namespace sofapython3::doc::objectmodel {
 static auto ObjectFactoryClass =
     R"(
-    Main class used to register and dynamically create objects.
+    Class used to register and dynamically create objects
 
     It uses the Factory design pattern, where each class is registered in a map,
     and dynamically retrieved given the type name.
@@ -33,9 +33,7 @@ static auto ObjectFactoryClass =
     )";
 
 static auto ClassEntryClass =
-    R"(
-    Record storing information about a class
-    )";
+    R"(Record storing information about a class)";
 
 static auto ObjectFactory_getEntry =
     R"(

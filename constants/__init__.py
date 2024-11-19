@@ -1,17 +1,10 @@
 """
-Constants library
------------------
-Library for an easier keyboard interaction
+Constant library for an easier keyboard interaction.
 
-Submodules:
-  .. autosummary::
 
-    Sofa.constants.Key
-    Sofa.constants.KeyCode
-
-:Example of use:
-    The following scene creates a Controller that will print a custom message in the command line when a key is pressed,
-    using constants from Sofa.constants.Key
+Example:
+The following scene creates a Controller that will print a custom message in the command line when a key is pressed,
+using constants from Sofa.constants.Key
 
     .. code-block:: python
 
@@ -62,9 +55,9 @@ Submodules:
             def onKeyreleasedEvent(self, event):
                 print("You released a key!")
 
-        def createScene(rootNode):
-            rootNode.addObject(KeyPressedController(name = "MyController"))
-            return rootNode
+            def createScene(rootNode):
+                rootNode.addObject(KeyPressedController(name = "MyController"))
+                return rootNode
 
 """
 
