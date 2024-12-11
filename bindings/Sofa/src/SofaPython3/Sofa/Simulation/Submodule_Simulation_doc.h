@@ -47,7 +47,12 @@ static auto print =
 
 static auto init =
         R"(
-        Initialize the objects
+        Initialize the objects in the specified node
+        )";
+
+static auto initRoot =
+        R"(
+        Initialize from the root node
         )";
 
 static auto initVisual =
