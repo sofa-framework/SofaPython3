@@ -62,6 +62,7 @@ PYBIND11_MODULE(Simulation, simulation)
     simulation.def("print", [](Node* n){ sofa::simulation::node::print(n); }, sofapython3::doc::simulation::print);
     simulation.def("animate", [](Node* n, SReal dt=0.0){ sofa::simulation::node::animate(n, dt); },sofapython3::doc::simulation::animate);
     simulation.def("init", [](Node* n){ sofa::simulation::node::init(n); }, sofapython3::doc::simulation::init);
+    simulation.def("initRoot", [](Node* n){ sofa::simulation::node::initRoot(n); }, sofapython3::doc::simulation::initRoot);
     simulation.def("initVisual", [](Node* n){ n->getVisualLoop()->initStep(sofa::core::visual::VisualParams::defaultInstance()); }, sofapython3::doc::simulation::initVisual);
     simulation.def("reset", [](Node* n){ sofa::simulation::node::reset(n); }, sofapython3::doc::simulation::reset);
   
