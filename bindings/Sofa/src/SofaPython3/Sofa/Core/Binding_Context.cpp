@@ -29,7 +29,7 @@ namespace py { using namespace pybind11; }
 namespace sofapython3 {
 
 void moduleAddContext(py::module& m) {
-    py::class_<Context, BaseContext, py_shared_ptr<Context>> (m, "Context");
+    py::class_<Context, BaseContext, py_shared_ptr<Context>> (m, "Context", "Implementation of BaseContext, storing all shared parameters in Datas");
 }
 
 } // namespace sofapython3

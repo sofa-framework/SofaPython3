@@ -23,7 +23,7 @@
 namespace sofapython3::doc::mass
 {
 static auto massClass = R"(
-                         Mass is an API dedicated to the control of a mass in SOFA.
+                         Component defining the mass of an object
                          )";
 
 static constexpr const char* assembleMMatrix = R"(
