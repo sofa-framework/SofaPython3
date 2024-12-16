@@ -73,6 +73,14 @@ jobs:
             ccache -s
           fi
 
+
+      - name: Set env vars for stubfiles
+        shell: bash
+        run: |
+          #Setup env
+          echo "PYTHONPATH=$WORKSPACE_INSTALL_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
+
+
       - name: Generate stubfiles
         shell: bash
         run: |
@@ -80,16 +88,11 @@ jobs:
           #Install stubgen
           ${{ steps.sofa.outputs.python_exe }} -m pip install mypy
 
-          #Setup env 
-          OLD_PYTHONPATH=$PYTHONPATH
-          echo "PYTHONPATH=$WORKSPACE_INSTALL_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
-
-
           #For now use pybind11. This might be parametrized as an input of this action
           ${{ steps.sofa.outputs.python_exe }} ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.py -d $WORKSPACE_INSTALL_PATH/lib/python3/site-packages -m Sofa --use_pybind11
 
           #Go back to previous env
-          echo "PYTHONPATH=$OLD_PYTHONPATH" | tee -a $GITHUB_ENV
+          echo "PYTHONPATH=" | tee -a $GITHUB_ENV
 
 
 
