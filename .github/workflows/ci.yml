@@ -83,14 +83,9 @@ jobs:
           #Setup env 
           echo "PYTHONPATH=$WORKSPACE_ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
           
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            cmd //c "${{ steps.sofa.outputs.vs_vsdevcmd }} \
-              && cd /d ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/ \
-              && bash ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.sh ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/"
-          else
-            cd ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/
-            /bin/bash ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.sh ${{ env.WORKSPACE_INSTALL_PATH }}/lib/python3/site-packages/
-          fi
+          #For now use pybind11. This might be parametrized as an input of this action
+          ${{ steps.sofa.outputs.python_exe }} ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.py -d /home/paul/dev/build/sofa/lib/python3/site-packages -m Sofa --use_pybind11
+
 
       - name: Set env vars for artifacts
         shell: bash
