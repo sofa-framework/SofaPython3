@@ -81,10 +81,16 @@ jobs:
           ${{ steps.sofa.outputs.python_exe }} -m pip install mypy
 
           #Setup env 
-          echo "PYTHONPATH=$WORKSPACE_ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
-          
+          OLD_PYTHONPATH=$PYTHONPATH
+          echo "PYTHONPATH=$WORKSPACE_INSTALL_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
+
+
           #For now use pybind11. This might be parametrized as an input of this action
-          ${{ steps.sofa.outputs.python_exe }} ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.py -d /home/paul/dev/build/sofa/lib/python3/site-packages -m Sofa --use_pybind11
+          ${{ steps.sofa.outputs.python_exe }} ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.py -d $WORKSPACE_INSTALL_PATH/lib/python3/site-packages -m Sofa --use_pybind11
+
+          #Go back to previous env
+          echo "PYTHONPATH=$OLD_PYTHONPATH" | tee -a $GITHUB_ENV
+
 
 
       - name: Set env vars for artifacts
