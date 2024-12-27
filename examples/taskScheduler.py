@@ -33,7 +33,7 @@ def createScene(root):
 def main():
     root = Sofa.Core.Node("root")
     createScene(root)
-    Sofa.Simulation.init(root)
+    Sofa.Simulation.initRoot(root)
 
     for nb_threads in range(1, TaskScheduler.GetHardwareThreadsCount() + 1):
         print(f'Number of threads #{nb_threads}')

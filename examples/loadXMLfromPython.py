@@ -34,7 +34,7 @@ def main():
 
 	root = Sofa.Core.Node("root")
 	createScene(root)
-	Sofa.Simulation.init(root)
+	Sofa.Simulation.initRoot(root)
 
 	# Find out the supported GUIs
 	print ("Supported GUIs are: " + Sofa.Gui.GUIManager.ListSupportedGUI(","))
