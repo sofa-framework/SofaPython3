@@ -54,6 +54,34 @@ def pybind11_stub(module_name: str):
         writer=Writer(stub_ext=args.stub_extension),
     )
 
+# This class is used with shutil.copytree to skip already existing files in dest folder.
+class noOverrideFilter:
+    def __init__(self,fromFolder,destFolder):
+        self.fromFolder = fromFolder
+        self.destFolder = destFolder
+
+    def findDestPath(self,currentRelativeToFromPath):
+
+        absoluteFromFolder = os.path.abspath(self.fromFolder)
+
+        #here we remove the first folder because it is the output folder
+        destPath = ''
+        head = os.path.abspath(currentRelativeToFromPath)
+        while(head != absoluteFromFolder):
+            head,tail = os.path.split(head)
+            destPath = os.path.join(destPath,tail)
+
+        return os.path.abspath(os.path.join(self.destFolder,destPath))
+
+
+    def __call__(self,path, objectList):
+
+        destPath = self.findDestPath(path)
+        returnList = []
+        for obj in objectList:
+            if(os.path.isfile(os.path.join(destPath,obj))):
+                returnList.append(obj)
+        return returnList
 
 #Generate stubs using either pybind11-stubgen or mypy version of stubgen
 def generate_module_stubs(module_name, work_dir, usePybind11_stubgen = False):
@@ -90,9 +118,10 @@ def generate_component_stubs(work_dir,target_name):
     sofa_out_dir = os.path.join("out",*target_name.split('.'))
     target_dir = os.path.join(work_dir, *target_name.split('.'))
 
-
     if os.path.isdir(sofa_out_dir):
-        shutil.copytree(sofa_out_dir, target_dir, dirs_exist_ok=True)
+        #For now on we don't want no overriting of file, we thus use the parameter 'ignore=noOverrideFilter(sofa_out_dir,target_dir)' to skip files already existing in dest folder because it might brake the lib.
+        # When file merging is supported by create_sofa_stubs this will be removed because then, we will want to override the dest files because we've already did the merge
+        shutil.copytree(sofa_out_dir, target_dir, dirs_exist_ok=True, ignore=noOverrideFilter(sofa_out_dir,target_dir))
         print("Resync terminated.")
 
     shutil.rmtree("out", ignore_errors=True)
