@@ -80,13 +80,16 @@ jobs:
           #Setup env
           echo "PYTHONPATH=$WORKSPACE_INSTALL_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
 
+          echo $(ls $WORKSPACE_INSTALL_PATH/lib/)
+          echo $(ldd $WORKSPACE_INSTALL_PATH/lib/libSofa.Simulation.Graph.so)
+
 
       - name: Generate stubfiles
         shell: bash
         run: |
           
           #Install stubgen
-          ${{ steps.sofa.outputs.python_exe }} -m pip install mypy
+          ${{ steps.sofa.outputs.python_exe }} -m pip install mypy pybind11-stubgen
 
           #For now use pybind11. This might be parametrized as an input of this action
           ${{ steps.sofa.outputs.python_exe }} ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.py -d $WORKSPACE_INSTALL_PATH/lib/python3/site-packages -m Sofa --use_pybind11
