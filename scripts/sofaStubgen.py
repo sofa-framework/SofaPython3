@@ -59,7 +59,9 @@ def sofa_to_python_typename(name, short=False):
         return "object"
     elif "fixed_array" in name:
         return SofaArray
-    raise Exception("Missing type name,... ", name)
+
+    print(f"Warning: unknown type '${name}' encountered, falling back to generic object type")
+    return "object"
 
 
 def sofa_datafields_to_constructor_arguments_list(data_fields, object_name, has_template=True):
