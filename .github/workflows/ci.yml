@@ -90,10 +90,6 @@ jobs:
 
           echo "PYTHONPATH=$WORKSPACE_INSTALL_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
 
-          echo $(ls $WORKSPACE_INSTALL_PATH/lib/)
-          echo $(ldd $WORKSPACE_INSTALL_PATH/lib/libSofa.Simulation.Graph.so)
-
-
       - name: Generate stubfiles
         shell: bash
         run: |
