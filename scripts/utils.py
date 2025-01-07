@@ -7,6 +7,7 @@ import argparse
 
 
 
+
 #Method to use pybind11-stubgen
 def pybind11_stub(module_name: str):
     import logging
@@ -53,6 +54,7 @@ def pybind11_stub(module_name: str):
         writer=Writer(stub_ext=args.stub_extension),
     )
 
+
 #Generate stubs using either pybind11-stubgen or mypy version of stubgen
 def generate_module_stubs(module_name, work_dir, usePybind11_stubgen = False):
     print(f"Generating stubgen for {module_name} in {work_dir}")
@@ -85,8 +87,8 @@ def generate_component_stubs(work_dir,target_name):
     create_sofa_stubs(components, "out/")
 
 
-    sofa_out_dir = os.path.join("out",*target_name.split(.))
-    target_dir = os.path.join(work_dir, *target_name.split(.))
+    sofa_out_dir = os.path.join("out",*target_name.split('.'))
+    target_dir = os.path.join(work_dir, *target_name.split('.'))
 
 
     if os.path.isdir(sofa_out_dir):
