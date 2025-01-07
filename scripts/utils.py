@@ -85,8 +85,8 @@ def generate_component_stubs(work_dir,target_name):
     create_sofa_stubs(components, "out/")
 
 
-    sofa_out_dir = os.path.join("out", "Sofa")
-    target_dir = os.path.join(work_dir, "Sofa")
+    sofa_out_dir = os.path.join("out",*target_name.split(.))
+    target_dir = os.path.join(work_dir, *target_name.split(.))
 
 
     if os.path.isdir(sofa_out_dir):
