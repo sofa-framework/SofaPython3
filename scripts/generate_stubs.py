@@ -5,7 +5,7 @@ from utils import generate_module_stubs, generate_component_stubs
 
 def main(site_package_dir,modules_name,use_pybind11 = False):
 
-    work_dir = site_package_dir
+    work_dir = site_package_dir[0]
     modules = modules_name
 
     #Generate stubs using either pybind11-stubgen or mypy version of stubgen

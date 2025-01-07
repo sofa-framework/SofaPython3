@@ -68,8 +68,6 @@ def generate_module_stubs(module_name, work_dir, usePybind11_stubgen = False):
         generate_stubs(options)
 
     module_out_dir = os.path.join("out", module_name)
-    print(work_dir)
-    print(module_name)
     target_dir = os.path.join(work_dir, module_name)
 
 
