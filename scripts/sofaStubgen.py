@@ -60,7 +60,7 @@ def sofa_to_python_typename(name, short=False):
     elif "fixed_array" in name:
         return SofaArray
 
-    print(f"Warning: unknown type '${name}' encountered, falling back to generic object type")
+    print(f"Warning: unknown type '{name}' encountered, falling back to generic object type")
     return "object"
 
 
