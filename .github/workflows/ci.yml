@@ -98,7 +98,9 @@ jobs:
           ${{ steps.sofa.outputs.python_exe }} -m pip install mypy pybind11-stubgen
 
           #For now use pybind11. This might be parametrized as an input of this action
-          ${{ steps.sofa.outputs.python_exe }} ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.py -d $WORKSPACE_INSTALL_PATH/lib/python3/site-packages -m Sofa --use_pybind11
+          echo "Launching the stub generation with '${{ steps.sofa.outputs.python_exe }} ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.py -d $WORKSPACE_INSTALL_PATH/lib/python3/site-packages -m Sofa --use_pybind11'"
+
+          ${{ steps.sofa.outputs.python_exe }} ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.py -d "$WORKSPACE_INSTALL_PATH/lib/python3/site-packages" -m Sofa --use_pybind11
 
           #Go back to previous env
           echo "PYTHONPATH=" | tee -a $GITHUB_ENV
