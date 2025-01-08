@@ -15,7 +15,7 @@ def main():
     root = Sofa.Core.Node("root")
     # Call the below 'createScene' function to create the scene graph
     createScene(root)
-    Sofa.Simulation.init(root)
+    Sofa.Simulation.initRoot(root)
 
     if not USE_GUI:
         for iteration in range(10):

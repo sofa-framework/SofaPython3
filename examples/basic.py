@@ -12,7 +12,7 @@ def main():
     createScene(root)
 
     # Once defined, initialization of the scene graph
-    Sofa.Simulation.init(root)
+    Sofa.Simulation.initRoot(root)
 
     # Run the simulation for 10 steps
     for iteration in range(10):
