@@ -12,7 +12,7 @@ def main():
 
     root = Sofa.Core.Node("root")
     createScene(root)
-    Sofa.Simulation.init(root)
+    Sofa.Simulation.initRoot(root)
 
     if not USE_GUI:
         for iteration in range(10):

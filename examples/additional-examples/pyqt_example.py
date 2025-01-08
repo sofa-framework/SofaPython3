@@ -143,7 +143,7 @@ class SofaSim():
 
     def init_sim(self):
         # start the simulator
-        Sofa.Simulation.init(self.root)
+        Sofa.Simulation.initRoot(self.root)
 
     def step_sim(self):
         self.visuals.camera.position = self.visuals.camera.position + [-0.0002, 0, 0]

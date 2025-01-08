@@ -18,7 +18,6 @@ def createScene(root):
     ])
 
 
-
     root.addObject('DefaultAnimationLoop')
 
     surface_node = root.addChild('Surface')

@@ -15,7 +15,7 @@ def createScene(rootNode):
 
         rootNode.bbox = [[-1, -1, -1],[1,1,1]]
 
-        rootNode.addObject("RequiredPlugin", pluginName=[        'Sofa.Component.AnimationLoop',
+        rootNode.addObject("RequiredPlugin", pluginName=['Sofa.Component.AnimationLoop',
         'Sofa.Component.Collision.Detection.Algorithm',
         'Sofa.Component.Collision.Detection.Intersection',
         'Sofa.Component.Collision.Geometry',

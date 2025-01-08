@@ -100,7 +100,7 @@ def createScene(root):
 if __name__ == '__main__':
     root = Sofa.Core.Node("myroot")
     createScene(root)
-    Sofa.Simulation.init(root)
+    Sofa.Simulation.initRoot(root)
     init_display(root)
     try:
         while True:
