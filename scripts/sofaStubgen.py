@@ -31,6 +31,8 @@ def sofa_to_python_typename(name, short=False):
          "f" : "float",
          "i" : "int",
          "I" : "int",
+         "q" : "int",
+         "Q" : "int",
          "L" : "int",
          "l" : "int",
          "b" : "int",
@@ -204,18 +206,6 @@ class {class_name}(Object):
 
 {class_typehints}
 
-    @dataclasses.dataclass
-    class Parameters:
-        \"\"\"Parameter for the construction of the {class_name} component\"\"\"
-
-{params_typehints} 
-
-        def to_dict(self): 
-            return dataclasses.asdict(self)
-
-    @staticmethod
-    def new_parameters() -> Parameters: 
-        return {class_name}.Parameters()
 """
 
 def documentation_code(class_name):
