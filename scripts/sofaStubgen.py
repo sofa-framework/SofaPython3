@@ -31,6 +31,8 @@ def sofa_to_python_typename(name, short=False):
          "f" : "float",
          "i" : "int",
          "I" : "int",
+         "q" : "int",
+         "Q" : "int",
          "L" : "int",
          "l" : "int",
          "b" : "int",
