@@ -23,6 +23,7 @@
 using sofa::helper::logging::Message;
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseClass.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseContext.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
 #include <SofaPython3/Sofa/Core/Binding_DataDict.h>
@@ -44,6 +45,7 @@ using sofa::helper::logging::Message;
 #include <SofaPython3/Sofa/Core/Binding_PythonScriptEvent.h>
 #include <SofaPython3/Sofa/Core/Binding_Topology.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseMeshTopology.h>
+#include <SofaPython3/Sofa/Core/Binding_Topology.h>
 #include <SofaPython3/Sofa/Core/Binding_TaskScheduler.h>
 
 #include <SofaPython3/Sofa/Core/Data/Binding_DataString.h>
@@ -99,6 +101,27 @@ PYBIND11_MODULE(Core, core)
 
        )doc";
 
+
+
+    /// Forward declaration of a class in pybind11.
+    /// The general idea is that to avoid typeing errors in pybind11 because of -yet- to
+    /// define classes it is needed to register binded class before any use (including use
+    /// in function signature inferance)
+    /// more details in: https://github.com/sofa-framework/SofaPython3/pull/457
+    moduleForwardAddBaseClass(core);
+    moduleForwardAddBase(core);
+    moduleForwardAddBaseObject(core);
+    moduleForwardAddBaseData(core);
+    moduleForwardAddBaseLink(core);
+    moduleForwardAddTopology(core);
+    moduleForwardAddBaseMeshTopology(core);
+    moduleForwardAddBaseMass(core);
+
+    py::class_<sofa::core::behavior::BaseMechanicalState,
+            Base, py_shared_ptr<sofa::core::behavior::BaseMechanicalState>> basems(core, "BaseMechanicalState");
+
+    /// When all forward declarations in pybind11 are done we can actually fully
+    /// define the full binding.
     moduleAddPythonScriptEvent();
     moduleAddDataDict(core);
     moduleAddDataDictIterator(core);
@@ -139,7 +162,6 @@ PYBIND11_MODULE(Core, core)
 
         msg_info("SofaPython3.Core") << "Sofa.Core unload()";
     }));
-
 }
 
 } ///namespace sofapython3

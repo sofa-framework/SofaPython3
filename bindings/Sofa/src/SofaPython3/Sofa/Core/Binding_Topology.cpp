@@ -35,8 +35,17 @@ using namespace sofa::core::topology;
 
 namespace sofapython3 {
 
+auto getTopologyClass(py::module& m){
+    static py::class_<Topology, BaseObject, py_shared_ptr<Topology>> c (m, "Topology", "Compatibility topology class (against BaseMeshTopology)");
+    return c;
+}
+
+void moduleForwardAddTopology(py::module& m) {
+    getTopologyClass(m);
+}
+
 void moduleAddTopology(py::module& m) {
-    py::class_<Topology, BaseObject, py_shared_ptr<Topology>> c (m, "Topology", "Compatibility topology class (against BaseMeshTopology)");
+    getTopologyClass(m);
 }
 
 } // namespace sofapython3
