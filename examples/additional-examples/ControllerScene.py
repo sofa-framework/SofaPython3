@@ -119,7 +119,7 @@ def main():
     # Create and initialize the scene
     root = Sofa.Core.Node()
     createScene(root)
-    Sofa.Simulation.init(root)
+    Sofa.Simulation.initRoot(root)
 
     # Run simulation
     for i in range(0, 360):

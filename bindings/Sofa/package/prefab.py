@@ -1,53 +1,56 @@
+"""
+Prefabs are python templates for a SOFA scene
+"""
+
 import Sofa.Core
 import inspect
 import os
 
 
 class Prefab(Sofa.Core.RawPrefab):
-    """
-    Special Node to make reusable procedural objects in Sofa.
-    ---------------------------------------------------------
 
-    Inherit from this class to create your own Prefab. What makes Prefab special is that they 
-    have a set of special data named prefabParameters. When any of prefabParameter is changed the prefab
-    is completely recreated by calling the onParameterChanged method so the scene graph is always kept synchronized
-    with the parameter's content.
-
-    To specify the prefabParameters, it is possible to provide in the class a list of dictionaries containing the 3 required fields ("name", "type", "help")
-    and one optional field ("default").
-
-    The same syntax can be used to also add prefab's data.
-
-    Example of use:
-      .. code-block:: python
-
-        import Sofa.Core
-
-        class Foo(Sofa.Core.Prefab):
-            prefabParameters = [{ 'name': 'n', 'type': 'int', 'help': 'number of repetition, 'default': 1},
-                                {'name': 'message', 'type': 'string', 'help': 'message to display', 'default': ''}]
-
-            myAttribute = 0
-
-            def __init__(self, *a, *k):
-                Sofa.Core.Prefab.__init__(self, *a, **k)
-
-            def init(self):
-                myAttribute += 1
-                for i in range(0, self.n.value):
-                    print(self.message.value)
-
-        n = Sofa.Core.Node()
-        n.addChild(Foo(name="aFooPrefab", n=42, message="hello universe!"))
-
-    Prefab has protected the following additional keywords:
-        - "name": the name of the prefab instance
-        - "parent" and "parents": can't be used together, they set the context of the prefab,
-           thus allowing paths resolution for Prefab parameters whose arguments are passed as link paths (strings). parents (with an '-s') sets multi-node contexts
-
-
-    """
     def __init__(self, *args, **kwargs):
+        """
+        Prefabs are python templates for a SOFA scene
+
+        They allow to simplify the design of a simulation by using pre-structured and reusable python script.
+        Inherit from this class to create your own Prefab. What makes Prefab special is that they
+        have a set of special data named prefabParameters. When any of prefabParameter is changed the prefab
+        is completely recreated by calling the onParameterChanged method so the scene graph is always kept synchronized
+        with the parameter's content.
+
+        To specify the prefabParameters, it is possible to provide in the class a list of dictionaries containing the 3 required fields ("name", "type", "help")
+        and one optional field ("default").
+
+        The same syntax can be used to also add prefab's data.
+
+        Example:
+          .. code-block:: python
+
+            import Sofa.Core
+
+            class Foo(Sofa.Core.Prefab):
+                prefabParameters = [{ 'name': 'n', 'type': 'int', 'help': 'number of repetition, 'default': 1},
+                                    {'name': 'message', 'type': 'string', 'help': 'message to display', 'default': ''}]
+
+                myAttribute = 0
+
+                def __init__(self, *a, *k):
+                    Sofa.Core.Prefab.__init__(self, *a, **k)
+
+                def init(self):
+                    myAttribute += 1
+                    for i in range(0, self.n.value):
+                        print(self.message.value)
+
+            n = Sofa.Core.Node()
+            n.addChild(Foo(name="aFooPrefab", n=42, message="hello universe!"))
+
+        Prefab has protected the following additional keywords:
+            - "name" = the name of the prefab instance
+            - "parent" and "parents" = can't be used together, they set the context of the prefab, thus allowing paths resolution for Prefab parameters whose arguments are passed as link paths (strings). parents (with an '-s') sets multi-node contexts
+        """
+
         Sofa.Core.RawPrefab.__init__(self, *args, **kwargs)
         frame = inspect.currentframe().f_back
         frameinfo = inspect.getframeinfo(frame)

@@ -53,12 +53,11 @@ namespace sofapython3 {
 PYBIND11_MODULE(Gui, m) {
 
     m.doc() = R"doc(
-            Sofa.Gui
-            -----------------------
+            Controls the graphical user interface
 
-            Example of use:
-
+            Example:
                 .. code-block:: python
+
                     import Sofa.Gui
 
                     supported_gui = Sofa.Gui.GUIManager.ListSupportedGUI(",")
@@ -69,10 +68,6 @@ PYBIND11_MODULE(Gui, m) {
                     Sofa.Gui.GUIManager.MainLoop(root)
                     Sofa.Gui.GUIManager.closeGUI()
 
-
-                .. automodule:: Gui
-                    :toctree: _autosummary
-                    :members:
              )doc";
 
 #ifdef HAS_GUI_QT

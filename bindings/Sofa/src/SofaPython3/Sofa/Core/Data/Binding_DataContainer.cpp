@@ -291,7 +291,7 @@ void moduleAddDataContainer(py::module& m)
 
 void moduleAddDataContainerContext(py::module& m)
 {
-    py::class_<DataContainerContext> wa(m, "DataContainerContextManager");
+    py::class_<DataContainerContext> wa(m, "DataContainerContextManager", "Container managing context data");
     wa.def("__enter__", [](DataContainerContext& wa)
     {
         wa.data->beginEditVoidPtr();

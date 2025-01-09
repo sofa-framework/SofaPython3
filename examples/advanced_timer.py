@@ -89,7 +89,7 @@ def createScene(root):
 def main():
     root = Sofa.Core.Node("root")
     createScene(root)
-    Sofa.Simulation.init(root)
+    Sofa.Simulation.initRoot(root)
 
     # Run the simulation for 5 steps
     for iteration in range(5):

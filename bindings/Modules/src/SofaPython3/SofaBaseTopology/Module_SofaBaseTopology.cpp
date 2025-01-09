@@ -32,6 +32,8 @@ namespace sofapython3
 
 PYBIND11_MODULE(SofaBaseTopology, m)
 {
+    m.doc() = "Implements some topology component (Regular and SparseGridTopology)";
+
     sofa::component::topology::container::grid::init();
 
     moduleAddRegularGridTopology(m);

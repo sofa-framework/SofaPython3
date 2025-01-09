@@ -1,3 +1,5 @@
 mock
 sphinxcontrib-contentui
-
+sphinx-search
+sphinx-autodoc-typehints
+sphinx-rtd-theme

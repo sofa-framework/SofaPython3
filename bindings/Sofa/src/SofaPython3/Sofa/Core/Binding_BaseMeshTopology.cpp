@@ -41,7 +41,7 @@ namespace sofapython3 {
 auto getPythonClassForBaseMeshTopology(py::module& m)
 {
     /// Register the BaseData binding into the pybind11 system.
-   static py::class_<BaseMeshTopology, Topology, py_shared_ptr<BaseMeshTopology>> basemesh(m, "BaseMeshTopology");
+   static py::class_<BaseMeshTopology, Topology, py_shared_ptr<BaseMeshTopology>> basemesh(m, "BaseMeshTopology", "API providing all topology-related functions");
    return basemesh;
 }
 

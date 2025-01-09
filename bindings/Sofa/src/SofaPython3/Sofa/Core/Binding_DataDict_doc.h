@@ -24,13 +24,13 @@ namespace sofapython3::doc::dataDict {
 
 static auto Class =
         R"(
-        DataDict exposes the data of a sofa object in a way similar to a normal python dictionnary.
+        Exposes the data of a sofa object in a way similar to a normal python dictionnary
 
-        :Example:
+        Example:
             .. code-block:: python
 
                 for k,v in anObject.__data__.items():
-                print("Data name :"+k+" value:" +str(v)))
+                    print("Data name :"+k+" value:" +str(v)))
         )";
 
 static auto keys =
@@ -44,11 +44,11 @@ static auto values =
 static auto items =
         R"(
         Expose the data, both the key and the value of each item.
-        :Example:
+        Example:
             .. code-block:: python
 
                 for k,v in anObject.__data__.items():
-                print("Data name :"+k+" value:" +str(v)))
+                    print("Data name :"+k+" value:" +str(v)))
         )";
 }
 
@@ -57,7 +57,7 @@ namespace sofapython3::doc::dataDictIterator {
 static auto Class =
         R"(
 
-        Iterator reimplemented to fit dataDict.
+        Iterator reimplemented to fit dataDict
 
         )";
 }
