@@ -14,6 +14,7 @@ find_package(Sofa.Simulation.Core QUIET REQUIRED)
 # Required by Bindings.Sofa.Core
 find_package(Sofa.Component.Visual QUIET REQUIRED)
 find_package(Sofa.Component.Collision.Response.Contact QUIET REQUIRED)
+find_package(Sofa.SimpleApi QUIET REQUIRED)
 
 # Required by Bindings.Sofa.Simulation
 find_package(Sofa.Simulation.Graph QUIET REQUIRED)
