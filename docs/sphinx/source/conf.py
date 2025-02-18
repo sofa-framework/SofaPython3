@@ -71,7 +71,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'SofaPython3'
-copyright = u'2023, SOFA Framework'
+copyright = u'2025, SOFA Framework'
 author = u'consortium@sofa-framework.org'
 
 stream = os.popen("git rev-parse --abbrev-ref HEAD")
@@ -124,6 +124,7 @@ html_theme_options = {
     'display_version': True,
     'prev_next_buttons_location': 'bottom',
     'style_external_links': False,
+    'github_url':True,
 
     # Toc options
     'collapse_navigation': False,
