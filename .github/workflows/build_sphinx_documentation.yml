@@ -19,7 +19,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd docs/sphinx/
-          pip install -r source/requirements.txt  # Replace with your project's requirements file
+          pip install -r source/requirements.txt
 
       - name: Get latest release tag of the remote repository
         id: get_release
@@ -59,7 +59,7 @@ jobs:
         run: |
           cd docs/sphinx/
           mkdir build/
-          sphinx-build -b html -a -E source/ build/  # Replace with your documentation source and build directories
+          sphinx-build -b html -a -E source/ build/
 
       - name: Zip Documentation
         run: |
