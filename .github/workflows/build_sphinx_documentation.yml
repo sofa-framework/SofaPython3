@@ -1,0 +1,86 @@
+name: Build, zip and upload documentation for release
+
+on:
+  workflow_dispatch:  # This allows manual triggering
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          cd docs/sphinx/
+          pip install -r source/requirements.txt
+
+      - name: Get latest release tag of the remote repository
+        id: get_release
+        run: |
+          LATEST_RELEASE=$(curl -s https://api.github.com/repos/sofa-framework/sofa/releases/latest | jq -r .tag_name)
+          PYTHON_VERSION=$(python --version | awk '{print $2}'  | cut -d. -f1,2)
+          echo "LATEST_RELEASE=${LATEST_RELEASE}" >> $GITHUB_ENV
+          echo "PYTHON_VERSION=${PYTHON_VERSION}" >> $GITHUB_ENV
+          echo "${LATEST_RELEASE}"
+          echo "${PYTHON_VERSION}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download latest release ZIP
+        run: |
+          echo "Downloading ZIP --> https://github.com/sofa-framework/sofa/releases/download/${LATEST_RELEASE}/SOFA_${LATEST_RELEASE}_Linux-Python_${PYTHON_VERSION}.zip"
+          curl -L -o release.zip "https://github.com/sofa-framework/sofa/releases/download/${LATEST_RELEASE}/SOFA_${LATEST_RELEASE}_Linux-Python_${PYTHON_VERSION}.zip"
+          ls -lah .
+
+      - name: Unzip release
+        run: |
+          unzip release.zip -d extracted
+          mv extracted/* extracted/sofa_binaries
+          
+      - name: Check extracted files
+        run: |
+          echo "Listing extracted files:"
+          ls -lah extracted/sofa_binaries
+
+      - name: Define environment variables
+        run: |
+          echo "PYTHONPATH=${{ github.workspace }}/extracted/sofa_binaries/plugins/SofaPython3/lib/python3/site-packages"
+          echo "PYTHONPATH=${{ github.workspace }}/extracted/sofa_binaries/plugins/SofaPython3/lib/python3/site-packages" >> $GITHUB_ENV
+          ls ${{ github.workspace }}/extracted/sofa_binaries/plugins/SofaPython3/lib/python3/site-packages
+          
+      - name: Build Sphinx documentation
+        run: |
+          cd docs/sphinx/
+          mkdir build/
+          sphinx-build -b html -a -E source/ build/
+
+      - name: Zip Documentation
+        run: |
+          # Create a zip file of the documentation
+          ls -lah docs/sphinx/build/
+          cd docs/sphinx/build/
+          # Create a zip file of the documentation
+          zip -r SofaPython3_${LATEST_RELEASE}_docs.zip .
+          ls .
+
+      - name: Create tag (before release)
+        run: |
+          echo "RELEASE_TAG=${LATEST_RELEASE}-doc-generation" >> $GITHUB_ENV
+          echo "RELEASE_TAG=${LATEST_RELEASE}-doc-generation"
+            
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          files: |
+            docs/sphinx/build/SofaPython3_${{ env.LATEST_RELEASE }}_docs.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
