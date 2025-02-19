@@ -14,5 +14,6 @@ build:
   commands:
     - mkdir --parents $READTHEDOCS_OUTPUT/html/
     - wget https://github.com/sofa-framework/SofaPython3/releases/download/v24.12.00-doc-generation/SofaPython3_v24.12.00_docs.zip
-    - unzip  SofaPython3_v24.12.00_docs.zip
-    - cp --recursive build/html/* $READTHEDOCS_OUTPUT/html/
+    - mkdir docUnzipped/
+    - unzip  SofaPython3_v24.12.00_docs.zip -d docUnzipped/
+    - cp --recursive docUnzipped/* $READTHEDOCS_OUTPUT/html/
