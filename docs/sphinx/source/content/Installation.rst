@@ -30,8 +30,8 @@ First, make sure you have the same version of python installed on your computer 
 			.. code-block:: bash
 
 				sudo add-apt-repository ppa:deadsnakes/ppa
-				sudo apt install libpython3.10 python3.10 python3-pip
-				python3.10 -m pip install numpy
+				sudo apt install libpython3.12 python3.12 python3-pip
+				python3.12 -m pip install numpy
 
 			if you want to launch the runSofa:
 
@@ -46,15 +46,15 @@ First, make sure you have the same version of python installed on your computer 
 
 			.. code-block:: bash
 
-				brew install python@3.10
-				export PATH="/usr/local/opt/python@3.10/bin/:$PATH"
+				brew install python@3.12
+				export PATH="/usr/local/opt/python@3.12/bin/:$PATH"
 
 			BigSur only:
 
 			.. code-block:: bash
 
 				pip3 install --upgrade pip
-				python3.10 -m pip install numpy
+				python3.12 -m pip install numpy
 
 			Catalina only:
 
@@ -65,7 +65,7 @@ First, make sure you have the same version of python installed on your computer 
 
         .. tab:: Windows
 
-		Download and install `Python 3.10 64bit <https://www.python.org/ftp/python/3.10.10/python-3.10.10-amd64.exe>`_
+		Download and install `Python 3.12 64bit <https://www.python.org/ftp/python/3.12.1/python-3.12.1-amd64.exe>`_
 
 
 **********************
@@ -116,7 +116,7 @@ Before running your simulations, you must make sure to define the following envi
 
 				export SOFA_ROOT=/path/to/SOFA_install
 				export PYTHONPATH=/path/to/SofaPython3/lib/python3/site-packages:$PYTHONPATH
-				export PATH="/usr/local/opt/python@3.10/bin/:$PATH"
+				export PATH="/usr/local/opt/python@3.12/bin/:$PATH"
 
 
         .. tab:: Windows
