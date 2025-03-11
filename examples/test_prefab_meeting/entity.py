@@ -2,20 +2,69 @@ from typing import Callable, Optional, overload
 
 import Sofa
 import dataclasses
+                
+def addBidule(self):
+    return self.addChild("Bidule") 
 
+DEFAULT_VALUE = object()
 
-class VisualModel(Sofa.Core.BasePrefab):
-    def __init__(self, params, **kwargs):
-        Sofa.Core.Node.__init__(self, **kwargs)
+def NONE(*args, **kwargs):
+    pass
 
-    class Parameters(object):
-        enabled : bool  
-        filename : str
+def to_dict(o):
+    if isinstance(o, dict):
+        return o
+    if hasattr(o, "to_dict"):
+        return o.to_dict()
+    return {}
 
-    class DefaultParameters(object):
-        enabled : bool  
-        filename : str
+@dataclasses.dataclass
+class PrefabParameters(object): 
+    name : str = "Prefab"
+    kwargs : dict = dataclasses.field(default_factory=dict)
 
+    def __getattr__(self, name: str) :
+        if name == "__getstate__":
+            getattr(PrefabParameters, "__getstate__")
+        if name == "__setstate__":
+            getattr(PrefabParameters, "__setstate__")
+
+        try: 
+            a =  self.__getattribute__(name)
+        except Exception as e: 
+            return NONE
+        return a
+
+    def to_dict(self):
+        return dataclasses.asdict(self)
+
+@dataclasses.dataclass
+class VisualModelParameters(PrefabParameters):
+    name : str = "VisualModel"
+
+    filename : str = "mesh/sphere_02.obj"
+    
+    renderer : dict = dataclasses.field(default_factory=dict)
+    mapping : dict = dataclasses.field(default_factory=dict)
+
+class VisualModel(Sofa.Core.Node):
+     
+    def __init__(self, parent=None, parameters : VisualModelParameters = VisualModelParameters()):
+        Sofa.Core.Node.__init__(self, name=parameters.name)
+
+        if parent != None:
+            parent.addChild(self)
+
+        self.addObject("MeshOBJLoader", name="loader", filename=parameters.filename)
+        self.addRenderer(**to_dict(parameters.renderer) | {"src" : "@loader"} )
+        self.addMapping(**to_dict(parameters.mapping) )
+
+    def addRenderer(self, **kwargs):
+        self.addObject("OglModel", name="renderer", **kwargs)
+
+    def addMapping(self, **kwargs):
+        self.addObject("RigidMapping", name="mapping", **kwargs)
+        
 class CollisionModel(Sofa.Core.BasePrefab):
     def __init__(self, params, **kwargs):
         Sofa.Core.Node.__init__(self, **kwargs)
@@ -33,27 +82,35 @@ class MechanicalObject(Sofa.Core.Object):
         def to_dict(self):
             return dataclasses.asdict(self)
 
+
+@dataclasses.dataclass
+class SimulationParameters(PrefabParameters):
+    name : str = "Simulation"
+    iterations : Optional[int] = None 
+    template: Optional[str] = None 
+    solver : dict = dataclasses.field(default_factory=dict)
+    integration : dict = dataclasses.field(default_factory=dict)
+
+    def to_dict(self):
+        return self.asdict() 
+
+class Simulation(Sofa.Core.Node):
+    solver : Sofa.Core.Object 
+    integration : Sofa.Core.Object
+    iterations : int
+
+    def __init__(self, parent : Sofa.Core.Node = None, parameters : SimulationParameters = SimulationParameters()):
+        Sofa.Core.Node.__init__(self, name=parameters.name)
+        if parent is not None:
+            parent.addChild(self)
+    
+        if parameters.iterations != NONE and "iterations" in parameters.solver:
+            raise Exception("Cannot set direct attribute and internal hack... ")
+
+        self.addObject("EulerImplicitSolver", name = "integration", **to_dict(parameters.integration))
+        self.addObject("CGLinearSolver", name = "solver", iterations=parameters.iterations, **to_dict(parameters.solver))
         
-def addBidule(self):
-    return self.addChild("Bidule") 
 
-
-class Entity(Sofa.Core.Prefab):
-    def __init__(self, **kwargs):
-        self.addChild(VisualModel(**kwargs), name="visual")
-        self.addChild(CollisionModel(**kwargs), name="visual")
-
-    def addConstitutiveLaw(self):
-        pass 
-
-    def addSolver(self):
-        pass 
-
-DEFAULT_VALUE = object()
-
-def addSolver(node : Sofa.Core.Node, template=DEFAULT_VALUE, numiterations=DEFAULT_VALUE, **kwargs):
-    node.addObject("ODESolver", name = "integrationscheme",numiterations = numiterations, **kwargs)
-    node.addObject("LinearSolver", name = "numericalsolver", template=DEFAULT_VALUE, **kwargs)
 
 #@dataclasses.dataclass
 #class Solver(object):
@@ -61,105 +118,71 @@ def addSolver(node : Sofa.Core.Node, template=DEFAULT_VALUE, numiterations=DEFAU
 #    numericalsolver : str
 
 @dataclasses.dataclass
-class SolverParameters(object):
-    numiteration : int | object = DEFAULT_VALUE
-    template: str | object = DEFAULT_VALUE
+class EntityParameters(PrefabParameters): 
+        name : str = "Entity"
 
-    kwargs : dict = {"intergrato"} 
+        addSimulation : Callable = Simulation
+        addCollisionModel : Callable = CollisionModel
+        addVisualModel : Callable = VisualModel 
 
-    def to_dict(self):
-        return self.asdict() | self.kwargs
-
-class Entity(Sofa.Core.Prefab): 
+        #setConstitutiveLaw # : Callable = addBidule
+        #setBoundaryCondition #: Callable = addBidule
+        
+        mechanical : dict = dataclasses.field(default_factory=dict)
+        collision : CollisionModel.Parameters = CollisionModel.Parameters()
+        visual : VisualModelParameters = VisualModelParameters()
+        simulation : SimulationParameters = SimulationParameters()
+        
+class Entity(Sofa.Core.Node): 
     # A simulated object
+    simulation : Simulation
     visual : VisualModel
     collision : CollisionModel
-
+    
     parameters : EntityParameters
 
-    addSolver : PrefabMethod 
+    def __init__(self, parent=None, parameters=EntityParameters(), **kwargs):
+        Sofa.Core.Node.__init__(self, name=parameters.name)        
 
-    def __init__(self, params):        
-        self.params = params 
+        if parent is not None: 
+            parent.addChild(self)
         
-        self.addChild(VisualModel(params.visual), name="visual")
+        self.parameters = parameters
 
-        self.addSolver()
+        self.addMechanicalModel(**parameters.mechanical)
+        self.addSimulation(parameters=parameters.simulation)
+        self.addVisualModel(parameters=parameters.visual)
         self.addCollisionModel()
 
-    #@staticmethod
-    #def addSolver(self): 
-    #    pass 
+    def addMechanicalModel(self, **kwargs): 
+        self.addObject("MechanicalObject", **kwargs)
 
-    #def defaultAddSolver(self):
-    #    pass
+    def addSimulation(self, **kwargs): 
+        self.parameters.addSimulation(self, **kwargs)
 
-    @prefab.method
+    def addVisualModel(self, **kwargs):
+        self.parameters.addVisualModel(self, **kwargs)
+
     def addCollisionModel(self):
         pass 
-
-@dataclasses.dataclass
-class EntityParameters(object): 
-        addSolver : Callable = addSolver
-        setConstitutiveLaw # : Callable = addBidule
-        setBoundaryCondition #: Callable = addBidule
-        
-        addCollisionModel : CollisionModel
-
-        #mechanical : MechanicalObject.Parameters = MechanicalObject.Parameters()
-        collision : CollisionModel.Parameters = CollisionModel.Parameters()
-        visual : VisualModel.Parameters = VisualModel.Parameters()
-        solver : SolverParameters = SolverParameters()
-        
-        kwargs : dict = {} 
-        def to_dict(self):
-            return dataclasses.asdict(self)
-
 
 class Rigid(Entity):
     def __init__(self, **kwargs):
         Entity.__init__(self, **kwargs)    
 
-    class Parameters(Entity.Parameters): 
-        pass
 
 class Deformable(Entity):
     def __init__(self, **kwargs):
         Entity.__init__(self, **kwargs)    
-        
-    class Parameters(Entity.Parameters): 
-        addConstitutiveLaw : Callable
-        mass = 3.4
-        name = "Deformable"
 
-        def to_dict(self):
-            return dataclasses.asdict(self)
+@dataclasses.dataclass
+class DeformableEntityParameters(EntityParameters):     
+    addConstitutiveLaw : Callable = lambda x: x
+
+    mass : Optional[float] = None    
+
+    def to_dict(self):
+        return dataclasses.asdict(self)
 
 
-Entity.Rigid = Rigid
-Entity.Deformable = Deformable
-
-class SoftRobots:
-    class Cable(Sofa.Core.BasePrefab):
-        length : float 
-
-        def __init__(self,**kwargs):
-            pass
-
-        def Parameters(object):
-            lenght : float    
-
-class Trunk(Sofa.Core.BasePrefab):
-    body : Entity.Deformable
-    cables : list [SoftRobots.Cable]
-    
-    def __init__(self, params):
-        body = Entity.Deformable()
-
-        for param in range(params.cables):
-            cables.append(SoftRobots.Cable(body, param))
-
-    class Parameters(object):
-        body : Entity.Deformable.Parameters
-        cables : list[SoftRobots.Cable.Parameters]
 
