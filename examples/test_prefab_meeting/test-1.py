@@ -19,8 +19,6 @@ def createScene(root):
     params.name = "Deformable2"
     root.add(entity.Deformable, params=auto_load)     
 
-    
-    
     #def addCustomVisual(self, **kwargs):
     #    Rigid.addVisualModel( mapping={"toto":"in"} )
 

@@ -37,49 +37,84 @@ class MechanicalObject(Sofa.Core.Object):
 def addBidule(self):
     return self.addChild("Bidule") 
 
-class Entity(Sofa.Core.Node): 
+
+class Entity(Sofa.Core.Prefab):
+    def __init__(self, **kwargs):
+        self.addChild(VisualModel(**kwargs), name="visual")
+        self.addChild(CollisionModel(**kwargs), name="visual")
+
+    def addConstitutiveLaw(self):
+        pass 
+
+    def addSolver(self):
+        pass 
+
+DEFAULT_VALUE = object()
+
+def addSolver(node : Sofa.Core.Node, template=DEFAULT_VALUE, numiterations=DEFAULT_VALUE, **kwargs):
+    node.addObject("ODESolver", name = "integrationscheme",numiterations = numiterations, **kwargs)
+    node.addObject("LinearSolver", name = "numericalsolver", template=DEFAULT_VALUE, **kwargs)
+
+#@dataclasses.dataclass
+#class Solver(object):
+#    integrationscheme : str
+#    numericalsolver : str
+
+@dataclasses.dataclass
+class SolverParameters(object):
+    numiteration : int | object = DEFAULT_VALUE
+    template: str | object = DEFAULT_VALUE
+
+    kwargs : dict = {"intergrato"} 
+
+    def to_dict(self):
+        return self.asdict() | self.kwargs
+
+class Entity(Sofa.Core.Prefab): 
     # A simulated object
     visual : VisualModel
     collision : CollisionModel
 
-    @staticmethod
-    def addSolver(self):
-        pass
+    parameters : EntityParameters
 
-    @dataclasses.dataclass
-    class Parameters(object): 
-        addSolver : Callable = addBidule
-        addConstitutiveLaw : Callable = addBidule
-        addBoundaryCondition : Callable = addBidule
+    addSolver : PrefabMethod 
 
-        mechanical : MechanicalObject.Parameters = MechanicalObject.Parameters()
+    def __init__(self, params):        
+        self.params = params 
+        
+        self.addChild(VisualModel(params.visual), name="visual")
+
+        self.addSolver()
+        self.addCollisionModel()
+
+    #@staticmethod
+    #def addSolver(self): 
+    #    pass 
+
+    #def defaultAddSolver(self):
+    #    pass
+
+    @prefab.method
+    def addCollisionModel(self):
+        pass 
+
+@dataclasses.dataclass
+class EntityParameters(object): 
+        addSolver : Callable = addSolver
+        setConstitutiveLaw # : Callable = addBidule
+        setBoundaryCondition #: Callable = addBidule
+        
+        addCollisionModel : CollisionModel
+
+        #mechanical : MechanicalObject.Parameters = MechanicalObject.Parameters()
         collision : CollisionModel.Parameters = CollisionModel.Parameters()
         visual : VisualModel.Parameters = VisualModel.Parameters()
-
-        name = "Entity"
-
+        solver : SolverParameters = SolverParameters()
+        
+        kwargs : dict = {} 
         def to_dict(self):
             return dataclasses.asdict(self)
 
-    # Ici mettre un prefab simplfié. 
-    def __init__(self, **kwargs):
-        print("CCOUou")
-        params = kwargs.get("params", None) #  type: Entity.Parameters
-        Sofa.Core.Node.__init__(self, params.name)
-
-        print("ZUT ZUT ")
-    
-        print("COUCOU")
-        self.addObject("MechanicalObject", **params.mechanical.to_dict())
-        print("COUCO S")
-
-        #if(params.visual != None):
-        #    self.addChild(VisualModel(params.visual), 
-        #                  name="visual")
-
-        #if(params.collision != None):
-        #    self.addChild(CollisionModel(params.collision), 
-        #                  name="collision")
 
 class Rigid(Entity):
     def __init__(self, **kwargs):
@@ -90,10 +125,8 @@ class Rigid(Entity):
 
 class Deformable(Entity):
     def __init__(self, **kwargs):
-        print("ZUT")
         Entity.__init__(self, **kwargs)    
-        print("DEFORMABLE")
-
+        
     class Parameters(Entity.Parameters): 
         addConstitutiveLaw : Callable
         mass = 3.4
@@ -119,7 +152,7 @@ class SoftRobots:
 class Trunk(Sofa.Core.BasePrefab):
     body : Entity.Deformable
     cables : list [SoftRobots.Cable]
-
+    
     def __init__(self, params):
         body = Entity.Deformable()
 
