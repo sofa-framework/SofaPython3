@@ -17,7 +17,7 @@ class Test(unittest.TestCase):
         root.addObject('RequiredPlugin', name='Sofa.Component.Mass')
 
         root.addObject('EulerImplicitSolver', rayleighStiffness="0.1", rayleighMass="0.1")
-        linear_solver = root.addObject('SparseLDLSolver', name='linear_solver', applyPermutation="false", template=linear_solver_template)
+        linear_solver = root.addObject('SparseLDLSolver', name='linear_solver', template=linear_solver_template)
 
         root.addObject('MechanicalObject', name="DoFs")
         root.addObject('UniformMass', name="mass", totalMass="320")
