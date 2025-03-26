@@ -21,12 +21,6 @@ if(Sofa.GUI.Batch_FOUND AND SP3_WITH_SOFAGUIBATCH)
      list(APPEND SUPPORTED_GUIS Sofa.GUI.Batch)
 endif()
 
-sofa_find_package(Sofa.GUI.Qt QUIET)
-CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAGUIQT "Enable the SOFA Qt gui component." ON "Sofa.GUI.Qt_FOUND" OFF)
-if(Sofa.GUI.Qt_FOUND AND SP3_WITH_SOFAGUIQT)
-     list(APPEND SUPPORTED_GUIS Sofa.GUI.Qt)
-endif()
-
 sofa_find_package(Sofa.GUI.HeadlessRecorder QUIET)
 CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAGUIHEADLESSRECORDER "Enable the SOFA HeadlessRecorder gui component." ON "Sofa.GUI.HeadlessRecorder_FOUND" OFF)
 if(Sofa.GUI.HeadlessRecorder_FOUND AND SP3_WITH_SOFAGUIHEADLESSRECORDER)

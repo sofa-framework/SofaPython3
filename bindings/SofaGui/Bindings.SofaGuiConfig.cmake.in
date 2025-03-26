@@ -12,10 +12,6 @@ if(Sofa.GUI.Batch_FOUND)
     find_package(Sofa.GUI.Batch QUIET REQUIRED)
 endif()
 
-if(Sofa.GUI.Qt_FOUND)
-    find_package(Sofa.GUI.Qt QUIET REQUIRED)
-endif()
-
 if(Sofa.GUI.HeadlessRecorder_FOUND)
     find_package(Sofa.GUI.HeadlessRecorder QUIET REQUIRED)
 endif()
