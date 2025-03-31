@@ -96,6 +96,7 @@ def createScene(root):
 def main():
     import SofaRuntime
     import Sofa.Gui
+    import SofaQt
 
     root=Sofa.Core.Node("root")
     createScene(root)

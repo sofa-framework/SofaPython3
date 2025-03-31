@@ -18,6 +18,8 @@ def main():
         for iteration in range(10):
             Sofa.Simulation.animate(root, root.dt.value)
     else:
+        import SofaQt
+        
         Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
         Sofa.Gui.GUIManager.createGUI(root, __file__)
         Sofa.Gui.GUIManager.SetDimension(1080, 1080)

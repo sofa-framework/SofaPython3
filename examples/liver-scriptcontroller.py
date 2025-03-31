@@ -15,6 +15,8 @@ def main():
     Sofa.Simulation.initRoot(root)
 
     if not USE_GUI:
+        import SofaQt
+
         for iteration in range(10):
             Sofa.Simulation.animate(root, root.dt.value)
     else:
