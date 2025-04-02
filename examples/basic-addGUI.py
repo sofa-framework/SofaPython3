@@ -5,7 +5,6 @@ import Sofa
 # Choose in your script to activate or not the GUI
 USE_GUI = True
 
-
 def main():
     import SofaRuntime
     import Sofa.Gui
@@ -21,6 +20,8 @@ def main():
         for iteration in range(10):
             Sofa.Simulation.animate(root, root.dt.value)
     else:
+        import SofaQt
+
         # Find out the supported GUIs
         print ("Supported GUIs are: " + Sofa.Gui.GUIManager.ListSupportedGUI(","))
         # Launch the GUI (qt or qglviewer)

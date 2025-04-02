@@ -31,12 +31,6 @@ using sofa::helper::system::FileSystem;
 #define HAS_GUI_BATCH
 #endif
 
-#if __has_include(<sofa/gui/qt/init.h>)
-#include <sofa/gui/qt/init.h>
-#include <sofa/gui/qt/qt.conf.h>
-#define HAS_GUI_QT
-#endif
-
 #if __has_include(<sofa/gui/headlessrecorder/init.h>)
 #include <sofa/gui/headlessrecorder/init.h>
 #define HAS_GUI_HEADLESSRECORDER
@@ -70,33 +64,9 @@ PYBIND11_MODULE(Gui, m) {
 
              )doc";
 
-#ifdef HAS_GUI_QT
-    std::string sofaPrefixAbsolute = sofa::helper::Utils::getSofaPathPrefix();
-    std::string inputFilepath = FileSystem::cleanPath(sofaPrefixAbsolute + "/bin/qt.conf");
-    bool success = sofa::gui::qt::loadQtConfWithCustomPrefix(inputFilepath, sofaPrefixAbsolute);
-    if(success)
-    {
-        msg_info("Sofa.Gui") << "Loaded qt.conf from " << inputFilepath << " customized with Prefix = " << sofaPrefixAbsolute;
-    }
-    else
-    {
-        msg_warning("Sofa.Gui") << "Failed loading and/or customizing qt.conf from " << inputFilepath;
-
-        std::cout << "qt_resource_data:" << std::endl;
-        for (auto d : qt_resource_data)
-        {
-           std::cout << d;
-        }
-        std::cout << std::endl;
-    }
-#endif // HAS_GUI_QT
-
 // forcefullly link libraries at compile-time
 #ifdef HAS_GUI_BATCH
     sofa::gui::batch::init();
-#endif
-#ifdef HAS_GUI_QT
-    sofa::gui::qt::init();
 #endif
 #ifdef HAS_GUI_HEADLESSRECORDER
     sofa::gui::headlessrecorder::init();
