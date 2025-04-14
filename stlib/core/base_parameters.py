@@ -1,18 +1,20 @@
 import dataclasses
 from splib.core.utils import DEFAULT_VALUE
 
-#defaultValueType
+from stlib.shapes import Shape
+
 
 @dataclasses.dataclass
-class EntityParameters(object): 
-    name : str = "Prefab"
+class BaseParameters(object): 
+    name : str = "Entity"
+    shape : Shape = Shape()
     kwargs : dict = dataclasses.field(default_factory=dict)
 
     def __getattr__(self, name: str) :
         if name == "__getstate__":
-            getattr(PrefabParameters, "__getstate__")
+            getattr(BaseParameters, "__getstate__")
         if name == "__setstate__":
-            getattr(PrefabParameters, "__setstate__")
+            getattr(BaseParameters, "__setstate__")
 
         try: 
             a =  self.__getattribute__(name)

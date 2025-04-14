@@ -4,8 +4,7 @@ from typing import Callable, Optional, overload
 import Sofa
 
 
-
-class Entity(Sofa.Core.BasePrefab): 
+class Entity(Sofa.Core.BaseEntity): 
 
     # A simulated object
     simulation : Simulation
