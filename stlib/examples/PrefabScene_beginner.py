@@ -1,12 +1,12 @@
 from splib.helper import exportScene
-from stlib.misc.entity import Entity
+from stlib.simulated.deformable import Deformable
 
 
 def createScene(root):
-    params = Entity.Deformable.Parameters()
+    params = Deformable.Parameters()
     params.name = "Logo"
     params.topology.filename="share/mesh/SOFA-logo.obj"
-    root.add(Entity.Deformable, params=params)     
+    root.add(Deformable, params=params)     
     return root
 
 
