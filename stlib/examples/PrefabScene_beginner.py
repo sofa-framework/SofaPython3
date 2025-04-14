@@ -3,8 +3,10 @@ from stlib.misc.entity import Entity
 
 
 def createScene(root):
-    Entity.Deformable(Mesh,MechaProperties)
-    
+    params = Entity.Deformable.Parameters()
+    params.name = "Logo"
+    params.topology.filename="share/mesh/SOFA-logo.obj"
+    root.add(Entity.Deformable, params=params)     
     return root
 
 
