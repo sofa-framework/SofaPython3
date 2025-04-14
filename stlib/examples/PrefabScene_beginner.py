@@ -1,4 +1,4 @@
-from helper import exportScene
+from splib.helper import exportScene
 from stlib.misc.entity import Entity
 
 
