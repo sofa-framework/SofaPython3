@@ -1,2 +1,2 @@
-__all__ = ["core","topology", "simulation","modeler","mechanics","Testing"]
+__all__ = ["core","topology", "simulation","modeler","mechanics","Testing","helper"]
 
