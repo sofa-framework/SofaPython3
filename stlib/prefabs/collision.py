@@ -4,17 +4,14 @@ from stlib.geometry import GeometryParameters
 from Sofa.Core import Object 
 
 @dataclasses.dataclass
-class VisualParameters(BaseParameters):
-    color : Optional[list[float]]
-    texture :  Optional[str]
+class CollisionParameters(BaseParameters):
+    primitives : list[Any] #TODO: add enum type in splib
 
     geometry : GeometryParameters
-    addMapping : Optional[Callable]
+    addMapping : Callable
 
 
-class Visual(BasePrefab):
-    container :  Object # This should be more specialized into the right SOFA type
-    modifier : Optional[Object]
+class Collision(BasePrefab):
 
     def __init__(self, params: GeometryParameters):
         BasePrefab.__init__(self, params)
