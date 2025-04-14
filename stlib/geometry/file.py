@@ -11,6 +11,7 @@ class FileParameters(GeometryParameters):
     @staticmethod
     def createData(filename) -> GeometryParameters.Data :
         data = GeometryParameters.Data()
+        
         node = Sofa.Core.Node()
         loadMesh(node, filename)
         node.init()
