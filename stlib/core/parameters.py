@@ -4,7 +4,7 @@ from splib.core.utils import DEFAULT_VALUE
 #defaultValueType
 
 @dataclasses.dataclass
-class PrefabParameters(object): 
+class EntityParameters(object): 
     name : str = "Prefab"
     kwargs : dict = dataclasses.field(default_factory=dict)
 

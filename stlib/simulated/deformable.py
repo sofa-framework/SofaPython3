@@ -1,5 +1,6 @@
 from stlib.core.entity import Entity
 from stlib.core.parameters import EntityParameters
+
 import dataclasses
 
 class Deformable(Entity):
