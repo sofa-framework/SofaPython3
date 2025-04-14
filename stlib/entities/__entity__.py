@@ -1,23 +1,26 @@
 from stlib.core.baseParameters import BaseParameters
 import dataclasses
-from typing import Callable, Optional, overload
+from typing import Callable, Optional, overload, Any
+from stlib.geometry import GeometryParameters
 import Sofa
 
 @dataclasses.dataclass
 class EntityParameters(BaseParameters): 
-    name : str = "Entity"
+    name = "Entity"
 
-    addSimulation : Callable = Simulation
-    addCollisionModel : Callable = CollisionModel
-    addVisualModel : Callable = VisualModel 
+    # addSimulation : Callable = Simulation
+    # addCollisionModel : Callable = CollisionModel
+    # addVisualModel : Callable = VisualModel 
+
+
 
     #setConstitutiveLaw # : Callable = addBidule
     #setBoundaryCondition #: Callable = addBidule
-    
-    mechanical : dict = dataclasses.field(default_factory=dict)
-    collision : CollisionModel.Parameters = CollisionModel.Parameters()
-    visual : VisualModelParameters = VisualModelParameters()
-    simulation : SimulationParameters = SimulationParameters()
+    geometry : GeometryParameters
+    # mechanical : dict = dataclasses.field(default_factory=dict)
+    # collision : CollisionModel.Parameters = CollisionModel.Parameters()
+    # visual : VisualModelParameters = VisualModelParameters()
+    # simulation : SimulationParameters = SimulationParameters()
     
 
 
