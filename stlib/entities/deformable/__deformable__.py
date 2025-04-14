@@ -1,18 +1,14 @@
-from stlib.core.entity import Entity
-from stlib.core.parameters import EntityParameters
+from stlib.entities import Entity
+from stlib.entities.deformable.__parameters__ import  DeformableParameters
 
-import dataclasses
 
 class Deformable(Entity):
-    @dataclasses.dataclass
-    class Parameters(EntityParameters):     
-        addConstitutiveLaw : Callable = lambda x: x
+   
+    @staticmethod
+    def getParameters() -> DeformableParameters:
+        return DeformableParameters()
+        
 
-        mass : Optional[float] = None    
-
-        def to_dict(self):
-            return dataclasses.asdict(self)
-
-    def __init__(self, **kwargs):
+    def __init__(self, params : DeformableParameters, **kwargs):
         Entity.__init__(self, **kwargs)    
 
