@@ -1,5 +1,5 @@
 import Sofa.Core
-from base_parameters import BaseParameters
+from baseParameters import BaseParameters
 
 class BaseEntity(Sofa.Core.Prefab):
 

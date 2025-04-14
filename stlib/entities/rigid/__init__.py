@@ -1,0 +1,1 @@
+from __rigid__ import *
