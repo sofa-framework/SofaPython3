@@ -1,7 +1,7 @@
 from stlib.core.baseParameters import BaseParameters, Callable, Optional, dataclasses
 
 @dataclasses.dataclass
-class DeformableParameters(BaseParameters):     
+class DRigidParameters(BaseParameters):     
     addConstitutiveLaw : Callable = lambda x: x
 
     mass : Optional[float] = None    

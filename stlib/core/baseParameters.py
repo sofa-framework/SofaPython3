@@ -6,7 +6,7 @@ from types import Callable, Optional
 
 @dataclasses.dataclass
 class BaseParameters(object): 
-    name : str = "Entity"
+    name : str = "object"
     kwargs : dict = dataclasses.field(default_factory=dict)
 
     def toDict(self):
