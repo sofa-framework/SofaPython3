@@ -9,13 +9,19 @@ from Sofa.Core import Object
 class GeometryParameters(BaseParameters):
     @dataclasses.dataclass
     class Data(object):
-        elementType : Optional[ElementType]
+        # Initial positions
         positions : Any
+
+        # Type of the highest degree element
+        elementType : Optional[ElementType]
+
+        # Topology information
         edges : Optional[Any]
         triangles : Optional[Any]
+        quads : Optional[Any]
         tetrahedra : Optional[Any]
         hexahedra : Optional[Any]
-        quads : Optional[Any]
+
     dynamicTopology : bool = False
     data : Data
 
@@ -32,6 +38,3 @@ class Geometry(BasePrefab):
                 raise ValueError
         else:
             addStaticTopology(self, **dataclasses.asdict(params.data), **params.kargs)
-
-
-
