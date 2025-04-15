@@ -1,5 +1,7 @@
 from typing import List, Callable, Tuple, Dict
 from functools import wraps
+from node_wrapper import ReusableMethod
+
 
 class defaultValueType():
     def __init__(self):
@@ -31,6 +33,10 @@ def MapKeywordArg(objectName,*argumentMaps):
         return wrapper
     return MapArg
 
+
+@ReusableMethod
+def addObject(node,typeName : str, name : str , **kwargs):
+    node.addObject(typeName, name = name, **kwargs)
 
 
 
