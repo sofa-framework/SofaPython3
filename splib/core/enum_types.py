@@ -23,7 +23,11 @@ class ConstraintType(Enum):
     WEAK       = 2
     LAGRANGIAN = 3
 
-
+class CollisionPrimitive(Enum):
+    POINTS      = 1
+    LINES       = 2
+    TRIANGLES   = 3
+    SPHERES     = 4
 
 class ElementType(Enum):
     POINTS      = 1

@@ -14,9 +14,6 @@ class VisualParameters(BaseParameters):
 
 
 class Visual(BasePrefab):
-    container :  Object # This should be more specialized into the right SOFA type
-    modifier : Optional[Object]
-
     def __init__(self, params: VisualParameters):
         BasePrefab.__init__(self, params)
 
