@@ -43,6 +43,7 @@ class Entity(Sofa.Core.BaseEntity):
         self.parameters = parameters
 
         self.addMechanicalModel(**parameters.mechanical)
+        # ????
         self.addSimulation(parameters=parameters.simulation)
         self.addVisualModel(parameters=parameters.visual)
         self.addCollisionModel()
@@ -50,6 +51,7 @@ class Entity(Sofa.Core.BaseEntity):
     def addMechanicalModel(self, **kwargs): 
         self.addObject("MechanicalObject", **kwargs)
 
+    # ????
     def addSimulation(self, **kwargs): 
         self.parameters.addSimulation(self, **kwargs)
 

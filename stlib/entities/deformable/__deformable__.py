@@ -18,17 +18,15 @@ class Deformable(Entity):
         self.__addConstitutiveLaw__()
         self.add(Collision, params.collision)
 
+
     #@customizable
     # Need generic way of defining paramaters (linear/hyper...)
     def __addConstitutiveLaw__(self):
         self.params.addConstitutiveLaw()
 
     
-    
     #@customizable
     def __addVisual__(self):
-        #Exctract surface and add indentity mapping
-
+        #Extract surface and add identity mapping
         self.add(Visual, params.visual)
 
-        pass
