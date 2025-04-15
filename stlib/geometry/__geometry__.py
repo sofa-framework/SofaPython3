@@ -11,7 +11,7 @@ class Geometry(BasePrefab):...
 
 @dataclasses.dataclass
 class InternalDataProvider(object):
-    positions : Any
+    position : Any = None
     # Topology information
     edges : Any = DEFAULT_VALUE
     triangles : Any  = DEFAULT_VALUE
@@ -27,10 +27,12 @@ class InternalDataProvider(object):
 class GeometryParameters(BaseParameters):
 
     # Type of the highest degree element
-    elementType : Optional[ElementType]
+    elementType : Optional[ElementType] = None
+    data : Optional[InternalDataProvider] = None
 
     dynamicTopology : bool = False
-    data : Optional[InternalDataProvider]
+
+
 
 
 
@@ -47,8 +49,8 @@ class Geometry(BasePrefab):
             params.data.generateAttribute(self)
         if(params.dynamicTopology):
             if(params.elementType is not None):
-                addDynamicTopology(self, container = {dataclasses.asdict(params.data)})
+                addDynamicTopology(self, container = dataclasses.asdict(params.data))
             else:
                 raise ValueError
         else:
-            addStaticTopology(self, container = {dataclasses.asdict(params.data)})
+            addStaticTopology(self, container = dataclasses.asdict(params.data))

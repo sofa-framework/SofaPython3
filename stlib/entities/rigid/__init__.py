@@ -1,1 +1,1 @@
-from __rigid__ import *
+from .__rigid__ import *
