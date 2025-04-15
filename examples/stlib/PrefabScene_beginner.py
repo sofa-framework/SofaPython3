@@ -22,11 +22,9 @@ def createScene(root):
     rigidParams.geometry = CubeParameters([0, 0, 0], 1, 3)
     root.add(Rigid,rigidParams)
 
-    
     deformableParams = Deformable.getParameters()
     #Add transformation somewhere here
     deformableParams.geometry = FileParameters("SofaScene/Logo.vtk")
     root.add(Deformable,deformableParams)
-
 
     return root

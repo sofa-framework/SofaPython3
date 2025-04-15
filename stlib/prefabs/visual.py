@@ -1,15 +1,16 @@
 from stlib.core.basePrefab import BasePrefab
 from stlib.core.baseParameters import BaseParameters, Callable, Optional, dataclasses, Any
 from stlib.geometry import Geometry, GeometryParameters
+from stlib.geometry.file import FileParameters
 from Sofa.Core import Object 
 
 @dataclasses.dataclass
 class VisualParameters(BaseParameters):
-    color : Optional[list[float]]
-    texture :  Optional[str]
+    color : Optional[list[float]] = None
+    texture :  Optional[str] = None
 
-    geometry : GeometryParameters
-    addMapping : Optional[Callable]
+    geometry : GeometryParameters = dataclasses.field(default_factory = lambda : GeometryParameters())
+    addMapping : Optional[Callable] = None
 
 
 class Visual(BasePrefab):
@@ -26,3 +27,14 @@ class Visual(BasePrefab):
         if params.addMapping is not None:
             params.addMapping(self)
 
+    @staticmethod
+    def getParameters(**kwargs) -> VisualParameters:
+        return VisualParameters(**kwargs)
+
+
+def createScene(root):
+
+    # Create a visual from a mesh file
+    params = Visual.getParameters()
+    params.geometry = FileParameters(filename="mesh/cube.obj")
+    root.add(Visual, params)

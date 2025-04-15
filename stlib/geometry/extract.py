@@ -31,11 +31,11 @@ class ExtractInternalDataProvider(InternalDataProvider):
         elif self.fromElemType == ElementType.HEXA:
             tmn.addObject("Hexa2QuadTopologicalMapping", input=fromLink, output=tmn.container.linkpath)
 
-        self.positions = tmn.container.position.linkpath
+        self.position = tmn.container.position.linkpath
         self.edges = tmn.container.edges.linkpath
         self.triangles = tmn.container.triangles.linkpath
         self.quads = tmn.container.quads.linkpath
-        self.hexaedra = tmn.container.hexaedra.linkpath
+        self.hexahedra = tmn.container.hexahedra.linkpath
         self.tetrahedra = tmn.container.tetras.linkpath
 
 

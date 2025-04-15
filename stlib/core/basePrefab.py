@@ -1,5 +1,6 @@
 import copy
-import Sofa.Core
+import Sofa 
+import Sofa.Core 
 from stlib.core.basePrefabParameters import BasePrefabParameters
 
 
@@ -21,18 +22,18 @@ def addFromTypeName(self : Sofa.Core.Node, typeName, params = BasePrefabParamete
     if params.name in self.children:
         params.name = findName(params.name, self)
 
-    return typeName(parent = self, parameters=params) 
+    return self.addChild(typeName(params)) 
 
 Sofa.Core.Node.add = addFromTypeName
 
 
-class BasePrefab(Sofa.Core.Prefab):
+class BasePrefab(Sofa.Core.Node):
     """
     A Prefab is a Sofa.Node that assembles a set of components and nodes
     """
 
-    def __init__(self, params: BaseParameters):
-        Sofa.Core.Prefab.__init__(self, name=params.name)
+    def __init__(self, params: BasePrefabParameters):
+        Sofa.Core.Node.__init__(self, name=params.name)
 
     def localToGlobalCoordinates(pointCloudInput, pointCloudOutput):
         raise NotImplemented("Send an email to Damien, he will help you. Guaranteed :)")
