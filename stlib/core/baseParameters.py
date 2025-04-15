@@ -2,7 +2,7 @@ import dataclasses
 from splib.core.utils import DEFAULT_VALUE
 
 import dataclasses
-from types import Callable, Optional
+from typing import Callable, Optional, Any
 
 @dataclasses.dataclass
 class BaseParameters(object): 

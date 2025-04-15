@@ -7,9 +7,9 @@ class BasePrefabParameters(object):
 
     # Transformation information
     # TODO: these data are going to be added in Node in SOFA (C++ implementation)
-    translation : list[float] = [0., 0., 0.]
-    rotation : list[float] = [0., 0., 0.]
-    scale : list[float] = [1., 1., 1.]
+    translation : list[float] = dataclasses.field(default_factory = lambda : [0., 0., 0.])
+    rotation : list[float] = dataclasses.field(default_factory = lambda : [0., 0., 0.])
+    scale : list[float] = dataclasses.field(default_factory = lambda : [1., 1., 1.])
 
     def toDict(self):
         return dataclasses.asdict(self)

@@ -1,1 +1,1 @@
-from __geometry__ import *
+from .__geometry__ import *
