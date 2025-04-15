@@ -21,5 +21,7 @@ class FileParameters(GeometryParameters):
         data.triangles = node.loader.triangles.value
         data.tetrahedra = node.loader.tetras.value
 
+        node.cleanUp()
+
         return data
         
