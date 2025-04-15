@@ -1,5 +1,7 @@
 from stlib.geometry import GeometryParameters
 
+#TODO this is outdated an need to be updated with the InternalDataProvider
+
 class SphereParameters(GeometryParameters):
     def __init__(self,  center, radius, pointPerRad, dynamicTopology = False):
 

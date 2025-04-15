@@ -49,8 +49,8 @@ class Geometry(BasePrefab):
             params.data.generateAttribute(self)
         if(params.dynamicTopology):
             if(params.elementType is not None):
-                addDynamicTopology(self, container = dataclasses.asdict(params.data))
+                addDynamicTopology(self, container = dataclasses.asdict(params.data), **params.kwargs)
             else:
                 raise ValueError
         else:
-            addStaticTopology(self, container = dataclasses.asdict(params.data))
+            addStaticTopology(self, container = dataclasses.asdict(params.data),**params.kwargs)

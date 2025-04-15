@@ -1,5 +1,7 @@
 from stlib.geometry import GeometryParameters
 
+#TODO this is outdated an need to be updated with the InternalDataProvider
+
 class CubeParameters(GeometryParameters):
     def __init__(self,  center, edgeLength, pointPerEdge, dynamicTopology = False):
 
