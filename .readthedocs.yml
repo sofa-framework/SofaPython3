@@ -17,3 +17,4 @@ build:
     - mkdir docUnzipped/
     - unzip  SofaPython3_v24.12.00_docs.zip -d docUnzipped/
     - cp --recursive docUnzipped/* $READTHEDOCS_OUTPUT/html/
+    - ls $READTHEDOCS_OUTPUT/html/
