@@ -205,7 +205,7 @@ jobs:
           cd $WORKSPACE_ARTIFACT_PATH
           ./bin/Bindings.Modules.Tests${{ steps.sofa.outputs.exe }}
 
-      - name: notify dashboard
+      - name: Notify dashboard
         if: always() && startsWith(github.repository, 'sofa-framework') && startsWith(github.ref, 'refs/heads/master') # we are not on a fork and on master
         env:       
           DASH_AUTH: ${{ secrets.PLUGIN_DASH }}
