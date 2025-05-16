@@ -46,6 +46,7 @@ jobs:
           key: ccache_${{ runner.os }}
       
       - name: Build and install
+        id: build-install
         shell: bash
         run: |
           cmake_options="-GNinja \
@@ -91,6 +92,7 @@ jobs:
           echo "PYTHONPATH=$WORKSPACE_INSTALL_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
 
       - name: Generate stubfiles
+        id: gen-stub
         shell: bash
         run: |
           
@@ -121,12 +123,14 @@ jobs:
           echo "ARTIFACT_NAME=$ARTIFACT_NAME" | tee -a $GITHUB_ENV
 
       - name: Create artifact
+        id: gen-artifact
         uses: actions/upload-artifact@v4.4.0
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path: ${{ env.WORKSPACE_INSTALL_PATH }}
 
       - name: Install artifact
+        id: install-artifact
         uses: actions/download-artifact@v4.1.7
         with:
           name: ${{ env.ARTIFACT_NAME }}
@@ -170,6 +174,7 @@ jobs:
           python -c "import sys; print('sys.version = ' + str(sys.version)); print('sys.path = ' + str(sys.path))"
 
       - name: Run test Binding.Sofa.Tests
+        id: test-sofa
         if: always()
         shell: bash
         run: |
@@ -177,6 +182,7 @@ jobs:
           ./bin/Bindings.Sofa.Tests${{ steps.sofa.outputs.exe }}
       
       - name: Run test Bindings.SofaRuntime.Tests
+        id: test-sofaruntime
         if: always()
         shell: bash
         run: |
@@ -184,6 +190,7 @@ jobs:
           ./bin/Bindings.SofaRuntime.Tests${{ steps.sofa.outputs.exe }}
       
       - name: Run test Bindings.SofaTypes.Tests
+        id: test-sofatypes
         if: always()
         shell: bash
         run: |
@@ -191,11 +198,42 @@ jobs:
           ./bin/Bindings.SofaTypes.Tests${{ steps.sofa.outputs.exe }}
       
       - name: Run test Bindings.Modules.Tests
+        id: test-sofamodules
         if: always()
         shell: bash
         run: |
           cd $WORKSPACE_ARTIFACT_PATH
           ./bin/Bindings.Modules.Tests${{ steps.sofa.outputs.exe }}
+
+      - name: Notify dashboard
+        if: always() && startsWith(github.repository, 'sofa-framework') && startsWith(github.ref, 'refs/heads/master') # we are not on a fork and on master
+        env:       
+          DASH_AUTH: ${{ secrets.PLUGIN_DASH }}
+        shell: bash
+        run: |
+          test_status=$([ '${{ steps.test-sofa.outcome }}' == 'success' ] && \
+                        [ '${{ steps.test-sofaruntime.outcome }}' == 'success' ] && \
+                        [ '${{ steps.test-sofatypes.outcome }}' == 'success' ] && \
+                        [ '${{ steps.test-sofamodules.outcome }}' == 'success' ] && \
+                        echo 'true' || echo 'false')
+
+          build_status=$([ '${{ steps.build-install.outcome }}' == 'success' ] && \
+                         [ '${{ steps.gen-stub.outcome }}' == 'success' ] && \
+                         echo 'true' || echo 'false')
+
+          binary_status=$([ '${{ steps.gen-artifact.outcome }}' == 'success' ] && \
+                         [ '${{ steps.install-artifact.outcome }}' == 'success' ] && \
+                         echo 'true' || echo 'false')
+                        
+
+          curl -X POST -H "X-API-KEY: $DASH_AUTH" -H "Content-Type: application/json" -d \
+          "{\"id\":\"$(echo "${{ github.repository }}" | awk -F/ '{ print $2 }')\",\
+           \"github_ref\":\"${{ github.sha }}\",\
+           \"url\":\"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\",\
+           \"build\":\"$build_status\",\
+           \"tests\":\"$test_status\",\
+           \"binary\":\"$binary_status\"}"\
+           https://sofa-framework.org:5000/api/v1/plugins
 
   deploy:
     name: Deploy artifacts
