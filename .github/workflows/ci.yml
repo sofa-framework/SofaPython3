@@ -207,6 +207,8 @@ jobs:
 
       - name: notify dashboard
         if: always() && startsWith(github.repository, 'sofa-framework') && startsWith(github.ref, 'refs/heads/master') # we are not on a fork and on master
+        env:       
+          DASH_AUTH: ${{ secrets.PLUGIN_DASH }}
         shell: bash
         run: |
           test_status=$([ '${{ steps.test-sofa.outcome }}' == 'success' ] && \
@@ -224,7 +226,7 @@ jobs:
                          echo 'true' || echo 'false')
                         
 
-          curl -X POST -H "X-API-KEY: ${{ secrets.PLUGIN_DASH }}" -H "Content-Type: application/json" -d \
+          curl -X POST -H "X-API-KEY: $DASH_AUTH" -H "Content-Type: application/json" -d \
           "{\"id\":\"$(echo "${{ github.repository }}" | awk -F/ '{ print $2 }')\",\
            \"github_ref\":\"${{ github.sha }}\",\
            \"url\":\"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\",\
