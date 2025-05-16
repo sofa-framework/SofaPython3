@@ -225,10 +225,10 @@ jobs:
                         
 
           curl -X POST -H "X-API-KEY: ${{ secrets.PLUGIN_DASH }}" -H "Content-Type: application/json" -d \
-          "{\"id":\"$(echo "${{ github.repository }}" | awk -F/ '{ print $2 }')\",\
-           \"github_ref":\"${{ github.sha }}\",\
+          "{\"id\":\"$(echo "${{ github.repository }}" | awk -F/ '{ print $2 }')\",\
+           \"github_ref\":\"${{ github.sha }}\",\
            \"url\":\"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\",\
-           \"build\":\"\$build_status",\
+           \"build\":\"\$build_status\",\
            \"tests\":\"$test_status\",\
            \"binary\":\"$binary_status\"}"\
            https://sofa-framework.org:5000/api/v1/plugins
