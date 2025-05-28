@@ -134,7 +134,7 @@ namespace sofapython3
     }
 
     template<class TDOFType>
-    void ForceField_Trampoline<TDOFType>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* dfId)
+    void ForceField_Trampoline<TDOFType>::doAddKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* dfId)
     {
         MultiMatrixAccessor::MatrixRef mref = dfId->getMatrix(this->mstate);
         sofa::linearalgebra::BaseMatrix* mat = mref.matrix;
