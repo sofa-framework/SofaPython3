@@ -12,13 +12,13 @@ def addLinearElasticity(node,elem:ElementType,youngModulus=DEFAULT_VALUE, poisso
         case ElementType.TRIANGLES:
             node.addObject("TriangleFEMForceField",name="constitutiveLaw", youngModulus=youngModulus, poissonRatio=poissonRatio, method=method,**kwargs)
             return
-        case ElementType.QUAD:
+        case ElementType.QUADS:
             node.addObject("QuadBendingFEMForceField",name="constitutiveLaw", youngModulus=youngModulus, poissonRatio=poissonRatio, method=method,**kwargs)
             return
-        case ElementType.TETRA:
+        case ElementType.TETRAHEDRONS:
             node.addObject("TetrahedronFEMForceField",name="constitutiveLaw", youngModulus=youngModulus, poissonRatio=poissonRatio, method=method,**kwargs)
             return
-        case ElementType.HEXA:
+        case ElementType.HEXAHEDRONS:
             node.addObject("HexahedronFEMForceField",name="constitutiveLaw", youngModulus=youngModulus, poissonRatio=poissonRatio, method=method,**kwargs)
             return
         case _:
