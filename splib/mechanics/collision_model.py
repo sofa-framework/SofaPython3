@@ -18,12 +18,9 @@ def addCollisionModels(node, primitive : CollisionPrimitive,
             node.addObject("PointCollisionModel", name="PointCollision", topology=topology, selfCollision=selfCollision, proximity=proximity, contactStiffness=contactStiffness, contactFriction=contactFriction, group=group, **kwargs)
             return
         case CollisionPrimitive.LINES:            
-            node.addObject("PointCollisionModel", name="PointCollision", topology=topology, selfCollision=selfCollision, proximity=proximity, contactStiffness=contactStiffness, contactFriction=contactFriction, group=group, **kwargs)
             node.addObject("LineCollisionModel", name="EdgeCollision", topology=topology, selfCollision=selfCollision, proximity=proximity, contactStiffness=contactStiffness, contactFriction=contactFriction, group=group, **kwargs)
             return
         case CollisionPrimitive.TRIANGLES:
-            node.addObject("PointCollisionModel", name="PointCollision", topology=topology, selfCollision=selfCollision, proximity=proximity, contactStiffness=contactStiffness, contactFriction=contactFriction, group=group, **kwargs)
-            node.addObject("LineCollisionModel", name="EdgeCollision", topology=topology, selfCollision=selfCollision, proximity=proximity, contactStiffness=contactStiffness, contactFriction=contactFriction, group=group, **kwargs)
             node.addObject("TriangleCollisionModel", name="TriangleCollision", topology=topology, selfCollision=selfCollision, proximity=proximity, contactStiffness=contactStiffness, contactFriction=contactFriction, group=group,**kwargs)
             return
         case CollisionPrimitive.SPHERES:
