@@ -9,14 +9,10 @@ from Sofa.Core import Object
 
 @dataclasses.dataclass
 class CollisionParameters(BaseParameters):
-    primitives : list[CollisionPrimitive] = dataclasses.field(default_factory = lambda :[CollisionPrimitive.POINTS])
+    primitives : list[CollisionPrimitive] = dataclasses.field(default_factory = lambda :[CollisionPrimitive.TRIANGLES])
 
     selfCollision : Optional[bool] = DEFAULT_VALUE
-    proximity : Optional[float] = DEFAULT_VALUE
     group : Optional[int] = DEFAULT_VALUE
-    contactStiffness : Optional[float] = DEFAULT_VALUE
-    contactFriction : Optional[float] = DEFAULT_VALUE
-    spheresRadius : Optional[float] = DEFAULT_VALUE
 
     geometry : GeometryParameters = dataclasses.field(default_factory = lambda : GeometryParameters())
     addMapping : Optional[Callable] = None
@@ -28,16 +24,12 @@ class Collision(BasePrefab):
 
         geom = self.add(Geometry, params.geometry)
         
-        self.addObject("MechanicalObject",template="Vec3", position=f"@{params.geometry.name}/container.position")
+        self.addObject("MechanicalObject", template="Vec3", position=f"@{params.geometry.name}/container.position")
         for primitive in params.primitives:
-            addCollisionModels(self,primitive,
+            addCollisionModels(self, primitive,
                                topology=f"@{params.geometry.name}/container",
                                selfCollision=params.selfCollision, 
-                               proximity=params.proximity, 
                                group=params.group, 
-                               contactStiffness=params.contactStiffness, 
-                               contactFriction=params.contactFriction,
-                               spheresRadius=params.spheresRadius, 
                                **params.kwargs)
             
         if params.addMapping is not None:
@@ -50,7 +42,14 @@ class Collision(BasePrefab):
 
 def createScene(root):
 
+    root.addObject("VisualStyle", displayFlags="showCollisionModels")
+
     # Create a visual from a mesh file
     params = Collision.getParameters()
     params.geometry = FileParameters(filename="mesh/cube.obj")
+    # Expert parameters
+    params.kwargs = {
+                        "contactStiffness": 100.0,
+                        "contactFriction": 0.5
+                    }
     root.add(Collision, params)

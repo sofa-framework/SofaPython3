@@ -1,7 +1,9 @@
 from stlib.core.basePrefab import BasePrefab
 from stlib.core.baseParameters import BaseParameters, Callable, Optional, dataclasses, Any
 from stlib.geometry import Geometry, GeometryParameters
+from stlib.geometry.extract import ExtractParameters
 from stlib.geometry.file import FileParameters
+from splib.core.enum_types import ElementType
 from Sofa.Core import Object 
 
 @dataclasses.dataclass
@@ -32,6 +34,15 @@ class Visual(BasePrefab):
 def createScene(root):
 
     # Create a visual from a mesh file
-    params = Visual.getParameters()
+    params = Visual.getParameters() 
+    params.name = "VisualFromFile"
     params.geometry = FileParameters(filename="mesh/cube.obj")
     root.add(Visual, params)
+
+
+    # Create a visual from a mesh file
+    # params = Visual.getParameters()  
+    # params.name = "ExtractedVisual"
+    # params.geometry = ExtractParameters(fromGeometry=FileParameters(filename="mesh/cube.vtk"), 
+    #                                     destElementType=ElementType.TRIANGLES)
+    # root.add(Visual, params)
