@@ -29,6 +29,7 @@ class ExtractInternalDataProvider(InternalDataProvider):
         tmn = parent.addChild("TopologicalMappingNode")
 
         #TODO: Specify somewhere in the doc that this should only be used for mapped topologies that extract parent topology surface
+        
         fromLink = parent.parents[0].parents[0].getChild(self.fromNodeName).container.linkpath
         addDynamicTopology(tmn, type=self.destElementType)
         if self.fromElementType == ElementType.TETRAHEDRONS:
@@ -47,13 +48,13 @@ class ExtractInternalDataProvider(InternalDataProvider):
 
 class ExtractParameters(GeometryParameters):
     def __init__(self, 
-                 fromGeometry : GeometryParameters, 
-                 destElementType : ElementType,  
+                 sourceParameters : GeometryParameters, 
+                 destinationType : ElementType,  
                  dynamicTopology = False, ):
         GeometryParameters.__init__(self,
-                                    data = ExtractInternalDataProvider(destElementType = destElementType, 
-                                                                       fromElementType = fromGeometry.elementType,
-                                                                       fromNodeName = fromGeometry.name), 
+                                    data = ExtractInternalDataProvider(destElementType = sourceParameters, 
+                                                                       fromElementType = destinationType,
+                                                                       fromNodeName = destinationType.name), 
                                     dynamicTopology = dynamicTopology, 
-                                    elementType = destElementType)
+                                    elementType = destinationType)
         

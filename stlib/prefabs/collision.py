@@ -46,10 +46,16 @@ def createScene(root):
 
     # Create a visual from a mesh file
     params = Collision.getParameters()
+    params.group = 1
     params.geometry = FileParameters(filename="mesh/cube.obj")
     # Expert parameters
     params.kwargs = {
-                        "contactStiffness": 100.0,
-                        "contactFriction": 0.5
+                        "TriangleCollisionModel":{"contactStiffness": 100.0, "contactFriction": 0.5}
                     }
-    root.add(Collision, params)
+    collision = root.add(Collision, params)
+
+    # OR set the parameters post creation
+    collision.TriangleCollisionModel.contactStiffness = 100.0
+    collision.TriangleCollisionModel.contactFriction = 0.5
+    collision.TriangleCollisionModel.set(contactStiffness=100.0, contactFriction=0.5) # we have information of what is possible
+    collision.TriangleCollisionModel.set({"contactStiffness": 100.0, "contactFriction": 0.5}) # we can do n'importe quoi 
