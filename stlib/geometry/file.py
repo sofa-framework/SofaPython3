@@ -12,9 +12,8 @@ class FileInternalDataProvider(InternalDataProvider):
     def __post_init__(self, **kwargs):
         InternalDataProvider.__init__(self,**kwargs)
 
-    def generateAttribute(self, parent : Geometry):        
-    
-        loadMesh(parent, self.filename)
+    def generateAttribute(self, parent : Geometry):     
+        loadMesh(parent, self.filename)      
 
         self.position = str(parent.loader.position.linkpath)
         self.edges = str(parent.loader.edges.linkpath)
@@ -26,6 +25,9 @@ class FileInternalDataProvider(InternalDataProvider):
 
 
 class FileParameters(GeometryParameters):
-    def __init__(self,  filename, dynamicTopology = False, elementType : ElementType = None ):
-        GeometryParameters.__init__(self,data = FileInternalDataProvider(filename), dynamicTopology = dynamicTopology, elementType = elementType)
+    def __init__(self, filename, dynamicTopology = False, elementType : ElementType = None ):
+        GeometryParameters.__init__(self,
+                                    data = FileInternalDataProvider(filename), 
+                                    dynamicTopology = dynamicTopology, 
+                                    elementType = elementType)
         

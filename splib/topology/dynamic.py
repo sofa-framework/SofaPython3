@@ -53,15 +53,15 @@ def addDynamicTopology(node,type:ElementType,**kwargs):
         case ElementType.TRIANGLES:
             addTriangleTopology(node,**kwargs)
             return
-        case ElementType.QUAD:
+        case ElementType.QUADS:
             addQuadTopology(node,**kwargs)
             return
-        case ElementType.TETRA:
+        case ElementType.TETRAHEDRONS:
             addTetrahedronTopology(node,**kwargs)
             return
-        case ElementType.HEXA:
+        case ElementType.HEXAHEDRONS:
             addHexahedronTopology(node,**kwargs)
             return
         case _:
-            print('Topology type should be one of the following : "ElementType.POINTS, ElementType.EDGES, ElementType.TRIANGLES, ElementType.QUAD, ElementType.TETRA, ElementType.HEXA" ')
+            print('Topology type should be one of the following : "ElementType.POINTS, ElementType.EDGES, ElementType.TRIANGLES, ElementType.QUADS, ElementType.TETRAHEDRONS, ElementType.HEXAHEDRONS" ')
             return
