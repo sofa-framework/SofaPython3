@@ -39,10 +39,9 @@ def createScene(root):
     params.geometry = FileParameters(filename="mesh/cube.obj")
     root.add(Visual, params)
 
-
-    # Create a visual from a mesh file
+    # # Create a visual from a node 
     # params = Visual.getParameters()  
     # params.name = "ExtractedVisual"
-    # params.geometry = ExtractParameters(fromGeometry=FileParameters(filename="mesh/cube.vtk"), 
-    #                                     destElementType=ElementType.TRIANGLES)
+    # params.geometry = ExtractParameters(sourceParameters=FileParameters(filename="mesh/cube.vtk"), 
+    #                                     destinationType=ElementType.TRIANGLES)
     # root.add(Visual, params)
