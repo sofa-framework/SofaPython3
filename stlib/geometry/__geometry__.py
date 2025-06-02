@@ -33,11 +33,8 @@ class GeometryParameters(BaseParameters):
     dynamicTopology : bool = False
 
 
-
-
-
 class Geometry(BasePrefab):
-    container :  Object # This should be more specialized into the right SOFA type
+    container : Object # This should be more specialized into the right SOFA type
     modifier : Optional[Object]
 
     params : GeometryParameters
