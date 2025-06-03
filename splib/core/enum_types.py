@@ -33,8 +33,8 @@ class ElementType(Enum):
     EDGES           = 2
     TRIANGLES       = 3
     QUADS           = 4
-    TETRAHEDRONS    = 5
-    HEXAHEDRONS     = 6
+    TETRAHEDRA      = 5
+    HEXAHEDRA       = 6
 
 class StateType(Enum):
     VEC3            = 3

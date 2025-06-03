@@ -9,6 +9,8 @@ from Sofa.Core import Object
 
 @dataclasses.dataclass
 class CollisionParameters(BaseParameters):
+    name : str = "Collision"
+    
     primitives : list[CollisionPrimitive] = dataclasses.field(default_factory = lambda :[CollisionPrimitive.TRIANGLES])
 
     selfCollision : Optional[bool] = DEFAULT_VALUE
@@ -20,18 +22,18 @@ class CollisionParameters(BaseParameters):
 
 
 class Collision(BasePrefab):
-    def __init__(self, params: CollisionParameters):
-        BasePrefab.__init__(self, params)
+    def __init__(self, parameters: CollisionParameters):
+        BasePrefab.__init__(self, parameters)
 
-        geom = self.add(Geometry, params.geometry)
+        geom = self.add(Geometry, parameters.geometry)
         
-        self.addObject("MechanicalObject", template="Vec3", position=f"@{params.geometry.name}/container.position")
-        for primitive in params.primitives:
+        self.addObject("MechanicalObject", template="Vec3", position=f"@{parameters.geometry.name}/container.position")
+        for primitive in parameters.primitives:
             addCollisionModels(self, primitive,
-                               topology=f"@{params.geometry.name}/container",
-                               selfCollision=params.selfCollision, 
-                               group=params.group, 
-                               **params.kwargs)
+                               topology=f"@{parameters.geometry.name}/container",
+                               selfCollision=parameters.selfCollision, 
+                               group=parameters.group, 
+                               **parameters.kwargs)
             
 
     @staticmethod
@@ -44,14 +46,14 @@ def createScene(root):
     root.addObject("VisualStyle", displayFlags="showCollisionModels")
 
     # Create a visual from a mesh file
-    params = Collision.getParameters()
-    params.group = 1
-    params.geometry = FileParameters(filename="mesh/cube.obj")
+    parameters = Collision.getParameters()
+    parameters.group = 1
+    parameters.geometry = FileParameters(filename="mesh/cube.obj")
     # Expert parameters
-    # params.kwargs = {
+    # parameters.kwargs = {
     #                     "TriangleCollisionModel":{"contactStiffness": 100.0, "contactFriction": 0.5}
     #                 }
-    collision = root.add(Collision, params)
+    collision = root.add(Collision, parameters)
 
     # OR set the parameters post creation
     # collision.TriangleCollisionModel.contactStiffness = 100.0

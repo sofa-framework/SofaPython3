@@ -66,7 +66,7 @@ class VisualModel(Sofa.Core.Node):
         self.addObject("RigidMapping", name="mapping", **kwargs)
         
 class CollisionModel(Sofa.Core.BasePrefab):
-    def __init__(self, params, **kwargs):
+    def __init__(self, parameters, **kwargs):
         Sofa.Core.Node.__init__(self, **kwargs)
 
     class Parameters(object):

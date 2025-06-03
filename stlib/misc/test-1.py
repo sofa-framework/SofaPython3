@@ -15,39 +15,39 @@ def createScene(root):
     #root.add(entity.Deformable)     
     #root.addChild(entity2.Deformable(root))     
 
-    params = entity.Deformable.Parameters()
-    params.name = "Deformable2"
-    root.add(entity.Deformable, params=auto_load)     
+    parameters = entity.Deformable.Parameters()
+    parameters.name = "Deformable2"
+    root.add(entity.Deformable, parameters=auto_load)     
 
     #def addCustomVisual(self, **kwargs):
     #    Rigid.addVisualModel( mapping={"toto":"in"} )
 
-    #params = Entity.Parameters()
-    #params.addVisualModel = addCustomVisual    
-    #root.add(Entity, params)     
+    #parameters = Entity.Parameters()
+    #parameters.addVisualModel = addCustomVisual    
+    #root.add(Entity, parameters)     
 
     # 
-    #params = Rigid.new_parameters()
-    #params.mass = 4.5
-    #root.add(Entity, params) 
+    #parameters = Rigid.new_parameters()
+    #parameters.mass = 4.5
+    #root.add(Entity, parameters) 
     #root.add(Entity)     
 
-    #params.addVisualModelOverride = addCustomVisual
+    #parameters.addVisualModelOverride = addCustomVisual
     
     ### 
     #Entity._addVisualModel = addCustomVisual 
-    #root.add(Entity, params)     
+    #root.add(Entity, parameters)     
     
     #root.add(Entity.Rigid)     
     #root.add(Entity.Deformable)     
 
     #root.add(Entity)
-    #root.add(VisualModel, params)
+    #root.add(VisualModel, parameters)
 
     #root.add(VisualModel)
 
-    #params = Entity.Deformable.Parameters()
-    #params.visual = None 
-    #a = root.add(Entity.Deformable, params)
+    #parameters = Entity.Deformable.Parameters()
+    #parameters.visual = None 
+    #a = root.add(Entity.Deformable, parameters)
     
     return root

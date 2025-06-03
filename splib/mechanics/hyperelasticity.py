@@ -6,7 +6,7 @@ from splib.core.enum_types import ElementType
 @ReusableMethod
 def addHyperelasticity(node,elem:ElementType,materialName=DEFAULT_VALUE, parameterSet=DEFAULT_VALUE, matrixRegularization=DEFAULT_VALUE,**kwargs):
     match elem:
-        case ElementType.TETRAHEDRONS:
+        case ElementType.TETRAHEDRA:
             node.addObject("TetrahedronHyperelasticityFEMForceField",name="constitutiveLaw", materialName=materialName, parameterSet=parameterSet, matrixRegularization=matrixRegularization, **kwargs)
             return
         case _:

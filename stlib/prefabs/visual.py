@@ -1,29 +1,27 @@
 from stlib.core.basePrefab import BasePrefab
-from stlib.core.baseParameters import BaseParameters, Callable, Optional, dataclasses, Any
+from stlib.core.baseParameters import BaseParameters, Optional, dataclasses, Any
 from stlib.geometry import Geometry, GeometryParameters
-from stlib.geometry.extract import ExtractParameters
 from stlib.geometry.file import FileParameters
-from splib.core.enum_types import ElementType
+from splib.core.utils import DEFAULT_VALUE
 from Sofa.Core import Object 
 
 @dataclasses.dataclass
 class VisualParameters(BaseParameters):
-    color : Optional[list[float]] = None
-    texture :  Optional[str] = None
+    name : str = "Visual"
+
+    color : Optional[list[float]] = DEFAULT_VALUE
+    texture :  Optional[str] = DEFAULT_VALUE
 
     geometry : GeometryParameters = dataclasses.field(default_factory = lambda : GeometryParameters())
 
 
 class Visual(BasePrefab):
-    def __init__(self, params: VisualParameters):
-        BasePrefab.__init__(self, params)
 
-        geom = self.add(Geometry, params.geometry)
-        # TODO : handle optional color, texture using DEFAULT_VALUE mechanism (as implemented by Paul)
-        self.addObject("OglModel", color=params.color, src=geom.container.linkpath)
+    def __init__(self, parameters: VisualParameters):
+        BasePrefab.__init__(self, parameters)
 
-        if params.addMapping is not None:
-            params.addMapping(self)
+        self.geometry = self.add(Geometry, parameters.geometry)
+        self.addObject("OglModel", color=parameters.color, src=self.geometry.container.linkpath)
 
     @staticmethod
     def getParameters(**kwargs) -> VisualParameters:
@@ -33,14 +31,7 @@ class Visual(BasePrefab):
 def createScene(root):
 
     # Create a visual from a mesh file
-    params = Visual.getParameters() 
-    params.name = "VisualFromFile"
-    params.geometry = FileParameters(filename="mesh/cube.obj")
-    root.add(Visual, params)
-
-    # # Create a visual from a node 
-    # params = Visual.getParameters()  
-    # params.name = "ExtractedVisual"
-    # params.geometry = ExtractParameters(sourceParameters=FileParameters(filename="mesh/cube.vtk"), 
-    #                                     destinationType=ElementType.TRIANGLES)
-    # root.add(Visual, params)
+    parameters = Visual.getParameters() 
+    parameters.name = "LiverVisual"
+    parameters.geometry = FileParameters(filename="mesh/liver.obj")
+    root.add(Visual, parameters)

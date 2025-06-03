@@ -1,4 +1,5 @@
 from stlib.core.baseParameters import BaseParameters
+from stlib.core.basePrefab import BasePrefab
 from stlib.prefabs.collision import CollisionParameters, Collision
 from stlib.prefabs.visual import VisualParameters, Visual
 from stlib.prefabs.material import Material, MaterialParameters
@@ -13,22 +14,22 @@ import Sofa
 
 @dataclasses.dataclass
 class EntityParameters(BaseParameters): 
-    name = "Entity"
+    name : str = "Entity"
 
-    template : StateType
+    stateType : StateType = StateType.VEC3
 
     ### QUID 
     addCollision : Optional[Callable] = lambda x : Collision(CollisionParameters())
     addVisual : Optional[Callable] = lambda x : Visual(VisualParameters()) 
 
-    geometry : GeometryParameters
-    material : MaterialParameters
+    geometry : GeometryParameters = None
+    material : MaterialParameters = None
     collision : Optional[CollisionParameters] = None
     visual : Optional[VisualParameters] = None
     
 
 
-class Entity(Sofa.Core.BaseEntity): 
+class Entity(BasePrefab): 
 
     # A simulated object
     material : Material
@@ -39,41 +40,42 @@ class Entity(Sofa.Core.BaseEntity):
     parameters : EntityParameters
     
 
-    def __init__(self, parent=None, parameters=EntityParameters(), **kwargs):
-        Sofa.Core.Node.__init__(self, name=parameters.name)        
+    def __init__(self, parameters=EntityParameters(), **kwargs):
+        BasePrefab.__init__(self, parameters)
 
-        if parent is not None: 
-            parent.addChild(self)
-        
         self.parameters = parameters
 
         self.geometry = self.add(Geometry, self.parameters.geometry)
 
         ### Check compatilibility of Material
-        if self.parameters.material.stateType != self.parameters.template:
+        if self.parameters.material.stateType != self.parameters.stateType:
             print("WARNING: imcompatibility between templates of both the entity and the material")
-            self.parameters.material.stateType = self.parameters.template
+            self.parameters.material.stateType = self.parameters.stateType
 
-        self.material = self.add(Material,self.parameters.material)
+        self.material = self.add(Material, self.parameters.material)
+        self.material.States.position.parent = self.geometry.container.position.linkpath
         
         if self.parameters.collision is not None:
-            self.collision = self.add(Collision,self.parameters.collision)
-            self.addMapping(self.parameters.collision, self.collision)
-
+            self.collision = self.add(Collision, self.parameters.collision)
+            self.addMapping(self.collision)
         
         if self.parameters.visual is not None:
-            self.visual = self.add(Visual,self.parameters.visual)
-            self.addMapping(self.parameters.visual, self.visual)
+            self.visual = self.add(Visual, self.parameters.visual)
+            self.addMapping(self.visual)
 
 
-    def addMapping(self, destParameter, destPrefab):
+    def addMapping(self, destinationPrefab):
 
-        templateString = f'{self.parameters.template},{destParameter.template}'
+        template = f'{self.parameters.stateType},Vec3' # TODO: check that it is always true
         
-        if( self.parameters.template == StateType.VEC3):
-            if isinstance(destParameter.geometry,ExtractParameters):
-                destPrefab.addObject("IdentityMapping", input="@../material/", output="@.", template=templateString)
-            else :
-                destPrefab.addObject("BarycentricMapping", input="@../material/", output="@.", template=templateString)
+        if( self.parameters.stateType == StateType.VEC3):
+            destinationPrefab.addObject("BarycentricMapping", 
+                                        input="@../Material/", 
+                                        input_topology=destinationPrefab.geometry.container.linkpath,
+                                        output="@.", 
+                                        template=template)
         else:
-            destPrefab.addObject("RigidMapping", input="@../material", output="@.", template=templateString)
+            destinationPrefab.addObject("RigidMapping", 
+                                        input="@../Material", 
+                                        output="@.", 
+                                        template=template)
