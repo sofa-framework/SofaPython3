@@ -40,3 +40,11 @@ STLIB has been designed to suit the following levels of use:
 - __Advanced users__:    
     - Create their own Prefabs from scratch or by extending the provided ones.
     - Enrich the library with new Prefabs and Parameters.
+
+## Available Parameters
+
+Each Prefab comes with a set of Parameters, these have been selected when the following criteria are met:
+- Data which corresponds to an intraseque property of the Prefab, required for its instantiation
+- Data which does not have a default value
+- Data which cannot be inferred
+- Data which are commun to all possible usage of the Prefab 
