@@ -10,10 +10,11 @@
 | Data*          | Attribute of a Component or a Node                                  |
 | Prefab         | A Sofa.Node assembling of Objects and  Nodes (a "fragment" of a scene)   |
 | Geometry       | A prefab that describe shapes with their topologies (i.e a shape with its space descritization and its associated connectivity)  |
-| Entity         | A physical prefab that represents real-world properties and behaviors used in a simulation. An entity should always have a geometry.|
+| Entity         | A physical prefab that represents real-world properties and behaviors used in a simulation. An entity should always have a geometry but includes neither a linear solver nor an integration scheme.|
 | Parameters     | Every prefab has a set of parameters. These parameters can contain data, links, callable or being composed of other parameters. Some of them can be optional. ~~Must inherit from `stlib.core.baseParameter.BaseParameter` and have a `@dataclasses.dataclass` decorator~~. Must have a `@stlib.parameters` decorator. |
 
-*Defined in SOFA documentation [here](https://www.sofa-framework.org/doc/using-sofa/terminology).
+\*Defined in SOFA documentation [here](https://www.sofa-framework.org/doc/using-sofa/terminology).
+
 
 ## Concepts & Structure
 
@@ -25,7 +26,8 @@ We introduce two different concepts, Prefab and Parameters:
 
 We introduce two types of Prefabs:
 - __Geometry__: A prefab that describes shapes with their topologies (i.e a shape with its space discretization and its associated connectivity).
-- __Entity__: A physical prefab that represents real-world properties and behaviors used in a simulation. An entity should always have a geometry.
+- __Entity__: A physical prefab that represents real-world properties and behaviors used in a simulation. An entity should always have a geometry but includes neither a linear solver nor an integration scheme.
+
 
 ## Usage
 
