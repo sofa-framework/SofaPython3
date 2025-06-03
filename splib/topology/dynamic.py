@@ -41,53 +41,27 @@ def addHexahedronTopology(node,position=DEFAULT_VALUE,edges=DEFAULT_VALUE,quads=
     node.addObject("HexahedronSetTopologyContainer", name="container", src=source, position=position, edges=edges, quads=quads, hexahedra=hexahedra, **kwargs)
     # node.addObject("HexahedronSetGeometryAlgorithms", name="algorithms",**kwargs)
 
-def addDynamicTopology(node, type:ElementType, **kwargs):
-    # match type:
-    #     case ElementType.POINTS:
-    #         addPointTopology(node,**kwargs)
-    #         return
-    #     case ElementType.EDGES:
-    #         addEdgeTopology(node,**kwargs)
-    #         return
-    #     case ElementType.TRIANGLES:
-    #         addTriangleTopology(node,**kwargs)
-    #         return
-    #     case ElementType.QUADS:
-    #         addQuadTopology(node,**kwargs)
-    #         return
-    #     case ElementType.TETRAHEDRA:
-    #         addTetrahedronTopology(node,**kwargs)
-    #         return
-    #     case ElementType.HEXAHEDRA:
-    #         addHexahedronTopology(node,**kwargs)
-    #         return
-    #     case _:
-    #         print('Topology type should be one of the following : "ElementType.POINTS, ElementType.EDGES, ElementType.TRIANGLES, ElementType.QUADS, ElementType.TETRAHEDRA, ElementType.HEXAHEDRA" ')
-    #         return
+def addDynamicTopology(node, elementType:ElementType, **kwargs):
+    match elementType:
+        case ElementType.POINTS:
+            addPointTopology(node,**kwargs)
+            return
+        case ElementType.EDGES:
+            addEdgeTopology(node,**kwargs)
+            return
+        case ElementType.TRIANGLES:
+            addTriangleTopology(node,**kwargs)
+            return
+        case ElementType.QUADS:
+            addQuadTopology(node,**kwargs)
+            return
+        case ElementType.TETRAHEDRA:
+            addTetrahedronTopology(node,**kwargs)
+            return
+        case ElementType.HEXAHEDRA:
+            addHexahedronTopology(node,**kwargs)
+            return
+        case _:
+            print('Topology type should be one of the following : "ElementType.POINTS, ElementType.EDGES, ElementType.TRIANGLES, ElementType.QUADS, ElementType.TETRAHEDRA, ElementType.HEXAHEDRA" ')
+            return
         
-    if type == ElementType.POINTS:
-        addPointTopology(node,**kwargs)
-        return
-    
-    if type == ElementType.EDGES:
-        addEdgeTopology(node,**kwargs)
-        return
-    
-    if type == ElementType.TRIANGLES:
-        addTriangleTopology(node,**kwargs)
-        return
-    
-    if type == ElementType.QUADS:
-        addQuadTopology(node,**kwargs)
-        return
-    
-    if type == ElementType.TETRAHEDRA:
-        addTetrahedronTopology(node,**kwargs)
-        return
-    
-    if type == ElementType.HEXAHEDRA:
-        addHexahedronTopology(node,**kwargs)
-        return
-    
-    print('Topology type should be one of the following : "ElementType.POINTS, ElementType.EDGES, ElementType.TRIANGLES, ElementType.QUADS, ElementType.TETRAHEDRA, ElementType.HEXAHEDRA" ')
-    return
