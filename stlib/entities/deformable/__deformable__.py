@@ -1,10 +1,15 @@
-from stlib.entities import Entity
+from stlib.entities import Entity, EntityParameters
 from stlib.entities.deformable.__parameters__ import  DeformableParameters
-from stlib.geometry import Geometry
 from stlib.prefabs.visual import Visual
-from stlib.prefabs.collision import Collision
+from stlib.mixins.collision import CollisionMixin
+from splib.core.enum_types import ConstitutiveLaw
 
-class Deformable(Entity):
+class DeformableParameters(EntityParameters):
+
+    constitutiveLaw : ConstitutiveLaw = ConstitutiveLaw.ELASTIC
+
+class Deformable(CollisionMixin, Entity):
+
     params : DeformableParameters
 
     @staticmethod
@@ -13,10 +18,10 @@ class Deformable(Entity):
         
 
     def __init__(self, params : DeformableParameters, **kwargs):
-        Entity.__init__(self, **kwargs)   
-        self.add(Geometry, params.geometry)
+        Entity.__init__(self, **kwargs)  
+        
         self.__addConstitutiveLaw__()
-        self.add(Collision, params.collision)
+        self.addCollision(params.collision)
 
 
     #@customizable
@@ -28,5 +33,5 @@ class Deformable(Entity):
     #@customizable
     def __addVisual__(self):
         #Extract surface and add identity mapping
-        self.add(Visual, params.visual)
+        self.add(Visual, self.params.visual)
 
