@@ -3,13 +3,16 @@ from stlib.core.baseParameters import BaseParameters, Callable, Optional, datacl
 from stlib.geometry import Geometry, GeometryParameters
 from stlib.geometry.extract import ExtractParameters
 from stlib.geometry.file import FileParameters
+
+from splib.core.utils import DEFAULT_VALUE, addObject
 from splib.core.enum_types import ElementType
+
 from Sofa.Core import Object 
 
 @dataclasses.dataclass
 class VisualParameters(BaseParameters):
-    color : Optional[list[float]] = None
-    texture :  Optional[str] = None
+    color : Optional[list[float]] = DEFAULT_VALUE
+    texture :  Optional[str] = DEFAULT_VALUE
 
     geometry : GeometryParameters = dataclasses.field(default_factory = lambda : GeometryParameters())
 
@@ -19,8 +22,7 @@ class Visual(BasePrefab):
         BasePrefab.__init__(self, params)
 
         geom = self.add(Geometry, params.geometry)
-        # TODO : handle optional color, texture using DEFAULT_VALUE mechanism (as implemented by Paul)
-        self.addObject("OglModel", color=params.color, src=geom.container.linkpath)
+        addObject(self,"OglModel", "MechanicalState", color=params.color, src=geom.container.linkpath, **params.kwargs)
 
         if params.addMapping is not None:
             params.addMapping(self)

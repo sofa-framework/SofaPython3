@@ -6,7 +6,7 @@ from splib.core.enum_types import ElementType
 
 from Sofa.Core import Node
 
-
+#TODO enable passing kwargs to this to use addObject instead and again get the benefit from splib
 class ExtractInternalDataProvider(InternalDataProvider):
     destElementType : ElementType
     fromElemenType : ElementType
