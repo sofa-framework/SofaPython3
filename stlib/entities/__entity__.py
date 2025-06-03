@@ -9,26 +9,27 @@ from typing import Callable, Optional, overload, Any
 from stlib.geometry import GeometryParameters
 from splib.core.enum_types import StateType
 import Sofa
+from stlib.core.basePrefab import BasePrefab
 
 
 @dataclasses.dataclass
 class EntityParameters(BaseParameters): 
     name = "Entity"
 
-    template : StateType
+    template : StateType = None
 
     ### QUID 
     addCollision : Optional[Callable] = lambda x : Collision(CollisionParameters())
     addVisual : Optional[Callable] = lambda x : Visual(VisualParameters()) 
 
-    geometry : GeometryParameters
-    material : MaterialParameters
+    geometry : GeometryParameters = None
+    material : MaterialParameters = None
     collision : Optional[CollisionParameters] = None
     visual : Optional[VisualParameters] = None
     
 
 
-class Entity(Sofa.Core.BaseEntity): 
+class Entity(BasePrefab): 
 
     # A simulated object
     material : Material
@@ -39,11 +40,9 @@ class Entity(Sofa.Core.BaseEntity):
     parameters : EntityParameters
     
 
-    def __init__(self, parent=None, parameters=EntityParameters(), **kwargs):
+    def __init__(self, parameters=EntityParameters(), **kwargs):
         Sofa.Core.Node.__init__(self, name=parameters.name)        
 
-        if parent is not None: 
-            parent.addChild(self)
         
         self.parameters = parameters
 

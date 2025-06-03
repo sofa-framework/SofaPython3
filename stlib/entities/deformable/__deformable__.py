@@ -1,7 +1,7 @@
 from stlib.entities import Entity, EntityParameters
 from stlib.prefabs.material import Material, MaterialParameters
 from stlib.prefabs.visual import Visual
-from splib.core.enum_types import ConstitutiveLaw, ElementType
+from splib.core.enum_types import ConstitutiveLaw, ElementType, StateType
 from splib.mechanics.linear_elasticity import *
 from splib.mechanics.hyperelasticity import *
 from splib.mechanics.mass import addMass
@@ -9,13 +9,13 @@ from splib.mechanics.mass import addMass
 
 class DeformableBehaviorParameters(MaterialParameters):
 
-    constitutiveLawType : ConstitutiveLaw 
-    elementType : ElementType
-    parameters : list[float]
+    constitutiveLawType : ConstitutiveLaw = None
+    elementType : ElementType = None
+    parameters : list[float] = None
 
     def addMaterial(self, node):
 
-        addMass(node, node.stateType, massDensity=node.massDensity, lumping=node.massLumping)
+        addMass(node, str(node.stateType), massDensity=node.massDensity, lumping=node.massLumping)
 
         # TODO : change this with inheritance
         if(self.constitutiveLawType == ConstitutiveLaw.HYPERELASTIC):
@@ -61,9 +61,11 @@ def createScene(root) :
     # from stlib.geometry.extract import ExtractParameters    
 
     liverParameters = EntityParameters()
-    liverParameters.behavior = DeformableBehaviorParameters()
-    liverParameters.behavior.constitutiveLawType = ConstitutiveLaw.ELASTIC
-    liverParameters.behavior.parameters = [1000, 0.45]
+    liverParameters.template = StateType.VEC3
+    liverParameters.material = DeformableBehaviorParameters()
+    liverParameters.material.stateType = StateType.VEC3
+    liverParameters.material.constitutiveLawType = ConstitutiveLaw.ELASTIC
+    liverParameters.material.parameters = [1000, 0.45]
     liverParameters.geometry = FileParameters("liver.vtk")
     # liverParameters.visual = ExtractParameters()
     myDeformableObject = root.add(Entity, liverParameters)
