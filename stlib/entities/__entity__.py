@@ -10,6 +10,7 @@ from typing import Callable, Optional, overload, Any
 from stlib.geometry import GeometryParameters
 from splib.core.enum_types import StateType
 import Sofa
+from stlib.core.basePrefab import BasePrefab
 
 
 @dataclasses.dataclass
@@ -42,7 +43,6 @@ class Entity(BasePrefab):
 
     def __init__(self, parameters=EntityParameters(), **kwargs):
         BasePrefab.__init__(self, parameters)
-
         self.parameters = parameters
 
         self.geometry = self.add(Geometry, self.parameters.geometry)

@@ -1,6 +1,7 @@
 from stlib.core.baseParameters import BaseParameters, Callable, Optional, dataclasses, Any
 from splib.core.utils import defaultValueType, DEFAULT_VALUE, isDefault
 from splib.core.enum_types import StateType
+
 from stlib.core.basePrefab import BasePrefab
 from splib.mechanics.mass import addMass
 

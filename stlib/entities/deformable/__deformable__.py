@@ -6,7 +6,6 @@ from splib.mechanics.hyperelasticity import *
 from splib.mechanics.mass import addMass
 
 
-
 @dataclasses.dataclass
 class DeformableBehaviorParameters(MaterialParameters):
 
@@ -16,7 +15,6 @@ class DeformableBehaviorParameters(MaterialParameters):
 
     def addDeformableMaterial(node):
         addMass(node, node.parameters.stateType, massDensity=node.parameters.massDensity, lumping=node.parameters.massLumping)
-
         # TODO : change this with inheritance
         if(node.parameters.constitutiveLawType == ConstitutiveLaw.HYPERELASTIC):
             addHyperelasticity(node, node.parameters.elementType, node.parameters.parameters, topology="@../Geometry/container")
@@ -43,4 +41,5 @@ def createScene(root) :
     #                                                     destinationType=ElementType.TRIANGLES)
     bunnyParameters.visual.geometry = FileParameters(filename="mesh/Bunny.stl")
     bunnyParameters.visual.color = [1, 1, 1, 0.5]
-    myDeformableObject = root.add(Entity, bunnyParameters)
+    root.add(Entity, bunnyParameters)
+
