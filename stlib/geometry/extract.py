@@ -8,27 +8,33 @@ from Sofa.Core import Node
 
 #TODO enable passing kwargs to this to use addObject instead and again get the benefit from splib
 class ExtractInternalDataProvider(InternalDataProvider):
-    destElemType : ElementType
-    fromElemType : ElementType
+    destElementType : ElementType
+    fromElemenType : ElementType
     fromNodeName : str
 
+    def __init__(self, destElementType : ElementType, fromElementType : ElementType, fromNodeName : str):
+        self.destElementType = destElementType,
+        self.fromElementType = fromElementType,
+        self.fromNodeName = fromNodeName
+
     def __post_init__(self):
-        if(not (self.fromElemType == ElementType.TETRA and self.destElemType == ElementType.TRIANGLES)
-           and not (self.fromElemType == ElementType.HEXA and self.destElemType == ElementType.QUAD) ):
-            raise ValueError("Only configuration possible are 'Tetra to Triangle' and 'Hexa to quad'")
+        if(not (self.fromElementType == ElementType.TETRAHEDRONS and self.destElementType == ElementType.TRIANGLES)
+           and not (self.fromElementType == ElementType.HEXAHEDRONS and self.destElementType == ElementType.QUADS) ):
+            raise ValueError("Only configuration possible are 'Tetrahedrons to Triangles' and 'Hexahedrons to Quads'")
 
         InternalDataProvider.__init__(self)
 
 
     def generateAttribute(self, parent : Geometry):                
-        tmn = parent.addChild("topologicalMappingNode")
+        tmn = parent.addChild("TopologicalMappingNode")
 
         #TODO: Specify somewhere in the doc that this should only be used for mapped topologies that extract parent topology surface
+        
         fromLink = parent.parents[0].parents[0].getChild(self.fromNodeName).container.linkpath
-        addDynamicTopology(tmn, type=self.destElemType)
-        if self.fromElemType == ElementType.TETRA:
+        addDynamicTopology(tmn, type=self.destElementType)
+        if self.fromElementType == ElementType.TETRAHEDRONS:
             tmn.addObject("Tetra2TriangleTopologicalMapping", input=fromLink, output=tmn.container.linkpath)
-        elif self.fromElemType == ElementType.HEXA:
+        elif self.fromElementType == ElementType.HEXAHEDRONS:
             tmn.addObject("Hexa2QuadTopologicalMapping", input=fromLink, output=tmn.container.linkpath)
 
         self.position = tmn.container.position.linkpath
@@ -41,6 +47,14 @@ class ExtractInternalDataProvider(InternalDataProvider):
 
 
 class ExtractParameters(GeometryParameters):
-    def __init__(self, fromGeometry : GeometryParameters, destElementType : ElementType,  dynamicTopology = False, ):
-        GeometryParameters.__init__(data = ExtractInternalDataProvider(destElemType = destElementType, fromElemType = fromGeometry.elementType,fromNodeName = fromGeometry.name), dynamicTopology = dynamicTopology, elementType = destElementType)
+    def __init__(self, 
+                 sourceParameters : GeometryParameters, 
+                 destinationType : ElementType,  
+                 dynamicTopology = False, ):
+        GeometryParameters.__init__(self,
+                                    data = ExtractInternalDataProvider(destElementType = sourceParameters, 
+                                                                       fromElementType = destinationType,
+                                                                       fromNodeName = destinationType.name), 
+                                    dynamicTopology = dynamicTopology, 
+                                    elementType = destinationType)
         

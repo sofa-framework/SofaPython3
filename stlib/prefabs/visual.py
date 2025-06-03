@@ -1,8 +1,11 @@
 from stlib.core.basePrefab import BasePrefab
 from stlib.core.baseParameters import BaseParameters, Callable, Optional, dataclasses, Any
 from stlib.geometry import Geometry, GeometryParameters
+from stlib.geometry.extract import ExtractParameters
 from stlib.geometry.file import FileParameters
+
 from splib.core.utils import DEFAULT_VALUE, addObject
+from splib.core.enum_types import ElementType
 
 from Sofa.Core import Object 
 
@@ -12,7 +15,6 @@ class VisualParameters(BaseParameters):
     texture :  Optional[str] = DEFAULT_VALUE
 
     geometry : GeometryParameters = dataclasses.field(default_factory = lambda : GeometryParameters())
-    addMapping : Optional[Callable] = None
 
 
 class Visual(BasePrefab):
@@ -33,6 +35,14 @@ class Visual(BasePrefab):
 def createScene(root):
 
     # Create a visual from a mesh file
-    params = Visual.getParameters()
+    params = Visual.getParameters() 
+    params.name = "VisualFromFile"
     params.geometry = FileParameters(filename="mesh/cube.obj")
     root.add(Visual, params)
+
+    # # Create a visual from a node 
+    # params = Visual.getParameters()  
+    # params.name = "ExtractedVisual"
+    # params.geometry = ExtractParameters(sourceParameters=FileParameters(filename="mesh/cube.vtk"), 
+    #                                     destinationType=ElementType.TRIANGLES)
+    # root.add(Visual, params)

@@ -9,17 +9,14 @@ from Sofa.Core import Object
 
 @dataclasses.dataclass
 class CollisionParameters(BaseParameters):
-    primitives : list[CollisionPrimitive] = dataclasses.field(default_factory = lambda :[CollisionPrimitive.POINTS])
+    primitives : list[CollisionPrimitive] = dataclasses.field(default_factory = lambda :[CollisionPrimitive.TRIANGLES])
 
     selfCollision : Optional[bool] = DEFAULT_VALUE
-    proximity : Optional[float] = DEFAULT_VALUE
+    bothSide : Optional[bool] = DEFAULT_VALUE
     group : Optional[int] = DEFAULT_VALUE
-    contactStiffness : Optional[float] = DEFAULT_VALUE
-    contactFriction : Optional[float] = DEFAULT_VALUE
-    spheresRadius : Optional[float] = DEFAULT_VALUE
+    contactDistance : Optional[float] = DEFAULT_VALUE
 
     geometry : GeometryParameters = dataclasses.field(default_factory = lambda : GeometryParameters())
-    addMapping : Optional[Callable] = None
 
 
 class Collision(BasePrefab):
@@ -28,20 +25,16 @@ class Collision(BasePrefab):
 
         geom = self.add(Geometry, params.geometry)
         
-        addObject(self,"MechanicalObject",name="MechanicalObject",template="Vec3", position=f"@{params.geometry.name}/container.position", **params.kwargs)
+
+        addObject(self,"MechanicalObject", template="Vec3", position=f"@{params.geometry.name}/container.position", **params.kwargs)
+
         for primitive in params.primitives:
-            addCollisionModels(self,primitive,
+            addCollisionModels(self, primitive,
                                topology=f"@{params.geometry.name}/container",
                                selfCollision=params.selfCollision, 
-                               proximity=params.proximity, 
                                group=params.group, 
-                               contactStiffness=params.contactStiffness, 
-                               contactFriction=params.contactFriction,
-                               spheresRadius=params.spheresRadius, 
                                **params.kwargs)
             
-        if params.addMapping is not None:
-            params.addMapping(self)
 
     @staticmethod
     def getParameters(**kwargs) -> CollisionParameters:
@@ -50,7 +43,20 @@ class Collision(BasePrefab):
 
 def createScene(root):
 
+    root.addObject("VisualStyle", displayFlags="showCollisionModels")
+
     # Create a visual from a mesh file
     params = Collision.getParameters()
+    params.group = 1
     params.geometry = FileParameters(filename="mesh/cube.obj")
-    root.add(Collision, params)
+    # Expert parameters
+    # params.kwargs = {
+    #                     "TriangleCollisionModel":{"contactStiffness": 100.0, "contactFriction": 0.5}
+    #                 }
+    collision = root.add(Collision, params)
+
+    # OR set the parameters post creation
+    # collision.TriangleCollisionModel.contactStiffness = 100.0
+    # collision.TriangleCollisionModel.contactFriction = 0.5
+    # collision.TriangleCollisionModel.set(contactStiffness=100.0, contactFriction=0.5) # we have information of what is possible
+    # collision.TriangleCollisionModel.set({"contactStiffness": 100.0, "contactFriction": 0.5}) # we can do n'importe quoi 
