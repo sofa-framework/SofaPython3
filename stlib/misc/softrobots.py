@@ -12,10 +12,10 @@ class Trunk(Sofa.Core.BasePrefab):
     body : Entity.Deformable
     cables : list [SoftRobots.Cable]
     
-    def __init__(self, params):
+    def __init__(self, parameters):
         body = Entity.Deformable()
 
-        for param in range(params.cables):
+        for param in range(parameters.cables):
             cables.append(SoftRobots.Cable(body, param))
 
     class Parameters(object):

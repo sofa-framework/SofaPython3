@@ -6,7 +6,7 @@ from typing import Callable, Optional, Any
 
 @dataclasses.dataclass
 class BaseParameters(object): 
-    name : str = "object"
+    name : str = "Object"
     kwargs : dict = dataclasses.field(default_factory=dict)
 
     def toDict(self):
