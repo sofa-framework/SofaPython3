@@ -17,7 +17,6 @@ class CollisionParameters(BaseParameters):
     contactDistance : Optional[float] = DEFAULT_VALUE
 
     geometry : GeometryParameters = dataclasses.field(default_factory = lambda : GeometryParameters())
-    addMapping : Optional[Callable] = None
 
 
 class Collision(BasePrefab):
@@ -34,8 +33,6 @@ class Collision(BasePrefab):
                                group=params.group, 
                                **params.kwargs)
             
-        if params.addMapping is not None:
-            params.addMapping(self)
 
     @staticmethod
     def getParameters(**kwargs) -> CollisionParameters:
