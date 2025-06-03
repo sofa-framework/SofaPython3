@@ -22,7 +22,6 @@ class Material(BasePrefab):
 
         self.params = params
 
-        print(params.stateType.toString())
         self.addObject("MechanicalObject", name="States", template=str(self.params.stateType))
 
         if(params.addMaterial is not None):
