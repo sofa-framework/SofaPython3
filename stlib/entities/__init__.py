@@ -1,1 +1,1 @@
-from __entity__ import *
+from .__entity__ import *
