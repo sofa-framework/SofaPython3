@@ -12,7 +12,6 @@ class VisualParameters(BaseParameters):
     texture :  Optional[str] = None
 
     geometry : GeometryParameters = dataclasses.field(default_factory = lambda : GeometryParameters())
-    addMapping : Optional[Callable] = None
 
 
 class Visual(BasePrefab):
