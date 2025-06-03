@@ -48,4 +48,4 @@ class StateType(Enum):
             return "Vec1"
         if self == StateType.RIGID:
             return "Rigid3"
-        
+        return 'Unknown'
