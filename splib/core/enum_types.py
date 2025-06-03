@@ -1,7 +1,7 @@
 from enum import Enum
 
 class ConstitutiveLaw(Enum):
-    LINEAR_COROT    = 1
+    ELASTIC         = 1
     HYPERELASTIC    = 2
 
 class ODEType(Enum):
@@ -35,3 +35,8 @@ class ElementType(Enum):
     QUADS           = 4
     TETRAHEDRONS    = 5
     HEXAHEDRONS     = 6
+
+class StateType(Enum):
+    VEC3            = 3
+    VEC1            = 1
+    RIGID           = 7
