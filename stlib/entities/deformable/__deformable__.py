@@ -58,12 +58,12 @@ class DeformableBehaviorParameters(MaterialParameters):
 def createScene(root) :
 
     from stlib.geometry.file import FileParameters    
-    from stlib.geometry.extract import ExtractParameters    
+    # from stlib.geometry.extract import ExtractParameters    
 
     liverParameters = EntityParameters()
     liverParameters.behavior = DeformableBehaviorParameters()
     liverParameters.behavior.constitutiveLawType = ConstitutiveLaw.ELASTIC
     liverParameters.behavior.parameters = [1000, 0.45]
     liverParameters.geometry = FileParameters("liver.vtk")
-    liverParameters.visual = ExtractParameters()
+    # liverParameters.visual = ExtractParameters()
     myDeformableObject = root.add(Entity, liverParameters)

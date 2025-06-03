@@ -7,9 +7,10 @@ from splib.mechanics.mass import addMass
 class MaterialParameters(BaseParameters):
     name: str = "Material"
 
-    stateType: StateType = StateType.VEC3
     massDensity: float
     massLumping: bool
+    
+    stateType: StateType = StateType.VEC3
 
     addMaterial : Optional[Callable] = lambda node : addMass(node, node.stateType, massDensity=node.massDensity, lumping=node.massLumping)
 
