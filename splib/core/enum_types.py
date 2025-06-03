@@ -40,3 +40,11 @@ class StateType(Enum):
     VEC3            = 3
     VEC1            = 1
     RIGID           = 7
+
+    def __str__(self):
+        if self == StateType.VEC3:
+            return "Vec3"
+        if self == StateType.VEC1:
+            return "Vec1"
+        if self == StateType.RIGID:
+            return "Rigid3"

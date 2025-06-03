@@ -1,7 +1,7 @@
 from stlib.core.baseParameters import BaseParameters
 from stlib.prefabs.collision import CollisionParameters, Collision
 from stlib.prefabs.visual import VisualParameters, Visual
-from stlib.prefabs.behavior import Behavior, BehaviorParameters
+from stlib.prefabs.material import Material, MaterialParameters
 from stlib.geometry import Geometry
 from stlib.geometry.extract import ExtractParameters
 import dataclasses
@@ -22,7 +22,7 @@ class EntityParameters(BaseParameters):
     addVisual : Optional[Callable] = lambda x : Visual(VisualParameters()) 
 
     geometry : GeometryParameters
-    behavior : BehaviorParameters
+    material : MaterialParameters
     collision : Optional[CollisionParameters] = None
     visual : Optional[VisualParameters] = None
     
@@ -31,7 +31,7 @@ class EntityParameters(BaseParameters):
 class Entity(Sofa.Core.BaseEntity): 
 
     # A simulated object
-    behavior : Behavior
+    material : Material
     visual : Visual
     collision : Collision
     geometry : Geometry
@@ -49,12 +49,12 @@ class Entity(Sofa.Core.BaseEntity):
 
         self.geometry = self.add(Geometry, self.parameters.geometry)
 
-        ### Check compatilibility of Behavior
-        if self.parameters.behavior.stateType != self.parameters.template:
-            print("WARNING: imcompatibility between templates of entity and behavior")
-            self.parameters.behavior.stateType = self.parameters.template
+        ### Check compatilibility of Material
+        if self.parameters.material.stateType != self.parameters.template:
+            print("WARNING: imcompatibility between templates of both the entity and the material")
+            self.parameters.material.stateType = self.parameters.template
 
-        self.behavior = self.add(Behavior,self.parameters.behavior)
+        self.material = self.add(Material,self.parameters.material)
         
         if self.parameters.collision is not None:
             self.collision = self.add(Collision,self.parameters.collision)
@@ -65,11 +65,15 @@ class Entity(Sofa.Core.BaseEntity):
             self.visual = self.add(Visual,self.parameters.visual)
             self.addMapping(self.parameters.visual, self.visual)
 
+
     def addMapping(self, destParameter, destPrefab):
+
+        templateString = f'{self.parameters.template},{destParameter.template}'
+        
         if( self.parameters.template == StateType.VEC3):
             if isinstance(destParameter.geometry,ExtractParameters):
-                destPrefab.addObject("IdentityMapping", input="@../behavior/", output="@.", template='Vec3,Vec3')
+                destPrefab.addObject("IdentityMapping", input="@../material/", output="@.", template=templateString)
             else :
-                destPrefab.addObject("BarycentricMapping", input="@../behavior/", output="@.", template='Vec3,Vec3')
+                destPrefab.addObject("BarycentricMapping", input="@../material/", output="@.", template=templateString)
         else:
-            destPrefab.addObject("RigidMapping", input="@../behavior", output="@.", template='Rigid3,Vec3')
+            destPrefab.addObject("RigidMapping", input="@../material", output="@.", template=templateString)
