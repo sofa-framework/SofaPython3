@@ -3,6 +3,7 @@ from splib.core.utils import defaultValueType, DEFAULT_VALUE, isDefault
 from splib.core.enum_types import ElementType
 
 
+# TODO : use the massDensity only and deduce totalMass if necessary from it + volume
 @ReusableMethod
 def addMass(node,template,totalMass=DEFAULT_VALUE,massDensity=DEFAULT_VALUE,lumping=DEFAULT_VALUE,**kwargs):
     if (not isDefault(totalMass)) and (not isDefault(massDensity)) :
