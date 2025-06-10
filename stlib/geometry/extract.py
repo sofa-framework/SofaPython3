@@ -4,6 +4,7 @@ from splib.topology.dynamic import addDynamicTopology
 from splib.topology.loader import loadMesh
 from splib.core.enum_types import ElementType
 
+import Sofa
 from Sofa.Core import Node
 
 
@@ -24,19 +25,23 @@ class ExtractInternalDataProvider(InternalDataProvider):
 
         InternalDataProvider.__init__(self)
 
-
     def generateAttribute(self, parent : Geometry):                
         node = parent.addChild("ExtractedGeometry")
 
         #TODO: Specify somewhere in the doc that this should only be used for mapped topologies that extract parent topology surface
-        print(parent)
         # fromLink = parent.parents[0].parents[0].getChild(self.SourceName).container.linkpath
-        fromLink = "@../../Geometry.container"
-        addDynamicTopology(node, type=self.destinationType)
+        # TODO: the line above cannot work if the nodes and objects are not added to the graph prior the end of __init__() call
+        # !!! also, on a fail, nothing is added to the graph, which makes things harder to debug
+        # !!! also, does not work because of the function canCreate(), which checks the input (not yet created?)
+        # this is all related
+        fromLink = "@../../Geometry.container" # TODO: can we do better than this?
+        addDynamicTopology(node, elementType=self.sourceType)
         if self.sourceType == ElementType.TETRAHEDRA:
             node.addObject("Tetra2TriangleTopologicalMapping", input=fromLink, output=node.container.linkpath)
         elif self.sourceType == ElementType.HEXAHEDRA:
             node.addObject("Hexa2QuadTopologicalMapping", input=fromLink, output=node.container.linkpath)
+        else:
+            Sofa.msg_error("[stlib/geometry/exctrat.py]", "Element type: " + str(self.sourceType) + " not supported.")
 
         self.position = node.container.position.linkpath
         if node.container.findData("edges") is not None:

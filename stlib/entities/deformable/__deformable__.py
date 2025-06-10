@@ -24,15 +24,17 @@ class DeformableBehaviorParameters(MaterialParameters):
     addMaterial : Optional[Callable] = addDeformableMaterial
 
 
-
 def createScene(root) :
     from stlib.entities import Entity, EntityParameters
     from stlib.prefabs.visual import VisualParameters
     from stlib.geometry.extract import ExtractParameters
     from stlib.geometry.file import FileParameters    
 
+    root.addObject("VisualStyle", displayFlags=["showBehavior"])
+
     bunnyParameters = EntityParameters()
     bunnyParameters.geometry = FileParameters(filename="mesh/Bunny.vtk")
+    bunnyParameters.geometry.elementType = ElementType.TETRAHEDRA # TODO: this is required by extract.py. Should it be done automatically in geometry.py ?
     bunnyParameters.material = DeformableBehaviorParameters()
     bunnyParameters.material.constitutiveLawType = ConstitutiveLaw.ELASTIC
     bunnyParameters.material.parameters = [1000, 0.45]
@@ -41,5 +43,4 @@ def createScene(root) :
     #                                                     destinationType=ElementType.TRIANGLES)
     bunnyParameters.visual.geometry = FileParameters(filename="mesh/Bunny.stl")
     bunnyParameters.visual.color = [1, 1, 1, 0.5]
-    root.add(Entity, bunnyParameters)
-
+    bunny = root.add(Entity, bunnyParameters)
