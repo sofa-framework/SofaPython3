@@ -24,7 +24,8 @@ class Material(BasePrefab):
 
     def __init__(self, parameters: MaterialParameters):
         BasePrefab.__init__(self, parameters)
-        self.parameters = parameters
+        
 
-        self.addObject("MechanicalObject", name="States", template=str(parameters.stateType))
-        parameters.addMaterial(self)
+    def init(self):
+        self.addObject("MechanicalObject", name="States", template=str(self.parameters.stateType))
+        self.parameters.addMaterial(self)

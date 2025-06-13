@@ -20,8 +20,10 @@ class Visual(BasePrefab):
     def __init__(self, parameters: VisualParameters):
         BasePrefab.__init__(self, parameters)
 
-        self.geometry = self.add(Geometry, parameters.geometry)
-        self.addObject("OglModel", color=parameters.color, src=self.geometry.container.linkpath)
+    def init(self):
+        self.geometry = self.add(Geometry, self.parameters.geometry)
+        self.addObject("OglModel", color=self.parameters.color, src=self.geometry.container.linkpath)
+
 
     @staticmethod
     def getParameters(**kwargs) -> VisualParameters:
