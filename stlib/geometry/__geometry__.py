@@ -13,11 +13,11 @@ class Geometry(BasePrefab):...
 class InternalDataProvider(object):
     position : Any = None
     # Topology information
-    edges : Any = DEFAULT_VALUE
-    triangles : Any  = DEFAULT_VALUE
-    quads : Any  = DEFAULT_VALUE
-    tetrahedra : Any  = DEFAULT_VALUE
-    hexahedra : Any  = DEFAULT_VALUE
+    edges      : Any = DEFAULT_VALUE
+    triangles  : Any = DEFAULT_VALUE
+    quads      : Any = DEFAULT_VALUE
+    tetrahedra : Any = DEFAULT_VALUE
+    hexahedra  : Any = DEFAULT_VALUE
 
     def generateAttribute(self, parent : Geometry):
         pass
@@ -25,6 +25,7 @@ class InternalDataProvider(object):
 
 @dataclasses.dataclass
 class GeometryParameters(BaseParameters):
+    name : str = "Geometry"
 
     # Type of the highest degree element
     elementType : Optional[ElementType] = None
@@ -34,20 +35,33 @@ class GeometryParameters(BaseParameters):
 
 
 class Geometry(BasePrefab):
-    container : Object # This should be more specialized into the right SOFA type
-    modifier : Optional[Object]
+    # container : Object # This should be more specialized into the right SOFA type
+    # modifier : Optional[Object]
 
-    params : GeometryParameters
+    parameters : GeometryParameters
 
-    def __init__(self, params: GeometryParameters):
-        BasePrefab.__init__(self, params)
-        self.params = params 
-        if params.data is not None :
-            params.data.generateAttribute(self)
-        if(params.dynamicTopology):
-            if(params.elementType is not None):
-                addDynamicTopology(self, container = dataclasses.asdict(params.data))
+    def __init__(self, parameters: GeometryParameters):
+
+        BasePrefab.__init__(self, parameters)
+        
+        self.parameters = parameters 
+
+        # Generate attribute (positions, edges, triangles, quads, tetrahedra, hexahedra) from the internal data provider
+        if parameters.data is not None :
+            parameters.data.generateAttribute(self)
+        if parameters.dynamicTopology :
+            if parameters.elementType is not None :
+                addDynamicTopology(self, container = dataclasses.asdict(parameters.data))
             else:
                 raise ValueError
         else:
-            addStaticTopology(self, container = dataclasses.asdict(params.data))
+            addStaticTopology(self, 
+                              container = 
+                              {
+                                "position": parameters.data.position,
+                                "edges": parameters.data.edges,
+                                "triangles": parameters.data.triangles,
+                                "quads": parameters.data.quads,
+                                "tetrahedra": parameters.data.tetrahedra,
+                                "hexahedra": parameters.data.hexahedra
+                              })

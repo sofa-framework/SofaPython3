@@ -57,10 +57,10 @@ def createScene(rootNode):
     addImplicitODE(SimulatedLiver1)
     addLinearSolver(SimulatedLiver1,iterative=False, template="CompressedRowSparseMatrixMat3x3")
     loadMesh(SimulatedLiver1,filename="mesh/liver.msh")
-    addDynamicTopology(SimulatedLiver1,type=ElementType.TETRAHEDRONS,source="@meshLoader")
+    addDynamicTopology(SimulatedLiver1,type=ElementType.TETRAHEDRA,source="@meshLoader")
     SimulatedLiver1.addObject("MechanicalObject",name="mstate", template='Vec3d')
     SimulatedLiver1.addObject("LinearSolverConstraintCorrection",name="constraintCorrection")
-    addLinearElasticity(SimulatedLiver1,ElementType.TETRAHEDRONS, poissonRatio="0.3", youngModulus="3000", method='large')
+    addLinearElasticity(SimulatedLiver1,ElementType.TETRAHEDRA, poissonRatio="0.3", youngModulus="3000", method='large')
     addMass(SimulatedLiver1,template='Vec3d',massDensity="2")
     addFixation(SimulatedLiver1,ConstraintType.PROJECTIVE,boxROIs=[0, 3, 0, 2, 5, 2])
 
