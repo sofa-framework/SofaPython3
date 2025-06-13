@@ -1,7 +1,7 @@
 __all__ = ["core","entities","prefabs","shapes"]
 
 import Sofa.Core
-def addFromTypeName(self : Sofa.Core.Node, typeName, **kwargs):
+def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
     def findName(cname, names):
         """Compute a working unique name in the node"""
         rname = cname
@@ -11,6 +11,7 @@ def addFromTypeName(self : Sofa.Core.Node, typeName, **kwargs):
             rname = cname + str(i+1)
         return rname
 
+    # Check if a name is provided, if not, use the one of the class
     params = kwargs.copy()
     isNode = False
     if "name" not in params:
@@ -30,11 +31,13 @@ def addFromTypeName(self : Sofa.Core.Node, typeName, **kwargs):
         else:
             raise RuntimeError("Invalid argument ", typeName)
 
+    # Check if the name already exists, if this happens, create a new one.
     if params["name"] in self.children or params["name"] in self.objects:
         names = {node.name.value for node in self.children}
         names = names.union({object.name.value for object in self.objects})
         params["name"] = findName(params["name"], names)
 
+    # Dispatch the creation to either addObject or addChild
     if isinstance(typeName, type) and issubclass(typeName, Sofa.Core.Node):
         pref = self.addChild(typeName(params["name"]))
         pref.init()
@@ -52,4 +55,4 @@ def addFromTypeName(self : Sofa.Core.Node, typeName, **kwargs):
     return pref
 
 # Inject the method so it become available as if it was part of Sofa.Core.Node
-Sofa.Core.Node.add = addFromTypeName
+Sofa.Core.Node.add = __genericAdd
