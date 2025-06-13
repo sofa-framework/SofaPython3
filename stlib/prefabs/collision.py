@@ -25,15 +25,17 @@ class Collision(BasePrefab):
     def __init__(self, parameters: CollisionParameters):
         BasePrefab.__init__(self, parameters)
 
-        geom = self.add(Geometry, parameters.geometry)
+    def init(self):
+
+        geom = self.add(Geometry, self.parameters.geometry)
         
-        self.addObject("MechanicalObject", template="Vec3", position=f"@{parameters.geometry.name}/container.position")
-        for primitive in parameters.primitives:
+        self.addObject("MechanicalObject", template="Vec3", position=f"@{self.parameters.geometry.name}/container.position")
+        for primitive in self.parameters.primitives:
             addCollisionModels(self, primitive,
-                               topology=f"@{parameters.geometry.name}/container",
-                               selfCollision=parameters.selfCollision, 
-                               group=parameters.group, 
-                               **parameters.kwargs)
+                               topology=f"@{self.parameters.geometry.name}/container",
+                               selfCollision=self.parameters.selfCollision, 
+                               group=self.parameters.group, 
+                               **self.parameters.kwargs)
             
 
     @staticmethod

@@ -7,3 +7,5 @@ class BaseEntity(Sofa.Core.Prefab):
 
     def __init__(self):
         Sofa.Core.Prefab.__init__(self)
+
+        
