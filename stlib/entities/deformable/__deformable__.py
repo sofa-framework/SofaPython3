@@ -13,7 +13,7 @@ class DeformableBehaviorParameters(MaterialParameters):
     elementType : ElementType = ElementType.TETRAHEDRA
     parameters : list[float] = dataclasses.field(default_factory=lambda: [1000, 0.45])  # young modulus, poisson ratio
 
-    def addDeformableMaterial(node):
+    def __addDeformableMaterial(node):
         addMass(node, node.parameters.stateType, massDensity=node.parameters.massDensity, lumping=node.parameters.massLumping)
         # TODO : change this with inheritance
         if(node.parameters.constitutiveLawType == ConstitutiveLaw.HYPERELASTIC):
@@ -21,7 +21,7 @@ class DeformableBehaviorParameters(MaterialParameters):
         else:
             addLinearElasticity(node, node.parameters.elementType, node.parameters.parameters[0], node.parameters.parameters[1], topology="@../Geometry/container")
 
-    addMaterial : Optional[Callable] = addDeformableMaterial
+    addMaterial : Optional[Callable] = __addDeformableMaterial
 
 
 def createScene(root) :

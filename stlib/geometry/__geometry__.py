@@ -41,27 +41,28 @@ class Geometry(BasePrefab):
     parameters : GeometryParameters
 
     def __init__(self, parameters: GeometryParameters):
-
         BasePrefab.__init__(self, parameters)
         
-        self.parameters = parameters 
+
+    
+    def init(self):
 
         # Generate attribute (positions, edges, triangles, quads, tetrahedra, hexahedra) from the internal data provider
-        if parameters.data is not None :
-            parameters.data.generateAttribute(self)
-        if parameters.dynamicTopology :
-            if parameters.elementType is not None :
-                addDynamicTopology(self, container = dataclasses.asdict(parameters.data))
+        if self.parameters.data is not None :
+            self.parameters.data.generateAttribute(self)
+        if self.parameters.dynamicTopology :
+            if self.parameters.elementType is not None :
+                addDynamicTopology(self, container = dataclasses.asdict(self.parameters.data))
             else:
                 raise ValueError
         else:
             addStaticTopology(self, 
                               container = 
                               {
-                                "position": parameters.data.position,
-                                "edges": parameters.data.edges,
-                                "triangles": parameters.data.triangles,
-                                "quads": parameters.data.quads,
-                                "tetrahedra": parameters.data.tetrahedra,
-                                "hexahedra": parameters.data.hexahedra
+                                "position": self.parameters.data.position,
+                                "edges": self.parameters.data.edges,
+                                "triangles": self.parameters.data.triangles,
+                                "quads": self.parameters.data.quads,
+                                "tetrahedra": self.parameters.data.tetrahedra,
+                                "hexahedra": self.parameters.data.hexahedra
                               })
