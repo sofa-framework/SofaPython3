@@ -43,8 +43,9 @@ class Entity(BasePrefab):
 
     def __init__(self, parameters=EntityParameters(), **kwargs):
         BasePrefab.__init__(self, parameters)
-        self.parameters = parameters
 
+
+    def init(self):
         self.geometry = self.add(Geometry, self.parameters.geometry)
 
         ### Check compatilibility of Material
@@ -70,12 +71,13 @@ class Entity(BasePrefab):
         
         if( self.parameters.stateType == StateType.VEC3):
             destinationPrefab.addObject("BarycentricMapping", 
-                                        input="@../Material/", 
-                                        input_topology=destinationPrefab.geometry.container.linkpath,
-                                        output="@.", 
+                                        output=destinationPrefab.linkpath, 
+                                        output_topology=destinationPrefab.geometry.container.linkpath,
+                                        input=self.material.linkpath, 
+                                        input_topology=self.geometry.container.linkpath, 
                                         template=template)
         else:
             destinationPrefab.addObject("RigidMapping", 
-                                        input="@../Material", 
-                                        output="@.", 
+                                         output=destinationPrefab.linkpath, 
+                                        input=self.material.linkpath, 
                                         template=template)

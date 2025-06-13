@@ -22,7 +22,10 @@ def addFromTypeName(self : Sofa.Core.Node, typeName, params = BasePrefabParamete
     if params.name in self.children:
         params.name = findName(params.name, self)
 
-    return self.addChild(typeName(params)) 
+    pref = self.addChild(typeName(params)) 
+    pref.init() 
+
+    return pref
 
 Sofa.Core.Node.add = addFromTypeName
 
@@ -34,7 +37,14 @@ class BasePrefab(Sofa.Core.Node):
 
     def __init__(self, params: BasePrefabParameters):
         Sofa.Core.Node.__init__(self, name=params.name)
+        self.parameters = params
 
+    def init(self):
+        raise NotImplemented("To be overridden by child class")
+        
+    
     def localToGlobalCoordinates(pointCloudInput, pointCloudOutput):
         raise NotImplemented("Send an email to Damien, he will help you. Guaranteed :)")
+    
+
         
