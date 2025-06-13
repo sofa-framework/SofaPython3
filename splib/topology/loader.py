@@ -13,7 +13,7 @@ def loadMesh(node,filename,**kwargs):
         elif splitedName[-1] == "sph":
             return node.addObject("SphereLoader", name="loader",filename=filename, **kwargs)
         else:
-            return node.addObject("Mesh"+splitedName[-1].upper()+"Loader", name="loader",filename=filename, **kwargs)
+            return node.addObject("Mesh"+splitedName[-1].upper()+"Loader", name="loader", filename=filename, **kwargs)
     else:
         print('[Error] : File extension ' + splitedName[-1] + ' not recognised.')
 
