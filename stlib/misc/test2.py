@@ -19,7 +19,7 @@ def myAddObject(self : Sofa.Core.Node, tname, **kwargs):
 Sofa.Core.Node.addObject = myAddObject
 
 
-def myAdd(self : Sofa.Core.Node, c, params = PrefabParameters(), **kwargs):  
+def myAdd(self : Sofa.Core.Node, c, parameters = PrefabParameters(), **kwargs):  
     def findName(cname, node):
         """Compute a working unique name in the node"""
         rname = cname 
@@ -30,14 +30,14 @@ def myAdd(self : Sofa.Core.Node, c, params = PrefabParameters(), **kwargs):
         return rname
 
     for k,v in kwargs.items():
-        if hasattr(params, k):
-            setattr(params, k, v)
+        if hasattr(parameters, k):
+            setattr(parameters, k, v)
 
-    params = copy.copy(params)
-    if params.name in self.children:
-        params.name = findName(params.name, self)
+    parameters = copy.copy(parameters)
+    if parameters.name in self.children:
+        parameters.name = findName(parameters.name, self)
 
-    return c(parent = self, parameters=params) 
+    return c(parent = self, parameters=parameters) 
 Sofa.Core.Node.add = myAdd
 
 def createScene(root):
@@ -47,19 +47,19 @@ def createScene(root):
     #    self.addObject("EulerExplicitSolver", name="numericalintegration")
     #    self.addObject("LinearSolver", name="numericalsolver", firstOrder=True) 
 
-    params = EntityParameters()
-    params.simulation.iterations = 10
-    params.simulation.integration["rayleighStiffness"] = 2.0
-    params.addSimulation = entity.NONE
+    parameters = EntityParameters()
+    parameters.simulation.iterations = 10
+    parameters.simulation.integration["rayleighStiffness"] = 2.0
+    parameters.addSimulation = entity.NONE
     
-    params.mechanical["template"] = "Rigid3"
+    parameters.mechanical["template"] = "Rigid3"
 
-    #params.simulation.integration["rayleightStiffnessXXX"] = 2.0
+    #parameters.simulation.integration["rayleightStiffnessXXX"] = 2.0
 
-    #params.solver.kwargs["numericalintegration"] = { "firstOrder" : True }
+    #parameters.solver.kwargs["numericalintegration"] = { "firstOrder" : True }
 
-    root.add(Entity, params)
-    root.add(Entity, params)
-    root.add(Entity, params)
+    root.add(Entity, parameters)
+    root.add(Entity, parameters)
+    root.add(Entity, parameters)
 
     #root.add(Simulation, name="mySimulation")

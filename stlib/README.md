@@ -6,12 +6,12 @@
 | -------------- | -------------------------------------------------------------- |
 | Component*     | Element of the scene hierarchy implementing a given behavior |
 | ~~Object~~     | A deprecated synonym of a Component |
-| Node*          | Element of the scene hierarchy holding other Node (often refered as childs) or Objects       |
+| Node*          | Element of the scene hierarchy holding other Nodes (often refered as childs) or Components       |
 | Data*          | Attribute of a Component or a Node                                  |
-| Prefab         | A Sofa.Node assembling of Objects and  Nodes (a "fragment" of a scene)   |
-| Geometry       | A prefab that describe shapes with their topologies (i.e a shape with its space descritization and its associated connectivity)  |
-| Entity         | A physical prefab that represents real-world properties and behaviors used in a simulation. An entity should always have a geometry but includes neither a linear solver nor an integration scheme.|
-| Parameters     | Every prefab has a set of parameters. These parameters can contain data, links, callable or being composed of other parameters. Some of them can be optional. ~~Must inherit from `stlib.core.baseParameter.BaseParameter` and have a `@dataclasses.dataclass` decorator~~. Must have a `@stlib.parameters` decorator. |
+| Prefab         | A Node assembling of Components and Nodes (a "fragment" of a scene)   |
+| Geometry       | A Prefab that describes shapes with their topologies (i.e a shapes with their space descritization and their associated connectivity)  |
+| Entity         | A physical Prefab that represents real-world properties and behaviors used in a simulation. An entity should always have a geometry but includes neither a linear solver nor an integration scheme.|
+| Parameters     | Every Prefab has a set of parameters. These parameters can contain data, links, callable or being composed of other parameters. Some of them can be optional. ~~Must inherit from `stlib.core.baseParameter.BaseParameter` and have a `@dataclasses.dataclass` decorator~~. Must have a `@stlib.parameters` decorator. |
 
 \*Defined in SOFA documentation [here](https://www.sofa-framework.org/doc/using-sofa/terminology).
 

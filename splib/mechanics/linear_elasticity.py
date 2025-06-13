@@ -4,22 +4,22 @@ from splib.core.enum_types import ElementType
 
 
 @ReusableMethod
-def addLinearElasticity(node,elem:ElementType,youngModulus=DEFAULT_VALUE, poissonRatio=DEFAULT_VALUE, method=DEFAULT_VALUE,**kwargs):
-    match elem:
+def addLinearElasticity(node, elementType:ElementType, youngModulus=DEFAULT_VALUE, poissonRatio=DEFAULT_VALUE, method=DEFAULT_VALUE, **kwargs):
+    match elementType:
         case ElementType.EDGES:
-            node.addObject("BeamFEMForceField",name="constitutiveLaw", youngModulus=youngModulus, poissonRatio=poissonRatio, method=method, **kwargs)
+            node.addObject("BeamFEMForceField", name="constitutiveLaw", youngModulus=youngModulus, poissonRatio=poissonRatio, method=method, **kwargs)
             return
         case ElementType.TRIANGLES:
-            node.addObject("TriangleFEMForceField",name="constitutiveLaw", youngModulus=youngModulus, poissonRatio=poissonRatio, method=method,**kwargs)
+            node.addObject("TriangleFEMForceField", name="constitutiveLaw", youngModulus=youngModulus, poissonRatio=poissonRatio, method=method, **kwargs)
             return
         case ElementType.QUADS:
-            node.addObject("QuadBendingFEMForceField",name="constitutiveLaw", youngModulus=youngModulus, poissonRatio=poissonRatio, method=method,**kwargs)
+            node.addObject("QuadBendingFEMForceField", name="constitutiveLaw", youngModulus=youngModulus, poissonRatio=poissonRatio, method=method, **kwargs)
             return
-        case ElementType.TETRAHEDRONS:
-            node.addObject("TetrahedronFEMForceField",name="constitutiveLaw", youngModulus=youngModulus, poissonRatio=poissonRatio, method=method,**kwargs)
+        case ElementType.TETRAHEDRA:
+            node.addObject("TetrahedronFEMForceField", name="constitutiveLaw", youngModulus=youngModulus, poissonRatio=poissonRatio, method=method, **kwargs)
             return
-        case ElementType.HEXAHEDRONS:
-            node.addObject("HexahedronFEMForceField",name="constitutiveLaw", youngModulus=youngModulus, poissonRatio=poissonRatio, method=method,**kwargs)
+        case ElementType.HEXAHEDRA:
+            node.addObject("HexahedronFEMForceField", name="constitutiveLaw", youngModulus=youngModulus, poissonRatio=poissonRatio, method=method, **kwargs)
             return
         case _:
             print('Linear elasticity is only available for topology of type EDGES, TRIANGLES, QUADS, TETRAHEDRON, HEXAHEDRON')
