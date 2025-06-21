@@ -609,12 +609,13 @@ void sendEvent(Node* self, py::object pyUserData, char* eventName)
 
 py::object computeEnergy(Node* self)
 {
-    m_energyVisitor   = new sofa::simulation::mechanicalvisitor::MechanicalComputeEnergyVisitor(core::mechanicalparams::defaultInstance());
-    m_energyVisitor->execute(self->getContext());
-    kineticEnergy = m_energyVisitor->getKineticEnergy();
-    potentialEnergy = m_energyVisitor->getPotentialEnergy();
-    delete m_energyVisitor;
-    return py::cast(std::make_tuple(kineticEnergu, potentialEnergy));
+    sofa::simulation::mechanicalvisitor::MechanicalComputeEnergyVisitor energyVisitor(sofa::core::mechanicalparams::defaultInstance());
+    energyVisitor.execute(self->getContext());
+    const SReal kineticEnergy = energyVisitor.getKineticEnergy();
+    const SReal potentialEnergy = energyVisitor.getPotentialEnergy();
+    return py::cast(std::make_tuple(kineticEnergy, potentialEnergy));
+}
+
 }
 
 void moduleAddNode(py::module &m) {
