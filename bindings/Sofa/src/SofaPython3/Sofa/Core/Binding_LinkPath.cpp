@@ -24,6 +24,8 @@ using sofa::core::objectmodel::BaseLink;
 #include <sofa/core/objectmodel/BaseObject.h>
 using  sofa::core::objectmodel::BaseObject;
 
+#include <SofaPython3/PythonFactory.h>
+
 #include <SofaPython3/Sofa/Core/Binding_LinkPath.h>
 #include <SofaPython3/Sofa/Core/Binding_LinkPath_doc.h>
 
@@ -79,6 +81,13 @@ void moduleAddLinkPath(py::module& m)
     py::class_<LinkPath> link(m, "LinkPath", sofapython3::doc::linkpath::linkpath);
     link.def("__str__", &__str__);
     link.def("__repr__", &__repr__);
+    link.def("target", [](const LinkPath& entry) -> py::object{
+        if(entry.targetData != nullptr)
+            return PythonFactory::toPython(entry.targetData);
+        else if(entry.targetBase.get() != nullptr)
+            return PythonFactory::toPython(entry.targetBase.get());
+        return py::none();
+    });
 }
 
 }/// namespace sofapython3
