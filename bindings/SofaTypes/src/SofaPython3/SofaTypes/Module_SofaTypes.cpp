@@ -23,6 +23,7 @@
 #include <SofaPython3/SofaTypes/Binding_Mat.h>
 #include <SofaPython3/SofaTypes/Binding_Quat.h>
 #include <SofaPython3/SofaTypes/Binding_Vec.h>
+#include <SofaPython3/SofaTypes/Binding_Transform.h>
 #include <sofa/defaulttype/init.h>
 
 /// The first parameter must be named the same as the module file to load.
@@ -32,4 +33,5 @@ PYBIND11_MODULE(SofaTypes, m) {
     moduleAddMat(m);
     moduleAddQuat(m);
     moduleAddVec(m);
+    sofapython3::SofaTypes::moduleAddTransform(m);
 }
