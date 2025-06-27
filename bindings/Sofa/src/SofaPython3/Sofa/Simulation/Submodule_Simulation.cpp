@@ -39,6 +39,8 @@ using sofa::simulation::Simulation;
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/VisualLoop.h>
 #include <SofaPython3/Sofa/Simulation/Submodule_Simulation_doc.h>
+#include <SofaPython3/Sofa/Simulation/Binding_SceneCheck.h>
+#include <SofaPython3/Sofa/Simulation/Binding_SceneCheckMainRegistry.h>
 
 #include <sofa/core/init.h>
 #include <sofa/simulation/init.h>
@@ -58,6 +60,9 @@ PYBIND11_MODULE(Simulation, simulation)
     sofa::simulation::graph::init();
 
     simulation.doc() =sofapython3::doc::simulation::Class;
+
+    moduleAddSceneCheck(simulation);
+    moduleAddSceneCheckMainRegistry(simulation);
 
     simulation.def("print", [](Node* n){ sofa::simulation::node::print(n); }, sofapython3::doc::simulation::print);
     simulation.def("animate", [](Node* n, SReal dt=0.0){ sofa::simulation::node::animate(n, dt); },sofapython3::doc::simulation::animate);
