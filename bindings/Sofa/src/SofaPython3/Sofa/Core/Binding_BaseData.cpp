@@ -225,7 +225,6 @@ void moduleAddBaseData(py::module& m)
     data.def("getCounter", [](BaseData& self) { return self.getCounter(); }, sofapython3::doc::baseData::getCounter);
     data.def("setValue", setValue);
     data.def("getValue", getValue);
-    data.def("getCounter", [](BaseData& self) { return self.getCounter(); }, sofapython3::doc::baseData::getCounter);
     data.def("getHelp", &BaseData::getHelp, sofapython3::doc::baseData::getHelp);
     data.def("unset", [](BaseData& b){ b.unset(); }, sofapython3::doc::baseData::unset);
     data.def("getOwner", &getOwner, sofapython3::doc::baseData::getOwner);
