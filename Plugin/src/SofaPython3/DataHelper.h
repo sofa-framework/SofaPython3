@@ -34,71 +34,22 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <sofa/core/sptr.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/BaseNode.h>
 
 #include "config.h"
 
 ////////////////////////// FORWARD DECLARATION ///////////////////////////
 namespace sofa {
-namespace defaulttype {
-class AbstractTypeInfo;
-}
-namespace core {
-namespace objectmodel {
-class BaseData;
-
-
-class SOFAPYTHON3_API PrefabLink
-{
-public:
-    PrefabLink() {}
-    PrefabLink(const Base::SPtr& targetBase) { m_targetBase = targetBase; }
-    PrefabLink(BaseLink* targetLink) { m_targetBase = targetLink->getLinkedBase(); }
-    PrefabLink(const std::string& targetPath) { m_targetPath = targetPath; }
-
-    const Base::SPtr& getTargetBase() const { return m_targetBase; }
-    void setTargetBase(const Base::SPtr& targetBase) { m_targetBase = targetBase; }
-
-    const std::string& getTargetPath() const { return m_targetPath; }
-    void setTargetPath(const std::string& targetPath) { m_targetPath = targetPath; }
-
-    friend std::ostream& operator << ( std::ostream& out, const PrefabLink& l)
-    {
-        if (l.getTargetBase())
-        {
-            auto bn = l.getTargetBase()->toBaseNode();
-            auto bo = l.getTargetBase()->toBaseObject();
-            out << "@" + (bn ? bn->getPathName() : bo->getPathName());
+    namespace defaulttype {
+        class AbstractTypeInfo;
+    }
+    namespace core {
+        namespace objectmodel {
+            class Base;
+            class BaseData;
+            class BaseNode;
+            class BaseObject;
         }
-        out << l.getTargetPath();
-        return out;
     }
-
-    friend std::istream& operator >> ( std::istream& in, PrefabLink& l)
-    {
-        std::string s;
-        in >> s;
-        l.setTargetPath(s);
-        return in;
-    }
-
-private:
-    Base::SPtr m_targetBase { nullptr };
-    std::string m_targetPath {""};
-};
-}
-}
-namespace defaulttype
-{
-template <>
-struct DataTypeName<core::objectmodel::PrefabLink>
-{
-    static const char* name() { return "PrefabLink"; }
-};
-
-}
 }
 
 /////////////////////////////// DECLARATION //////////////////////////////
@@ -136,7 +87,7 @@ public:
 
 SOFAPYTHON3_API void setItem2D(py::array a, py::slice slice, py::object o);
 SOFAPYTHON3_API void setItem2D(py::array a, const py::slice& slice,
-                               const py::slice& slice1, py::object o);
+               const py::slice& slice1, py::object o);
 SOFAPYTHON3_API void setItem1D(py::array a, py::slice slice, py::object o);
 SOFAPYTHON3_API void setItem(py::array a, py::slice slice, py::object value);
 
@@ -160,16 +111,11 @@ void SOFAPYTHON3_API copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo
 
 std::string SOFAPYTHON3_API toSofaParsableString(const py::handle& p);
 
+//py::object SOFAPYTHON3_API dataToPython(BaseData* d);
+
 /// RVO optimized function. Don't care about copy on the return code.
 void SOFAPYTHON3_API fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc,
-                                               const py::dict& dict);
-
-/// Split the content of the dictionnary 'dict' in three set.
-/// On containing the data to parent, one containing the data to copy and on containing the data to parse in the BaseObjectDescription
-void SOFAPYTHON3_API processKwargsForObjectCreation(const py::dict dict,
-                                                    py::list& parametersToLink,
-                                                    py::list& parametersToCopy,
-                                                    sofa::core::objectmodel::BaseObjectDescription& parametersAsString);
+                               const py::dict& dict);
 
 template<typename T>
 void copyScalar(BaseData* a, const AbstractTypeInfo& nfo, py::array_t<T, py::array::c_style> src)
@@ -243,7 +189,7 @@ public:
     ~scoped_writeonly_access(){ data->endEditVoidPtr(); }
 };
 
-SOFAPYTHON3_API BaseData* addData(py::object py_self, const std::string& name, py::object value = py::none(), py::object defaultValue = py::none(), const std::string& help = "", const std::string& group = "Property", std::string type = "");
+SOFAPYTHON3_API BaseData* addData(py::object py_self, const std::string& name, py::object value = py::object(), py::object defaultValue = py::object(), const std::string& help = "", const std::string& group = "Property", std::string type = "");
 SOFAPYTHON3_API BaseLink* addLink(py::object py_self, const std::string& name, py::object value, const std::string& help);
 SOFAPYTHON3_API bool isProtectedKeyword(const std::string& name);
 
