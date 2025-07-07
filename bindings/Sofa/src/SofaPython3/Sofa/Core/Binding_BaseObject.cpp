@@ -1,40 +1,35 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2021 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
-
-#include "Binding_BaseObject.h"
-#include "Binding_Controller.h"
-#include <sofa/core/ObjectFactory.h>
-#include "Binding_BaseObject_doc.h"
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseObject_doc.h>
+#include <SofaPython3/Sofa/Core/Binding_Controller.h>
 #include <SofaPython3/PythonFactory.h>
 
+#include <sofa/core/ObjectFactory.h>
 
 // Imports for getCategories
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/BaseMapping.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -56,6 +51,16 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/core/ExecParams.h>
+#include <sofa/core/CategoryLibrary.h>
+#include <pybind11/stl.h>
+
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
+
+using sofa::core::objectmodel::BaseData;
+using sofa::core::objectmodel::Base;
+using sofa::core::objectmodel::BaseObject;
 
 namespace sofapython3
 {
@@ -80,7 +85,7 @@ std::string getLinkPath(const BaseObject *self)
 
 void computeBBox(BaseObject *self)
 {
-    self->computeBBox(sofa::core::ExecParams::defaultInstance(), false);
+    self->computeBBox(sofa::core::execparams::defaultInstance(), false);
 }
 
 py::list getSlaves(BaseObject &self)
@@ -129,69 +134,11 @@ py::object getTarget(BaseObject *self)
 
 py::object getCategories(BaseObject *self)
 {
-    const sofa::core::objectmodel::BaseClass* mclass=self->getClass();
     std::vector<std::string> categories;
-    if (mclass->hasParent(sofa::core::objectmodel::ContextObject::GetClass()))
-        categories.push_back("ContextObject");
-    if (mclass->hasParent(sofa::core::visual::VisualModel::GetClass()))
-        categories.push_back("VisualModel");
-    if (mclass->hasParent(sofa::core::BehaviorModel::GetClass()))
-        categories.push_back("BehaviorModel");
-    if (mclass->hasParent(sofa::core::CollisionModel::GetClass()))
-        categories.push_back("CollisionModel");
-    if (mclass->hasParent(sofa::core::behavior::BaseMechanicalState::GetClass()))
-        categories.push_back("MechanicalState");
-    // A Mass is a technically a ForceField, but we don't want it to appear in the ForceField category
-    if (mclass->hasParent(sofa::core::behavior::BaseForceField::GetClass()) && !mclass->hasParent(sofa::core::behavior::BaseMass::GetClass()))
-        categories.push_back("ForceField");
-    if (mclass->hasParent(sofa::core::behavior::BaseInteractionForceField::GetClass()))
-        categories.push_back("InteractionForceField");
-    if (mclass->hasParent(sofa::core::behavior::BaseProjectiveConstraintSet::GetClass()))
-        categories.push_back("ProjectiveConstraintSet");
-    if (mclass->hasParent(sofa::core::behavior::BaseConstraintSet::GetClass()))
-        categories.push_back("ConstraintSet");
-    if (mclass->hasParent(sofa::core::BaseMapping::GetClass()))
-        categories.push_back("Mapping");
-    if (mclass->hasParent(sofa::core::DataEngine::GetClass()))
-        categories.push_back("Engine");
-    if (mclass->hasParent(sofa::core::topology::TopologicalMapping::GetClass()))
-        categories.push_back("TopologicalMapping");
-    if (mclass->hasParent(sofa::core::behavior::BaseMass::GetClass()))
-        categories.push_back("Mass");
-    if (mclass->hasParent(sofa::core::behavior::OdeSolver::GetClass()))
-        categories.push_back("OdeSolver");
-    if (mclass->hasParent(sofa::core::behavior::ConstraintSolver::GetClass()))
-        categories.push_back("ConstraintSolver");
-    if (mclass->hasParent(sofa::core::behavior::BaseConstraintCorrection::GetClass()))
-        categories.push_back("ConstraintSolver");
-    if (mclass->hasParent(sofa::core::behavior::LinearSolver::GetClass()))
-        categories.push_back("LinearSolver");
-    if (mclass->hasParent(sofa::core::behavior::BaseAnimationLoop::GetClass()))
-        categories.push_back("AnimationLoop");
-    // Just like Mass and ForceField, we don't want TopologyObject to appear in the Topology category
-    if (mclass->hasParent(sofa::core::topology::Topology::GetClass()) && !mclass->hasParent(sofa::core::topology::BaseTopologyObject::GetClass()))
-        categories.push_back("Topology");
-    if (mclass->hasParent(sofa::core::topology::BaseTopologyObject::GetClass()))
-        categories.push_back("TopologyObject");
-    if (mclass->hasParent(sofa::core::behavior::BaseController::GetClass()))
-        categories.push_back("Controller");
-    if (mclass->hasParent(sofa::core::loader::BaseLoader::GetClass()))
-        categories.push_back("Loader");
-    if (mclass->hasParent(sofa::core::collision::CollisionAlgorithm::GetClass()))
-        categories.push_back("CollisionAlgorithm");
-    if (mclass->hasParent(sofa::core::collision::Pipeline::GetClass()))
-        categories.push_back("CollisionAlgorithm");
-    if (mclass->hasParent(sofa::core::collision::Intersection::GetClass()))
-        categories.push_back("CollisionAlgorithm");
-    if (mclass->hasParent(sofa::core::objectmodel::ConfigurationSetting::GetClass()))
-        categories.push_back("ConfigurationSetting");
-    if (categories.empty())
-        categories.push_back("Miscellaneous");
-
-    py::list list;
-    for (unsigned int i=0; i<categories.size(); ++i)
-        list.append(py::cast(categories[i].c_str())) ;
-    return list;
+    const sofa::core::objectmodel::BaseClass* c=self->getClass();
+    sofa::core::CategoryLibrary::getCategories(c, categories);
+    py::list l = py::cast(categories);
+    return std::move(l);
 }
 
 std::string getAsACreateObjectParameter(BaseObject *self)
@@ -241,16 +188,27 @@ py::object __getitem__(BaseObject &self, std::string s)
     return getItem(self, s);
 }
 
-void moduleAddBaseObject(py::module& m)
+auto getBaseObjectBinding(py::module& m)
 {
     /// Register the BaseObject binding into the pybind11 typing system
-    py::class_<BaseObject, Base, BaseObject::SPtr>p(m, "Object", sofapython3::doc::baseObject::Class);
+    static py::class_<BaseObject, Base, py_shared_ptr<BaseObject>>p(m, "Object", sofapython3::doc::baseObject::Class);
+    return p;
+}
+
+void moduleForwardAddBaseObject(py::module& m)
+{
+    getBaseObjectBinding(m);
+}
+
+void moduleAddBaseObject(py::module& m)
+{
+    auto p = getBaseObjectBinding(m);
 
     /// Register the BaseObject binding into the downcasting subsystem
     PythonFactory::registerType<sofa::core::objectmodel::BaseObject>(
                 [](sofa::core::objectmodel::Base* object)
     {
-        return py::cast(object->toBaseObject());
+        return py::cast(py_shared_ptr<sofa::core::objectmodel::BaseObject>(object->toBaseObject()));
     });
 
     p.def("init", &BaseObject::init, sofapython3::doc::baseObject::init);

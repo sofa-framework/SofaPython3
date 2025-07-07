@@ -1,10 +1,15 @@
 project(Bindings.Sofa)
 
-add_subdirectory(src/SofaPython3/Sofa/Core)
-add_subdirectory(src/SofaPython3/Sofa/Components)
-add_subdirectory(src/SofaPython3/Sofa/Helper)
-add_subdirectory(src/SofaPython3/Sofa/Simulation)
-add_subdirectory(src/SofaPython3/Sofa/Types)
+set(SOFABINDINGS_MODULE_LIST
+    Core
+    Helper
+    Simulation
+    Types
+    )
+
+foreach(sofabindings_module ${SOFABINDINGS_MODULE_LIST})
+	add_subdirectory(src/SofaPython3/Sofa/${sofabindings_module})
+endforeach()
 
 SP3_add_python_package(
     SOURCE_DIRECTORY
@@ -16,14 +21,17 @@ SP3_add_python_package(
 add_library(${PROJECT_NAME} INTERFACE)
 add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
-target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.Core)
-target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.Components)
-target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.Helper)
-target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.Simulation)
-target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.Types)
-
-install(TARGETS ${PROJECT_NAME} EXPORT BindingsTargets)
+foreach(sofabindings_module ${SOFABINDINGS_MODULE_LIST})
+	target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}.${sofabindings_module})
+endforeach()
 
 if(SP3_BUILD_TEST)
     add_subdirectory(tests)
 endif()
+
+sofa_create_component_in_package_with_targets(
+    COMPONENT_NAME ${PROJECT_NAME}
+    COMPONENT_VERSION ${SofaPython3_VERSION}
+    PACKAGE_NAME SofaPython3
+    TARGETS ${PROJECT_NAME}
+    )

@@ -1,65 +1,75 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 #include <pybind11/pybind11.h>
-#include <pybind11/detail/init.h>
-#include "Binding_BaseObject.h"
-#include "Binding_ForceField.h"
-#include "Binding_ForceField_doc.h"
-#include <SofaPython3/DataHelper.h>
+#include <pybind11/numpy.h>
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/Sofa/Core/Binding_ForceField.h>
+#include <SofaPython3/Sofa/Core/Binding_ForceField_doc.h>
 #include <SofaPython3/PythonFactory.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/simulation/Node.h>
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/core/behavior/DefaultMultiMatrixAccessor.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+
+#include <pybind11/eigen.h>
 
 #include <SofaPython3/PythonEnvironment.h>
 using sofapython3::PythonEnvironment;
 
-PYBIND11_DECLARE_HOLDER_TYPE(TForceField,
-                             sofapython3::py_shared_ptr<TForceField>, true)
-
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
+/// To bring in the `_a` literal
+using namespace pybind11::literals;
 
 namespace sofapython3
 {
+    using sofa::core::objectmodel::BaseObject;
     using sofa::core::objectmodel::ComponentState;
     using sofa::core::behavior::MechanicalState;
     using sofa::core::MechanicalParams;
     using sofa::core::behavior::MultiMatrixAccessor;
     using sofa::core::behavior::ForceField;
     using sofa::defaulttype::Vec3dTypes;
+    using sofa::defaulttype::Vec2dTypes;
+    using sofa::defaulttype::Vec1dTypes;
+    using sofa::defaulttype::Vec6dTypes;
     using sofa::defaulttype::Rigid3dTypes;
+    using sofa::defaulttype::Rigid2dTypes;
 
     template<class TDOFType>
     ForceField_Trampoline<TDOFType>::ForceField_Trampoline() = default;
 
     template<class TDOFType>
     ForceField_Trampoline<TDOFType>::~ForceField_Trampoline() = default;
+
+    template<class TDOFType>
+    std::string ForceField_Trampoline<TDOFType>::getClassName() const
+    {
+        PythonEnvironment::gil acquire {"getClassName"};
+
+        // Get the actual class name from python.
+        return py::str(py::cast(this).get_type().attr("__name__"));
+    }
 
     template<class TDOFType>
     void ForceField_Trampoline<TDOFType>::init()
@@ -76,7 +86,6 @@ namespace sofapython3
 
         PYBIND11_OVERLOAD(void, ForceField<TDOFType>, init,);
     }
-
 
     template<class TDOFType>
     void ForceField_Trampoline<TDOFType>::addForce(const MechanicalParams* mparams,  DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
@@ -128,11 +137,11 @@ namespace sofapython3
     void ForceField_Trampoline<TDOFType>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* dfId)
     {
         MultiMatrixAccessor::MatrixRef mref = dfId->getMatrix(this->mstate);
-        sofa::defaulttype::BaseMatrix* mat = mref.matrix;
+        sofa::linearalgebra::BaseMatrix* mat = mref.matrix;
 
         size_t offset = mref.offset;
         // nNodes is the number of nodes (positions) of the object whose K matrix we're computing
-        int nNodes = int(mparams->readX(mstate)->getValue().size());
+        int nNodes = int(mparams->readX(mstate.get())->getValue().size());
         // nDofs is the number of degrees of freedom per-element of the object whose K matrix we're computing
         int nDofs = Coord::total_size;
 
@@ -170,81 +179,83 @@ namespace sofapython3
         }
     }
 
+
     template<class TDOFType>
-    std::string ForceField_Trampoline<TDOFType>::getClassName() const
-    {
-        return pyobject->ob_type->tp_name;
-    }
+    void declare_forcefield(py::module &m) {
+        const std::string pyclass_name = std::string("ForceField") + TDOFType::Name();
+        py::class_<ForceField<TDOFType>, BaseObject, ForceField_Trampoline<TDOFType>, py_shared_ptr<ForceField<TDOFType>>> f(m, pyclass_name.c_str(), py::dynamic_attr(), py::multiple_inheritance(), sofapython3::doc::forceField::forceFieldClass);
 
-    void moduleAddForceField(py::module &m)
-    {
-        py::class_<ForceField<Vec3dTypes>,
-                BaseObject, ForceField_Trampoline<Vec3dTypes>,
-                py_shared_ptr<ForceField<Vec3dTypes>>> f(m, "ForceField",
-                                                         py::dynamic_attr(),
-                                                         py::multiple_inheritance(), sofapython3::doc::forceField::forceFieldClass);
+        f.def(py::init([](py::args &args, py::kwargs &kwargs) {
+            auto ff = sofa::core::sptr<ForceField_Trampoline<TDOFType>> (new ForceField_Trampoline<TDOFType>());
 
-        f.def(py::init([](py::args& args, py::kwargs& kwargs)
+            ff->f_listening.setValue(true);
+
+            if (args.size() == 1) ff->setName(py::cast<std::string>(args[0]));
+
+            py::object cc = py::cast(ff);
+            for (auto kv : kwargs) {
+                std::string key = py::cast<std::string>(kv.first);
+                py::object value = py::reinterpret_borrow<py::object>(kv.second);
+                if (key == "name") {
+                    if (args.size() != 0) {
+                        throw py::type_error("The name is set twice as a "
+                                            "named argument='" + py::cast<std::string>(value) + "' and as a"
+                                                                                                "positional argument='" +
+                                            py::cast<std::string>(args[0]) + "'.");
+                    }
+                }
+                BindingBase::SetAttr(cc, key, value);
+            }
+            return ff;
+        }));
+
+        using Real = typename TDOFType::Real;
+        using EigenSparseMatrix = Eigen::SparseMatrix<typename TDOFType::Real, Eigen::RowMajor>;
+        using EigenMatrixMap = Eigen::Map<EigenSparseMatrix>;
+
+        f.def("assembleKMatrix", [](ForceField<TDOFType>& self) -> EigenSparseMatrix
         {
-                  auto c = new ForceField_Trampoline<Vec3dTypes>();
-                  c->f_listening.setValue(true);
+            sofa::linearalgebra::CompressedRowSparseMatrix<Real> matrix;
 
-                  if(args.size()==1) c->setName(py::cast<std::string>(args[0]));
+            if (const auto* mstate = self.getMState())
+            {
+                const auto matrixSize = static_cast<sofa::linearalgebra::BaseMatrix::Index>(mstate->getMatrixSize());
+                matrix.resize(matrixSize, matrixSize);
 
-                  py::object cc = py::cast(c);
-                  for(auto kv : kwargs)
-                  {
-                      std::string key = py::cast<std::string>(kv.first);
-                      py::object value = py::reinterpret_borrow<py::object>(kv.second);
-                      if( key == "name")
-                      {
-                          if( args.size() != 0 )
-                          {
-                              throw py::type_error("The name is setted twice as a "
-                              "named argument='"+py::cast<std::string>(value)+"' and as a"
-                              "positional argument='"+py::cast<std::string>(args[0])+"'.");
-                          }
-                      }
-                      BindingBase::SetAttr(cc, key, value);
-                  }
-                  return c;
-              }));
+                sofa::core::behavior::DefaultMultiMatrixAccessor accessor;
+                accessor.addMechanicalState(mstate);
+                accessor.setGlobalMatrix(&matrix);
 
+                auto mparams = *MechanicalParams::defaultInstance();
+                mparams.setKFactor(1.).setMFactor(0.).setBFactor(0.);
 
-        py::class_<ForceField<Rigid3dTypes>,
-                BaseObject, ForceField_Trampoline<Rigid3dTypes>,
-                py_shared_ptr<ForceField<Rigid3dTypes>>> f2(m, "ForceFieldRigid3",
-                                                         py::dynamic_attr(),
-                                                         py::multiple_inheritance(), sofapython3::doc::forceField::forceFieldClass);
+                self.addKToMatrix(&mparams, &accessor);
+            }
+            matrix.compress();
 
+            if (matrix.getColsValue().empty() || matrix.rowBegin.empty() || matrix.colsIndex.empty())
+                return {};
 
-        f2.def(py::init([](py::args& args, py::kwargs& kwargs)
+            return EigenMatrixMap(matrix.rows(), matrix.cols(), matrix.getColsValue().size(),
+                                (typename EigenMatrixMap::StorageIndex*)matrix.rowBegin.data(),
+                                (typename EigenMatrixMap::StorageIndex*)matrix.colsIndex.data(),
+                                matrix.colsValue.data());
+        }, sofapython3::doc::forceField::assembleKMatrix);
+
+        PythonFactory::registerType<ForceField<TDOFType>>([](sofa::core::objectmodel::Base* object)
         {
-                  auto c = new ForceField_Trampoline<Rigid3dTypes>();
-                  c->f_listening.setValue(true);
-
-                  if(args.size()==1) c->setName(py::cast<std::string>(args[0]));
-
-                  py::object cc = py::cast(c);
-                  for(auto kv : kwargs)
-                  {
-                      std::string key = py::cast<std::string>(kv.first);
-                      py::object value = py::reinterpret_borrow<py::object>(kv.second);
-                      if( key == "name")
-                      {
-                          if( args.size() != 0 )
-                          {
-                              throw py::type_error("The name is setted twice as a "
-                              "named argument='"+py::cast<std::string>(value)+"' and as a"
-                              "positional argument='"+py::cast<std::string>(args[0])+"'.");
-                          }
-                      }
-                      BindingBase::SetAttr(cc, key, value);
-                  }
-                  return c;
-              }));
+            return py::cast(dynamic_cast<ForceField<TDOFType>*>(object));
+        });
     }
 
 
+void moduleAddForceField(py::module &m) {
+    declare_forcefield<Vec3dTypes>(m);
+    declare_forcefield<Vec2dTypes>(m);
+    declare_forcefield<Vec1dTypes>(m);
+    declare_forcefield<Vec6dTypes>(m);
+    declare_forcefield<Rigid3dTypes>(m);
+    declare_forcefield<Rigid2dTypes>(m);
+}
 
 }  // namespace sofapython3

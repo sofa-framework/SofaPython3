@@ -1,3 +1,23 @@
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+
 #include "Binding_DataLink.h"
 
 #include <sofa/core/objectmodel/BaseData.h>
@@ -40,14 +60,14 @@ py::str DataLink::__repr__()
 
 void moduleAddDataLink(py::module &m)
 {
-    py::class_<PrefabLink, std::unique_ptr<PrefabLink, py::nodelete>> l(m, "PrefabLink");
+    py::class_<PrefabLink, std::unique_ptr<PrefabLink, py::nodelete>> l(m, "PrefabLink", "Link to a prefab");
     l.def(py::init<const Base::SPtr&>());
     l.def(py::init<BaseLink*>());
     l.def(py::init<const std::string&>());
     l.def("getTargetBase", &getTargetBase);
     l.def("getTargetPath", &getTargetPath);
 
-    py::class_<DataLink, BaseData, std::unique_ptr<DataLink, py::nodelete>> d(m, "DataLink");
+    py::class_<DataLink, BaseData, std::unique_ptr<DataLink, py::nodelete>> d(m, "DataLink", "Stores the connection between two object of type Data");
 
     PythonFactory::registerType("DataLink", [](BaseData* data) -> py::object {
         return py::cast(reinterpret_cast<DataLink*>(data));

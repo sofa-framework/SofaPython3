@@ -1,33 +1,26 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 #include "Binding_Vector.h"
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/objectmodel/BaseData.h>
 
 #include <pybind11/stl.h>
@@ -37,7 +30,7 @@ namespace py { using namespace pybind11; }
 
 
 /**
- * To add sofa::helper::vector types, follow the 2 steps below
+ * To add sofa::type::vector types, follow the 2 steps below
  */
 
 // ------------------------------------
@@ -54,11 +47,12 @@ PYBIND11_MAKE_OPAQUE(std::vector<sofa::core::objectmodel::BaseData*>);
 template<typename T>
 void declareVector(py::module &m, const std::string &typestr) {
     std::string std_pyclass_name = std::string("StdVector") + typestr;
-    auto v = py::bind_vector<std::vector<T>>(m, std_pyclass_name);
+    std::string std_pyclass_doc = std::string("Standard vector of ") + typestr;
+    auto v = py::bind_vector<std::vector<T>>(m, std_pyclass_name, std_pyclass_doc.c_str());
 
     std::string pyclass_name = std::string("Vector") + typestr;
-
-    py::class_<sofa::helper::vector<T>> (m, pyclass_name.c_str(), v);
+    std::string pyclass_doc = std::string("Vector of ") + typestr;
+    py::class_<sofa::type::vector<T>> (m, pyclass_name.c_str(), v, pyclass_doc.c_str());
 }
 
 namespace sofapython3 {

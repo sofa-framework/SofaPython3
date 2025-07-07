@@ -15,23 +15,19 @@ class MyController(Sofa.Core.Controller):
         def __init__(self, *args, **kwargs):
             ## These are needed (and the normal way to override from a python class)
             Sofa.Core.Controller.__init__(self, *args, **kwargs)
-            print(" Python::__init__::"+str(self.name))
             self.inited = 0
             self.iterations = 0
 
         def __del__(self):
-                print(" Python::__del__")
+                pass
         
         def init(self):
-                print(" Python::init() at "+str(self))
                 self.inited += 1
 
         def onEvent(self, kwargs):
-                print(" Handling event " + str(kwargs))
+                pass
 
         def onAnimateBeginEvent(self, kwargs):
-                print(" Python::onAnimationBeginEvent() ("+str(kwargs) + ")")
-                print(kwargs["dt"])
                 self.iterations+=1
 
 
@@ -41,11 +37,15 @@ class Test(unittest.TestCase):
                  c.init()
                  c.reinit()
 
+                 self.assertEqual(c.getClassName(), "Controller")
+
          def test_constructorOverriden(self):
                  root = Sofa.Core.Node("rootNode")
                  root.addObject(MyController(name="controller"))
                  root.controller.init()
                  root.controller.reinit()
+
+                 self.assertEqual(root.controller.getClassName(), "MyController")
 
          def test_constructorOverriddenWithArgs(self):
              root = Sofa.Core.Node("rootNode")

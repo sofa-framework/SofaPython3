@@ -1,29 +1,22 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 
 #include <sofa/defaulttype/DataTypeInfo.h>
@@ -38,6 +31,8 @@ using  sofa::core::objectmodel::BaseObject;
 #include <sofa/core/objectmodel/BaseNode.h>
 using  sofa::core::objectmodel::BaseNode;
 
+#include <memory>
+
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/PythonFactory.h>
 #include "../Binding_Base.h"
@@ -45,7 +40,9 @@ using  sofa::core::objectmodel::BaseNode;
 #include "Binding_DataContainer.h"
 #include "Binding_DataContainer_doc.h"
 
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
+
+//PYBIND11_DECLARE_HOLDER_TYPE(sofapython3::DataContainerContext, std::unique_ptr<sofapython3::DataContainerContext>)
 
 namespace sofapython3
 {
@@ -156,7 +153,8 @@ void moduleAddDataContainer(py::module& m)
     }, sofapython3::doc::datacontainer::__len__);
 
     p.def("array", [](DataContainer* self){
-        auto capsule = py::capsule(new Base::SPtr(self->getOwner()));
+        auto capsule = py::capsule(new Base::SPtr(self->getOwner()),
+                                   [](void*p){ delete static_cast<Base::SPtr*>(p); });
         py::buffer_info ninfo = toBufferInfo(*self);
         py::array a(pybind11::dtype(ninfo), ninfo.shape,
                     ninfo.strides, ninfo.ptr, capsule);
@@ -164,20 +162,20 @@ void moduleAddDataContainer(py::module& m)
         return a;
     });
 
-    p.def("writeable", [](DataContainer* self, py::object f) -> py::object
+    p.def("writeable", [](DataContainer* self, py::object f) -> std::unique_ptr<DataContainerContext>
     {
         if(self!=nullptr)
-            return py::cast(new DataContainerContext(self, f));
+            return std::make_unique<DataContainerContext>(self, f);
 
-        return py::none();
+        return nullptr;
     });
 
-    p.def("writeable", [](DataContainer* self) -> py::object
+    p.def("writeable", [](DataContainer* self) -> std::unique_ptr<DataContainerContext>
     {
         if(self!=nullptr)
-            return py::cast(new DataContainerContext(self, py::none()));
+            return std::make_unique<DataContainerContext>(self, py::none());
 
-        return py::none();
+        return nullptr;
     });
 
     p.def("__iadd__", [](DataContainer* self, py::object value)
@@ -293,7 +291,7 @@ void moduleAddDataContainer(py::module& m)
 
 void moduleAddDataContainerContext(py::module& m)
 {
-    py::class_<DataContainerContext> wa(m, "DataContainerContextManager");
+    py::class_<DataContainerContext> wa(m, "DataContainerContextManager", "Container managing context data");
     wa.def("__enter__", [](DataContainerContext& wa)
     {
         wa.data->beginEditVoidPtr();

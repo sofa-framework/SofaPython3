@@ -1,38 +1,31 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 #include "Binding_Quat.h"
-typedef sofa::helper::Quater<double> Quat;
-#include <sofa/defaulttype/Vec.h>
-using sofa::defaulttype::Vec3d;
-using sofa::defaulttype::Vec4d;
-#include <sofa/defaulttype/Mat.h>
-typedef sofa::defaulttype::Mat4x4d Matrix4;
-typedef sofa::defaulttype::Mat3x3d Matrix3;
+typedef sofa::type::Quat<double> Quat;
+#include <sofa/type/Vec.h>
+using sofa::type::Vec3d;
+using sofa::type::Vec4d;
+#include <sofa/type/Mat.h>
+typedef sofa::type::Mat4x4d Matrix4;
+typedef sofa::type::Mat3x3d Matrix3;
 #include <pybind11/operators.h>
 
 void moduleAddQuat(py::module &m) {
@@ -69,7 +62,7 @@ void moduleAddQuat(py::module &m) {
   p.def("toRotationVector", &Quat::quatToRotationVector);
   p.def("toEulerVector", &Quat::toEulerVector);
   p.def("buildRotationMatrix", [](Quat &self, Matrix4 &m) {
-    double tmp[4][4] = {0};
+    double tmp[4][4] = {{0}};
     self.buildRotationMatrix(tmp);
     m = Matrix4(Vec4d(tmp[0]), Vec4d(tmp[1]), Vec4d(tmp[2]), Vec4d(tmp[3]));
   });
@@ -92,7 +85,7 @@ void moduleAddQuat(py::module &m) {
         (void (Quat::*)(const Quat &, const Quat &, double, bool)) &
             Quat::slerp,
         "a"_a, "b"_a, "t"_a, "allowdFlip"_a = true);
-  p.def("slerp", (Quat(Quat::*)(Quat &, double)) & Quat::slerp, "q1"_a, "t"_a);
+  p.def("slerp", (Quat (Quat::*)(const Quat&, Quat::value_type) const) &Quat::slerp, "q1"_a, "t"_a);
   p.def("slerp2", &Quat::slerp2, "q1"_a, "t"_a);
 
   p.def(py::self + py::self);

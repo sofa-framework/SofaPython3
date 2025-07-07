@@ -1,29 +1,22 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 #pragma once
 
@@ -39,7 +32,7 @@ static auto Class =
         The different simulated objects are described in separate nodes, and different representations
         of a same object can be done in different sub-nodes.
 
-        Example of use:
+        Example:
           .. code-block:: python
 
                 import Sofa.Core
@@ -60,7 +53,7 @@ static auto Class =
 
         The child nodes, components and parents can be accessed using generator attributes.
 
-        Example of use:
+        Example:
           .. code-block:: python
 
              # ...
@@ -74,8 +67,9 @@ static auto Class =
 
         Accessing children or object from the current node is easy thanks to the generalized access
         API.
-        Example of use:
-        .. code-block:: python
+
+        Example:
+          .. code-block:: python
 
              # ...
              n = Sofa.Core.Node("MyNode")
@@ -91,7 +85,6 @@ static auto Class =
 
              # fast access.
              n["child1.child2.dofs.position"]
-
         )";
 static auto init =
         R"(
@@ -121,66 +114,109 @@ static auto initSofa =
 static auto addKwargs =
         R"(
         Add an prefab,
-        example:
-            def Cube(parentNodes, name="Cube"):
-                cube = parentNode.addChild(name)
-                cube.addObject("MechanicalObject")
-                return cube
 
-            node.add(Cube, name="MyCube"")
+        Example:
+            .. code-block:: python
+
+                def Cube(parentNodes, name="Cube"):
+                    cube = parentNode.addChild(name)
+                    cube.addObject("MechanicalObject")
+                    return cube
+
+                node.add(Cube, name="MyCube"")
+
         )";
 
 
 static auto addObjectKwargs =
         R"(
         Add an object.
-        Detect the implemented interfaces and add the object to the corresponding lists.
-        :param self: the node itself
-        :param type: type of the object
-        :param kwargs
-        :type self: Sofa.Simulation.Node*
-        :type type: string&
-        :type kwargs: kwargs&
+
+        :param component_type: the Sofa component's type name to add
+        :type component_type: str
+
+        :param kwargs: additional keyword arguments
+        :type kwargs: dict
+
+        :rtype: the created :class: Sofa.Core.Object
+
         )";
 
 static auto addObject =
         R"(
-        Add an object.
-        Detect the implemented interfaces and add the object to the corresponding lists.
-        :param self: the node itself
-        :param object: the object to be added
-        :type self: Sofa.Simulation.Node&
-        :type object: Sofa.Simulation.BaseObject*
-        )";
+        Add an existing sofa object.
 
+        :param component: The Sofa component
+        :type component: :class: Sofa.Core.Object
+
+        :rtype: the added :class: Sofa.Core.Object
+
+        )";
 
 static auto createObject =
         R"(
         Deprecated, see addObject
         )";
 
-static auto addChildKwargs =
+static auto hasObject =
         R"(
-        Add a child node
-        :param self: the node itself
-        :param name: name of the child to be added
-        :param kwargs
-        :type self: Sofa.Simulation.Node*
-        :type name: string&
-        :type kwargs: kwargs&
-        :rtype: Sofa.Simulation.Node
+        Check if there is a component with provided name.
+
+        :param n
+        :param name
+        :type n: Sofa.Simulation.Node
+        :type name: string
+        :return: True if the node has an object with correspdonding name.
+        )";
+static auto getObject =
+        R"(
+        Get a sofa component hold by a node.
+
+        :param name:
+        :type n: Sofa.Simulation.Node
+        :type name: string
+        :return: the component with 'name', None otherwise
+
+        .. note::
+
+            The extra arguments allowed in the SofaPython (warning=True/False) binding are not supported SofaPython3.
+
+        .. code-block:: python
+
+            # SofaPython3:
+            if node.getObject("MyObject") != None:
+                pass
+
+            if node.hasObject("MyObject"):
+                pass
+
+            if "MyObject" in node.objects:
+                pass
+
         )";
 
-static auto addChild =
-        R"(
-        Add a child node
+static auto addChildKwargs = R"(
+        Add a new node as a child
 
-        :param self : the node itself
-        :param child : the child to be added
-        :type self: Sofa.Simulation.Node*
-        :type child: Sofa.Simulation.Node*
-        :rtype: Sofa.Simulation.Node
-        )";
+        :param name: name of the child node to be added
+        :type name: str
+
+        :param kwargs: Extra parameters passed to the created Sofa.Node
+        :type kwargs: dict
+
+        :rtype: the created :class: Sofa.Simulation.Node
+
+)";
+
+static auto addChild = R"(
+        Add an existing node as child
+
+        :param node: the node to be added
+        :type node: :class: Sofa.Simulation.Node
+
+        :rtype: the added :class: Sofa.Simulation.Node
+
+)";
 
 static auto createChild =
         R"(
@@ -191,11 +227,11 @@ static auto getChild =
         R"(
         Get the child of a node.
 
-        :param n
-        :param name
+        :param n:
+        :param name:
         :type n: Sofa.Simulation.Node
         :type name: string
-        :return: the child of the same name
+        :return: the child with 'name', None otherwise
         )";
 
 static auto removeChild =
@@ -203,9 +239,9 @@ static auto removeChild =
         Remove a child of a node.
         :param self: the node itself
         :param n: the child to remove
-        :type self: Sofa.Simulation.Node&
-        :type n: Sofa.Simulation.Node&
-        :Examples:
+        :type self: Sofa.Simulation.Node
+        :type n: Sofa.Simulation.Node
+        Example:
         >>> node1.removeChild(node2)
         )";
 
@@ -216,7 +252,7 @@ static auto removeChildWithName =
         :param name: the name of the child to remove
         :type n: Sofa.Simulation.Node&
         :type name: string
-        :Examples:
+        Example:
         >>> node1.removeChild("nameNode2")
         )";
 
@@ -235,36 +271,59 @@ static auto getPathName =
 static auto getLinkPath =
         R"(
         Get the link of the current node
-        :param node
+        :param node:
         :type node: Sofa.Simulation.Node*
         )";
 
 static auto children =
         R"(
         Field interface to acces the children of a node.
+        The returned object is a iteratable featuring the following operations:
+        len, remove_at, __contains__, get_at
 
-        :Example:
+        Example:
         >>> n = Sofa.Core.Node("MyNode")
+        >>> n.addChild("child1")
         >>> for child in n.children:
         >>>     print(child.name)
+        >>>
+        >>> if "child1" in n.children:
+        >>>     print("Yes")
+        >>> print(len(n.children))
         )";
 
 static auto parents =
         R"(
         Field interface to acces the parents of a node.
-        :Example:
-        >>> n = Sofa.Core.Node("MyNode")
-        >>> for parent in n.parents:
+        The returned object is a iteratable featuring the following operations:
+        len, remove_at, __contains__, get_at
+
+        Example:
+        >>> n = Sofa.Core.Node("parent1")
+        >>> c = n.addChild("child1")
+        >>> for parent in c.parents:
         >>>     print(parent.name)
+        >>>
+        >>> if "parent1" in c.parents:
+        >>>     print("Yes")
+        >>> print(len(n.parents))
         )";
 static auto objects =
         R"(
         Field interface to acces the objects of a node.
+        The returned object is a iteratable featuring the following operations:
+        len, remove_at, __contains__, get_at
 
-        :Example:
+        Example:
         >>> n = Sofa.Core.Node("MyNode")
+        >>> n.addObject("MechanicalObject", name="object1")
+        >>> n.addObject("MechanicalObject", name="object2")
         >>> for object in n.objects:
         >>>     print(object.name)
+        >>>
+        >>> if "object2" in c.objects:
+        >>>     print("Yes")
+        >>> print(len(n.objects))
         )";
 static auto removeObject =
         R"(
@@ -319,6 +378,11 @@ static auto getMechanicalState =
         Get the mechanical state of the node.
         )";
 
+static auto hasODESolver =
+        R"(
+        Return true if the node includes an ODE Solver
+        )";
+
 static auto getMechanicalMapping =
         R"(
         Get the mechanical mapping of the node.
@@ -332,6 +396,10 @@ static auto sendEvent =
         :param eventName: the name of the event
         :type pyUserData: py::object
         :type eventName: string
+        )";
+static auto computeEnergy =
+        R"(
+        Returns the tuple (kineticEnergy, potentialEnergy)
         )";
 
 }

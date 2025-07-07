@@ -1,33 +1,6 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
-
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,17 +15,16 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
 #include <sstream>
 #include <fstream>
+#include <sofa/simulation/Simulation.h>
 
-#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/simulation/graph/DAGNode.h>
 using sofa::simulation::graph::DAGNode;
 
-#include <sofa/helper/ArgumentParser.h>
 #include <SofaPython3/PythonEnvironment.h>
 #include <SofaPython3/SceneLoaderPY3.h>
 #include <SofaPython3/PythonFactory.h>
@@ -61,8 +33,10 @@ using sofa::simulation::graph::DAGNode;
 #include <pybind11/embed.h>
 namespace py = pybind11;
 
-using namespace sofa::core::objectmodel;
+#include <sofa/helper/system/SetDirectory.h>
 using sofa::helper::system::SetDirectory;
+
+using namespace sofa::core::objectmodel;
 
 MSG_REGISTER_CLASS(sofapython3::SceneLoaderPY3, "SofaPython3::SceneLoader")
 
@@ -101,11 +75,28 @@ void SceneLoaderPY3::getExtensionList(ExtensionList* list)
     list->push_back("py");
 }
 
+bool SceneLoaderPY3::syntaxForAddingRequiredPlugin(const std::string& pluginName,
+                                                   const std::vector<std::string>& listComponents, std::ostream& ss, sofa::simulation::Node* nodeWhereAdded)
+{
+    ss << nodeWhereAdded->getName() << ".addObject('RequiredPlugin', name='" << pluginName << "')";
+    if (!listComponents.empty())
+    {
+        ss <<  " # Needed to use components [" << sofa::helper::join(listComponents, ',');
+    }
+    ss << "]" << msgendl;
+    return true;
+}
+
 sofa::simulation::Node::SPtr SceneLoaderPY3::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
 {
-    sofa::simulation::Node::SPtr root = sofa::simulation::Node::create("root");
-    loadSceneWithArguments(filename.c_str(), sceneArgs, root);
-    return root;
+    if (sofa::simulation::Simulation* simulation = sofa::simulation::getSimulation())
+    {
+        sofa::simulation::Node::SPtr root = simulation->createNewNode("root");
+        loadSceneWithArguments(filename.c_str(), sceneArgs, root);
+        return root;
+    }
+
+    return nullptr;
 }
 
 
@@ -113,7 +104,7 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
                                             const std::vector<std::string>& arguments,
                                             Node::SPtr root_out)
 {
-    SOFA_UNUSED(arguments);
+    PythonEnvironment::setArguments(SetDirectory::GetFileName(filename).c_str(), arguments);
     PythonEnvironment::gil lock;
 
     try{
@@ -127,15 +118,29 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
 
         if(!py::hasattr(module, "createScene"))
         {
-            msg_error() << "Missing createScene function";
+            msg_error("SofaPython3") << "Missing createScene function";
             return ;
         }
 
         py::object createScene = module.attr("createScene");
         createScene( PythonFactory::toPython(root_out.get()) );
-    }catch(std::exception& e)
+
+        root_out->setInstanciationSourceFileName(filename);
+        root_out->setInstanciationSourceFilePos(0);
+    }catch(py::error_already_set& e)
     {
-        msg_error() << e.what();
+        std::stringstream ss;
+        ss << "Unable to completely load the scene from file '"<< filename << "'." << msgendl
+            << "Python exception: " << msgendl
+            << "  " << e.what();
+        if( py::isinstance(e.type(), py::eval("type(DeprecationWarning)")) && !py::isinstance(e.type(), py::eval("type(AttributeError)")))
+        {
+            msg_deprecated() << ss.str();
+        }else
+        {
+            msg_error() << ss.str();
+        }
+
     }
 
 }

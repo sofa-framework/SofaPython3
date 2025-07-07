@@ -1,36 +1,29 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 #pragma once
 
 namespace sofapython3::doc::objectmodel {
 static auto ObjectFactoryClass =
     R"(
-    Main class used to register and dynamically create objects.
+    Class used to register and dynamically create objects
 
     It uses the Factory design pattern, where each class is registered in a map,
     and dynamically retrieved given the type name.
@@ -40,9 +33,7 @@ static auto ObjectFactoryClass =
     )";
 
 static auto ClassEntryClass =
-    R"(
-    Record storing information about a class
-    )";
+    R"(Record storing information about a class)";
 
 static auto ObjectFactory_getEntry =
     R"(
@@ -73,4 +64,9 @@ static auto ObjectFactory_getInstance =
     R"(
     Get the ObjectFactory singleton instance
     )";
-} /// namespace sofapython3::doc::forceField
+
+static auto ObjectFactory_dump_json =
+    R"(
+    Dump the ObjectFactory in a json string
+    )";
+} /// namespace sofapython3::doc::objectmodel

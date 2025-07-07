@@ -1,43 +1,38 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 #include <pybind11/stl.h>
 
-#include "Binding_GUIManager.h"
-#include <sofa/gui/GUIManager.h>
-#include <sofa/gui/BaseGUI.h>
+#include <SofaPython3/SofaGui/Binding_GUIManager.h>
+#include <sofa/gui/common/GUIManager.h>
+#include <sofa/gui/common/BaseGUI.h>
+#include <sofa/simulation/Node.h>
 
-namespace py = pybind11;
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
 
 namespace sofapython3 {
 
 void moduleAddGuiManager(py::module& m)
 {
-    py::class_<sofa::gui::GUIManager> guiManager(m, "GUIManager");
+    py::class_<sofa::gui::common::GUIManager> guiManager(m, "GUIManager", "Class managing the GUI creation, closing and its properties");
 
     /*
      * Sofa.Gui.GUIManager.ListSupportedGUI
@@ -50,8 +45,8 @@ void moduleAddGuiManager(py::module& m)
         :return: A string containing each available GUIs. If the parameter 'separator' is omitted, a list containing the
                  available GUIs is returned instead of a string.
     )doc";
-    guiManager.def_static("ListSupportedGUI", py::overload_cast<>(&sofa::gui::GUIManager::ListSupportedGUI), listSupportedGUIDoc);
-    guiManager.def_static("ListSupportedGUI", py::overload_cast<char>(&sofa::gui::GUIManager::ListSupportedGUI), listSupportedGUIDoc );
+    guiManager.def_static("ListSupportedGUI", py::overload_cast<>(&sofa::gui::common::GUIManager::ListSupportedGUI), listSupportedGUIDoc);
+    guiManager.def_static("ListSupportedGUI", py::overload_cast<char>(&sofa::gui::common::GUIManager::ListSupportedGUI), listSupportedGUIDoc );
 
 
     /*
@@ -65,7 +60,7 @@ void moduleAddGuiManager(py::module& m)
         :param gui_name: The name of the GUI used. See Sofa.Gui.GUIManager.ListSupportedGUI(). (optional)
         :type  gui_name: str
     )doc";
-    guiManager.def_static("Init", &sofa::gui::GUIManager::Init, py::arg("program_name"), py::arg("gui_name") = "", initDoc);
+    guiManager.def_static("Init", &sofa::gui::common::GUIManager::Init, py::arg("program_name"), py::arg("gui_name") = "", initDoc);
 
 
     /*
@@ -81,10 +76,10 @@ void moduleAddGuiManager(py::module& m)
         :return: 0 if the GUI creation succeed, 1 otherwise
     )doc";
     guiManager.def_static("createGUI", [](sofa::simulation::Node & node, const std::string & filename) -> int {
-        return sofa::gui::GUIManager::createGUI(&node, filename.c_str());
+        return sofa::gui::common::GUIManager::createGUI(&node, filename.c_str());
     }, createGUIDoc);
     guiManager.def_static("createGUI", [](sofa::simulation::Node & node) -> int {
-        return sofa::gui::GUIManager::createGUI(&node);
+        return sofa::gui::common::GUIManager::createGUI(&node);
     }, createGUIDoc);
 
 
@@ -94,7 +89,7 @@ void moduleAddGuiManager(py::module& m)
     const auto closeGUIDoc = R"doc(
         Close the current GUI.
     )doc";
-    guiManager.def_static("closeGUI", &sofa::gui::GUIManager::closeGUI, closeGUIDoc);
+    guiManager.def_static("closeGUI", &sofa::gui::common::GUIManager::closeGUI, closeGUIDoc);
 
 
     /*
@@ -111,7 +106,7 @@ void moduleAddGuiManager(py::module& m)
         :type temporaryFile: bool
     )doc";
     guiManager.def_static("SetScene", [](sofa::simulation::Node & node, const char * filename = nullptr, bool temporaryFile = false) {
-        sofa::gui::GUIManager::SetScene(&node, filename, temporaryFile);
+        sofa::gui::common::GUIManager::SetScene(&node, filename, temporaryFile);
     }, py::arg("root"), py::arg("filename") = nullptr, py::arg("temporaryFile") = false, setSceneDoc);
 
 
@@ -130,10 +125,10 @@ void moduleAddGuiManager(py::module& m)
         :return: 0 if the main loop succeed, 1 otherwise
     )doc";
     guiManager.def_static("MainLoop", [](sofa::simulation::Node & node, const std::string & filename) -> int {
-        return sofa::gui::GUIManager::MainLoop(&node, filename.c_str());
+        return sofa::gui::common::GUIManager::MainLoop(&node, filename.c_str());
     }, mainLoopDoc);
     guiManager.def_static("MainLoop", [](sofa::simulation::Node & node) -> int {
-        return sofa::gui::GUIManager::MainLoop(&node);
+        return sofa::gui::common::GUIManager::MainLoop(&node);
     }, mainLoopDoc);
 
 
@@ -150,8 +145,18 @@ void moduleAddGuiManager(py::module& m)
         :param height:
         :type height: int
     )doc";
-    guiManager.def_static("SetDimension", &sofa::gui::GUIManager::SetDimension, setDimensionDoc);
+    guiManager.def_static("SetDimension", &sofa::gui::common::GUIManager::SetDimension, setDimensionDoc);
 
+    /*
+     * Sofa.Gui.GUIManager.CenterWindow
+     */
+    const auto centerWindowDoc = R"doc(
+        Center the GUI's window on screen .
+
+        This must be called after Sofa.Gui.GUIManager.createGUI
+
+    )doc";
+    guiManager.def_static("CenterWindow", &sofa::gui::common::GUIManager::CenterWindow, centerWindowDoc);
 
     /*
      * Sofa.Gui.GUIManager.SetFullScreen
@@ -159,7 +164,7 @@ void moduleAddGuiManager(py::module& m)
     const auto SetFullScreenDoc = R"doc(
         Set the GUI in full screen mode.
     )doc";
-    guiManager.def_static("SetFullScreen", &sofa::gui::GUIManager::SetFullScreen, SetFullScreenDoc);
+    guiManager.def_static("SetFullScreen", &sofa::gui::common::GUIManager::SetFullScreen, SetFullScreenDoc);
 
     /*
      * Sofa.Gui.GUIManager.SaveScreenshot
@@ -170,7 +175,7 @@ void moduleAddGuiManager(py::module& m)
         :param filename: Where to save the screenshot.
         :type filename: str
     )doc";
-    guiManager.def_static("SaveScreenshot", &sofa::gui::GUIManager::SaveScreenshot, SaveScreenshotDoc);
+    guiManager.def_static("SaveScreenshot", &sofa::gui::common::GUIManager::SaveScreenshot, SaveScreenshotDoc);
 
     /*
      * Sofa.Gui.GUIManager.GetGUI
@@ -178,7 +183,7 @@ void moduleAddGuiManager(py::module& m)
     const auto GetGUIDoc = R"doc(
         Get the current GUI.
     )doc";
-    guiManager.def_static("GetGUI", &sofa::gui::GUIManager::getGUI, GetGUIDoc);
+    guiManager.def_static("GetGUI", &sofa::gui::common::GUIManager::getGUI, GetGUIDoc);
 }
 
 } /// namespace sofapython3

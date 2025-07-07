@@ -1,41 +1,37 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
-
-
+#include <sofa/helper/init.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <SofaPython3/PythonEnvironment.h>
 #include <sofa/core/objectmodel/Base.h>
-#include "System/Submodule_System.h"
-#include "Submodule_Helper.h"
-#include "Binding_MessageHandler.h"
-#include "Binding_Vector.h"
+#include <SofaPython3/Sofa/Helper/System/Submodule_System.h>
+#include <SofaPython3/Sofa/Helper/Binding_MessageHandler.h>
+#include <SofaPython3/Sofa/Helper/Binding_Vector.h>
+#include <SofaPython3/Sofa/Helper/Binding_Utils.h>
 
-namespace sofapython3
-{
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
+
+namespace sofapython3 {
+
 using sofa::core::objectmodel::Base;
 using sofa::helper::logging::ComponentInfo;
 using sofa::helper::logging::SofaComponentInfo;
@@ -111,50 +107,58 @@ static void parse_emitter_message_then(py::args args, const Action& action) {
 /// The first parameter must be named the same as the module file to load.
 PYBIND11_MODULE(Helper, helper)
 {
+    // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
+    sofa::helper::init();
+
     helper.doc() = R"doc(
-           Utility functions
-           -----------------------
-           The 'info' messages are emitted *only* when the object.printLog is
-           set to True.
+            Allows to create vectors of different types, or to print messages
 
-           Examples:
+            SOFA provides a fully feature messaging system allowing to emit messages.
+            The way the message are printed depends on the application. Messages can be routed the console, log files,
+            GUI or ignored.
 
-            .. code-block:: python
+            There are several kind of messages.
 
-               msg_info("something bad happens")
-               msg_info(sofaObject, "something bad happens")
-               msg_info(sofaNode, "something bad happens")
-               msg_info(emitting_file, emitting_loc, "something bad happens")
-               msg_info(sofaObject, "something bad happens", emitting_file, emitting_loc)
-               msg_info(sofaNode, "something bad happens", emitting_file, emitting_loc)
+            The 'info' messages are emitted *only* when the object.printLog is set to True.
+            The 'warning' messages are emitted when the object want the user to be informed.
+            The 'error' messages are emitted when the object cannot perform as expected.
+            The 'deprecated' messages are indicating that some feature are now deprecated and thus be fixed as soon as possible.
+            In general we provide updates tips with deprecated messages.
 
-           Notes:
-               The way the message are printed depends on the application.
-               Messages can be routed the console, log files, GUI or ignored.
+            Example:
+             .. code-block:: python
 
-           .. autosummary::
-               Sofa.Helper.msg_info
-               Sofa.Helper.msg_warning
-               Sofa.Helper.msg_error
-               Sofa.Helper.msg_deprecated
-               Sofa.Helper.msg_fatal
+               msg_error("something bad happens")
+               msg_error(sofaObject, "something bad happens")
+               msg_warning(sofaNode, "something happens that sofaNode must be award of")
+               msg_warning(emitting_file, emitting_loc, "something bad happens at given location")
+               msg_info(sofaObject, "something happens", emitting_file, emitting_loc)
+               msg_info(sofaNode, "something happens", emitting_file, emitting_loc)
+
        )doc";
 
     helper.def("msg_info", [](py::args args) { MESSAGE_DISPATCH(msg_info); },
-            R"(Emit an info message from python.)"
+            R"(Emit an info message from python)"
             );
     helper.def("msg_warning", [](py::args args) { MESSAGE_DISPATCH(msg_warning); },
-    R"(Emit a warning message from python.)");
+    R"(Emit a warning message from python)");
     helper.def("msg_error", [](py::args args) { MESSAGE_DISPATCH(msg_error); },
-    R"(Emit an error message from python.)");
+    R"(Emit an error message from python)");
     helper.def("msg_deprecated", [](py::args args) { MESSAGE_DISPATCH(msg_deprecated); },
-    R"(Emit a deprecated message from python.)");
+    R"(Emit a deprecated message from python)");
     helper.def("msg_fatal", [](py::args args) { MESSAGE_DISPATCH(msg_fatal); },
-    R"(Emit a fatal error message from python.)");
+    R"(Emit a fatal error message from python)");
 
     moduleAddMessageHandler(helper);
     moduleAddVector(helper);
     moduleAddSystem(helper);
+    moduleAddUtils(helper);
+
+    auto atexit = py::module_::import("atexit");
+    atexit.attr("register")(py::cpp_function([]() {
+        sofa::helper::cleanup();
+        msg_info("SofaPython3.Helper") << "Sofa.Helper unload()";
+    }));
 }
 
 } ///namespace sofapython3

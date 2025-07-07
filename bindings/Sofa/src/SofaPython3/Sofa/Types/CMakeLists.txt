@@ -1,22 +1,24 @@
 project(Bindings.Sofa.Types)
 
 set(HEADER_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Types.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BoundingBox.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_CompressedRowSparseMatrix.h
 )
 
 set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Types.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_CompressedRowSparseMatrix.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BoundingBox.cpp
 )
 
-find_package(SofaFramework REQUIRED)
+sofa_find_package(Sofa.Core REQUIRED)
 
 SP3_add_python_module(
         TARGET       ${PROJECT_NAME}
-        PACKAGE_NAME Sofa
-        MODULE_NAME  Types
+        PACKAGE      Bindings.Sofa
+        MODULE       Types
+        DESTINATION  Sofa
         SOURCES      ${SOURCE_FILES}
         HEADERS      ${HEADER_FILES}
-        DEPENDS      SofaCore SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
+        DEPENDS      Sofa.Core SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
 )

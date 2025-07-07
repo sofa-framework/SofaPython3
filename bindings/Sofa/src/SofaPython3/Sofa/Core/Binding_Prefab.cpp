@@ -1,46 +1,33 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 #include <pybind11/pybind11.h>
-#include <pybind11/eval.h>
-
-#include "Binding_Prefab.h"
-#include "Binding_Prefab_doc.h"
-
-#include <SofaPython3/DataHelper.h>
-#include <SofaPython3/PythonFactory.h>
-#include <SofaPython3/PythonEnvironment.h>
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <sofa/core/objectmodel/DataCallback.h>
-using sofa::core::objectmodel::DataCallback;
+#include <SofaPython3/Sofa/Core/Binding_Prefab.h>
+#include <SofaPython3/Sofa/Core/Binding_Prefab_doc.h>
 
-PYBIND11_DECLARE_HOLDER_TYPE(Prefab,
-                             sofapython3::py_shared_ptr<Prefab>, true)
+#include <SofaPython3/Prefab.h>
+#include <sofa/core/objectmodel/DataCallback.h>
+#include <sofa/helper/system/FileMonitor.h>
+using sofa::core::objectmodel::DataCallback;
 
 #include <sofa/simulation/VisualVisitor.h>
 using sofa::simulation::VisualInitVisitor;
@@ -48,20 +35,19 @@ using sofa::simulation::VisualInitVisitor;
 #include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation;
 
-namespace sofapython3
-{
 
-class Prefab_Trampoline : public Prefab, public PythonTrampoline
-{
+SOFAPYTHON3_BIND_ATTRIBUTE_ERROR()
+
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
+/// To bring in the `_a` literal
+using namespace pybind11::literals;
+
+namespace sofapython3 {
+
+class Prefab_Trampoline : public Prefab {
 public:
-    Prefab_Trampoline() = default;
-
-    ~Prefab_Trampoline() override = default;
-
-    std::string getClassName() const override
-    {
-        return "Prefab"; /// pyobject->ob_type->tp_name;
-    }
+    SOFA_CLASS(Prefab_Trampoline, Prefab);
 
     void doReInit() override ;
 };
@@ -86,14 +72,13 @@ void Prefab_Trampoline::doReInit()
 void moduleAddPrefab(py::module &m) {
     py::class_<sofa::core::objectmodel::BasePrefab,
             sofa::simulation::Node,
-            sofa::core::objectmodel::BasePrefab::SPtr>(m, "BasePrefab");
+            py_shared_ptr<sofa::core::objectmodel::BasePrefab>>(m, "BasePrefab", "Base class for prefabs (for more see Sofa.prefab)");
 
     py::class_<Prefab,
             Prefab_Trampoline,
             BasePrefab,
             py_shared_ptr<Prefab>> f(m, "RawPrefab",
                                      py::dynamic_attr(),
-                                     py::multiple_inheritance(),
                                      sofapython3::doc::prefab::Prefab);
 
     f.def(py::init([](py::args& /*args*/, py::kwargs& kwargs){

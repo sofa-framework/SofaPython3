@@ -1,33 +1,6 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
-
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,15 +15,15 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
 #pragma once
 
 #include <vector>
 #include <string>
-
+#include <sofa/helper/logging/FileInfo.h>
+#include <SofaPython3/DataHelper.h>
 
 /// Fixes compile errors:
 /// removing all slots macros is necessary if embedded in a Qt project
@@ -58,7 +31,13 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #pragma push_macro("slots")
 #undef slots
 /// This should come from python3.
-#include <Python.h>
+#if defined(WIN32) && defined(_DEBUG)
+    #undef _DEBUG // Prevent linking debug build of python
+    #include <Python.h>
+    #define _DEBUG 1
+#else
+    #include <Python.h>
+#endif
 #pragma pop_macro("slots")
 
 #include <sofa/simulation/SceneLoaderFactory.h>
@@ -66,15 +45,15 @@ along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
 #include <pybind11/pybind11.h>
 #include <pybind11/eval.h>
 
-#include "config.h"
+#include <SofaPython3/config.h>
 
 namespace sofapython3
 {
-namespace py { using namespace pybind11; }
 using sofa::simulation::SceneLoader ;
 
 /// Forward definition
 class PythonEnvironmentData ;
+class PythonEnvironmentModule ;
 
 class SOFAPYTHON3_API PythonEnvironment
 {
@@ -82,9 +61,19 @@ public:
     static void Init();
     static void Release();
 
-    static py::module importFromFile(const std::string& module,
+    static bool isInitialized()
+    {
+        return s_isInitialized;
+    };
+
+    static pybind11::module importFromFile(const std::string& module,
                                      const std::string& path,
-                                     py::object* globals = nullptr);
+                                     pybind11::object* globals = nullptr);
+
+    /// Add a new callback in PluginManager to auto-add future
+    /// loaded plugins to sys.path
+    static void addPluginManagerCallback();
+    static void removePluginManagerCallback();
 
     /// Add a path to sys.path, the list of search path for Python modules.
     static void addPythonModulePath(const std::string& path);
@@ -94,8 +83,8 @@ public:
 
     /// Add all the directories matching <pluginsDirectory>/*/python to sys.path
     /// NB: can also be used for projects <projectDirectory>/*/python
-    static void addPythonModulePathsForPlugins(const std::string& pluginsDirectory);    
-    static void addPythonModulePathsForPluginsByName(const std::string& pluginName);
+    static void addPythonModulePathsFromDirectory(const std::string& directory);
+    static void addPythonModulePathsFromPlugin(const std::string& pluginName);
 
     /// set the content of sys.argv.
     static void setArguments(const std::string& filename,
@@ -122,11 +111,16 @@ public:
     /// excluding a module from automatic reload
     static void excludeModuleFromReload( const std::string& moduleName );
 
-    static void executePython(std::function<void()>);
+    /// execute a function 'f' after acquiring the GIL and having installed
+    /// an handler to catch python exception.
+    static void executePython(std::function<void()> f);
+    static void executePython(const sofa::core::objectmodel::Base* emitter, std::function<void()> f);
+    static void executePython(const std::string& emitter, std::function<void()> cb);
 
     /// to be able to react when a scene is loaded
     struct SceneLoaderListerner : public SceneLoader::Listener
     {
+        using SceneLoader::Listener::rightBeforeLoadingScene;
         /// possibly unload python modules to force importing their eventual modifications
         virtual void rightBeforeLoadingScene();
         static SceneLoaderListerner* getInstance() {
@@ -163,6 +157,9 @@ public:
 
 private:
     static PythonEnvironmentData* getStaticData() ;
+    static PythonEnvironmentModule* getStaticModule() ;
+    static std::string pluginLibraryPath;
+    static inline bool s_isInitialized{false};
 };
 
 } // namespace sofapython3

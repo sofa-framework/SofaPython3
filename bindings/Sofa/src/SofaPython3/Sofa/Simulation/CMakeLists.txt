@@ -8,15 +8,18 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Simulation.cpp
 )
 
-find_package(SofaFramework REQUIRED)
-find_package(SofaSimulation REQUIRED)
-find_package(SofaBase REQUIRED)
+if (NOT TARGET SofaPython3::Plugin)
+    sofa_find_package(SofaPython3 REQUIRED COMPONENTS Plugin)
+endif()
+
+sofa_find_package(Sofa.Simulation.Graph REQUIRED)
 
 SP3_add_python_module(
         TARGET       ${PROJECT_NAME}
-        PACKAGE_NAME Sofa
-        MODULE_NAME  Simulation
+        PACKAGE      Bindings.Sofa
+        MODULE       Simulation
+        DESTINATION  Sofa
         SOURCES      ${SOURCE_FILES}
         HEADERS      ${HEADER_FILES}
-        DEPENDS      SofaCore SofaSimulationCore SofaSimulationGraph SofaBaseVisual
+        DEPENDS      Sofa.Simulation.Graph SofaPython3::Plugin
 )

@@ -1,53 +1,33 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 #include <functional>
-#include "PythonFactory.h"
-#include "DataHelper.h"
+#include <SofaPython3/PythonFactory.h>
+#include <SofaPython3/DataHelper.h>
 
-#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/simulation/graph/DAGNode.h>
 
 #include "sofa/simulation/AnimateBeginEvent.h"
 using sofa::simulation::AnimateBeginEvent;
 #include "sofa/simulation/AnimateEndEvent.h"
 using sofa::simulation::AnimateEndEvent;
-//#include "sofa/simulation/CollisionBeginEvent.h"
-//#include "sofa/simulation/CollisionEndEvent.h"
-//#include "sofa/simulation/IntegrateBeginEvent.h"
-//#include "sofa/simulation/IntegrateEndEvent.h"
-//#include "sofa/simulation/PauseEvent.h"
-//#include "sofa/simulation/PositionEvent.h"
-//#include "sofa/simulation/UpdateMappingEndEvent.h"
-
-//#include "sofa/core/objectmodel/DetachNodeEvent.h"
-//#include "sofa/core/objectmodel/GUIEvent.h"
-//#include "sofa/core/objectmodel/HapticDeviceEvent.h"
-//#include "sofa/core/objectmodel/IdleEvent.h"
-//#include "sofa/core/objectmodel/JoystickEvent.h"
 #include "sofa/core/objectmodel/KeypressedEvent.h"
 using sofa::core::objectmodel::KeypressedEvent;
 #include "sofa/core/objectmodel/KeyreleasedEvent.h"
@@ -58,7 +38,17 @@ using sofa::core::objectmodel::MouseEvent;
 using sofa::core::objectmodel::ScriptEvent;
 using sofa::core::objectmodel::Event;
 
+#include <SofaPython3/PythonEnvironment.h>
+#include <SofaPython3/LinkPath.h>
+
+#include <sofa/core/topology/Topology.h>
+
 #include <sofa/defaulttype/DataTypeInfo.h>
+
+SOFAPYTHON3_BIND_ATTRIBUTE_ERROR()
+
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
 
 namespace sofapython3
 {
@@ -198,7 +188,8 @@ py::object PythonFactory::valueToPython_ro(sofa::core::objectmodel::BaseData* da
     /// we can expose the field as a numpy.array (no copy)
     if(nfo.Container() && nfo.SimpleLayout())
     {
-        auto capsule = py::capsule(new Base::SPtr(data->getOwner()));
+        auto capsule = py::capsule(new Base::SPtr(data->getOwner()),
+                                   [](void*p){ delete static_cast<Base::SPtr*>(p); } );
         py::buffer_info ninfo = toBufferInfo(*data);
         py::array a(pybind11::dtype(ninfo), ninfo.shape,
                     ninfo.strides, ninfo.ptr, capsule);
@@ -291,16 +282,33 @@ void copyFromListOf<std::string>(BaseData& d, const AbstractTypeInfo& nfo, const
 
 void PythonFactory::fromPython(BaseData* d, const py::object& o)
 {
+    if(py::isinstance<sofapython3::LinkPath>(o))
+    {
+        d->setParent(py::cast<LinkPath&>(o).targetData);
+        return;
+    }
 
     const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
 
+    // Is this data field a container ?
+    // If no we fill it with direct access.
     if(!nfo.Container())
     {
         scoped_writeonly_access guard(d);
         if(nfo.Integer()) {
             nfo.setIntegerValue(guard.ptr, 0, py::cast<int>(o));
         } else if(nfo.Text()) {
-            nfo.setTextValue(guard.ptr, 0, py::cast<py::str>(o));
+            if(py::isinstance<py::str>(o))
+            {
+                nfo.setTextValue(guard.ptr, 0, py::cast<py::str>(o));
+            }
+            else
+            {
+                std::stringstream s;
+                s<< "trying to set value for '"
+                 << d->getName() << "' from a python object of type " << py::cast<std::string>(py::str(o.get_type()))  ;
+                throw std::runtime_error(s.str());
+            }
         } else if(nfo.Scalar()) {
             nfo.setScalarValue(guard.ptr, 0, py::cast<double>(o));
         } else {
@@ -328,6 +336,24 @@ void PythonFactory::fromPython(BaseData* d, const py::object& o)
         return ;
     }
 
+    // The data field is a container, and we want to sets its value from a python string.
+    // This is the old sofa-behavior that we want to avoid.
+    // To smooth the deprecation process we are still allowing it ...but prints a warning.
+    if( !nfo.Text() && py::isinstance<py::str>(o) )
+    {
+        std::string s = py::cast<std::string>(o);
+        if(s.size() > 1 && s[0] != '@')
+        {
+            msg_deprecated(d->getOwner()) << "Data field '" << d->getName() << "' is initialized from a string." << msgendl
+                                          << " This behavior was allowed with SofaPython2 but have very poor performance so it is now  "
+                                              << "deprecated with SofaPython3. Please fix your scene (as this behavior will be removed)." << msgendl
+                                          << msgendl
+                                          << PythonEnvironment::getPythonCallingPointString();
+        }
+        d->read( s );
+        return;
+    }
+
     if(nfo.Integer())
         return copyFromListOf<int>(*d, nfo, o);
 
@@ -341,7 +367,7 @@ void PythonFactory::fromPython(BaseData* d, const py::object& o)
 
     std::stringstream s;
     s<< "binding problem, trying to set value for "
-     << d->getName() << ", " << py::cast<std::string>(py::str(o));
+     << d->getName() << ", from " << py::cast<std::string>(py::str(o.get_type()));
     throw std::runtime_error(s.str());
 }
 
@@ -449,25 +475,25 @@ bool PythonFactory::registerDefaultTypes()
     PythonFactory::registerType<int>("int");
 
     // vectors
-    PythonFactory::registerType<sofa::defaulttype::Vec2d>("Vec2d");
-    PythonFactory::registerType<sofa::defaulttype::Vec3d>("Vec3d");
-    PythonFactory::registerType<sofa::defaulttype::Vec4d>("Vec4d");
-    PythonFactory::registerType<sofa::defaulttype::Vec6d>("Vec6d");
-    PythonFactory::registerType<sofa::defaulttype::Vec2f>("Vec2f");
-    PythonFactory::registerType<sofa::defaulttype::Vec3f>("Vec3f");
-    PythonFactory::registerType<sofa::defaulttype::Vec4f>("Vec4f");
-    PythonFactory::registerType<sofa::defaulttype::Vec6f>("Vec6f");
+    PythonFactory::registerType<sofa::type::Vec2d>("Vec2d");
+    PythonFactory::registerType<sofa::type::Vec3d>("Vec3d");
+    PythonFactory::registerType<sofa::type::Vec4d>("Vec4d");
+    PythonFactory::registerType<sofa::type::Vec6d>("Vec6d");
+    PythonFactory::registerType<sofa::type::Vec2f>("Vec2f");
+    PythonFactory::registerType<sofa::type::Vec3f>("Vec3f");
+    PythonFactory::registerType<sofa::type::Vec4f>("Vec4f");
+    PythonFactory::registerType<sofa::type::Vec6f>("Vec6f");
 
     // Matrices
-    PythonFactory::registerType<sofa::defaulttype::Mat2x2d>("Mat2x2d");
-    PythonFactory::registerType<sofa::defaulttype::Mat3x3d>("Mat3x3d");
-    PythonFactory::registerType<sofa::defaulttype::Mat3x4d>("Mat3x4d");
-    PythonFactory::registerType<sofa::defaulttype::Mat4x4d>("Mat4x4d");
+    PythonFactory::registerType<sofa::type::Mat2x2d>("Mat2x2d");
+    PythonFactory::registerType<sofa::type::Mat3x3d>("Mat3x3d");
+    PythonFactory::registerType<sofa::type::Mat3x4d>("Mat3x4d");
+    PythonFactory::registerType<sofa::type::Mat4x4d>("Mat4x4d");
 
-    PythonFactory::registerType<sofa::defaulttype::Mat2x2f>("Mat2x2f");
-    PythonFactory::registerType<sofa::defaulttype::Mat3x3f>("Mat3x3f");
-    PythonFactory::registerType<sofa::defaulttype::Mat3x4f>("Mat3x4f");
-    PythonFactory::registerType<sofa::defaulttype::Mat4x4f>("Mat4x4f");
+    PythonFactory::registerType<sofa::type::Mat2x2f>("Mat2x2f");
+    PythonFactory::registerType<sofa::type::Mat3x3f>("Mat3x3f");
+    PythonFactory::registerType<sofa::type::Mat3x4f>("Mat3x4f");
+    PythonFactory::registerType<sofa::type::Mat4x4f>("Mat4x4f");
 
     // Topology
     PythonFactory::registerType<sofa::core::topology::Topology::Edge>("Edge");
@@ -486,47 +512,47 @@ bool PythonFactory::registerDefaultTypes()
     for (const auto& container : containers)
     {
         // Scalars
-        PythonFactory::registerType<sofa::helper::vector<std::string>>(container + "<string>");
-        PythonFactory::registerType<sofa::helper::vector<float>>(container + "<float>");
-        PythonFactory::registerType<sofa::helper::vector<double>>(container + "<double>");
-        PythonFactory::registerType<sofa::helper::vector<bool>>(container + "<bool>");
-        PythonFactory::registerType<sofa::helper::vector<int>>(container + "<int>");
+        PythonFactory::registerType<sofa::type::vector<std::string>>(container + "<string>");
+        PythonFactory::registerType<sofa::type::vector<float>>(container + "<float>");
+        PythonFactory::registerType<sofa::type::vector<double>>(container + "<double>");
+        PythonFactory::registerType<sofa::type::vector<bool>>(container + "<bool>");
+        PythonFactory::registerType<sofa::type::vector<int>>(container + "<int>");
 
         // vectors
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec2d>>(container + "<Vec2d>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec3d>>(container + "<Vec3d>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec4d>>(container + "<Vec4d>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec6d>>(container + "<Vec6d>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Vec2d>>(container + "<Vec2d>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Vec3d>>(container + "<Vec3d>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Vec4d>>(container + "<Vec4d>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Vec6d>>(container + "<Vec6d>");
 
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec2f>>(container + "<Vec2f>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec3f>>(container + "<Vec3f>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec4f>>(container + "<Vec4f>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Vec6f>>(container + "<Vec6f>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Vec2f>>(container + "<Vec2f>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Vec3f>>(container + "<Vec3f>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Vec4f>>(container + "<Vec4f>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Vec6f>>(container + "<Vec6f>");
 
         // Matrices
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat2x2d>>(container + "<Mat2x2d>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat3x3d>>(container + "<Mat3x3d>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat3x4d>>(container + "<Mat3x4d>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat4x4d>>(container + "<Mat4x4d>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Mat2x2d>>(container + "<Mat2x2d>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Mat3x3d>>(container + "<Mat3x3d>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Mat3x4d>>(container + "<Mat3x4d>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Mat4x4d>>(container + "<Mat4x4d>");
 
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat2x2f>>(container + "<Mat2x2f>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat3x3f>>(container + "<Mat3x3f>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat3x4f>>(container + "<Mat3x4f>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::defaulttype::Mat4x4f>>(container + "<Mat4x4f>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Mat2x2f>>(container + "<Mat2x2f>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Mat3x3f>>(container + "<Mat3x3f>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Mat3x4f>>(container + "<Mat3x4f>");
+        PythonFactory::registerType<sofa::type::vector<sofa::type::Mat4x4f>>(container + "<Mat4x4f>");
 
 
         // Topology
-        PythonFactory::registerType<sofa::helper::vector<sofa::core::topology::Topology::Edge>>(container + "<Edge>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::core::topology::Topology::Triangle>>(container + "<Triangle>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::core::topology::Topology::Quad>>(container + "<Quad>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::core::topology::Topology::Tetra>>(container + "<Tetra>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::core::topology::Topology::Hexa>>(container + "<Hexa>");
-        PythonFactory::registerType<sofa::helper::vector<sofa::core::topology::Topology::Penta>>(container + "<Penta>");
+        PythonFactory::registerType<sofa::type::vector<sofa::core::topology::Topology::Edge>>(container + "<Edge>");
+        PythonFactory::registerType<sofa::type::vector<sofa::core::topology::Topology::Triangle>>(container + "<Triangle>");
+        PythonFactory::registerType<sofa::type::vector<sofa::core::topology::Topology::Quad>>(container + "<Quad>");
+        PythonFactory::registerType<sofa::type::vector<sofa::core::topology::Topology::Tetra>>(container + "<Tetra>");
+        PythonFactory::registerType<sofa::type::vector<sofa::core::topology::Topology::Hexa>>(container + "<Hexa>");
+        PythonFactory::registerType<sofa::type::vector<sofa::core::topology::Topology::Penta>>(container + "<Penta>");
     }
     return true;
 }
 
-void PythonFactory::uniqueKeys(std::back_insert_iterator<sofa::helper::vector<std::string> > it)
+void PythonFactory::uniqueKeys(std::back_insert_iterator<sofa::type::vector<std::string> > it)
 {
     std::transform(s_dataCreationFct.begin(), s_dataCreationFct.end(),
                    it, [](const auto& item){ return item.first; });

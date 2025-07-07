@@ -1,0 +1,7 @@
+mock
+sphinxcontrib-contentui
+readthedocs-sphinx-search
+sphinx-autodoc-typehints
+sphinx-rtd-theme
+sphinx-tabs
+sphinx-autosummary-autocollect

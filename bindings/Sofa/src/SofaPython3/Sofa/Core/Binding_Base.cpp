@@ -1,30 +1,24 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2021 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
-
+#include "SofaPython3/SpellingSuggestionHelper.h"
 #include <pybind11/pybind11.h>
 
 #include <pybind11/numpy.h>
@@ -39,27 +33,29 @@ using sofa::core::objectmodel::BaseLink;
 using sofa::helper::WriteOnlyAccessor;
 
 #include <SofaPython3/PythonFactory.h>
-//#include <SofaPython3/DataFactory.h>
 
-#include "Binding_Base.h"
-#include "Binding_Base_doc.h"
-
-
-#include "Binding_DataDict.h"
-#include "Binding_BaseData.h"
+#include <SofaPython3/Sofa/Core/Binding_BaseData.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseLink.h>
+#include <SofaPython3/Sofa/Core/Binding_LinkPath.h>
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/Sofa/Core/Binding_Base_doc.h>
+#include <SofaPython3/Sofa/Core/Binding_DataDict.h>
 #include "Data/Binding_DataContainer.h"
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
 
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject;
-#include <sofa/core/objectmodel/BaseNode.h>
-using sofa::core::objectmodel::BaseNode;
-#include <sofa/core/objectmodel/BaseContext.h>
-using sofa::core::objectmodel::BaseContext;
-
 #include <SofaPython3/DataHelper.h>
+
+// These two lines are there to handle deprecated version of pybind.
+SOFAPYTHON3_BIND_ATTRIBUTE_ERROR()
+SOFAPYTHON3_ADD_PYBIND_TYPE_FOR_OLD_VERSION()
+
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
+
+/// Bring pybind11 literals
+using namespace pybind11::literals;
 
 namespace sofapython3
 {
@@ -100,6 +96,10 @@ py::object BindingBase::GetAttr(Base* self, const std::string& s, bool doThrowEx
     if( s == "__data__")
         return py::cast( DataDict(self) );
 
+    /// Returns the linkpath to the self object.
+    if(s == "linkpath")
+        return py::cast(sofapython3::LinkPath(self));
+
     if(doThrowException)
         throw py::attribute_error("Missing attribute: "+s);
 
@@ -111,9 +111,25 @@ bool BindingBase::SetData(BaseData* d, py::object value)
     if(d==nullptr)
         return false;
 
-    const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
-
     PythonFactory::fromPython(d, value);
+    return true;
+}
+
+bool BindingBase::SetLink(BaseLink* link, py::object value)
+{
+    if(link==nullptr)
+        return false;
+
+    if(py::isinstance<py::str>(value))
+        return link->read(py::cast<py::str>(value));
+
+    if(py::isinstance<LinkPath>(value))
+    {
+        auto& target = py::cast<LinkPath&>(value);
+        if(target.isPointingToData())
+            throw std::runtime_error("Passing a link to a data field instead of an object.");
+        link->setLinkedBase(target.targetBase.get());
+    }
     return true;
 }
 
@@ -121,8 +137,8 @@ bool BindingBase::SetData(BaseData* d, py::object value)
 void BindingBase::SetAttr(py::object self, const std::string& s, py::object value)
 {
     Base* self_d = py::cast<Base*>(self);
-    BaseData* d = self_d->findData(s);
 
+    BaseData* d = self_d->findData(s);
     if(d!=nullptr)
     {
         SetData(d, value);
@@ -132,35 +148,19 @@ void BindingBase::SetAttr(py::object self, const std::string& s, py::object valu
     BaseLink* l = self_d->findLink(s);
     if(l!=nullptr)
     {
+        SetLink(l, value);
         return;
     }
 
-    /// We are falling back to dynamically adding the objet into the object dict.
-    py::dict t = self.attr("__dict__");
-    if(!t.is_none())
-    {
-        t[s.c_str()] = value;
-        return;
-    }
-
-    /// Well this should never happen unless there is no __dict__
-    throw py::attribute_error("Unable to set attribute '"+s+"', unknow data type");
+    // If it's not a data or a link, rely on object implementation of __setattr__
+    py::module::import("builtins").attr("object").attr("__setattr__")(self, s, value);
 }
 
 void BindingBase::SetAttr(Base& self, const std::string& s, py::object value)
 {
     BaseData* d = self.findData(s);
-
     if(d!=nullptr)
     {
-        const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
-
-        /// We go for the container path.
-        if(nfo.Container())
-        {
-            PythonFactory::fromPython(d,value);
-            return;
-        }
         PythonFactory::fromPython(d, value);
         return;
     }
@@ -168,6 +168,7 @@ void BindingBase::SetAttr(Base& self, const std::string& s, py::object value)
     BaseLink* l = self.findLink(s);
     if(l!=nullptr)
     {
+        SetLink(l, value);
         return;
     }
 
@@ -246,7 +247,7 @@ void BindingBase::SetDataFromArray(BaseData* data, const py::array& value)
             else if(srcinfo.format=="f")
                 return copyScalar<float>(data, nfo, src);
             else
-                std::cout << "SetAttrFromArray :: unsupported fileformat" << std::endl ;
+                throw std::runtime_error("SetAttrFromArray :: unsupported fileformat");
         }
 
     }
@@ -343,15 +344,39 @@ py::list BindingBase::__dir__(Base* self)
     return list;
 }
 
-py::object BindingBase::__getattr__(py::object self, const std::string& s)
+py::object BindingBase::__getattr__(py::object self, const std::string& attributeName)
 {
-    py::object res = BindingBase::GetAttr( py::cast<Base*>(self), s, false );
-    if( res.is_none() )
-    {
-        return self.attr("__dict__")[s.c_str()];
-    }
+    // Search for attribute s.
+    py::object res = BindingBase::GetAttr( py::cast<Base*>(self), attributeName, false );
 
-    return res;
+    // If there is one, then return it
+    if( !res.is_none() )
+        return res;
+
+   // If there is none, then search into the python dictionnary
+    if( py::hasattr(self.attr("__dict__"), attributeName.c_str()) )
+        return self.attr("__dict__")[attributeName.c_str()];
+
+    // If we reach this line, this indicate that no attribute was found. Maybe it is a misspelling
+    // so let's build misspelling hints for the user.
+    Base* selfbase = py::cast<Base*>(self);
+    std::stringstream tmp;
+    emitSpellingMessage(tmp, "   - The data field named ", selfbase->getDataFields(), attributeName, 2, 0.6);
+    emitSpellingMessage(tmp, "   - The link named ", selfbase->getLinks(), attributeName, 2, 0.6);
+
+    // Also provide spelling hints on python functions.
+    emitSpellingMessage(tmp, "   - The python attribute named ", py::cast<py::dict>(py::type::of(self).attr("__dict__")), attributeName, 5, 0.8,
+                        [](const std::pair<py::handle, py::handle>& kv) { return py::cast<std::string>(std::get<0>(kv)); });
+
+    std::stringstream message;
+    message << "Unable to find attribute: "+attributeName;
+    if(!tmp.str().empty())
+    {
+        message << msgendl;
+        message << "   You possibly wanted to access: " << msgendl;
+        message << tmp.rdbuf();
+    }
+    throw py::attribute_error(message.str());
 }
 
 void BindingBase::__setattr__(py::object self, const std::string& s, py::object value)
@@ -404,7 +429,13 @@ std::string BindingBase::getPathName(Base& self)
 {
     return self.toBaseNode() ? self.toBaseNode()->getPathName() : self.toBaseObject()->getPathName();
 }
-    
+
+std::string BindingBase::getLinkPath(Base& self)
+{
+    return "@"+getPathName(self);
+}
+
+
 py::object BindingBase::setDataValues(Base& self, py::kwargs kwargs)
 {
     for(auto key : kwargs)
@@ -418,9 +449,21 @@ py::object BindingBase::setDataValues(Base& self, py::kwargs kwargs)
     return py::none();
 }
 
+auto getBaseBinding(py::module& m)
+{
+    static py::class_<Base, py_shared_ptr<Base>> base(m, "Base", py::dynamic_attr(), doc::base::BaseClass);
+    return base;
+}
+
+void moduleForwardAddBase(py::module& m)
+{
+    getBaseBinding(m);
+}
+
 void moduleAddBase(py::module &m)
 {
-    py::class_<Base, Base::SPtr> base(m, "Base", py::dynamic_attr(), doc::base::BaseClass);
+    auto base = getBaseBinding(m);
+
     /// set & get the name as string. The alternative is to access the data field using
     /// obj.name.value = "aName"
     base.def("getName", [](Base& b){ return b.getName(); }, sofapython3::doc::base::getName);
@@ -452,7 +495,8 @@ void moduleAddBase(py::module &m)
     base.def("getLoggedMessagesAsString", &BindingBase::getLoggedMessagesAsString, sofapython3::doc::base::getLoggedMessagesAsString);
     base.def("countLoggedMessages", &BindingBase::countLoggedMessages, sofapython3::doc::base::countLoggedMessages);
     base.def("clearLoggedMessages", &BindingBase::clearLoggedMessages, sofapython3::doc::base::clearLoggedMessages);
-    base.def("getPathName", &BindingBase::getPathName);
+    base.def("getPathName", &BindingBase::getPathName, sofapython3::doc::base::getPathName);
+    base.def("getLinkPath", &BindingBase::getLinkPath, sofapython3::doc::base::getLinkPath);
     base.def("setDataValues", &BindingBase::setDataValues, sofapython3::doc::base::setDataValues);
 }
 

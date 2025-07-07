@@ -1,44 +1,39 @@
-/*********************************************************************
-Copyright 2019, CNRS, University of Lille, INRIA
-
-This file is part of sofaPython3
-
-sofaPython3 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-sofaPython3 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with sofaqtquick. If not, see <http://www.gnu.org/licenses/>.
-*********************************************************************/
-/********************************************************************
- Contributors:
-    - damien.marchal@univ-lille.fr
-    - bruno.josue.marques@inria.fr
-    - eve.le-guillou@centrale.centralelille.fr
-    - jean-nicolas.brunet@inria.fr
-    - thierry.gaugry@inria.fr
-********************************************************************/
+/******************************************************************************
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 #include "Binding_Vec.h"
 #include <functional>
-#include <type_traits>
 #include <pybind11/operators.h>
+#include <sstream>
 
-#define BINDING_VEC_MAKE_NAME(N, T)                                            \
-    std::string(std::string("Vec") + std::to_string(N) + typeid(T).name())
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
 
-namespace pyVec {
-template <int N, class T> std::string __str__(const Vec<N, T> &v, bool repr)
+using sofa::type::Vec;
+
+namespace pyVec 
+{
+template <sofa::Size N, class T> std::string __str__(const Vec<N, T> &v, bool repr)
 {
     std::stringstream s ;
     s.imbue(std::locale("C"));
-    s << ((repr) ? (BINDING_VEC_MAKE_NAME(N, T) + "(") : ("("));
+    s << ((repr) ? (sofa::defaulttype::DataTypeInfo< Vec<N, T> >::name() + "(") : ("("));
     s << v[0];
     for (size_t i = 1; i < v.size(); ++i)
         s <<  ", " << v[i];
@@ -88,11 +83,11 @@ void setFromPartialSequence(const VecClass& s, py::list t)
     for(unsigned int i=0;i<N;i++) { t[i] = s[i]; }
 }
 
-template <int N, class T>
+template <sofa::Size N, class T>
 py::class_<Vec<N,T>> addVec(py::module &m)
 {
     typedef Vec<N, T> VecClass;
-    py::class_<Vec<N, T>> p(m, BINDING_VEC_MAKE_NAME(N, T).c_str());
+    py::class_<Vec<N, T>> p(m, sofa::defaulttype::DataTypeInfo< Vec<N, T> >::name().c_str());
 
     p.def(py::init<>());                 // empty ctor
     p.def(py::init<const VecClass &>()); // copy ctor
@@ -114,13 +109,13 @@ py::class_<Vec<N,T>> addVec(py::module &m)
         setFromSequence(v, l);
     });
 
-    p.def("__getitem__", [](const VecClass &v, size_t i) {
+    p.def("__getitem__", [](const VecClass &v, sofa::Index i) {
         if (i >= v.size())
             throw py::index_error();
         return v[i];
     });
 
-    p.def("__setitem__", [](VecClass &v, size_t i, T d) {
+    p.def("__setitem__", [](VecClass &v, sofa::Index i, T d) {
         if (i >= v.size())
             throw py::index_error();
         T &val = v[i];
@@ -129,7 +124,7 @@ py::class_<Vec<N,T>> addVec(py::module &m)
     });
 
     /// Iterator protocol
-    static size_t value = 0;
+    static sofa::Index value = 0;
     p.def("__iter__", [](VecClass &v) {
         value = 0;
         return v;
@@ -196,7 +191,7 @@ py::class_<Vec<N,T>> addVec(py::module &m)
     p.def("normalized", &VecClass::normalized);
     p.def("sum", &VecClass::sum);
     p.def("dot", [](const VecClass &self, const VecClass &b) {
-        return sofa::defaulttype::dot(self, b);
+        return sofa::type::dot(self, b);
     });
 
 
@@ -225,7 +220,8 @@ T addCross(T p)
 {
     p.def("cross", [](typename T::type& a, typename T::type& b)
     {
-        return sofa::defaulttype::cross(a,b);
+            static_assert(T::type::spatial_dimensions == 2 || T::type::spatial_dimensions == 3, "Cross product function can only be used with Vec2 and Vec3");
+            return sofa::type::cross(a, b);
     });
     return p;
 }
