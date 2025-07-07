@@ -291,17 +291,15 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
 
     for(auto a : kwargs)
     {
-        BaseData* d = object->findData(py::cast<std::string>(a.first));
-        if(d)
+        const std::string dataName = py::cast<std::string>(a.first);
+        BaseData * d = object->findData(dataName);
+        if (d)
         {
             if (parametersToLink.contains(a.first))
                 d->setParent(a.second.cast<BaseData*>());
             else if(parametersToCopy.contains(a.first))
                 PythonFactory::fromPython(d, py::cast<py::object>(a.second));
             d->setPersistent(true);
-        }else
-        {
-            throw py::type_error("Unknown Attribute: '"+py::cast<std::string>(a.first)+"'");
         }
     }
     return PythonFactory::toPython(object.get());
