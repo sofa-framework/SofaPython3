@@ -52,7 +52,7 @@ std::string toSofaParsableString(const py::handle& p)
     if(py::isinstance<py::str>(p))
     {
         return py::str(p);
-
+    }
 
     // If the object is a data field we link the data field
     if(py::isinstance<sofa::core::objectmodel::BaseData>(p))
@@ -77,16 +77,13 @@ std::string toSofaParsableString(const py::handle& p)
     return py::repr(p);
 }
 
-void fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc,
-                                const py::dict& dict)
- {
+void fillBaseObjectdescription(sofa::core::objectmodel::BaseObjectDescription& desc, const py::dict& dict)
+{
      for(auto kv : dict)
      {
         desc.setAttribute(py::str(kv.first), toSofaParsableString(kv.second));
      }
-
-     return;
- }
+}
 
 void processKwargsForObjectCreation(const py::dict dict,
                                py::list& parametersToLink,
