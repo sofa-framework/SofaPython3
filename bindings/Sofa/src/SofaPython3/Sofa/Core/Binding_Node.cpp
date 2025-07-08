@@ -236,6 +236,71 @@ void setFieldsFromPythonValues(Base* self, const py::kwargs& dict)
 }
 
 /// Implement the addObject function.
+py::object addObjectKwargsToStrings(Node* self, const std::string& type, const py::kwargs& kwargs)
+{
+    std::string name {};
+    if (kwargs.contains("name"))
+    {
+        name = py::str(kwargs["name"]);
+        if (sofapython3::isProtectedKeyword(name))
+            throw py::value_error("Cannot call addObject with name " + name + ": Protected keyword");
+    }
+    /// Prepare the description to hold the different python attributes as data field's
+    /// arguments then create the object.
+    BaseObjectDescription desc {nullptr, type.c_str()};
+
+    fillBaseObjectdescription(desc,kwargs);
+    auto object = ObjectFactory::getInstance()->createObject(self, &desc);
+
+    // After calling createObject the returned value can be either a nullptr
+    // or non-null but with error message or non-null.
+    // Let's first handle the case when the returned pointer is null.
+    if(!object)
+    {
+        std::stringstream tmp ;
+        for(auto& s : desc.getErrors())
+            tmp << s << msgendl ;
+        throw py::value_error(tmp.str());
+    }
+
+    // Associates the emission location to the created object.
+    auto finfo = PythonEnvironment::getPythonCallingPointAsFileInfo();
+    object->setInstanciationSourceFileName(finfo->filename);
+    object->setInstanciationSourceFilePos(finfo->line);
+
+    if (name.empty())
+    {
+        const auto resolvedName = self->getNameHelper().resolveName(object->getClassName(), name, sofa::core::ComponentNameHelper::Convention::python);
+        object->setName(resolvedName);
+    }
+
+    setFieldsFromPythonValues(object.get(), kwargs);
+
+    checkParamUsage(desc, object.get());
+
+    // Convert the logged messages in the object's internal logging into python exception.
+    // this is not a very fast way to do that...but well...python is slow anyway. And serious
+    // error management has a very high priority. If performance becomes an issue we will fix it
+    // when needed.
+    if(object->countLoggedMessages({Message::Error}))
+    {
+        throw py::value_error(object->getLoggedMessagesAsString({Message::Error}));
+    }
+
+    for(auto a : kwargs)
+    {
+        const std::string dataName = py::cast<std::string>(a.first);
+        BaseData * d = object->findData(dataName);
+        if (d)
+        {
+            d->setPersistent(true);
+        }
+    }
+
+    return PythonFactory::toPython(object.get());
+}
+
+/// Implement the addObject function.
 py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
     std::string name {};
@@ -289,18 +354,31 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         throw py::value_error(object->getLoggedMessagesAsString({Message::Error}));
     }
 
+
     for(auto a : kwargs)
     {
         const std::string dataName = py::cast<std::string>(a.first);
         BaseData * d = object->findData(dataName);
-        if (d)
-        {
-            if (parametersToLink.contains(a.first))
-                d->setParent(a.second.cast<BaseData*>());
-            else if(parametersToCopy.contains(a.first))
-                PythonFactory::fromPython(d, py::cast<py::object>(a.second));
-            d->setPersistent(true);
-        }
+
+            if (d)
+            {
+                if (parametersToLink.contains(a.first))
+                    d->setParent(a.second.cast<BaseData*>());
+                else if(parametersToCopy.contains(a.first))
+                {
+                    try
+                    {
+                        PythonFactory::fromPython(d, py::cast<py::object>(a.second));
+                    }
+                    catch (std::exception& e)
+                    {
+                        msg_warning(self)<<"Creating " << type << " named " << name <<". An exception of type \""<<e.what()<<"\" was received while copying value input for data " << dataName << ". To fix this please reshape the list you are providing to fit the real intended data structure. \n         The compatibility layer will try to create the data by converting the input to string.";
+
+                        d->read(toSofaParsableString(a.second));
+                    }
+                }
+                d->setPersistent(true);
+            }
     }
     return PythonFactory::toPython(object.get());
 }
