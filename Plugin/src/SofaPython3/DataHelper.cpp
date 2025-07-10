@@ -90,13 +90,14 @@ void processKwargsForObjectCreation(const py::dict dict,
                                py::list& parametersToCopy,
                                sofa::core::objectmodel::BaseObjectDescription& parametersAsString)
 {
-    auto t = py::detail::get_type_handle(typeid(BaseData), false);
+    auto typeHandleBaseData = py::detail::get_type_handle(typeid(BaseData), false);
+    auto typeHandleLinkPath = py::detail::get_type_handle(typeid(LinkPath), false);
     for(auto kv : dict)
     {
-        if (py::isinstance(kv.second, t))
+        if (py::isinstance(kv.second, typeHandleBaseData))
             parametersToLink.append(kv.first);
-        else if (py::isinstance<py::str>(kv.second))
-            parametersAsString.setAttribute(py::str(kv.first), py::cast<std::string>(kv.second));
+        else if (py::isinstance<py::str>(kv.second) || py::isinstance(kv.second, typeHandleLinkPath) )
+            parametersAsString.setAttribute(py::str(kv.first), py::str(kv.second));
         else
             parametersToCopy.append(kv.first);
     }
