@@ -176,6 +176,7 @@ namespace sofapython3
     void moduleAddMapping(py::module &m) {
         declareMapping<Rigid3dTypes, Vec3dTypes>(m);
         declareMapping<Vec3dTypes, Vec3dTypes>(m);
+        declareMapping<Vec3dTypes, Vec1dTypes>(m);
     }
 
 }  // namespace sofapython3
