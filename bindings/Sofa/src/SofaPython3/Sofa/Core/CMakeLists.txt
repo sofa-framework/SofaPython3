@@ -27,6 +27,8 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Mass_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Mapping.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Mapping_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_NodeIterator.h
@@ -71,6 +73,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinkPath.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Mass.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Mapping.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_NodeIterator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_PointSetTopologyModifier.cpp
