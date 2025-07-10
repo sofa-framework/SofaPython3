@@ -316,6 +316,9 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
     py::list parametersToCopy;
     py::list parametersToLink;
 
+    //This method will sort the input kwargs.
+    //It will keep all strings, and list of strings as string and put them to desc so the factory can use them
+    //during canCreate and parse calls (important for template, src, input/output of mapping)
     processKwargsForObjectCreation( kwargs, parametersToLink, parametersToCopy, desc);
     auto object = ObjectFactory::getInstance()->createObject(self, &desc);
 
@@ -352,7 +355,7 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         throw py::value_error(object->getLoggedMessagesAsString({Message::Error}));
     }
 
-
+    //Now for all the data that have not been passed  by object descriptor, we pass them to the object
     for(auto a : kwargs)
     {
         const std::string dataName = py::cast<std::string>(a.first);
@@ -381,11 +384,15 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         }
         else if (l == nullptr && parametersToCopy.contains(a.first))
         {
+            // This case happens when the object overrides the method parse which
+            // expect some arguments in desc instead of using datas to expose variation points
             desc.setAttribute(dataName,toSofaParsableString(a.second) );
         }
     }
 
+    // Let the object parse the desc one last time now that 'real' all data has been set
     object->parse(&desc);
+    // Now we check that everything has been used. If not, then throw an error.
     checkParamUsage(desc, object.get());
 
     return PythonFactory::toPython(object.get());
