@@ -98,6 +98,25 @@ void processKwargsForObjectCreation(const py::dict dict,
             parametersToLink.append(kv.first);
         else if (py::isinstance<py::str>(kv.second) || py::isinstance(kv.second, typeHandleLinkPath) )
             parametersAsString.setAttribute(py::str(kv.first), py::str(kv.second));
+        //This test is only required because of the multimappings that need the data "input" during the call to canCreate but it is given as a list of strings.
+        //So when a list of string is passed, then we use directly the conversion to string to be able to pass it directly in the BaseObjectDescription.
+        //TODO: remove this once the canCreate of Mapping class doesn't need to access data input and output
+        else if (py::isinstance<py::list>(kv.second))
+        {
+            bool isAllStrings = true;
+            for(auto data : kv.second)
+            {
+                if(!py::isinstance<py::str>(data))
+                {
+                    isAllStrings = false;
+                    break;
+                }
+            }
+            if(isAllStrings)
+              parametersAsString.setAttribute(py::str(kv.first), toSofaParsableString(kv.second));
+            else
+              parametersToCopy.append(kv.first);
+        }
         else
             parametersToCopy.append(kv.first);
     }
