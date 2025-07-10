@@ -316,7 +316,7 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
     py::list parametersToCopy;
     py::list parametersToLink;
 
-    processKwargsForObjectCreation(kwargs, parametersToLink, parametersToCopy, desc);
+    processKwargsForObjectCreation( kwargs, parametersToLink, parametersToCopy, desc);
     auto object = ObjectFactory::getInstance()->createObject(self, &desc);
 
     // After calling createObject the returned value can be either a nullptr
@@ -343,8 +343,6 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
 
     setFieldsFromPythonValues(object.get(), kwargs);
 
-    checkParamUsage(desc, object.get());
-
     // Convert the logged messages in the object's internal logging into python exception.
     // this is not a very fast way to do that...but well...python is slow anyway. And serious
     // error management has a very high priority. If performance becomes an issue we will fix it
@@ -359,27 +357,37 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
     {
         const std::string dataName = py::cast<std::string>(a.first);
         BaseData * d = object->findData(dataName);
+        BaseLink * l = object->findLink(dataName);
 
-            if (d)
+        if (d)
+        {
+            if (parametersToLink.contains(a.first))
+                d->setParent(a.second.cast<BaseData*>());
+            else if(parametersToCopy.contains(a.first))
             {
-                if (parametersToLink.contains(a.first))
-                    d->setParent(a.second.cast<BaseData*>());
-                else if(parametersToCopy.contains(a.first))
+                try
                 {
-                    try
-                    {
-                        PythonFactory::fromPython(d, py::cast<py::object>(a.second));
-                    }
-                    catch (std::exception& e)
-                    {
-                        msg_warning(self)<<"Creating " << type << " named " << name <<". An exception of type \""<<e.what()<<"\" was received while copying value input for data " << dataName << ". To fix this please reshape the list you are providing to fit the real intended data structure. \n         The compatibility layer will try to create the data by converting the input to string.";
-
-                        d->read(toSofaParsableString(a.second));
-                    }
+                    PythonFactory::fromPython(d, py::cast<py::object>(a.second));
                 }
-                d->setPersistent(true);
+                catch (std::exception& e)
+                {
+                    msg_warning(self)<<"Creating " << type << " at " << object->getPathName() <<". An exception of type \""<<e.what()<<"\" was received while copying value input for data " << dataName << ". To fix this please reshape the list you are providing to fit the real intended data structure. \n    The compatibility layer will try to create the data by converting the input to string.";
+
+                    if ( !d->read(toSofaParsableString(a.second)))
+                        throw py::value_error("Cannot convert the input \""+ toSofaParsableString(a.second)+"\" to a valid value for data " +  object->getPathName() + "." + dataName );
+                }
             }
+            d->setPersistent(true);
+        }
+        else if (l == nullptr && parametersToCopy.contains(a.first))
+        {
+            desc.setAttribute(dataName,toSofaParsableString(a.second) );
+        }
     }
+
+    object->parse(&desc);
+    checkParamUsage(desc, object.get());
+
     return PythonFactory::toPython(object.get());
 }
 
@@ -461,21 +469,40 @@ py::object addChildKwargs(Node* self, const std::string& name, const py::kwargs&
     node->setInstanciationSourceFileName(finfo->filename);
     node->setInstanciationSourceFilePos(finfo->line);
 
-    checkParamUsage(desc, node.get());
-
     for(auto a : kwargs)
     {
-        BaseData* d = node->findData(py::cast<std::string>(a.first));
-        if(d)
+        const std::string dataName = py::cast<std::string>(a.first);
+        BaseData * d = node->findData(dataName);
+        BaseLink * l = node->findLink(dataName);
+
+        if (d)
         {
             if (parametersToLink.contains(a.first))
                 d->setParent(a.second.cast<BaseData*>());
             else if(parametersToCopy.contains(a.first))
-                PythonFactory::fromPython(d, py::cast<py::object>(a.second));
+            {
+                try
+                {
+                    PythonFactory::fromPython(d, py::cast<py::object>(a.second));
+                }
+                catch (std::exception& e)
+                {
+                    msg_warning(self)<<"Creating Node at " << node->getPathName() <<". An exception of type \""<<e.what()<<"\" was received while copying value input for data " << dataName << ". To fix this please reshape the list you are providing to fit the real intended data structure. \n    The compatibility layer will try to create the data by converting the input to string.";
+
+                    if ( !d->read(toSofaParsableString(a.second)))
+                        throw py::value_error("Cannot convert the input \""+ toSofaParsableString(a.second)+"\" to a valid value for data " +  node->getPathName() + "." + dataName );
+                }
+            }
             d->setPersistent(true);
+        }
+        else if (l == nullptr && parametersToCopy.contains(a.first))
+        {
+            desc.setAttribute(dataName,toSofaParsableString(a.second) );
         }
     }
 
+    node->parse(&desc);
+    checkParamUsage(desc, node.get());
     return py::cast(node);
 }
 
