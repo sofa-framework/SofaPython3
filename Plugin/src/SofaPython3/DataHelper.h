@@ -27,6 +27,7 @@
 #include <sofa/core/sptr.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/objectmodel/Data.h>
+
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseNode.h>
@@ -39,7 +40,9 @@ namespace sofa {
     }
     namespace core {
         namespace objectmodel {
+            class Base;
             class BaseData;
+
 
 
             class SOFAPYTHON3_API PrefabLink
@@ -209,6 +212,14 @@ pybind11::object SOFAPYTHON3_API convertToPython(BaseData* d);
 void SOFAPYTHON3_API copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo, const pybind11::list& l);
 
 std::string SOFAPYTHON3_API toSofaParsableString(const pybind11::handle& p);
+
+
+/// Split the content of the dictionnary 'dict' in three set.
+/// On containing the data to parent, one containing the data to copy and on containing the data to parse in the BaseObjectDescription
+void SOFAPYTHON3_API processKwargsForObjectCreation(const pybind11::dict dict,
+                                                    pybind11::list& parametersToLink,
+                                                    pybind11::list& parametersToCopy,
+                                                    sofa::core::objectmodel::BaseObjectDescription& parametersAsString);
 
 //pybind11::object SOFAPYTHON3_API dataToPython(BaseData* d);
 

@@ -236,7 +236,7 @@ void setFieldsFromPythonValues(Base* self, const py::kwargs& dict)
 }
 
 /// Implement the addObject function.
-py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs& kwargs)
+py::object addObjectKwargsToStrings(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
     std::string name {};
     if (kwargs.contains("name"))
@@ -245,10 +245,11 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         if (sofapython3::isProtectedKeyword(name))
             throw py::value_error("Cannot call addObject with name " + name + ": Protected keyword");
     }
-    // Prepare the description to hold the different python attributes as data field's
-    // arguments then create the object.
+    /// Prepare the description to hold the different python attributes as data field's
+    /// arguments then create the object.
     BaseObjectDescription desc {nullptr, type.c_str()};
-    fillBaseObjectdescription(desc, kwargs);
+
+    fillBaseObjectdescription(desc,kwargs);
     auto object = ObjectFactory::getInstance()->createObject(self, &desc);
 
     // After calling createObject the returned value can be either a nullptr
@@ -288,20 +289,122 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
 
     for(auto a : kwargs)
     {
-        BaseData* d = object->findData(py::cast<std::string>(a.first));
-        if(d)
+        const std::string dataName = py::cast<std::string>(a.first);
+        BaseData * d = object->findData(dataName);
+        if (d)
+        {
             d->setPersistent(true);
+        }
     }
+
     return PythonFactory::toPython(object.get());
 }
 
 /// Implement the addObject function.
+py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs& kwargs)
+{
+    std::string name {};
+    if (kwargs.contains("name"))
+    {
+        name = py::str(kwargs["name"]);
+        if (sofapython3::isProtectedKeyword(name))
+            throw py::value_error("Cannot call addObject with name " + name + ": Protected keyword");
+    }
+    /// Prepare the description to hold the different python attributes as data field's
+    /// arguments then create the object.
+    BaseObjectDescription desc {nullptr, type.c_str()};
+    py::list parametersToCopy;
+    py::list parametersToLink;
+
+    //This method will sort the input kwargs.
+    //It will keep all strings, and list of strings as string and put them to desc so the factory can use them
+    //during canCreate and parse calls (important for template, src, input/output of mapping)
+    processKwargsForObjectCreation( kwargs, parametersToLink, parametersToCopy, desc);
+    auto object = ObjectFactory::getInstance()->createObject(self, &desc);
+
+    // After calling createObject the returned value can be either a nullptr
+    // or non-null but with error message or non-null.
+    // Let's first handle the case when the returned pointer is null.
+    if(!object)
+    {
+        std::stringstream tmp ;
+        for(auto& s : desc.getErrors())
+            tmp << s << msgendl ;
+        throw py::value_error(tmp.str());
+    }
+
+    // Associates the emission location to the created object.
+    auto finfo = PythonEnvironment::getPythonCallingPointAsFileInfo();
+    object->setInstanciationSourceFileName(finfo->filename);
+    object->setInstanciationSourceFilePos(finfo->line);
+
+    if (name.empty())
+    {
+        const auto resolvedName = self->getNameHelper().resolveName(object->getClassName(), name, sofa::core::ComponentNameHelper::Convention::python);
+        object->setName(resolvedName);
+    }
+
+    setFieldsFromPythonValues(object.get(), kwargs);
+
+    // Convert the logged messages in the object's internal logging into python exception.
+    // this is not a very fast way to do that...but well...python is slow anyway. And serious
+    // error management has a very high priority. If performance becomes an issue we will fix it
+    // when needed.
+    if(object->countLoggedMessages({Message::Error}))
+    {
+        throw py::value_error(object->getLoggedMessagesAsString({Message::Error}));
+    }
+
+    //Now for all the data that have not been passed  by object descriptor, we pass them to the object
+    for(auto a : kwargs)
+    {
+        const std::string dataName = py::cast<std::string>(a.first);
+        BaseData * d = object->findData(dataName);
+        BaseLink * l = object->findLink(dataName);
+
+        if (d)
+        {
+            if (parametersToLink.contains(a.first))
+                d->setParent(a.second.cast<BaseData*>());
+            else if(parametersToCopy.contains(a.first))
+            {
+                try
+                {
+                    PythonFactory::fromPython(d, py::cast<py::object>(a.second));
+                }
+                catch (std::exception& e)
+                {
+                    msg_warning(self)<<"Creating " << type << " at " << object->getPathName() <<". An exception of type \""<<e.what()<<"\" was received while copying value input for data " << dataName << ". To fix this please reshape the list you are providing to fit the real intended data structure. \n    The compatibility layer will try to create the data by converting the input to string.";
+
+                    if ( !d->read(toSofaParsableString(a.second)))
+                        throw py::value_error("Cannot convert the input \""+ toSofaParsableString(a.second)+"\" to a valid value for data " +  object->getPathName() + "." + dataName );
+                }
+            }
+            d->setPersistent(true);
+        }
+        else if (l == nullptr && parametersToCopy.contains(a.first))
+        {
+            // This case happens when the object overrides the method parse which
+            // expect some arguments in desc instead of using datas to expose variation points
+            desc.setAttribute(dataName,toSofaParsableString(a.second) );
+        }
+    }
+
+    // Let the object parse the desc one last time now that 'real' all data has been set
+    object->parse(&desc);
+    // Now we check that everything has been used. If not, then throw an error.
+    checkParamUsage(desc, object.get());
+
+    return PythonFactory::toPython(object.get());
+}
+
+/// Implement the add(callable, xxx) function.
 py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& kwargs)
 {
     if(py::isinstance<BaseObject*>(callable))
     {
         BaseObject* obj = py::cast<BaseObject*>(callable);
-        self->addObject(obj);
+        self->addObject(obj);    
         return py::cast(obj);
     }
 
@@ -364,21 +467,49 @@ py::object addChildKwargs(Node* self, const std::string& name, const py::kwargs&
     if (sofapython3::isProtectedKeyword(name))
         throw py::value_error("addChild: Cannot call addChild with name " + name + ": Protected keyword");
     BaseObjectDescription desc (name.c_str());
-    fillBaseObjectdescription(desc,kwargs);
+    py::list parametersToCopy;
+    py::list parametersToLink;
+    processKwargsForObjectCreation(kwargs, parametersToLink, parametersToCopy, desc);
+
     auto node=simpleapi::createChild(self, desc);
     auto finfo = PythonEnvironment::getPythonCallingPointAsFileInfo();
     node->setInstanciationSourceFileName(finfo->filename);
     node->setInstanciationSourceFilePos(finfo->line);
 
-    checkParamUsage(desc, node.get());
-
     for(auto a : kwargs)
     {
-        BaseData* d = node->findData(py::cast<std::string>(a.first));
-        if(d)
+        const std::string dataName = py::cast<std::string>(a.first);
+        BaseData * d = node->findData(dataName);
+        BaseLink * l = node->findLink(dataName);
+
+        if (d)
+        {
+            if (parametersToLink.contains(a.first))
+                d->setParent(a.second.cast<BaseData*>());
+            else if(parametersToCopy.contains(a.first))
+            {
+                try
+                {
+                    PythonFactory::fromPython(d, py::cast<py::object>(a.second));
+                }
+                catch (std::exception& e)
+                {
+                    msg_warning(self)<<"Creating Node at " << node->getPathName() <<". An exception of type \""<<e.what()<<"\" was received while copying value input for data " << dataName << ". To fix this please reshape the list you are providing to fit the real intended data structure. \n    The compatibility layer will try to create the data by converting the input to string.";
+
+                    if ( !d->read(toSofaParsableString(a.second)))
+                        throw py::value_error("Cannot convert the input \""+ toSofaParsableString(a.second)+"\" to a valid value for data " +  node->getPathName() + "." + dataName );
+                }
+            }
             d->setPersistent(true);
+        }
+        else if (l == nullptr && parametersToCopy.contains(a.first))
+        {
+            desc.setAttribute(dataName,toSofaParsableString(a.second) );
+        }
     }
 
+    node->parse(&desc);
+    checkParamUsage(desc, node.get());
     return py::cast(node);
 }
 
