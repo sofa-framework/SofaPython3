@@ -164,12 +164,12 @@ std::string getLinkPath(Node* node){
 }
 
 py_shared_ptr<Node> __init__noname() {
-    auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>("unnamed");
+    auto dag_node = sofa::core::objectmodel::New<sofa::simulation::Node>("unnamed");
     return std::move(dag_node);
 }
 
 py_shared_ptr<Node> __init__(const std::string& name) {
-    auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>(name);
+    auto dag_node = sofa::core::objectmodel::New<sofa::simulation::Node>(name);
     return std::move(dag_node);
 }
 
@@ -629,7 +629,7 @@ void moduleAddNode(py::module &m) {
             sofa::core::objectmodel::Context, py_shared_ptr<Node>>
             p(m, "Node", sofapython3::doc::sofa::core::Node::Class);
 
-    PythonFactory::registerType<sofa::simulation::graph::DAGNode>(
+    PythonFactory::registerType<sofa::simulation::Node>(
                 [](sofa::core::objectmodel::Base* object)
     {
         return py::cast(dynamic_cast<Node*>(object->toBaseNode()));

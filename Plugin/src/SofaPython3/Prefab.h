@@ -19,7 +19,7 @@
 ******************************************************************************/
 
 #pragma once
-#include <sofa/simulation/graph/DAGNode.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/DataCallback.h>
 
 #include <sofa/helper/system/FileMonitor.h>
@@ -28,17 +28,17 @@
 namespace sofa::core::objectmodel
 {
 
-class SOFAPYTHON3_API BasePrefab : public sofa::simulation::graph::DAGNode
+class SOFAPYTHON3_API BasePrefab : public sofa::simulation::Node
 {
 public:
-    SOFA_CLASS(BasePrefab, sofa::simulation::graph::DAGNode);
+    SOFA_CLASS(BasePrefab, sofa::simulation::Node);
 };
 
 }  // namespace sofa::core::objectmodel
 
 namespace sofapython3
 {
-using sofa::simulation::graph::DAGNode;
+using sofa::simulation::Node;
 using sofa::core::objectmodel::BasePrefab;
 using sofa::core::objectmodel::DataCallback;
 
