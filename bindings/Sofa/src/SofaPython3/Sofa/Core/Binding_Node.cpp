@@ -22,6 +22,7 @@
 #include <pybind11/numpy.h>
 
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalComputeEnergyVisitor.h>
 #include <sofa/core/ComponentNameHelper.h>
 
 #include <sofa/core/objectmodel/BaseData.h>
@@ -606,6 +607,15 @@ void sendEvent(Node* self, py::object pyUserData, char* eventName)
     self->propagateEvent(sofa::core::execparams::defaultInstance(), &event);
 }
 
+py::object computeEnergy(Node* self)
+{
+    sofa::simulation::mechanicalvisitor::MechanicalComputeEnergyVisitor energyVisitor(sofa::core::mechanicalparams::defaultInstance());
+    energyVisitor.execute(self->getContext());
+    const SReal kineticEnergy = energyVisitor.getKineticEnergy();
+    const SReal potentialEnergy = energyVisitor.getPotentialEnergy();
+    return py::cast(std::make_tuple(kineticEnergy, potentialEnergy));
+}
+
 }
 
 void moduleAddNode(py::module &m) {
@@ -660,6 +670,7 @@ void moduleAddNode(py::module &m) {
     p.def("getMechanicalState", &getMechanicalState, sofapython3::doc::sofa::core::Node::getMechanicalState);
     p.def("getMechanicalMapping", &getMechanicalMapping, sofapython3::doc::sofa::core::Node::getMechanicalMapping);
     p.def("sendEvent", &sendEvent, sofapython3::doc::sofa::core::Node::sendEvent);
+    p.def("computeEnergy", &computeEnergy, sofapython3::doc::sofa::core::Node::computeEnergy);
 
 }
 } /// namespace sofapython3
