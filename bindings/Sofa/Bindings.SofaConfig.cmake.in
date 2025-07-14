@@ -3,21 +3,23 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaPython3 QUIET REQUIRED COMPONENTS Plugin)
+sofa_find_package(Sofa.Config QUIET REQUIRED)
+
+sofa_find_package(SofaPython3 QUIET REQUIRED COMPONENTS Plugin)
 
 # Required by Bindings.Sofa.Helper, Bindings.Sofa.Types
-find_package(Sofa.Core QUIET REQUIRED)
+sofa_find_package(Sofa.Core QUIET REQUIRED)
 
 # Required by Bindings.Sofa.Core
-find_package(Sofa.Simulation.Core QUIET REQUIRED)
+sofa_find_package(Sofa.Simulation.Core QUIET REQUIRED)
 
 # Required by Bindings.Sofa.Core
-find_package(Sofa.Component.Visual QUIET REQUIRED)
-find_package(Sofa.Component.Collision.Response.Contact QUIET REQUIRED)
-find_package(Sofa.SimpleApi QUIET REQUIRED)
+sofa_find_package(Sofa.Component.Visual QUIET REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Response.Contact QUIET REQUIRED)
+sofa_find_package(Sofa.SimpleApi QUIET REQUIRED)
 
 # Required by Bindings.Sofa.Simulation
-find_package(Sofa.Simulation.Graph QUIET REQUIRED)
+sofa_find_package(Sofa.Simulation.Graph QUIET REQUIRED)
 
 # If we are importing this config file and the target is not yet there this is indicating that
 # target is an imported one. So we include it
