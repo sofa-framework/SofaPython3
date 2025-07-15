@@ -238,6 +238,17 @@ void setFieldsFromPythonValues(Base* self, const py::kwargs& dict)
 /// Implement the addObject function.
 py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
+    using namespace pybind11::literals;
+
+    auto numpy = py::module_::import("numpy");
+    std::string version = py::cast<std::string>(numpy.attr("__version__"));
+    if ( std::stoi(version.substr(0,1)) >= 2)
+    {
+        py::object setPO =  numpy.attr("set_printoptions");
+        setPO("legacy"_a = true);
+    }
+
+
     std::string name {};
     if (kwargs.contains("name"))
     {
@@ -292,6 +303,15 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         if(d)
             d->setPersistent(true);
     }
+
+
+    if ( std::stoi(version.substr(0,1)) >= 2)
+    {
+        py::object setPO =  numpy.attr("set_printoptions");
+        setPO();
+    }
+
+
     return PythonFactory::toPython(object.get());
 }
 
