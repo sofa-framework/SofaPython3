@@ -381,6 +381,16 @@ py::object createObject(Node* self, const std::string& type, const py::kwargs& k
 
 py::object addChildKwargs(Node* self, const std::string& name, const py::kwargs& kwargs)
 {
+    using namespace pybind11::literals;
+
+    auto numpy = py::module_::import("numpy");
+    std::string version = py::cast<std::string>(numpy.attr("__version__"));
+    if ( std::stoi(version.substr(0,1)) >= 2)
+    {
+        py::object setPO =  numpy.attr("set_printoptions");
+        setPO("legacy"_a = true);
+    }
+
     if (sofapython3::isProtectedKeyword(name))
         throw py::value_error("addChild: Cannot call addChild with name " + name + ": Protected keyword");
     BaseObjectDescription desc (name.c_str());
@@ -397,6 +407,12 @@ py::object addChildKwargs(Node* self, const std::string& name, const py::kwargs&
         BaseData* d = node->findData(py::cast<std::string>(a.first));
         if(d)
             d->setPersistent(true);
+    }
+
+    if ( std::stoi(version.substr(0,1)) >= 2)
+    {
+        py::object setPO =  numpy.attr("set_printoptions");
+        setPO();
     }
 
     return py::cast(node);
