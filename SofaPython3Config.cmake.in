@@ -10,7 +10,7 @@ include(SofaPython3Tools)
 
 # Find Python3
 if(NOT TARGET Python::Python)
-    find_package(Python @PythonMAJMIN@ EXACT QUIET REQUIRED COMPONENTS Interpreter Development GLOBAL)
+    find_package(Python @PythonMAJMIN@ EXACT QUIET REQUIRED COMPONENTS Interpreter Development)
 endif()
 
 # Find pybind11
@@ -40,7 +40,7 @@ if(NOT TARGET pybind11)
         set(PYTHON_INCLUDE_DIR "${Python_INCLUDE_DIRS}" CACHE INTERNAL "" FORCE)
     endif()
 
-    find_package(pybind11 @pybind11_VERSION@ QUIET REQUIRED CONFIG GLOBAL)
+    find_package(pybind11 @pybind11_VERSION@ QUIET REQUIRED CONFIG)
 
     # Reset PYTHON_* vars
     set(PYTHON_VERSION "${PYTHON_VERSION_RESET}" CACHE STRING "" FORCE)
