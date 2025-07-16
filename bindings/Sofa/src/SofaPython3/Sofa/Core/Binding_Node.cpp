@@ -274,7 +274,7 @@ private:
 py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
     //Instantiating this object will make sure the numpy representation is fixed during the call of this function, and comes back to its previous state after
-    const NumpyReprFixerRAII numpyReprFixer;
+    [[maybe_unused]] const NumpyReprFixerRAII numpyReprFixer;
 
     std::string name {};
     if (kwargs.contains("name"))
@@ -402,7 +402,7 @@ py::object createObject(Node* self, const std::string& type, const py::kwargs& k
 py::object addChildKwargs(Node* self, const std::string& name, const py::kwargs& kwargs)
 {
     //Instantiating this object will make sure the numpy representation is fixed during the call of this function, and comes back to its previous state after
-    const NumpyReprFixerRAII numpyReprFixer;
+    [[maybe_unused]] const NumpyReprFixerRAII numpyReprFixer;
 
     if (sofapython3::isProtectedKeyword(name))
         throw py::value_error("addChild: Cannot call addChild with name " + name + ": Protected keyword");
