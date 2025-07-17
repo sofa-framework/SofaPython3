@@ -58,6 +58,26 @@ class TestNewAdd(unittest.TestCase):
         self.assertEqual(root.children[2].name.value, "Node")
         self.assertEqual(root.children[3].name.value, "Node1")
 
+    def test_add_node_with_kwargs(self):
+        root = Sofa.Core.Node("root")
+        root.add(Sofa.Core.Node, name="aNodeC", gravity=[1,2,3])
+        self.assertEqual(root.children[0].gravity.value, [1,2,3])
+
+    def test_add_instanciated_prefab(self):
+        root = Sofa.Core.Node("root")
+        from stlib.entities import Entity, EntityParameters
+
+        bunnyParameters = EntityParameters()
+        bunny = root.add(Entity(bunnyParameters))
+
+    def test_add_prefab_with_parameter_object(self):
+        root = Sofa.Core.Node("root")
+        from stlib.entities import Entity, EntityParameters
+
+        bunnyParameters = EntityParameters()
+        bunny = root.add(Entity, bunnyParameters)
+
+
 if __name__ == '__main__':
 
     SofaRuntime.importPlugin("Sofa.Component.StateContainer")
