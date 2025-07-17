@@ -176,24 +176,7 @@ py_shared_ptr<Node> __init__no_kwargs__(const std::string& name) {
 py_shared_ptr<Node> __init__(const std::string& name, const py::kwargs& kwargs) {
     auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>(name);
 
-    const auto typeHandleBaseData = py::detail::get_type_handle(typeid(BaseData), false);
-    const auto typeHandleLinkPath = py::detail::get_type_handle(typeid(LinkPath), false);
-
-    for (auto & kv : kwargs)
-    {
-        BaseData* d = dag_node->findData(py::cast<std::string>(kv.first));
-        if(d)
-        {
-            if (py::isinstance(kv.second, typeHandleBaseData))
-                d->setParent(kv.second.cast<BaseData*>());
-            else if (py::isinstance(kv.second, typeHandleLinkPath))
-                d->setParent(py::str(kv.second));
-            else if (py::isinstance<py::str>(kv.second))
-                d->read(py::str(kv.second));
-            else
-                PythonFactory::fromPython(d, py::cast<py::object>(kv.second));
-        }
-    }
+    setDataFromKwargs(dag_node.get(), kwargs);
 
     return std::move(dag_node);
 }
