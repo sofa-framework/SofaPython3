@@ -26,7 +26,7 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
             isNode=True
         elif isinstance(typeName, type) and issubclass(typeName, Sofa.Core.Object):
             params["name"] = typeName.name.value
-        elif  isinstance(typeName, type) and issubclass(typeName, Sofa.Core.ObjectDeclaration):
+        elif isinstance(typeName, type) and issubclass(typeName, Sofa.Core.ObjectDeclaration):
             params["name"] = typeName.__name__
         else:
             raise RuntimeError("Invalid argument ", typeName)
@@ -40,10 +40,8 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
     # Dispatch the creation to either addObject or addChild
     if isinstance(typeName, type) and issubclass(typeName, Sofa.Core.Node):
         pref = self.addChild(typeName(params["name"]))
-        pref.init()
     elif isinstance(typeName, Sofa.Core.Node):
         pref = self.addChild(typeName)
-        pref.init()
     elif isinstance(typeName, type) and issubclass(typeName, Sofa.Core.Object):
         pref = self.addObject(typeName(**params))
     elif isinstance(typeName, type) and issubclass(typeName, Sofa.Core.ObjectDeclaration):
