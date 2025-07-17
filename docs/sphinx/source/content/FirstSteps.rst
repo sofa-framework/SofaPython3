@@ -46,11 +46,14 @@ One must therefore create it and then call the ``createScene()`` function:
             createScene(root)
 
             # Once defined, initialization of the scene graph
-            Sofa.Simulation.init(root)
+            Sofa.Simulation.initRoot(root)
 
             # Run as many simulation steps (here 10 steps are computed)
             for iteration in range(10):
                 Sofa.Simulation.animate(root, root.dt.value)
+                print("Computing iteration "+str(iteration+1))
+        
+            print("Computation is done.")
 
 
 	# Same createScene function as in the previous case
@@ -72,23 +75,26 @@ In case you want to manage the simulation from the runSofa GUI, you can simply c
 .. code-block:: python
 
 	def main():
-        # Call the SOFA function to create the root node
-        root = Sofa.Core.Node("root")
+            # Call the SOFA function to create the root node
+            root = Sofa.Core.Node("root")
 
-        # Call the createScene function, as runSofa does
-        createScene(root)
+            # Call the createScene function, as runSofa does
+            createScene(root)
 
-        # Once defined, initialization of the scene graph
-        Sofa.Simulation.init(root)
+            # Once defined, initialization of the scene graph
+            Sofa.Simulation.initRoot(root)
 
-        # Launch the GUI (qt or qglviewer)
-        Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
-        Sofa.Gui.GUIManager.createGUI(root, __file__)
-        Sofa.Gui.GUIManager.SetDimension(1080, 800)
+            # Import the GUI package
+            import Sofa.Gui
 
-        # Initialization of the scene will be done here
-        Sofa.Gui.GUIManager.MainLoop(root)
-        Sofa.Gui.GUIManager.closeGUI()
+            # Launch the GUI (qt or qglviewer)
+            Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
+            Sofa.Gui.GUIManager.createGUI(root, __file__)
+            Sofa.Gui.GUIManager.SetDimension(1080, 800)
+
+            # Initialization of the scene will be done here
+            Sofa.Gui.GUIManager.MainLoop(root)
+            Sofa.Gui.GUIManager.closeGUI()
 
 
 So far, you can load this python scene, but it doesn't do much. Let's enrich this scene!
@@ -116,29 +122,56 @@ We first propose to add a visual grid, in order to see things more clearly. To d
 .. code-block:: python 
 
 	def createScene(rootNode):
+            # Make sure to load all necessary libraries
+            import SofaRuntime
+            SofaRuntime.importPlugin("Sofa.Component.Visual")
+            
+            # Add an object (here of type VisualGrid, with its data "nbSubdiv" and "size")
             rootNode.addObject("VisualGrid", nbSubdiv=10, size=1000)
 
 Now, we create a new child node, in order to add the general configuration of the scene : required plugins (here SofaPython3) and other tools (like a system of axes).
 
 .. code-block:: python
-
-	confignode = rootNode.addChild("Config")
-	confignode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
+        def createScene(rootNode):
+            import SofaRuntime
+            # Make sure to load all necessary libraries
+            SofaRuntime.importPlugin("Sofa.Component.Visual")
+            SofaRuntime.importPlugin("Sofa.GL.Component.Rendering3D")
+            
+            rootNode.addObject("VisualGrid", nbSubdiv=10, size=1000)
+            
+            confignode = rootNode.addChild("Config")
+            confignode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
 
 
 Finally, we add the sphere itself, which consists of two parts : the mechanical representation and the visual representation of the sphere: 
 
 .. code-block:: python
+        def createScene(rootNode):
+            import SofaRuntime
+            # Make sure to load all necessary libraries
+            SofaRuntime.importPlugin("Sofa.Component.Visual")
+            SofaRuntime.importPlugin("Sofa.GL.Component.Rendering3D")
+            SofaRuntime.importPlugin("Sofa.Component.StateContainer")
+            SofaRuntime.importPlugin("Sofa.Component.IO.Mesh")
+            SofaRuntime.importPlugin("Sofa.Component.Mapping.NonLinear")
+            SofaRuntime.importPlugin("Sofa.Component.AnimationLoop")
+        
+            rootNode.addObject("VisualGrid", nbSubdiv=10, size=1000)
+            rootNode.addObject("DefaultAnimationLoop")
+        
+            confignode = rootNode.addChild("Config")
+            confignode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
 
-    # Creating the falling sphere object
-    sphere = rootNode.addChild("sphere")
-    sphere.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0., 0., 0.], rotation2=[0., 0., 0.], showObjectScale=50)
+            # Creating the falling sphere object
+            sphere = rootNode.addChild("sphere")
+            sphere.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0., 0., 0.], rotation2=[0., 0., 0.], showObjectScale=50)
 
-    #### Visualization subnode for the sphere
-    sphereVisu = sphere.addChild("VisualModel")
-    sphereVisu.loader = sphereVisu.addObject('MeshOBJLoader', name="loader", filename="mesh/ball.obj")
-    sphereVisu.addObject('OglModel', name="model", src="@loader", scale3d=[50]*3, color=[0., 1., 0.], updateNormals=False)
-    sphereVisu.addObject('RigidMapping')
+            #### Visualization subnode for the sphere
+            sphereVisu = sphere.addChild("VisualModel")
+            sphereVisu.loader = sphereVisu.addObject('MeshOBJLoader', name="loader", filename="mesh/ball.obj")
+            sphereVisu.addObject('OglModel', name="model", src="@loader", scale3d=[50]*3, color=[0., 1., 0.], updateNormals=False)
+            sphereVisu.addObject('RigidMapping')
 
 .. image:: ../images/exampleScene_step1.png
 	:alt: This is what you should see in Sofa at this stage
@@ -169,8 +202,14 @@ We add a mechanical model, so that all our futur elements will have the same tot
 
 We add properties to the sphere. First, we add a mass, then an object called 'UncoupledConstraintCorrection', in charge of computing the constraint forces of the sphere, then we add two different solvers. One is a time integration scheme that defines the system to be solved at each time step of the simulation (here the implicit Euler Method), the other is a solving method (here the Conjugate Gradient method), that solves the equations governing the model at each time step, and updates the MechanicalObject.
 
+
 .. code-block:: python
 
+        SofaRuntime.importPlugin("Sofa.Component.ODESolver.Backward")
+        SofaRuntime.importPlugin("Sofa.Component.LinearSolver.Iterative")
+        SofaRuntime.importPlugin("Sofa.Component.Mass")
+        SofaRuntime.importPlugin("Sofa.Component.Constraint.Lagrangian.Correction")
+        
 	# Creating the falling sphere object
 	sphere = rootNode.addChild("sphere")
 	sphere.addObject('EulerImplicitSolver', name='odesolver')
@@ -187,12 +226,16 @@ We add properties to the sphere. First, we add a mass, then an object called 'Un
 Now, if you click on the Animate button in SOFA, the sphere will fall.
 
 
+
 Add a second object 
 ^^^^^^^^^^^^^^^^^^^
 
 Let's add a second element, a floor, to see how they interact :
 
 .. code-block:: python
+
+    SofaRuntime.importPlugin("Sofa.Component.Topology.Container.Constant")
+    SofaRuntime.importPlugin("Sofa.Component.Collision.Geometry")
 
     # Creating the floor object
     floor = rootNode.addChild("floor")
@@ -232,7 +275,7 @@ We first add a collision model for the scene in general, that is stating how a c
 .. code-block:: python
 
 	# Collision pipeline
-	rootNode.addObject('DefaultPipeline')
+	rootNode.addObject('CollisionPipeline')
 	rootNode.addObject('FreeMotionAnimationLoop')
 	rootNode.addObject('GenericConstraintSolver', tolerance="1e-6", maxIterations="1000")
 	rootNode.addObject('BruteForceBroadPhase')
@@ -270,6 +313,17 @@ We do the same for the floor, but we also specify that the floor is a stationnar
 	floorCollis.addObject('PointCollisionModel', moving=False, simulated=False)
 	floorCollis.addObject('RigidMapping')
 
+Note that for this step you might have to load the following modules:
+
+.. code-block:: python
+
+        SofaRuntime.importPlugin("Sofa.Component.Collision.Detection.Intersection")
+        SofaRuntime.importPlugin("Sofa.Component.Collision.Detection.Algorithm")
+        SofaRuntime.importPlugin("Sofa.Component.Collision.Geometry")
+        SofaRuntime.importPlugin("Sofa.Component.Collision.Response")
+        SofaRuntime.importPlugin("Sofa.Component.Constraint.Lagrangian.Solver")
+        SofaRuntime.importPlugin("Sofa.Component.Topology.Container.Constant")
+
 
 .. image:: ../images/exampleScene_step4.gif
 	:alt: This is what you should see in Sofa at this stage
@@ -302,7 +356,7 @@ Here is the entire code of the scene :
         createScene(root)
 
         # Once defined, initialization of the scene graph
-        Sofa.Simulation.init(root)
+        Sofa.Simulation.initRoot(root)
 
         # Launch the GUI (qt or qglviewer)
         Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
@@ -315,8 +369,6 @@ Here is the entire code of the scene :
 
 
 	def createScene(rootNode):
-
-            rootNode.addObject("VisualGrid", nbSubdiv=10, size=1000)
 
             # Define the root node properties
             rootNode.gravity=[0.0,-9.81,0.0]
@@ -341,10 +393,11 @@ Here is the entire code of the scene :
             confignode.addObject('RequiredPlugin', name="Sofa.Component.Visual", printLog=False)
             confignode.addObject('RequiredPlugin', name="Sofa.GL.Component.Rendering3D", printLog=False)
             confignode.addObject('OglSceneFrame', style="Arrows", alignment="TopRight")
+            confignode.addObject("VisualGrid", nbSubdiv=10, size=1000)
 
 
             # Collision pipeline
-            rootNode.addObject('DefaultPipeline')
+            rootNode.addObject('CollisionPipeline')
             rootNode.addObject('FreeMotionAnimationLoop')
             rootNode.addObject('GenericConstraintSolver', tolerance="1e-6", maxIterations="1000")
             rootNode.addObject('BruteForceBroadPhase')
@@ -466,7 +519,7 @@ In the same way, Data can be modified (write access) using the ``.value`` access
         createScene(root)
 
         # Once defined, initialization of the scene graph
-        Sofa.Simulation.init(root)
+        Sofa.Simulation.initRoot(root)
 
         # Run the simulation for 10 steps
         for iteration in range(10):
@@ -494,7 +547,7 @@ For more complex Data such as Data related to the degrees of freedom (e.g. Coord
 .. code-block:: python
 
 	with root.sphere.CFF.totalForce.writeableArray() as wa:
-        wa[0] += 0.01 # modify the first entry of the Deriv Data "totalForce"
+            wa[0] += 0.01 # modify the first entry of the Deriv Data "totalForce"
 
 
 
