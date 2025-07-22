@@ -33,13 +33,13 @@ def createScene(root):
 def main():
     import Sofa.Gui
     import SofaRuntime
-    import SofaQt
+    SofaRuntime.importPlugin("SofaImGui")
 
     root=Sofa.Core.Node("root")
     createScene(root)
     Sofa.Simulation.initRoot(root)
 
-    Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
+    Sofa.Gui.GUIManager.Init("myscene", "imgui")
     Sofa.Gui.GUIManager.createGUI(root, __file__)
     Sofa.Gui.GUIManager.SetDimension(1080, 1080)
     Sofa.Gui.GUIManager.MainLoop(root)

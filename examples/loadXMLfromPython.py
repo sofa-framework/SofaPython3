@@ -31,7 +31,6 @@ def createScene(root):
 def main():
 	import SofaRuntime
 	import Sofa.Gui
-	import SofaQt
 
 	root = Sofa.Core.Node("root")
 	createScene(root)
@@ -39,8 +38,9 @@ def main():
 
 	# Find out the supported GUIs
 	print ("Supported GUIs are: " + Sofa.Gui.GUIManager.ListSupportedGUI(","))
-	# Launch the GUI (qt or qglviewer)
-	Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
+	# Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
+	SofaRuntime.importPlugin("SofaImGui")
+	Sofa.Gui.GUIManager.Init("myscene", "imgui")
 	Sofa.Gui.GUIManager.createGUI(root, __file__)
 	Sofa.Gui.GUIManager.SetDimension(1080, 1080)
 	# Initialization of the scene will be done here
