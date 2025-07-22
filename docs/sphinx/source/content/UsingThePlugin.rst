@@ -221,8 +221,10 @@ By structuring your scripts this way, you get the advantage to have a script loa
         # Once defined, initialization of the scene graph
         Sofa.Simulation.init(root)
 
-        # Launch the GUI (qt or qglviewer)
-        Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
+        # Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
+        import SofaRuntime
+        SofaRuntime.importPlugin("SofaImGui")
+        Sofa.Gui.GUIManager.Init("myscene", "imgui")
         Sofa.Gui.GUIManager.createGUI(root, __file__)
         Sofa.Gui.GUIManager.SetDimension(1080, 800)
 
@@ -415,6 +417,7 @@ Here is the entire code of the scene :
 .. code-block:: python
 
 	import Sofa
+        import SofaRuntime
 	import Sofa.Gui
 
 
@@ -428,8 +431,9 @@ Here is the entire code of the scene :
         # Once defined, initialization of the scene graph
         Sofa.Simulation.init(root)
 
-        # Launch the GUI (qt or qglviewer)
-        Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
+        # Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
+        SofaRuntime.importPlugin("SofaImGui")
+        Sofa.Gui.GUIManager.Init("myscene", "imgui")
         Sofa.Gui.GUIManager.createGUI(root, __file__)
         Sofa.Gui.GUIManager.SetDimension(1080, 800)
 
@@ -644,6 +648,6 @@ Do not hesitate to take a look and get inspiration!
 Get support
 ***********
 
-To freely get technical assistance from the community, please do not hesitate to join the `SofaPython3 GitHub forum <https://github.com/sofa-framework/sofapython3/discussions>`_ and post there any question related to SofaPython3.
+To freely get technical assistance from the community, please do not hesitate to join the `SofaPython3 GitHub forum <https://github.com/sofa-framework/sofa/discussions/categories/sofapython3>`_ and post there any question related to SofaPython3.
 
 To quickly level up on SOFA, never hesitate to request `SOFA training sessions <https://www.sofa-framework.org/sofa-events/sofa-training-sessions/>`_.
