@@ -1,14 +1,10 @@
-# Required import for python
-import Sofa
-
-
 # Choose in your script to activate or not the GUI
 USE_GUI = True
 
 def main():
+    # Required import for python
+    import Sofa
     import SofaRuntime
-    import Sofa.Gui
-    # Make sure to load all SOFA libraries
 
     #Create the root node
     root = Sofa.Core.Node("root")
@@ -20,12 +16,13 @@ def main():
         for iteration in range(10):
             Sofa.Simulation.animate(root, root.dt.value)
     else:
-        import SofaQt
+        import Sofa.Gui
+        SofaRuntime.importPlugin("SofaImGui")
 
         # Find out the supported GUIs
         print ("Supported GUIs are: " + Sofa.Gui.GUIManager.ListSupportedGUI(","))
-        # Launch the GUI (qt or qglviewer)
-        Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
+        # Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
+        Sofa.Gui.GUIManager.Init("myscene", "imgui")
         Sofa.Gui.GUIManager.createGUI(root, __file__)
         Sofa.Gui.GUIManager.SetDimension(1080, 1080)
         # Initialization of the scene will be done here
