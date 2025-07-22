@@ -6,6 +6,8 @@ def main():
     import Sofa
     import SofaRuntime
 
+    # Make sure to load all SOFA libraries
+
     #Create the root node
     root = Sofa.Core.Node("root")
     # Call the below 'createScene' function to create the scene graph
@@ -17,12 +19,12 @@ def main():
             Sofa.Simulation.animate(root, root.dt.value)
     else:
         import Sofa.Gui
-        SofaRuntime.importPlugin("SofaImGui")
+        import SofaQt
 
         # Find out the supported GUIs
         print ("Supported GUIs are: " + Sofa.Gui.GUIManager.ListSupportedGUI(","))
-        # Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
-        Sofa.Gui.GUIManager.Init("myscene", "imgui")
+        # Launch the GUI (qt or qglviewer)
+        Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
         Sofa.Gui.GUIManager.createGUI(root, __file__)
         Sofa.Gui.GUIManager.SetDimension(1080, 1080)
         # Initialization of the scene will be done here
