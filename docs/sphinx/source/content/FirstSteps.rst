@@ -19,14 +19,14 @@ Let's now see how this script ``example1.py`` should look like.
 The first important thing to notice is that to be compatible with SOFA, a python script must define the ``createScene()`` function. This function is the entry point of your simulation and
 is automatically called by the runSofa application when a python file is loaded. It is responsible for describing and building the SOFA scene graph.
 
-In the section `Create a new simulation <https://sofapython3.readthedocs.io/en/latest/content/FirstSteps.html#create-a-new-simulation>` below, we will detail how to implement this ``createScene()``.
+In the section "`Create a new simulation <https://sofapython3.readthedocs.io/en/latest/content/FirstSteps.html#create-a-new-simulation>`_" below, we will detail how to implement this ``createScene()``.
 
 With the python3 interpreter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 SOFA simulation can also be executed from a python environment (including jupyter notebook).
 To do so, the Python environment must be filled in for SOFA python modules.
-Located in "site-packages/" repositories, the path to these libraries should be added to the ``PYTHONPATH``.
+Located in *site-packages/* repositories, the path to these libraries should be added to the ``PYTHONPATH``.
 The section "`Setup your python3 environment <https://sofapython3.readthedocs.io/en/latest/content/Installation.html#using-python3>`_" section details how to configure it.
 
 Once your python environment is properly configured, you will be able to import SOFA python modules (e.g. ``import Sofa``).
@@ -118,6 +118,19 @@ In case you want to manage the simulation from the runSofa GUI, you can call the
 So far, you can load this python scene, but it doesn't do much. Let's enrich this scene!
 
 A scene in SOFA is an ordered tree of nodes representing objects (example of node: hand), with parent/child relationship (example of hand's child: finger). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is usually called "rootNode" or "root". More about how to create a simulation scene can be found in the `SOFA online documentation <https://www.sofa-framework.org/community/doc/using-sofa/lexicography/>`_
+
+
+Using the old Qt GUI
+""""""""""""""""""""
+
+Since SOFA v25.06, SOFA GUI relies on the ImGui library. The previous Qt-based GUI is still available. To use it, make sure to:
+
+* add the *lib/* repository in the SOFA binaries to your ``LD_LIBRARY_PATH``
+* add the *lib/python3/site-packages/* repository to your ``PYTHONPATH``
+* make sure your SOFA install path does not include any special character
+
+An example using the Qt GUI is available: `basic-useQtGUI.py <https://github.com/sofa-framework/SofaPython3/blob/master/examples/basic-useQtGUI.py>`_
+
 
 
 Create a new simulation
