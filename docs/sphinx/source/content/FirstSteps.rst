@@ -13,9 +13,9 @@ Assuming you want to run a script named "example.py", you can run the following 
 
 .. code-block:: shell 
 
-    runSofa example1.py
+    runSofa example.py
 
-Let's now see how this script ``example1.py`` should look like.
+Let's now see how this script ``example.py`` should look like.
 The first important thing to notice is that to be compatible with SOFA, a python script must define the ``createScene()`` function. This function is the entry point of your simulation and
 is automatically called by the runSofa application when a python file is loaded. It is responsible for describing and building the SOFA scene graph.
 
@@ -76,7 +76,7 @@ To be run from a python environment, any python script should therefore look lik
 The above script can be run as follows:
 .. code-block:: shell 
 
-    python3 example1.py
+    python3 example.py
 
 It can be noted that:
 * by structuring your scripts this way, you get the advantage to have a script loadable from both runSofa and a python3 interpreter. 
