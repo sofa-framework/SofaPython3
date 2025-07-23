@@ -3,7 +3,7 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-sofa_find_package(Sofa.Config QUIET REQUIRED)
+find_package(Sofa.Config QUIET REQUIRED)
 
 sofa_find_package(SofaPython3 QUIET REQUIRED COMPONENTS Plugin)
 
