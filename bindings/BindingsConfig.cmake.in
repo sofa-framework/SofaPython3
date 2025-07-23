@@ -5,7 +5,9 @@
 
 set(SP3_WITH_SOFAEXPORTER @SP3_WITH_SOFAEXPORTER@)
 
-find_package(SofaPython3 QUIET REQUIRED COMPONENTS
+find_package(Sofa.Config QUIET REQUIRED)
+
+sofa_find_package(SofaPython3 QUIET REQUIRED COMPONENTS
     Bindings.Modules
     Bindings.Sofa
     Bindings.SofaGui
@@ -13,7 +15,7 @@ find_package(SofaPython3 QUIET REQUIRED COMPONENTS
     Bindings.SofaTypes
     )
 if(SP3_WITH_SOFAEXPORTER)
-    find_package(SofaPython3 QUIET REQUIRED COMPONENTS Bindings.SofaExporter)
+    sofa_find_package(SofaPython3 QUIET REQUIRED COMPONENTS Bindings.SofaExporter)
 endif()
 
 # If we are importing this config file and the target is not yet there this is indicating that
