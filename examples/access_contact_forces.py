@@ -68,7 +68,7 @@ def createScene(root):
     liver.addObject('TetrahedronSetGeometryAlgorithms', template="Vec3d", name="GeomAlgo")
     liver.addObject('DiagonalMass', name="Mass", massDensity=1.0)
     liver.addObject('TetrahedralCorotationalFEMForceField', template="Vec3d", name="FEM", method="large", poissonRatio=0.3, youngModulus=3000, computeGlobalMatrix=False)
-    liver.addObject('FixedProjectiveConstraint', name="FixedConstraint", indices="3 39 64")
+    liver.addObject('FixedProjectiveConstraint', name="FixedConstraint", indices=[3,39,64])
 
     # Forcefield only used for visualization purposes (of the contact forces)
     CFF = liver.addObject('ConstantForceField', name="CFF", forces=[0,0,0], showArrowSize=10)
@@ -87,7 +87,7 @@ def createScene(root):
 
     particle = root.addChild('Particle')
     particle.addObject('EulerImplicitSolver')
-    particle.addObject('CGLinearSolver', threshold='1e-09', tolerance='1e-09', iterations='200')
+    particle.addObject('CGLinearSolver', threshold=1e-09, tolerance=1e-09, iterations=200)
     # Particle MechanicalObject where the constraint/contact forces will be stored in the (x,y,z) coordinate system
     particleMO = particle.addObject('MechanicalObject', showObject=True, position=[-2, 10, 0, 0, 0, 0, 1], name=f'ParticleDoFs', template='Rigid3d')
     particle.addObject('UniformMass', totalMass=1)
@@ -117,7 +117,7 @@ class AccessContactForces(Sofa.Core.Controller):
 
         lambda_vector = self.constraint_solver.constraintForces.value
         if(len(lambda_vector) > 0):
-            print("Forces in the contact space (n, t1, t2) = "+str(lambda_vector)+" (at time = "+str(round(self.root_node.time.value,3))+")")
+            print(f"Forces in the contact space (n, t1, t2) =  {lambda_vector}  (at time = {round(self.root_node.time.value,3))})")
 
             self.forcefield_visu.forces.value = -self.soft_liver.getData("lambda").value
             visuScale = self.forcefield_visu.showArrowSize.value
