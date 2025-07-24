@@ -111,18 +111,25 @@ class AccessContactForces(Sofa.Core.Controller):
         self.soft_liver = kwargs.get("soft_liver")
         self.forces_visu = kwargs.get("forces_visu")
         self.root_node = kwargs.get("root_node")
+        # Initialize the rendered vector with zero vec<Vec3>
         self.forces_visu.vector.value = np.zeros((181,3))
 
     def onAnimateEndEvent(self, event):
 
         lambda_vector = self.constraint_solver.constraintForces.value
+        # If there is a contact
         if(len(lambda_vector) > 0):
             print(f"At time = {round(self.root_node.time.value,3)}, forces in the contact space (n, t1, t2) equals:\n  {lambda_vector} ")
 
+            # Compute the inverse (reaction force)
             self.forces_visu.vector.value = -self.soft_liver.getData("lambda").value
+
+            # Scale automatically the displayed force vector
             visuScale = self.forces_visu.vectorScale.value
             fact = np.max(lambda_vector)
             self.forces_visu.vectorScale.value = 10/fact
+
+        # If no contact
         else:
             self.forces_visu.vector.value = np.zeros((181,3))
 
