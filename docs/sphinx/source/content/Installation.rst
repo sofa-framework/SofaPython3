@@ -130,20 +130,10 @@ Before running your simulations, you must make sure to define the following envi
 		After that, all you need to do is open a Console (cmd.exe) and run: ``runSofa -lSofaPython3``
 
 
+It must be noted that depending on the plugins you use, you might have to add the *site-packages/* paths associated to these plugins to your ``PYTHONPATH``.
+These are usually located in */path_to_plugin/lib/python3/site-packages*.
 
-It is possible to use SOFA in any python3 interpreter.
-The following code should cover most basic SOFA elements:
-
-.. code-block:: python
-
-        # to be able to create SOFA objects you need to first load the plugins that implement them.
-        # For simplicity you can load the plugin "Sofa.Component" that will load all most
-        # common sofa objects.
-        import SofaRuntime
-        SofaRuntime.importPlugin("Sofa.Component")
-
-        # to create elements like Node or objects
-	import Sofa.Core
+To discover, how to use SOFA in any python3 interpreter, please refer to the associated `FirstSteps section <https://sofapython3.readthedocs.io/en/latest/content/FirstSteps.html#with-the-python3-interpreter>`_
 
 
 Get support
