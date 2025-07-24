@@ -32,6 +32,7 @@
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <SofaPython3/config.h>
 
+
 ////////////////////////// FORWARD DECLARATION ///////////////////////////
 namespace sofa {
     namespace defaulttype {
@@ -291,6 +292,9 @@ public:
 SOFAPYTHON3_API BaseData* addData(pybind11::object py_self, const std::string& name, pybind11::object value = pybind11::none(), pybind11::object defaultValue = pybind11::none(), const std::string& help = "", const std::string& group = "Property", std::string type = "");
 SOFAPYTHON3_API BaseLink* addLink(pybind11::object py_self, const std::string& name, pybind11::object value, const std::string& help);
 SOFAPYTHON3_API bool isProtectedKeyword(const std::string& name);
+
+
+SOFAPYTHON3_API void setDataFromKwargs(Base* obj, const pybind11::kwargs& kwargs);
 
 }  // namespace sofapython3
 
