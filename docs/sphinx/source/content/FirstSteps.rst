@@ -12,7 +12,7 @@ With runSofa
 * open runSofa without any argument once and then add libSofaPython3 in the plugin manager
 * or add -l SofaPython3 in this command line.
 
-For more information, please refer to the documentation: `What is a plugin > Plugin loading<https://sofa-framework.github.io/doc/plugins/what-is-a-plugin/#plugin_loading>`_
+For more information, please refer to the documentation: `Plugin loading <https://sofa-framework.github.io/doc/plugins/what-is-a-plugin/#plugin_loading>`_.
 
 Once the SofaPython3 plugin is loaded, you can load a simulation from a python script directly in runSofa.
 Assuming you want to run a script named "example.py", you can run the following command:
@@ -32,7 +32,7 @@ With the python3 interpreter
 SOFA simulation can also be executed from a python environment (including jupyter notebook).
 To do so, the Python environment must be filled in for SOFA python modules.
 Located in *site-packages/* repositories, the path to these libraries should be added to the ``PYTHONPATH``.
-The section "`Setup your python3 environment <https://sofapython3.readthedocs.io/en/latest/content/Installation.html#using-python3>`_" section details how to configure it.
+The Installation section details the `requirements to execute a simulation withing a python3 interpreter <https://sofapython3.readthedocs.io/en/latest/content/Installation.html#using-python3>`_" section details how to configure it.
 
 Once your python environment is properly configured, you will be able to import SOFA python modules (e.g. ``import Sofa``).
 By running your simulation from a python interpreter, you will be responsible for:
