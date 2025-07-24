@@ -31,9 +31,8 @@ def createScene(root):
 
 
 def main():
+    import SofaImGui
     import Sofa.Gui
-    import SofaRuntime
-    SofaRuntime.importPlugin("SofaImGui")
 
     root=Sofa.Core.Node("root")
     createScene(root)

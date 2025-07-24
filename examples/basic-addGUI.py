@@ -4,7 +4,7 @@ USE_GUI = True
 def main():
     # Required import for python
     import Sofa
-    import SofaRuntime
+    import SofaImGui
 
     #Create the root node
     root = Sofa.Core.Node("root")
@@ -16,8 +16,8 @@ def main():
         for iteration in range(10):
             Sofa.Simulation.animate(root, root.dt.value)
     else:
+        # Required import to manage the GUI
         import Sofa.Gui
-        SofaRuntime.importPlugin("SofaImGui")
 
         # Find out the supported GUIs
         print ("Supported GUIs are: " + Sofa.Gui.GUIManager.ListSupportedGUI(","))
