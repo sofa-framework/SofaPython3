@@ -249,7 +249,7 @@ public:
         {
             m_setPO =  m_numpy.attr("set_printoptions");
             m_initialState = m_numpy.attr("get_printoptions")();
-            m_setPO("legacy"_a = true);
+            m_setPO("legacy"_a = "1.25");
         }
     }
 
