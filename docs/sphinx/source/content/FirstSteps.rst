@@ -8,7 +8,13 @@ Executing a simulation
 With runSofa 
 ^^^^^^^^^^^^
 
-Making sure the SofaPython3 plugin is loaded, you can load a simulation described by a python script directly in runSofa.
+💡 To make sure runSofa is able to load a scene described by a python, you can either:
+* open runSofa without any argument once and then add libSofaPython3 in the plugin manager
+* or add -l SofaPython3 in this command line.
+
+For more information, please refer to the documentation: `What is a plugin > Plugin loading<https://sofa-framework.github.io/doc/plugins/what-is-a-plugin/#plugin_loading>`_
+
+Once the SofaPython3 plugin is loaded, you can load a simulation from a python script directly in runSofa.
 Assuming you want to run a script named "example.py", you can run the following command:
 
 .. code-block:: shell 
@@ -16,8 +22,7 @@ Assuming you want to run a script named "example.py", you can run the following 
     runSofa example.py
 
 Let's now see how this script ``example.py`` should look like.
-The first important thing to notice is that to be compatible with SOFA, a python script must define the ``createScene()`` function. This function is the entry point of your simulation and
-is automatically called by the runSofa application when a python file is loaded. It is responsible for describing and building the SOFA scene graph.
+The first important thing to notice is that to be compatible with SOFA, a python script must define the ``createScene(root : Sofa.Core.Node)`` function. This function is the entry point of your simulation and it is automatically called by the runSofa application when a python file is loaded. It is responsible for describing and building the SOFA scene graph.
 
 In the section "`Create a new simulation <https://sofapython3.readthedocs.io/en/latest/content/FirstSteps.html#create-a-new-simulation>`_" below, we will detail how to implement this ``createScene()``.
 
