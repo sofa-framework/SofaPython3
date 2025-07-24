@@ -397,6 +397,10 @@ static auto sendEvent =
         :type pyUserData: py::object
         :type eventName: string
         )";
+static auto computeEnergy =
+        R"(
+        Returns the tuple (kineticEnergy, potentialEnergy)
+        )";
 
 }
 
