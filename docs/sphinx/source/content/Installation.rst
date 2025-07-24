@@ -130,7 +130,7 @@ Before running your simulations, you must make sure to define the following envi
 		After that, all you need to do is open a Console (cmd.exe) and run: ``runSofa -lSofaPython3``
 
 
-It must be noted that depending on the plugins you use, you might have to add the *site-packages/* paths associated to these plugins to your ``PYTHONPATH``.
+⚠️ It must be noted that depending on the plugins you use, you might have to add the *site-packages/* paths associated to these plugins to your ``PYTHONPATH``.
 These are usually located in */path_to_plugin/lib/python3/site-packages*.
 
 To discover, how to use SOFA in any python3 interpreter, please refer to the associated `FirstSteps section <https://sofapython3.readthedocs.io/en/latest/content/FirstSteps.html#with-the-python3-interpreter>`_
@@ -139,6 +139,6 @@ To discover, how to use SOFA in any python3 interpreter, please refer to the ass
 Get support
 ***********
 
-To freely get technical assistance from the community, please do not hesitate to join the `SofaPython3 GitHub forum <https://github.com/sofa-framework/sofapython3/discussions>`_ and post there any question related to SofaPython3.
+🙋 To freely get technical assistance from the community, please do not hesitate to join the `SofaPython3 GitHub forum <https://github.com/sofa-framework/sofapython3/discussions>`_ and post there any question related to SofaPython3.
 
-To quickly level up on SOFA, never hesitate to request `SOFA training sessions <https://www.sofa-framework.org/sofa-events/sofa-training-sessions/>`_.
+👨‍🏫 To quickly level up on SOFA, never hesitate to request `SOFA training sessions <https://www.sofa-framework.org/sofa-events/sofa-training-sessions/>`_.
