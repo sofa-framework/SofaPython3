@@ -1,14 +1,10 @@
-# Required import for python
-import Sofa
-
-
 # Choose in your script to activate or not the GUI
 USE_GUI = True
 
-
 def main():
-    import SofaRuntime
-    import Sofa.Gui
+    # Required import for python
+    import Sofa
+    import SofaImGui
 
     root = Sofa.Core.Node("root")
     createScene(root)
@@ -18,7 +14,7 @@ def main():
         for iteration in range(10):
             Sofa.Simulation.animate(root, root.dt.value)
     else:
-        SofaRuntime.importPlugin("SofaImGui")
+        import Sofa.Gui
         Sofa.Gui.GUIManager.Init("myscene", "imgui")
         Sofa.Gui.GUIManager.createGUI(root, __file__)
         Sofa.Gui.GUIManager.SetDimension(1080, 1080)

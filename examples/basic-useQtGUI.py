@@ -4,7 +4,6 @@ USE_GUI = True
 def main():
     # Required import for python
     import Sofa
-    import SofaRuntime
 
     # Make sure to load all SOFA libraries
 
@@ -19,7 +18,7 @@ def main():
             Sofa.Simulation.animate(root, root.dt.value)
     else:
         import Sofa.Gui
-        import SofaQt
+        import SofaQt # specific import for Qt-based GUI
 
         # Find out the supported GUIs
         print ("Supported GUIs are: " + Sofa.Gui.GUIManager.ListSupportedGUI(","))
