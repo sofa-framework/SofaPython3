@@ -26,9 +26,6 @@
 #include "SofaPython3/DataHelper.h"
 using sofa::simulation::Simulation;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::graph::DAGSimulation;
-
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
 using namespace pybind11::literals;
