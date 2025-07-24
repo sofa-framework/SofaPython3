@@ -222,8 +222,8 @@ By structuring your scripts this way, you get the advantage to have a script loa
         Sofa.Simulation.init(root)
 
         # Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
-        import SofaRuntime
-        SofaRuntime.importPlugin("SofaImGui")
+        import SofaImGui
+        import Sofa.Gui
         Sofa.Gui.GUIManager.Init("myscene", "imgui")
         Sofa.Gui.GUIManager.createGUI(root, __file__)
         Sofa.Gui.GUIManager.SetDimension(1080, 800)
@@ -417,7 +417,7 @@ Here is the entire code of the scene :
 .. code-block:: python
 
 	import Sofa
-        import SofaRuntime
+        import SofaImGui
 	import Sofa.Gui
 
 
@@ -432,7 +432,6 @@ Here is the entire code of the scene :
         Sofa.Simulation.init(root)
 
         # Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
-        SofaRuntime.importPlugin("SofaImGui")
         Sofa.Gui.GUIManager.Init("myscene", "imgui")
         Sofa.Gui.GUIManager.createGUI(root, __file__)
         Sofa.Gui.GUIManager.SetDimension(1080, 800)

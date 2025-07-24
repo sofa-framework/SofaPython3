@@ -101,11 +101,10 @@ In case you want to manage the simulation from the runSofa GUI, you can call the
             Sofa.Simulation.initRoot(root)
 
             # Import the GUI package
-            import SofaRuntime
+            import SofaImGui
             import Sofa.Gui
 
             # Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
-            SofaRuntime.importPlugin("SofaImGui")
             Sofa.Gui.GUIManager.Init("myscene", "imgui")
             Sofa.Gui.GUIManager.createGUI(root, __file__)
             Sofa.Gui.GUIManager.SetDimension(1080, 800)
@@ -376,7 +375,7 @@ Here is the entire code of the scene :
 .. code-block:: python
 
 	import Sofa
-        import SofaRuntime
+        import SofaImGui
 	import Sofa.Gui
 
 
@@ -391,7 +390,6 @@ Here is the entire code of the scene :
         Sofa.Simulation.initRoot(root)
 
         # Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
-        SofaRuntime.importPlugin("SofaImGui")
         Sofa.Gui.GUIManager.Init("myscene", "imgui")
         Sofa.Gui.GUIManager.createGUI(root, __file__)
         Sofa.Gui.GUIManager.SetDimension(1080, 800)
