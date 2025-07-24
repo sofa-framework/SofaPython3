@@ -15,12 +15,11 @@ def main():
     Sofa.Simulation.initRoot(root)
 
     if not USE_GUI:
-        import SofaQt
-
         for iteration in range(10):
             Sofa.Simulation.animate(root, root.dt.value)
     else:
-        Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
+        SofaRuntime.importPlugin("SofaImGui")
+        Sofa.Gui.GUIManager.Init("myscene", "imgui")
         Sofa.Gui.GUIManager.createGUI(root, __file__)
         Sofa.Gui.GUIManager.SetDimension(1080, 1080)
         Sofa.Gui.GUIManager.MainLoop(root)
@@ -43,12 +42,13 @@ def createScene(root):
     'Sofa.Component.ODESolver.Backward',
     'Sofa.Component.SolidMechanics.FEM.Elastic',
     'Sofa.Component.StateContainer',
+    'Sofa.Component.MechanicalLoad',
     'Sofa.Component.Topology.Container.Dynamic',
     'Sofa.Component.Visual',
     'Sofa.GL.Component.Rendering3D'
     ])
 
-    root.addObject('DefaultAnimationLoop')
+    root.addObject('DefaultAnimationLoop', computeBoundingBox=False)
 
     root.addObject('VisualStyle', displayFlags="showCollisionModels hideVisualModels showForceFields")
     root.addObject('CollisionPipeline', name="CollisionPipeline")
