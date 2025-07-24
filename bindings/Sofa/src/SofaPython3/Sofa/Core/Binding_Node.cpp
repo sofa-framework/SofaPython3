@@ -235,9 +235,47 @@ void setFieldsFromPythonValues(Base* self, const py::kwargs& dict)
     }
 }
 
+class NumpyReprFixerRAII
+{
+public:
+    NumpyReprFixerRAII()
+    {
+        using namespace pybind11::literals;
+
+        m_numpy = py::module_::import("numpy");
+        const std::string version = py::cast<std::string>(m_numpy.attr("__version__"));
+        m_majorVersion = std::stoi(version.substr(0,1));
+        if ( m_majorVersion > 1)
+        {
+            m_setPO =  m_numpy.attr("set_printoptions");
+            m_initialState = m_numpy.attr("get_printoptions")();
+            m_setPO("legacy"_a = "1.25");
+        }
+    }
+
+    ~NumpyReprFixerRAII()
+    {
+        if ( m_majorVersion > 1)
+        {
+            m_setPO(**m_initialState);
+        }
+    }
+
+private:
+    py::module_ m_numpy;
+    int m_majorVersion;
+    py::object m_setPO;
+    py::dict m_initialState;
+
+};
+
+
 /// Implement the addObject function.
 py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
+    //Instantiating this object will make sure the numpy representation is fixed during the call of this function, and comes back to its previous state after
+    [[maybe_unused]] const NumpyReprFixerRAII numpyReprFixer;
+
     std::string name {};
     if (kwargs.contains("name"))
     {
@@ -292,6 +330,8 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         if(d)
             d->setPersistent(true);
     }
+
+
     return PythonFactory::toPython(object.get());
 }
 
@@ -361,6 +401,9 @@ py::object createObject(Node* self, const std::string& type, const py::kwargs& k
 
 py::object addChildKwargs(Node* self, const std::string& name, const py::kwargs& kwargs)
 {
+    //Instantiating this object will make sure the numpy representation is fixed during the call of this function, and comes back to its previous state after
+    [[maybe_unused]] const NumpyReprFixerRAII numpyReprFixer;
+
     if (sofapython3::isProtectedKeyword(name))
         throw py::value_error("addChild: Cannot call addChild with name " + name + ": Protected keyword");
     BaseObjectDescription desc (name.c_str());
@@ -378,6 +421,7 @@ py::object addChildKwargs(Node* self, const std::string& name, const py::kwargs&
         if(d)
             d->setPersistent(true);
     }
+
 
     return py::cast(node);
 }
