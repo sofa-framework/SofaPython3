@@ -16,5 +16,5 @@ build:
     - wget https://github.com/sofa-framework/SofaPython3/releases/download/v25.06.00-doc-generation/SofaPython3_v25.06.00_docs.zip
     - mkdir docUnzipped/
     - unzip  SofaPython3_v25.06.00_docs.zip -d docUnzipped/
-    - cp --recursive docUnzipped/SofaPython3_v25.06.00_docs/* $READTHEDOCS_OUTPUT/html/
+    - cp --recursive docUnzipped/* $READTHEDOCS_OUTPUT/html/
     - ls $READTHEDOCS_OUTPUT/html/
