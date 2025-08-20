@@ -8,29 +8,40 @@ Executing a simulation
 With runSofa 
 ^^^^^^^^^^^^
 
-You can load a python based simulation directly in runSofa by using the command
+💡 To make sure runSofa is able to load a scene described by a python, you can either:
+* open runSofa without any argument once and then add libSofaPython3 in the plugin manager
+* or add -l SofaPython3 in this command line.
+
+For more information, please refer to the documentation: `Plugin loading <https://sofa-framework.github.io/doc/plugins/what-is-a-plugin/#plugin_loading>`_.
+
+Once the SofaPython3 plugin is loaded, you can load a simulation from a python script directly in runSofa.
+Assuming you want to run a script named "example.py", you can run the following command:
 
 .. code-block:: shell 
 
-    runSofa examples/example1.py
+    runSofa example.py
 
-Let's now open ``examples/example1.py`` to have more insight. 
-The first important thin to notice is that the python script is importing modules called ``Sofa``, this module, and few other are containing 
-all SOFA specific component. Then the script is defining a ``createScene()`` function. This function is the entry point of your simulation and
-is automatically called by the runSofa application when a python file is loaded. 
+Let's now see how this script ``example.py`` should look like.
+The first important thing to notice is that to be compatible with SOFA, a python script must define the ``createScene(root : Sofa.Core.Node)`` function. This function is the entry point of your simulation and it is automatically called by the runSofa application when a python file is loaded. It is responsible for describing and building the SOFA scene graph.
 
-We will look with more details in this ``createScene()`` but first let's how we can execute the same file without using ``runSofa``.
-
+In the section "`Create a new simulation <https://sofapython3.readthedocs.io/en/latest/content/FirstSteps.html#create-a-new-simulation>`_" below, we will detail how to implement this ``createScene()``.
 
 With the python3 interpreter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Before being able to execute a simulation from a python interpreter (including jupyter notebook) be sure you read the "`Setup your python3 environment <https://sofapython3.readthedocs.io/en/latest/content/Installation.html#using-python3>`_" section
-so your python environment is properly configured and has access to the SOFA specific python modules.
+SOFA simulation can also be executed from a python environment (including jupyter notebook).
+To do so, the Python environment must be filled in for SOFA python modules.
+Located in *site-packages/* repositories, the path to these libraries should be added to the ``PYTHONPATH``.
+The Installation section details the `requirements to execute a simulation withing a python3 interpreter <https://sofapython3.readthedocs.io/en/latest/content/Installation.html#using-python3>`_" section details how to configure it.
 
-When working a python3 interpreter, your simulation requires more than only the ``createScene()`` function. 
+Once your python environment is properly configured, you will be able to import SOFA python modules (e.g. ``import Sofa``).
+By running your simulation from a python interpreter, you will be responsible for:
+* creating the root node
+* before calling the ``createScene()`` function
+* and later initializing the graph
+
 Indeed, the python environment does not pre-generate a root node as the runSofa executable is. 
-One must therefore create it and then call the ``createScene()`` function:
+To be run from a python environment, any python script should therefore look like:
 
 .. code-block:: python
 
@@ -67,10 +78,20 @@ One must therefore create it and then call the ``createScene()`` function:
 	    main()
 
 
-By structuring your scripts this way, you get the advantage to have a script loadable from both runSofa and a python3 interpreter. 
-Note that the ``main()`` function runs 10 time steps without any graphical user interface and the script ends. 
+The above script can be run as follows:
+.. code-block:: shell 
 
-In case you want to manage the simulation from the runSofa GUI, you can simply change the ``main()`` function as follows: 
+    python3 example.py
+
+It can be noted that:
+* by structuring your scripts this way, you get the advantage to have a script loadable from both runSofa and a python3 interpreter. 
+* in the above example, the ``main()`` function runs 10 time steps without any graphical user interface and the script ends. 
+
+
+Using the SOFA GUI from a python environment
+""""""""""""""""""""""""""""""""""""""""""""
+
+In case you want to manage the simulation from the runSofa GUI, you can call the GUI from the ``main()`` function, as follows: 
 
 .. code-block:: python
 
@@ -85,10 +106,11 @@ In case you want to manage the simulation from the runSofa GUI, you can simply c
             Sofa.Simulation.initRoot(root)
 
             # Import the GUI package
+            import SofaImGui
             import Sofa.Gui
 
-            # Launch the GUI (qt or qglviewer)
-            Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
+            # Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
+            Sofa.Gui.GUIManager.Init("myscene", "imgui")
             Sofa.Gui.GUIManager.createGUI(root, __file__)
             Sofa.Gui.GUIManager.SetDimension(1080, 800)
 
@@ -100,6 +122,19 @@ In case you want to manage the simulation from the runSofa GUI, you can simply c
 So far, you can load this python scene, but it doesn't do much. Let's enrich this scene!
 
 A scene in SOFA is an ordered tree of nodes representing objects (example of node: hand), with parent/child relationship (example of hand's child: finger). Each node has one or more components. Every node and component has a name and a few features. The main node at the top of the tree is usually called "rootNode" or "root". More about how to create a simulation scene can be found in the `SOFA online documentation <https://www.sofa-framework.org/community/doc/using-sofa/lexicography/>`_
+
+
+Using the old Qt GUI
+""""""""""""""""""""
+
+Since SOFA v25.06, SOFA GUI relies on the ImGui library. The previous Qt-based GUI is still available. To use it, make sure to:
+
+* add the *lib/* repository in the SOFA binaries to your ``LD_LIBRARY_PATH``
+* add the *lib/python3/site-packages/* repository to your ``PYTHONPATH``
+* make sure your SOFA install path does not include any special character
+
+An example using the Qt GUI is available: `basic-useQtGUI.py <https://github.com/sofa-framework/SofaPython3/blob/master/examples/basic-useQtGUI.py>`_
+
 
 
 Create a new simulation
@@ -345,6 +380,7 @@ Here is the entire code of the scene :
 .. code-block:: python
 
 	import Sofa
+        import SofaImGui
 	import Sofa.Gui
 
 
@@ -358,8 +394,8 @@ Here is the entire code of the scene :
         # Once defined, initialization of the scene graph
         Sofa.Simulation.initRoot(root)
 
-        # Launch the GUI (qt or qglviewer)
-        Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
+        # Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
+        Sofa.Gui.GUIManager.Init("myscene", "imgui")
         Sofa.Gui.GUIManager.createGUI(root, __file__)
         Sofa.Gui.GUIManager.SetDimension(1080, 800)
 
