@@ -34,7 +34,7 @@ Returns the compliance matrix projected in constraint space, built in the constr
 example:
 ------------
 
-constraint_solver = root.addObject("GenericConstraintSolver", tolerance=1e-9, maxIterations=1000)
+constraint_solver = root.addObject("ProjectedGaussSeidelConstraintSolver", tolerance=1e-9, maxIterations=1000)
 matrix = constraint_solver.W()
 )";
 
@@ -45,7 +45,7 @@ Returns the force resulting from the constraints
 example:
 ------------
 
-constraint_solver = root.addObject("GenericConstraintSolver", tolerance=1e-9, maxIterations=1000)
+constraint_solver = root.addObject("ProjectedGaussSeidelConstraintSolver", tolerance=1e-9, maxIterations=1000)
 lambda = constraint_solver.lambda_force()
 )";
 
@@ -56,7 +56,7 @@ Returns the displacement computed without any constraint
 example:
 ------------
 
-constraint_solver = root.addObject("GenericConstraintSolver", tolerance=1e-9, maxIterations=1000)
+constraint_solver = root.addObject("ProjectedGaussSeidelConstraintSolver", tolerance=1e-9, maxIterations=1000)
 dfree = constraint_solver.dfree()
 )";
 
