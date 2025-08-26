@@ -47,7 +47,7 @@ def createScene(rootNode):
 
         rootNode.addObject('CollisionPipeline')
         rootNode.addObject('FreeMotionAnimationLoop')
-        rootNode.addObject('GenericConstraintSolver', tolerance="1e-6", maxIterations="1000")
+        rootNode.addObject('ProjectedGaussSeidelConstraintSolver', tolerance="1e-6", maxIterations="1000")
         rootNode.addObject('BruteForceBroadPhase', name="BroadPhase")
         rootNode.addObject('BVHNarrowPhase', name="NarrowPhase")
         rootNode.addObject('RuleBasedContactManager', responseParams="mu="+str(0.0), name='Response', response='FrictionContactConstraint')

@@ -21,7 +21,7 @@ class Test(unittest.TestCase):
                                                      "Sofa.Component.Topology.Container.Dynamic"])
 
         root.addObject("FreeMotionAnimationLoop", solveVelocityConstraintFirst=True)
-        root.addObject("GenericConstraintSolver", name="constraint_solver", tolerance=1e-9, maxIterations=1000)
+        root.addObject("ProjectedGaussSeidelConstraintSolver", name="constraint_solver", tolerance=1e-9, maxIterations=1000)
         root.addObject("StringMeshCreator", name="loader", resolution="20")
 
         root.addObject("EulerImplicitSolver")
