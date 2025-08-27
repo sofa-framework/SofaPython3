@@ -20,7 +20,7 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/cast.h>
-
+#include <sofa/core/visual/VisualParams.h>
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_Controller.h>
 #include <SofaPython3/Sofa/Core/Binding_Controller_doc.h>
@@ -43,6 +43,13 @@ std::string Controller_Trampoline::getClassName() const
     PythonEnvironment::gil acquire {"getClassName"};
     // Get the actual class name from python.
     return py::str(py::cast(this).get_type().attr("__name__"));
+}
+
+void Controller_Trampoline::draw(const sofa::core::visual::VisualParams* params)
+{
+    PythonEnvironment::executePython(this, [this, params](){
+        PYBIND11_OVERLOAD(void, Controller, draw, params);
+    });
 }
 
 void Controller_Trampoline::init()
@@ -131,6 +138,9 @@ void moduleAddController(py::module &m) {
 
     f.def("init", &Controller::init);
     f.def("reinit", &Controller::reinit);
+    f.def("draw", [](Controller& self, sofa::core::visual::VisualParams* params){
+        self.draw(params);
+    });
 }
 
 

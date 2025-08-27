@@ -1,6 +1,6 @@
 /******************************************************************************
-*                              SofaPython3 plugin                             *
-*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2021 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -18,43 +18,37 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#pragma once
-
+#include <sofa/type/Quat.h>
 #include <pybind11/pybind11.h>
-#include <sofa/core/behavior/BaseController.h>
+#include <pybind11/pytypes.h>
+#include <pybind11/stl.h>
+
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <sofa/core/visual/VisualParams.h>
+
+#include <SofaPython3/Sofa/Core/Binding_VisualParams.h>
+#include <SofaPython3/Sofa/Core/Binding_VisualParams_doc.h>
+
+#include <SofaPython3/PythonFactory.h>
+
+#include <sofa/type/RGBAColor.h>;
+
+namespace py { using namespace pybind11; }
+using sofa::core::objectmodel::BaseObject;
+using sofa::core::visual::VisualParams;
+using sofa::core::visual::DrawTool;
 
 namespace sofapython3 {
 
-/**
- * Empty controller shell that allows pybind11 to bind the init and reinit methods (since BaseController doesn't have
- * them)
- */
-class Controller : public sofa::core::behavior::BaseController {
-public:
-    SOFA_CLASS(Controller, sofa::core::behavior::BaseController);
-    void init() override {};
-    void reinit() override {};
-};
-
-class Controller_Trampoline : public Controller
+void moduleAddVisualParams(py::module &m)
 {
-public:
-    SOFA_CLASS(Controller_Trampoline, Controller);
+    py::class_<VisualParams> vp(m, "VisualParams", sofapython3::doc::visualParams::baseVisualParamsClass);
+    vp.def("getDrawTool", [](VisualParams *self){ return self->drawTool() ;});
 
-    void init() override;
-    void reinit() override;
-    void draw(const sofa::core::visual::VisualParams* params) override;
-
-    void handleEvent(sofa::core::objectmodel::Event* event) override;
-
-    std::string getClassName() const override;
-
-private:
-    void callScriptMethod(const pybind11::object& self, sofa::core::objectmodel::Event* event,
-        const std::string& methodName);
-};
-
-void moduleAddController(pybind11::module &m);
+    py::class_<DrawTool> dt(m, "DrawTool", sofapython3::doc::visualParams::baseVisualParamsClass);
+    dt.def("drawPoints", [](DrawTool *self, const std::vector<sofa::type::Vec3> &points, float size ){
+        self->drawPoints(points, size, sofa::type::RGBAColor::white());
+    });
+}
 
 } /// namespace sofapython3
-
