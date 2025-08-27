@@ -140,7 +140,7 @@ void moduleAddController(py::module &m) {
     f.def("reinit", &Controller::reinit);
     f.def("draw", [](Controller& self, sofa::core::visual::VisualParams* params){
         self.draw(params);
-    });
+    }, pybind11::return_value_policy::reference);
 }
 
 
