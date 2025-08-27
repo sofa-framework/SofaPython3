@@ -63,7 +63,39 @@ class Test(unittest.TestCase):
 
                 self.assertRaises(ValueError, d1)
                 root.init()
-                
+
+        def test_generic_add_type_child(self):
+            root = Sofa.Core.Node("rootNode")
+
+            FirstNode = root.add("Node",name="FirstNode")
+
+            FirstNode.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
+
+            self.assertEqual(root.children()[0].name.value, "FirstNode")
+            self.assertEqual(root.FirstNode.objects()[0].type.value, "RequiredPlugin")
+            self.assertEqual(root.FirstNode.objects()[0].name.value, "FirstNode")
+
+            pass
+
+        def test_generic_add_type_object(self):
+            root = Sofa.Core.Node("rootNode")
+
+            root.add("RequiredPlugin", name="Sofa.Component.StateContainer")
+            self.assertEqual(root.objects()[0].type.value, "RequiredPlugin")
+            self.assertEqual(root.objects()[0].name.value, "FirstNode")
+
+            pass
+
+        def test_generic_add_real_object(self):
+            root = Sofa.Core.Node("rootNode")
+
+            MyNode = Sofa.Core.Node("MyNode")
+
+            root.add(MyNode)
+            self.assertEqual(root.children()[0].name.value, "MyNode")
+
+            pass
+
         def test_addChild(self):                
                 root = Sofa.Core.Node("rootNode")
                 root.addChild(Sofa.Core.Node("child1"))

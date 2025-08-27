@@ -210,6 +210,14 @@ void SOFAPYTHON3_API copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo
 
 std::string SOFAPYTHON3_API toSofaParsableString(const pybind11::handle& p);
 
+/// Split the content of the dictionnary 'dict' in three set.
+/// On containing the data to parent, one containing the data to copy and on containing the data to parse in the BaseObjectDescription
+void SOFAPYTHON3_API processKwargsForObjectCreation(const pybind11::dict dict,
+                                                    pybind11::list& parametersToLink,
+                                                    pybind11::list& parametersToCopy,
+                                                    sofa::core::objectmodel::BaseObjectDescription& parametersAsString);
+
+
 //pybind11::object SOFAPYTHON3_API dataToPython(BaseData* d);
 
 /// RVO optimized function. Don't care about copy on the return code.
