@@ -8,11 +8,11 @@ import Sofa
 
 
 def createScene(root):
-    #Need to use getValue and setValue instead of the syntax `root.dt = 0.02` or `root.dt.value` to get the actual value
+    # Need to use getValue and setValue instead of the syntax `root.dt = 0.02` or `root.dt.value` to get the actual value
     root.gravity.setValue([0, -9.81, 0])
     root.dt.setValue(0.02)
 
-    #RPyC deal in a strange way with list of strings, which leads to error if you use the syntax where you pass a list of plugin name to required plugin. You need to add one required plugin per plugin for it to work, such as done in xml.
+    # RPyC deal in a strange way with list of strings, which leads to error if you use the syntax where you pass a list of plugin name to required plugin. You need to add one required plugin per plugin for it to work, such as done in xml.
     root.addObject("RequiredPlugin", pluginName='Sofa.Component.Collision.Detection.Algorithm')
     root.addObject("RequiredPlugin", pluginName='Sofa.Component.Collision.Detection.Intersection')
     root.addObject("RequiredPlugin", pluginName='Sofa.Component.Collision.Geometry')
@@ -38,7 +38,7 @@ def createScene(root):
     root.addObject('CollisionResponse', name="CollisionResponse", response="PenalityContactForceField")
     root.addObject('DiscreteIntersection')
 
-    #Don't forget that this will be launched in the remote, all files should be on its disk or else, use lambda function to capture data and access theme in this funciton
+    # Don't forget that this will be launched in the remote, all files should be on its disk or else, use lambda function to capture data and access theme in this function
     root.addObject('MeshOBJLoader', name="LiverSurface", filename="mesh/liver-smooth.obj")
 
     liver = root.addChild('Liver')
@@ -75,7 +75,7 @@ if __name__ == "__main__":
 
     SC.load_scene(createScene)
 
-    #This works only for server and client on the same machine. This tell the server that the passed data path should be copied in shared memory when accessed through the client instead of RPyC.
+    # This works only for server and client on the same machine. This tell the server that the passed data path should be copied in shared memory when accessed through the client instead of RPyC.
     SC.setup_shared_memory_for_data(["Liver/dofs.position","Liver/Surf/spheres.position"])
 
 
@@ -84,7 +84,7 @@ if __name__ == "__main__":
     currentTime = 0.0
     while currentTime<0.2:
         if(asynch_step is None or asynch_step.ready):
-            #Time to get data from object
+            # Time to get data from object
             currentTime = SC.sofa_root.getTime()
             print(currentTime)
     
@@ -95,7 +95,7 @@ if __name__ == "__main__":
             SC.sofa_root.Liver.cg_odesolver.printLog.setValue(True)
             SC.sofa_root.Liver.Surf.spheres.position.setValue([[0,0,0]])
 
-            #Launch next step
+            # Launch next step
             asynch_step = SC.asynch_step()
         else:
             print("waiting 0.1 sec")

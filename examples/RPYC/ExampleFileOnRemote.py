@@ -23,7 +23,7 @@ if __name__ == "__main__":
     currentTime = 0.0
     while currentTime<0.2:
         if(asynch_step is None or asynch_step.ready):
-            #Time to get data from object
+            # Time to get data from object
             currentTime = SC.sofa_root.getTime()
             print(currentTime)
     
@@ -34,7 +34,7 @@ if __name__ == "__main__":
             SC.sofa_root.Liver.cg_odesolver.printLog.setValue(True)
             SC.sofa_root.Liver.Surf.spheres.position.setValue([[0,0,0]])
 
-            #Launch next step
+            # Launch next step
             asynch_step = SC.asynch_step()
         else:
             print("waiting 0.1 sec")
