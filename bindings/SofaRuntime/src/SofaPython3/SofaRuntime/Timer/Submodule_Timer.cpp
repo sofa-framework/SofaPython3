@@ -40,7 +40,7 @@ py::dict getRecords(const std::string & id) {
     static auto timer_freq = CTime::getTicksPerSec();
     auto getTime = [](ctime_t t)
     {
-        return 1000 * t / timer_freq;
+        return 1000. * t / timer_freq;
     };
 
     const auto records = AdvancedTimer::getRecords(id);
