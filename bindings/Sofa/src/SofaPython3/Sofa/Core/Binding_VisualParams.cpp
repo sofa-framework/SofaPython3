@@ -54,8 +54,10 @@ void moduleAddVisualParams(py::module &m)
     });
     dt.def("drawPoints", [](DrawTool *self, BaseData* dpositions, float size ){
         auto positions = dynamic_cast<Data<sofa::type::vector<sofa::type::Vec3>>*>(dpositions);
-        if(positions)
-            self->drawPoints(positions->getValue(), size, sofa::type::RGBAColor::white());
+        if(!positions)
+            throw std::runtime_error("Invalid argument");
+
+        self->drawPoints(positions->getValue(), size, sofa::type::RGBAColor::white());
     });
     dt.def("drawLines", [](DrawTool *self, const std::vector<sofa::type::Vec3> &points, float size ){
         self->drawLines(points, size, sofa::type::RGBAColor::white());
@@ -73,13 +75,13 @@ void moduleAddVisualParams(py::module &m)
         using sofa::defaulttype::Rigid3Types;
         using Coord = sofa::defaulttype::Rigid3Types::Coord;
         auto positions = dynamic_cast<Data<sofa::type::vector<Coord>>*>(dpositions);
-        if(positions)
+        if(!positions)
+            throw std::runtime_error("Invalid argument");
+
+        for(auto& position : positions->getValue())
         {
-            for(auto& position : positions->getValue())
-            {
-                self->drawFrame(Rigid3Types::getCPos(position),
-                                Rigid3Types::getCRot(position), size);
-            }
+            self->drawFrame(Rigid3Types::getCPos(position),
+                            Rigid3Types::getCRot(position), size);
         }
     });
     dt.def("draw3DText", [](DrawTool* self,
