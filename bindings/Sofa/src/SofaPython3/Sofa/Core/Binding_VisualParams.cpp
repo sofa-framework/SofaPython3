@@ -69,6 +69,19 @@ void moduleAddVisualParams(py::module &m)
             self->drawFrame(points[i], orientations[i], size);
         }
     });
+    dt.def("drawFrames", [](DrawTool* self, BaseData* dpositions, const sofa::type::Vec3& size ){
+        using sofa::defaulttype::Rigid3Types;
+        using Coord = sofa::defaulttype::Rigid3Types::Coord;
+        auto positions = dynamic_cast<Data<sofa::type::vector<Coord>>*>(dpositions);
+        if(positions)
+        {
+            for(auto& position : positions->getValue())
+            {
+                self->drawFrame(Rigid3Types::getCPos(position),
+                                Rigid3Types::getCRot(position), size);
+            }
+        }
+    });
     dt.def("draw3DText", [](DrawTool* self,
                             const sofa::type::Vec3d& point,
                             const float size,

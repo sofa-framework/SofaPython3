@@ -7,6 +7,7 @@ class DrawingExamples(Sofa.Core.Controller):
         Sofa.Core.Controller.__init__(self, *args, **kwargs)
         
         self.target = kwargs.get("target", None)
+        self.mo = kwargs.get("mo", None)
 
     def draw(self, visual_context):
         dt = visual_context.getDrawTool()
@@ -20,6 +21,8 @@ class DrawingExamples(Sofa.Core.Controller):
         
         dt.draw3DText(SofaTypes.Vec3d(-2.0,0.0,0.0), 0.5, "This is not a raptor")
 
+        dt.drawFrames(self.mo.position, SofaTypes.Vec3d(0.1,0.1,0.1))
+
 def createScene(root):
     root.dt = 0.01
     root.bbox = [[-1,-1,-1],[1,1,1]]
@@ -28,7 +31,14 @@ def createScene(root):
 
     root.addObject("MeshOBJLoader", name="loader", filename="mesh/raptor_35kp.obj")
 
+    root.addObject("MechanicalObject", 
+                   name="mo", 
+                   template="Rigid3", 
+                   position=[[float(i)/10.0, 0.0,0.0, 0.0, 0.0, 0.0, 1.0] for i in range(0,10)])
+
     # Add our python controller in the scene
-    root.addObject( DrawingExamples(name="DrawingController2", target=root.loader) )
+    root.addObject( DrawingExamples(name="DrawingController2", 
+                                    target=root.loader,
+                                    mo=root.mo) )
 
     
