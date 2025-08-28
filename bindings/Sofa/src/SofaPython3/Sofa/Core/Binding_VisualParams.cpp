@@ -91,6 +91,10 @@ void moduleAddVisualParams(py::module &m)
     {
         self->draw3DText(point, size, sofa::type::RGBAColor::white(), text.c_str());
     });
+
+    dt.def("drawText", [](DrawTool* self, int x, int y, int fontSize, char* text){
+        self->writeOverlayText(x,y, fontSize, sofa::type::RGBAColor::white(), text);
+    });
 }
 
 } /// namespace sofapython3

@@ -20,6 +20,7 @@ class DrawingExamples(Sofa.Core.Controller):
             dt.drawPoints(self.target.position, 2.0)
         
         dt.draw3DText(SofaTypes.Vec3d(-2.0,0.0,0.0), 0.5, "This is not a raptor")
+        dt.drawText(10,10, 12, "Overlay text")
 
         dt.drawFrames(self.mo.position, SofaTypes.Vec3d(0.1,0.1,0.1))
 
