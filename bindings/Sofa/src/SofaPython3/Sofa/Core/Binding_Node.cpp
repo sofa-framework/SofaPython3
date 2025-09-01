@@ -168,8 +168,16 @@ py_shared_ptr<Node> __init__noname() {
     return std::move(dag_node);
 }
 
-py_shared_ptr<Node> __init__(const std::string& name) {
+py_shared_ptr<Node> __init__no_kwargs__(const std::string& name) {
     auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>(name);
+    return std::move(dag_node);
+}
+
+py_shared_ptr<Node> __init__(const std::string& name, const py::kwargs& kwargs) {
+    auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>(name);
+
+    setDataFromKwargs(dag_node.get(), kwargs);
+
     return std::move(dag_node);
 }
 
@@ -680,7 +688,8 @@ void moduleAddNode(py::module &m) {
     });
 
     p.def(py::init(&__init__noname), sofapython3::doc::sofa::core::Node::init);
-    p.def(py::init(&__init__), sofapython3::doc::sofa::core::Node::init1Arg, py::arg("name"));
+    p.def(py::init(&__init__no_kwargs__), sofapython3::doc::sofa::core::Node::init1Arg, py::arg("name"));
+    p.def(py::init(&__init__), sofapython3::doc::sofa::core::Node::init1Arg);
     p.def("init", &init, sofapython3::doc::sofa::core::Node::initSofa );
     p.def("add", &addKwargs, sofapython3::doc::sofa::core::Node::addKwargs);
     p.def("addObject", &addObjectKwargs, sofapython3::doc::sofa::core::Node::addObjectKwargs);

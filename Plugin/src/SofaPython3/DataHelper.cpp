@@ -659,4 +659,28 @@ BaseLink* addLink(py::object py_self, const std::string& name, py::object value,
     return link;
 }
 
+
+void setDataFromKwargs(Base* obj, const pybind11::kwargs& kwargs)
+{
+    const auto typeHandleBaseData = py::detail::get_type_handle(typeid(BaseData), false);
+    const auto typeHandleLinkPath = py::detail::get_type_handle(typeid(LinkPath), false);
+
+    for (auto & kv : kwargs)
+    {
+        BaseData* d = obj->findData(py::cast<std::string>(kv.first));
+        if(d)
+        {
+            if (py::isinstance(kv.second, typeHandleBaseData))
+                d->setParent(kv.second.cast<BaseData*>());
+            else if (py::isinstance(kv.second, typeHandleLinkPath))
+                d->setParent(py::str(kv.second));
+            else if (py::isinstance<py::str>(kv.second))
+                d->read(py::str(kv.second));
+            else
+                PythonFactory::fromPython(d, py::cast<py::object>(kv.second));
+        }
+    }
+}
+
+
 }  // namespace sofapython3
