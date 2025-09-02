@@ -95,6 +95,13 @@ void moduleAddVisualParams(py::module &m)
     dt.def("drawText", [](DrawTool* self, int x, int y, int fontSize, char* text){
         self->writeOverlayText(x,y, fontSize, sofa::type::RGBAColor::white(), text);
     });
+    dt.def("drawRGBAImage", [](DrawTool* self, const std::string& id, const sofa::type::Vec3& pos, const int w, const int h, const int mode, const char* data){
+        self->drawRGBAImage(id, pos, w, h, mode, data);
+    });
+    dt.def("drawRGBAImage", [](DrawTool* self, const std::string& id, const sofa::type::Vec3& pos, const std::string& filename){
+        self->drawRGBAImage(id, pos, filename);
+    });
+
 }
 
 } /// namespace sofapython3

@@ -1,6 +1,8 @@
 import Sofa
 import SofaTypes 
 
+from PIL import Image
+
 class DrawingExamples(Sofa.Core.Controller):
     def __init__(self, *args, **kwargs):
         # These are needed (and the normal way to override from a python class)
@@ -8,6 +10,7 @@ class DrawingExamples(Sofa.Core.Controller):
         
         self.target = kwargs.get("target", None)
         self.mo = kwargs.get("mo", None)
+        self.img = Image.open("oip.jpeg").convert("RGBA")
 
     def draw(self, visual_context):
         dt = visual_context.getDrawTool()
@@ -23,10 +26,14 @@ class DrawingExamples(Sofa.Core.Controller):
         dt.drawText(10,10, 12, "Overlay text")
 
         dt.drawFrames(self.mo.position, SofaTypes.Vec3d(0.1,0.1,0.1))
+        w,h = self.img.size 
+        dt.drawRGBAImage("memory", SofaTypes.Vec3d(0.0,0.0,0.0), w ,h, 32, self.img.tobytes())
+        #dt.drawRGBAImage("image", SofaTypes.Vec3d(0.0,0.0,0.0), "oip.jpeg")
 
 def createScene(root):
     root.dt = 0.01
     root.bbox = [[-1,-1,-1],[1,1,1]]
+    root.addObject('RequiredPlugin', name="Sofa.GL.Component.Shader")
     root.addObject('DefaultVisualManagerLoop')
     root.addObject('DefaultAnimationLoop')
 
