@@ -23,7 +23,7 @@ def createScene(root):
                                                  ])
 
     root.addObject("FreeMotionAnimationLoop", solveVelocityConstraintFirst=True)
-    constraint_solver = root.addObject("GenericConstraintSolver", tolerance=1e-9, maxIterations=1000)
+    constraint_solver = root.addObject("ProjectedGaussSeidelConstraintSolver", tolerance=1e-9, maxIterations=1000)
     root.addObject("StringMeshCreator", name="loader", resolution="20")
 
     root.addObject("EulerImplicitSolver")
