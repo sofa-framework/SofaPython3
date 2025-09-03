@@ -95,11 +95,12 @@ void moduleAddVisualParams(py::module &m)
     dt.def("drawText", [](DrawTool* self, int x, int y, int fontSize, char* text){
         self->writeOverlayText(x,y, fontSize, sofa::type::RGBAColor::white(), text);
     });
-    dt.def("drawRGBAImage", [](DrawTool* self, const std::string& id, const sofa::type::Vec3& pos, const int w, const int h, const int mode, const char* data){
-        self->drawRGBAImage(id, pos, w, h, mode, data);
+    dt.def("drawRGBAImage", [](DrawTool* self, const std::string& id, const int revision, const sofa::type::Vec3& pos, const double scale, const int w, const int h, const int mode, py::array_t<char, py::array::c_style | py::array::forcecast> data){
+        char* buffer = static_cast<char*>(data.request().ptr);
+        self->drawRGBAImage(id, revision, pos, scale, w, h, mode, buffer);
     });
-    dt.def("drawRGBAImage", [](DrawTool* self, const std::string& id, const sofa::type::Vec3& pos, const std::string& filename){
-        self->drawRGBAImage(id, pos, filename);
+    dt.def("drawRGBAImage", [](DrawTool* self, const std::string& id, const int revision, const sofa::type::Vec3& pos, const double scale, const std::string& filename){
+        self->drawRGBAImage(id, revision, pos, scale, filename);
     });
 
 }
