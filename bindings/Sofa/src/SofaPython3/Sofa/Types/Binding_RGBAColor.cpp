@@ -42,7 +42,9 @@ void moduleAddRGBAColor(py::module& m)
     c.def(py::init([](double r, double g, double b, double a) {
               return std::make_unique<sofa::type::RGBAColor>( r,g,b,a );
           }));
-
+    c.def(py::init([](const std::string& colorname) {
+              return std::make_unique<sofa::type::RGBAColor>( RGBAColor::fromString(colorname) );
+          }));
     c.def(py::init([](std::array<double,4>& v) {
               return std::make_unique<sofa::type::RGBAColor>( v[0], v[1], v[2], v[3] );
           }));
@@ -52,7 +54,7 @@ void moduleAddRGBAColor(py::module& m)
     c.def("b", [](const RGBAColor& color) { return color.b(); });
     c.def("a", [](const RGBAColor& color) { return color.a(); });
 
-    c.def("lighten", [](const RGBAColor& color, const SReal factor){
+    c.def("lighten", [](const RGBAColor& color, const SReal factor) -> RGBAColor {
         return RGBAColor::lighten(color, factor);
     });
 
@@ -71,6 +73,7 @@ void moduleAddRGBAColor(py::module& m)
     // Dark magic to define comparison operator using the c++ == and != operator.
     c.def(pybind11::self==pybind11::self);
     c.def(pybind11::self!=pybind11::self);
+
 }
 
 }  // namespace sofapython3

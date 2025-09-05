@@ -17,14 +17,14 @@
 *******************************************************************************
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #pragma once
 
-namespace sofapython3::doc::drawtool {
+namespace sofapython3::doc::drawtool
+{
 
 static auto baseDrawToolClass =
         R"(DrawTool is a wrapper for low-level rendering draw calls.
            It provides higher-level drawing functions like drawing lines, points, spheres, arrows, etc., without
            needing to write raw OpenGL each time.)";
 
-} // namespace sofapython3::doc::drawtool
+}

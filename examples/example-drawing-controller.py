@@ -1,5 +1,6 @@
 import Sofa
 import SofaTypes 
+from Sofa.Types import RGBAColor 
 
 class DrawingExamples(Sofa.Core.Controller):
     def __init__(self, *args, **kwargs):
@@ -11,18 +12,18 @@ class DrawingExamples(Sofa.Core.Controller):
 
     def draw(self, visual_context):
         dt = visual_context.getDrawTool()
-        dt.drawPoints([SofaTypes.Vec3d(-1.5,0,-1)], 5.0)
-        dt.drawPoints([SofaTypes.Vec3d(-1.3,0,-1), SofaTypes.Vec3d(1.3,0,-1)], 5.0)
-        dt.drawLines([SofaTypes.Vec3d(-1.3,0,-1), SofaTypes.Vec3d(1.3,0,-1)], 1.0)
-        dt.drawFrames([SofaTypes.Vec3d(-1.5,0.1,-1)], [SofaTypes.Quat(0.0,0,0,1.0)], SofaTypes.Vec3d(0.1,0.1,0.1))
+        dt.drawPoints([[-1.5,0,-1]], 5.0, RGBAColor("red"))
+        dt.drawPoints([[-1.3,0,-1], [1.3,0,-1]], 10.0, RGBAColor("green"))
+        dt.drawLines([[-1.3,0,-1], [1.3,0,-1]], 1.0, RGBAColor("green"))
+        dt.drawFrames([[-1.5,0.1,-1]], [[0.0,0,0,1.0]], [0.1,0.1,0.1])
 
         if self.target is not None:
-            dt.drawPoints(self.target.position, 2.0)
-        
-        dt.draw3DText(SofaTypes.Vec3d(-2.0,0.0,0.0), 0.5, "This is not a raptor")
-        dt.drawText(10,10, 12, "Overlay text")
+            dt.drawPoints(self.target.position, 2.0, RGBAColor("blue"))
 
-        dt.drawFrames(self.mo.position, SofaTypes.Vec3d(0.1,0.1,0.1))
+        dt.drawText([-2.0,0.0,0.0], 0.5, "This is not a raptor", RGBAColor("white"))
+        dt.drawOverlayText([10, 10], 12, "Overlay text", RGBAColor("pink"))
+
+        dt.drawFrames(self.mo.position, [0.1,0.1,0.1])
 
 def createScene(root):
     root.dt = 0.01

@@ -18,6 +18,13 @@ class Test(unittest.TestCase):
         self.assertEqual( v0.b(), 3.0 )
         self.assertEqual( v0.a(), 4.0 )
 
+    def test_constructor_fromString(self):
+        v0 = Sofa.Types.RGBAColor("red")
+        self.assertEqual( v0.r(), 1.0 )
+        self.assertEqual( v0.g(), 0.0 )
+        self.assertEqual( v0.b(), 0.0 )
+        self.assertEqual( v0.a(), 1.0 )
+
     def test_constructor_fromInvalidList(self):
         self.assertRaises(TypeError, Sofa.Types.RGBAColor, [1.0,2.0,3.0])
         self.assertRaises(TypeError, Sofa.Types.RGBAColor, [1.0,2.0,3.0,10,100])
