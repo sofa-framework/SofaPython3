@@ -19,6 +19,8 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Controller_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataEngine.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataEngine_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DrawTool.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DrawTool_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinkPath.h
@@ -60,6 +62,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseClass.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseData.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataDict.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DrawTool.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseObject.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseCamera.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseContext.cpp

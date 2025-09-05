@@ -18,32 +18,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/type/Quat.h>
-#include <pybind11/pybind11.h>
-#include <pybind11/pytypes.h>
-#include <pybind11/stl.h>
+#pragma once
 
-#include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <sofa/core/visual/VisualParams.h>
+namespace sofapython3::doc::drawtool {
 
-#include <SofaPython3/Sofa/Core/Binding_VisualParams.h>
-#include <SofaPython3/Sofa/Core/Binding_VisualParams_doc.h>
+static auto baseDrawToolClass =
+        R"(DrawTool is a wrapper for low-level rendering draw calls.
+           It provides higher-level drawing functions like drawing lines, points, spheres, arrows, etc., without
+           needing to write raw OpenGL each time.)";
 
-#include <SofaPython3/PythonFactory.h>
-#include <sofa/core/objectmodel/Data.h>
-#include <sofa/type/RGBAColor.h>
-
-namespace py { using namespace pybind11; }
-using sofa::core::visual::VisualParams;
-
-namespace sofapython3 {
-
-void moduleAddVisualParams(py::module &m)
-{
-    py::class_<VisualParams> vp(m, "VisualParams", sofapython3::doc::visualparams::baseVisualParamsClass);
-
-    vp.def("getDrawTool", [](VisualParams *self){ return self->drawTool(); },
-           pybind11::return_value_policy::reference);
-}
-
-} /// namespace sofapython3
+} // namespace sofapython3::doc::drawtool

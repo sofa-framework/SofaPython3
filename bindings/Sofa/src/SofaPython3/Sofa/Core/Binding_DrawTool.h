@@ -17,33 +17,13 @@
 *******************************************************************************
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include <sofa/type/Quat.h>
 #include <pybind11/pybind11.h>
-#include <pybind11/pytypes.h>
-#include <pybind11/stl.h>
-
-#include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <sofa/core/visual/VisualParams.h>
-
-#include <SofaPython3/Sofa/Core/Binding_VisualParams.h>
-#include <SofaPython3/Sofa/Core/Binding_VisualParams_doc.h>
-
-#include <SofaPython3/PythonFactory.h>
-#include <sofa/core/objectmodel/Data.h>
-#include <sofa/type/RGBAColor.h>
-
-namespace py { using namespace pybind11; }
-using sofa::core::visual::VisualParams;
 
 namespace sofapython3 {
 
-void moduleAddVisualParams(py::module &m)
-{
-    py::class_<VisualParams> vp(m, "VisualParams", sofapython3::doc::visualparams::baseVisualParamsClass);
-
-    vp.def("getDrawTool", [](VisualParams *self){ return self->drawTool(); },
-           pybind11::return_value_policy::reference);
-}
+void moduleAddDrawTool(pybind11::module &m);
 
 } /// namespace sofapython3
+

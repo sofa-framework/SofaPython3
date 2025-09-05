@@ -20,11 +20,22 @@
 
 #pragma once
 
-namespace sofapython3::doc::visualParams {
+namespace sofapython3::doc::visualparams {
 
 static auto baseVisualParamsClass =
         R"(
-        TBD
+        VisualParams is a component that manages and provides rendering-related parameters for the simulation's objected.
+        It determine draw distance, access the camera position or viewing frustum and handle display flags
+        like wireframe, texture, lighting as well as provide a drawTool object that can be used to render things.
+
+        Example:
+            class MyController(Sofa.Core.Controller):
+                def __init__(self, *args, *kwargs):
+                    Sofa.Core.Controller.__init__(self, *args, **kwargs)
+
+                def draw(self, visual_params):
+                    dt = visual_param.getDrawTool()
+                    dt.drawPoint([0,0,0])
         )";
 
 } // namespace sofapython3::doc::visualParams
