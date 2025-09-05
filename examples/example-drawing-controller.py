@@ -1,6 +1,9 @@
 import Sofa
 import SofaTypes 
+import numpy
+from numpy import array
 from Sofa.Types import RGBAColor 
+
 
 class DrawingExamples(Sofa.Core.Controller):
     def __init__(self, *args, **kwargs):
@@ -12,7 +15,7 @@ class DrawingExamples(Sofa.Core.Controller):
 
     def draw(self, visual_context):
         dt = visual_context.getDrawTool()
-        dt.drawPoints([[-1.5,0,-1]], 5.0, RGBAColor("red"))
+        dt.drawPoints(array([[-1.5,-1.0,0.0]]), 5.0, RGBAColor("red"))
         dt.drawPoints([[-1.3,0,-1], [1.3,0,-1]], 10.0, RGBAColor("green"))
         dt.drawLines([[-1.3,0,-1], [1.3,0,-1]], 1.0, RGBAColor("green"))
         dt.drawFrames([[-1.5,0.1,-1]], [[0.0,0,0,1.0]], [0.1,0.1,0.1])

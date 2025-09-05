@@ -57,7 +57,7 @@ sofa::type::vector<sofa::type::Vec3> getPoints(const py::array_t<double>& array)
     std::vector<sofa::type::Vec3d> points;
     points.resize(rows);
     for (size_t i = 0; i < rows; ++i)
-           for (size_t j = 0; j < cols; ++j)
+           for (size_t j = 0; j < 3; ++j)
                points[i][j] = ptr[i * cols + j];
 
     return points;
@@ -89,11 +89,11 @@ void moduleAddDrawTool(py::module &m)
 {
     py::class_<DrawTool> dt(m, "DrawTool", sofapython3::doc::drawtool::baseDrawToolClass);
 
+    // Draw points
     dt.def("drawPoints", [](DrawTool *self, py::array_t<double> points, float size, sofa::type::RGBAColor& color)
     {
         self->drawPoints(getPoints(points), size, color);
     });
-
     dt.def("drawPoints", [](DrawTool *self, BaseData* dpositions, float size, sofa::type::RGBAColor& color){
         auto positions = dynamic_cast<Data<sofa::type::vector<sofa::type::Vec3>>*>(dpositions);
         if(!positions)
@@ -102,10 +102,20 @@ void moduleAddDrawTool(py::module &m)
         self->drawPoints(positions->getValue(), size, color);
     });
 
+    /// Draw lines
     dt.def("drawLines", [](DrawTool *self,  const py::array_t<double>& positions, const float size, sofa::type::RGBAColor& color){
         self->drawLines(getPoints(positions), size, color);
     });
+    dt.def("drawLines", [](DrawTool *self, BaseData* dpositions, const float size, sofa::type::RGBAColor& color){
+        auto positions = dynamic_cast<Data<sofa::type::vector<sofa::type::Vec3>>*>(dpositions);
+        if(!positions)
+            throw std::runtime_error("Invalid argument, expecting a vector<Rigid3> or vector<Vec3>, got "+dpositions->getValueTypeString());
 
+        self->drawLines(positions->getValue(), size, color);
+    });
+
+
+    // Draw frames
     dt.def("drawFrames", [](DrawTool* self,
            const py::array_t<double>& points,
            const py::array_t<double>& orientations,
@@ -118,7 +128,6 @@ void moduleAddDrawTool(py::module &m)
             self->drawFrame(cpoints[i], corientations[i], csize);
         }
     });
-
     dt.def("drawFrames", [](DrawTool* self, BaseData* dpositions, std::array<double, 3>& size ){
         using sofa::defaulttype::Rigid3Types;
         using Coord = sofa::defaulttype::Rigid3Types::Coord;
@@ -134,6 +143,7 @@ void moduleAddDrawTool(py::module &m)
         }
     });
 
+    // Draw text
     dt.def("drawText", [](DrawTool* self,
                           const std::array<double,3>& point,
                           const float size,
@@ -143,6 +153,7 @@ void moduleAddDrawTool(py::module &m)
         self->draw3DText(point, size, color, text.c_str());
     });
 
+    // Draw overlay text
     dt.def("drawOverlayText", [](DrawTool* self, const std::array<double,2>& point,
                                  int fontSize, char* text, sofa::type::RGBAColor& color){
         self->writeOverlayText(point[0],point[1], fontSize, color, text);
