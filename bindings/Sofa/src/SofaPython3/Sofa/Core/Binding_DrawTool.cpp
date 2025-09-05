@@ -29,6 +29,8 @@
 #include <SofaPython3/Sofa/Core/Binding_DrawTool.h>
 #include <SofaPython3/Sofa/Core/Binding_DrawTool_doc.h>
 
+#include <sofa/core/topology/BaseMeshTopology.h>
+
 #include <SofaPython3/PythonFactory.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/type/RGBAColor.h>
@@ -114,6 +116,85 @@ void moduleAddDrawTool(py::module &m)
         self->drawLines(positions->getValue(), size, color);
     });
 
+    // Draw disk
+    dt.def("drawDisk", [](DrawTool *self,  float radius, double from, double to, int resolution, sofa::type::RGBAColor& color) {
+        self->drawDisk(radius, from, to, resolution, color);
+    });
+    dt.def("drawCircle", [](DrawTool *self,  float radius, float lineThickness, int resolution, sofa::type::RGBAColor& color) {
+        self->drawCircle(radius, lineThickness, resolution, color);
+    });
+
+    // Draw mesh
+    dt.def("drawTriangles", [](DrawTool *self,  BaseData* dpositions, BaseData* dtriangles, sofa::type::RGBAColor& color){
+        auto positions = dynamic_cast<Data<sofa::type::vector<sofa::type::Vec3d>>*>(dpositions);
+        if(!positions)
+            throw std::runtime_error("Invalid argument, expecting a vector<Rigid3> or vector<Vec3>, got "+dpositions->getValueTypeString());
+
+        auto triangles = dynamic_cast<Data<sofa::type::vector<sofa::topology::Triangle>>*>(dtriangles);
+        if(!triangles)
+            throw std::runtime_error("Invalid argument, expecting vector<Triangle>, got "+dtriangles->getValueTypeString());
+
+        auto& cpos = positions->getValue();
+        auto& ctris = triangles->getValue();
+
+        std::vector<sofa::type::Vec3> tripos;
+        tripos.resize(ctris.size()*3);
+
+        for(auto& ctri : ctris)
+        {
+            tripos.emplace_back(cpos[ctri[0]]);
+            tripos.emplace_back(cpos[ctri[1]]);
+            tripos.emplace_back(cpos[ctri[2]]);
+        }
+
+        self->drawTriangles(tripos, color);
+    });
+
+    // Draw mesh
+    dt.def("drawQuads", [](DrawTool *self,  BaseData* dpositions, BaseData* dquads, sofa::type::RGBAColor& color){
+        auto positions = dynamic_cast<Data<sofa::type::vector<sofa::type::Vec3d>>*>(dpositions);
+        if(!positions)
+            throw std::runtime_error("Invalid argument, expecting a vector<Rigid3> or vector<Vec3>, got "+dpositions->getValueTypeString());
+
+        auto quads = dynamic_cast<Data<sofa::type::vector<sofa::topology::Quad>>*>(dquads);
+        if(!quads)
+            throw std::runtime_error("Invalid argument, expecting vector<Quad>, got "+dquads->getValueTypeString());
+
+        auto& cpos = positions->getValue();
+        auto& ctris = quads->getValue();
+
+        std::vector<sofa::type::Vec3> quadpos;
+        quadpos.resize(ctris.size()*4);
+
+        for(auto& ctri : ctris)
+        {
+            quadpos.emplace_back(cpos[ctri[0]]);
+            quadpos.emplace_back(cpos[ctri[1]]);
+            quadpos.emplace_back(cpos[ctri[2]]);
+            quadpos.emplace_back(cpos[ctri[3]]);
+        }
+
+        self->drawQuads(quadpos, color);
+    });
+
+
+    // Draw spheres
+    dt.def("drawSpheres", [](DrawTool *self,  const py::array_t<double>& positions, const std::vector<float>& radius, sofa::type::RGBAColor& color){
+        self->drawSpheres(getPoints(positions), radius, color);
+    });
+    dt.def("drawSpheres", [](DrawTool *self, BaseData* dpositions, const float radius, sofa::type::RGBAColor& color){
+        auto positions = dynamic_cast<Data<sofa::type::vector<sofa::type::Vec3>>*>(dpositions);
+        if(!positions)
+            throw std::runtime_error("Invalid argument, expecting a vector<Rigid3> or vector<Vec3>, got "+dpositions->getValueTypeString());
+        self->drawSpheres(positions->getValue(), radius, color);
+    });
+
+    // Draw boundingBox
+    dt.def("boundingBox", [](DrawTool *self,  const std::array<double,4>& min, const std::array<double, 4>& max, double width){
+        sofa::type::Vec3d cmin { min[0], min[1], min[2] };
+        sofa::type::Vec3d cmax { max[0], max[1], max[2] };
+        self->drawBoundingBox( cmin, cmax, width);
+    });
 
     // Draw frames
     dt.def("drawFrames", [](DrawTool* self,
@@ -143,6 +224,9 @@ void moduleAddDrawTool(py::module &m)
         }
     });
 
+    dt.def("enableLighting", [](DrawTool* self){ self->enableLighting(); });
+    dt.def("disableLighting", [](DrawTool* self){ self->disableLighting(); });
+
     // Draw text
     dt.def("drawText", [](DrawTool* self,
                           const std::array<double,3>& point,
@@ -158,6 +242,9 @@ void moduleAddDrawTool(py::module &m)
                                  int fontSize, char* text, sofa::type::RGBAColor& color){
         self->writeOverlayText(point[0],point[1], fontSize, color, text);
     });
+
+
+
 }
 
 } /// namespace sofapython3

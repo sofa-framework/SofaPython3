@@ -15,16 +15,24 @@ class DrawingExamples(Sofa.Core.Controller):
 
     def draw(self, visual_context):
         dt = visual_context.getDrawTool()
+
+        dt.disableLighting()
         dt.drawPoints(array([[-1.5,-1.0,0.0]]), 5.0, RGBAColor("red"))
         dt.drawPoints([[-1.3,0,-1], [1.3,0,-1]], 10.0, RGBAColor("green"))
         dt.drawLines([[-1.3,0,-1], [1.3,0,-1]], 1.0, RGBAColor("green"))
         dt.drawFrames([[-1.5,0.1,-1]], [[0.0,0,0,1.0]], [0.1,0.1,0.1])
 
-        if self.target is not None:
-            dt.drawPoints(self.target.position, 2.0, RGBAColor("blue"))
-
         dt.drawText([-2.0,0.0,0.0], 0.5, "This is not a raptor", RGBAColor("white"))
         dt.drawOverlayText([10, 10], 12, "Overlay text", RGBAColor("pink"))
+        dt.enableLighting()
+
+        if self.target is not None:
+            dt.disableLighting()
+            dt.drawPoints(self.target.position, 5.0, RGBAColor("blue"))
+
+            dt.drawTriangles(self.target.position, self.target.triangles, RGBAColor("white"))
+            dt.drawQuads(self.target.position, self.target.quads, RGBAColor("white"))
+            dt.enableLighting()
 
         dt.drawFrames(self.mo.position, [0.1,0.1,0.1])
 
