@@ -45,6 +45,11 @@ static auto Class =
             root.obj.position.value # Access the position of the object
 
         )";
+static auto draw =
+        R"(
+        Implement this function to draw an object in the 3D view.
+        )";
+
 static auto init =
         R"(
         Initialization method called at graph creation and modification, during top-down traversal.Initialize data.
