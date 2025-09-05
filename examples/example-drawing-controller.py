@@ -4,7 +4,6 @@ import numpy
 from numpy import array
 from Sofa.Types import RGBAColor 
 
-
 class DrawingExamples(Sofa.Core.Controller):
     def __init__(self, *args, **kwargs):
         # These are needed (and the normal way to override from a python class)
@@ -16,16 +15,6 @@ class DrawingExamples(Sofa.Core.Controller):
     def draw(self, visual_context):
         dt = visual_context.getDrawTool()
 
-        dt.disableLighting()
-        dt.drawPoints(array([[-1.5,-1.0,0.0]]), 5.0, RGBAColor("red"))
-        dt.drawPoints([[-1.3,0,-1], [1.3,0,-1]], 10.0, RGBAColor("green"))
-        dt.drawLines([[-1.3,0,-1], [1.3,0,-1]], 1.0, RGBAColor("green"))
-        dt.drawFrames([[-1.5,0.1,-1]], [[0.0,0,0,1.0]], [0.1,0.1,0.1])
-
-        dt.drawText([-2.0,0.0,0.0], 0.5, "This is not a raptor", RGBAColor("white"))
-        dt.drawOverlayText([10, 10], 12, "Overlay text", RGBAColor("pink"))
-        dt.enableLighting()
-
         if self.target is not None:
             dt.disableLighting()
             dt.drawPoints(self.target.position, 5.0, RGBAColor("blue"))
@@ -35,6 +24,18 @@ class DrawingExamples(Sofa.Core.Controller):
             dt.enableLighting()
 
         dt.drawFrames(self.mo.position, [0.1,0.1,0.1])
+
+        dt.disableLighting()
+        dt.drawPoints(array([[-1.5,-1.0,0.0]]), 5.0, RGBAColor("red"))
+        dt.drawPoints([[-1.3,0,-1], [1.3,0,-1]], 10.0, RGBAColor("green"))
+        dt.drawLines([[-1.3,0,-1], [1.3,0,-1]], 1.0, RGBAColor("green"))
+        dt.drawFrames([[-1.5,0.1,-1]], [[0.0,0,0,1.0]], [0.1,0.1,0.1])
+
+        dt.drawText([-2.0,-1.0,0.0], 0.5, "This is not a raptor", RGBAColor("white"))
+        dt.drawOverlayText([10, 10], 16, "Overlay text", RGBAColor("pink"))
+        dt.enableLighting()
+
+
 
 def createScene(root):
     root.dt = 0.01
