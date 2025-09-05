@@ -95,7 +95,7 @@ void moduleAddDrawTool(py::module &m)
     dt.def("drawPoints", [](DrawTool *self, py::array_t<double> points, float size, sofa::type::RGBAColor& color)
     {
         self->drawPoints(getPoints(points), size, color);
-    });
+    }, sofapython3::doc::drawtool::drawPoints);
     dt.def("drawPoints", [](DrawTool *self, BaseData* dpositions, float size, sofa::type::RGBAColor& color){
         auto positions = dynamic_cast<Data<sofa::type::vector<sofa::type::Vec3>>*>(dpositions);
         if(!positions)
@@ -107,7 +107,7 @@ void moduleAddDrawTool(py::module &m)
     /// Draw lines
     dt.def("drawLines", [](DrawTool *self,  const py::array_t<double>& positions, const float size, sofa::type::RGBAColor& color){
         self->drawLines(getPoints(positions), size, color);
-    });
+    }, sofapython3::doc::drawtool::drawLines);
     dt.def("drawLines", [](DrawTool *self, BaseData* dpositions, const float size, sofa::type::RGBAColor& color){
         auto positions = dynamic_cast<Data<sofa::type::vector<sofa::type::Vec3>>*>(dpositions);
         if(!positions)
@@ -127,7 +127,7 @@ void moduleAddDrawTool(py::module &m)
     // Draw mesh
     dt.def("drawTriangles", [](DrawTool *self,  py::array_t<double>& positions, sofa::type::RGBAColor& color){
         self->drawTriangles(getPoints(positions), color);
-    });
+    }, sofapython3::doc::drawtool::drawTriangles);
     dt.def("drawTriangles", [](DrawTool *self,  BaseData* dpositions, BaseData* dtriangles, sofa::type::RGBAColor& color){
         auto positions = dynamic_cast<Data<sofa::type::vector<sofa::type::Vec3d>>*>(dpositions);
         if(!positions)
@@ -156,7 +156,7 @@ void moduleAddDrawTool(py::module &m)
     // Draw mesh
     dt.def("drawQuads", [](DrawTool *self,  py::array_t<double>& positions, sofa::type::RGBAColor& color){
         self->drawQuads(getPoints(positions), color);
-    });
+    }, sofapython3::doc::drawtool::drawQuads);
     dt.def("drawQuads", [](DrawTool *self,  BaseData* dpositions, BaseData* dquads, sofa::type::RGBAColor& color){
         auto positions = dynamic_cast<Data<sofa::type::vector<sofa::type::Vec3d>>*>(dpositions);
         if(!positions)
@@ -187,7 +187,7 @@ void moduleAddDrawTool(py::module &m)
     // Draw spheres
     dt.def("drawSpheres", [](DrawTool *self,  const py::array_t<double>& positions, const std::vector<float>& radius, sofa::type::RGBAColor& color){
         self->drawSpheres(getPoints(positions), radius, color);
-    });
+    }, sofapython3::doc::drawtool::drawSpheres);
     dt.def("drawSpheres", [](DrawTool *self, BaseData* dpositions, const float radius, sofa::type::RGBAColor& color){
         auto positions = dynamic_cast<Data<sofa::type::vector<sofa::type::Vec3>>*>(dpositions);
         if(!positions)
@@ -196,11 +196,11 @@ void moduleAddDrawTool(py::module &m)
     });
 
     // Draw boundingBox
-    dt.def("boundingBox", [](DrawTool *self,  const std::array<double,4>& min, const std::array<double, 4>& max, double width){
+    dt.def("drawBoundingBox", [](DrawTool *self,  const std::array<double,4>& min, const std::array<double, 4>& max, double width){
         sofa::type::Vec3d cmin { min[0], min[1], min[2] };
         sofa::type::Vec3d cmax { max[0], max[1], max[2] };
         self->drawBoundingBox( cmin, cmax, width);
-    });
+    }, sofapython3::doc::drawtool::drawBoundingBox);
 
     // Draw frames
     dt.def("drawFrames", [](DrawTool* self,
@@ -214,7 +214,7 @@ void moduleAddDrawTool(py::module &m)
         {
             self->drawFrame(cpoints[i], corientations[i], csize);
         }
-    });
+    }, sofapython3::doc::drawtool::drawFrames);
     dt.def("drawFrames", [](DrawTool* self, BaseData* dpositions, std::array<double, 3>& size ){
         using sofa::defaulttype::Rigid3Types;
         using Coord = sofa::defaulttype::Rigid3Types::Coord;
@@ -241,15 +241,13 @@ void moduleAddDrawTool(py::module &m)
                           const sofa::type::RGBAColor& color)
     {
         self->draw3DText(point, size, color, text.c_str());
-    });
+    }, sofapython3::doc::drawtool::drawText);
 
     // Draw overlay text
     dt.def("drawOverlayText", [](DrawTool* self, const std::array<double,2>& point,
                                  int fontSize, char* text, sofa::type::RGBAColor& color){
         self->writeOverlayText(point[0],point[1], fontSize, color, text);
-    });
-
-
+    }, sofapython3::doc::drawtool::drawOverlayText);
 
 }
 

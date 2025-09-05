@@ -27,4 +27,54 @@ static auto baseDrawToolClass =
            It provides higher-level drawing functions like drawing lines, points, spheres, arrows, etc., without
            needing to write raw OpenGL each time.)";
 
+static auto drawPoints =
+            R"(Draws 3D points.
+            points: NumPy array of shape (N, 3) or BaseData of type vector<Vec3>
+            size: Point size (float)
+            color: RGBAColor object)";
+
+static auto drawLines =
+            R"(Draws connected line segments between given 3D points.)";
+
+
+static auto drawTriangles =
+            R"(Draws a triangle mesh from a flat array of 3-point group.
+            points: NumPy array of shape (N, 3) or BaseData of type vector<Vec3>
+            color: RGBAColor object)";
+
+static auto drawQuads =
+            R"(Draws quad mesh from a flat array of 4-point groups.
+            points: NumPy array of shape (N, 3) or BaseData of type vector<Vec4>
+            color: RGBAColor object)";
+
+static auto drawSpheres =
+            R"(Draws spheres from a set of points.
+            points: NumPy array of shape (N, 3) or BaseData of type vector<Vec4>
+            color: RGBAColor object)";
+
+static auto drawBoundingBox =
+            R"(Draws a bounding box from its min and max point
+            min: an array of 3 values
+            max: an array of 3 values)";
+
+static auto drawFrames =
+            R"(Draws 3d frames from position and orientation
+            position: an array of size N,3
+            orientaiton: an array of size N,4)";
+
+static auto drawText =
+            R"(Draws text in 3D
+            position: an array of size 3
+            size: dimmension of the text,
+            text: content to show on screen
+            color: RGBAColor)";
+
+static auto drawOverlayText =
+            R"(Draws text in 2D
+            position: an array of size 2
+            size: the font size,
+            text: content to show on screen
+            color: RGBAColor)";
+
+
 }
