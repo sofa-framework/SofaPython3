@@ -125,6 +125,9 @@ void moduleAddDrawTool(py::module &m)
     });
 
     // Draw mesh
+    dt.def("drawTriangles", [](DrawTool *self,  py::array_t<double>& positions, sofa::type::RGBAColor& color){
+        self->drawTriangles(getPoints(positions), color);
+    });
     dt.def("drawTriangles", [](DrawTool *self,  BaseData* dpositions, BaseData* dtriangles, sofa::type::RGBAColor& color){
         auto positions = dynamic_cast<Data<sofa::type::vector<sofa::type::Vec3d>>*>(dpositions);
         if(!positions)
@@ -151,6 +154,9 @@ void moduleAddDrawTool(py::module &m)
     });
 
     // Draw mesh
+    dt.def("drawQuads", [](DrawTool *self,  py::array_t<double>& positions, sofa::type::RGBAColor& color){
+        self->drawQuads(getPoints(positions), color);
+    });
     dt.def("drawQuads", [](DrawTool *self,  BaseData* dpositions, BaseData* dquads, sofa::type::RGBAColor& color){
         auto positions = dynamic_cast<Data<sofa::type::vector<sofa::type::Vec3d>>*>(dpositions);
         if(!positions)
