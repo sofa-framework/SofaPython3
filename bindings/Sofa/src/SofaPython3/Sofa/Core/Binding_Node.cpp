@@ -37,7 +37,7 @@ using sofa::helper::logging::Message;
 #include <sofa/helper/DiffLib.h>
 using sofa::helper::getClosestMatch;
 
-#include <sofa/simulation/graph/DAGNode.h>
+#include <sofa/simulation/Node.h>
 using sofa::core::ExecParams;
 
 #include <SofaPython3/LinkPath.h>
@@ -163,22 +163,20 @@ std::string getLinkPath(Node* node){
     return ("@"+node->getPathName()).c_str();
 }
 
-py_shared_ptr<Node> __init__noname() {
-    auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>("unnamed");
-    return std::move(dag_node);
+py_shared_ptr<Node> __init_noname__() {
+    auto node = sofa::core::objectmodel::New<sofa::simulation::Node>("unnamed");
+    return std::move(node);
 }
 
-py_shared_ptr<Node> __init__no_kwargs__(const std::string& name) {
-    auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>(name);
-    return std::move(dag_node);
+py_shared_ptr<Node> __init_named__(const std::string& name) {
+    auto node = sofa::core::objectmodel::New<sofa::simulation::Node>(name);
+    return std::move(node);
 }
 
-py_shared_ptr<Node> __init__(const std::string& name, const py::kwargs& kwargs) {
-    auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>(name);
-
-    setDataFromKwargs(dag_node.get(), kwargs);
-
-    return std::move(dag_node);
+py_shared_ptr<Node> __init_kwarged__(const std::string& name, const py::kwargs& kwargs) {
+    auto node = sofa::core::objectmodel::New<sofa::simulation::Node>(name);
+    setDataFromKwargs(node.get(), kwargs);
+    return std::move(node);
 }
 
 /// Method: init (beware this is not the python __init__, this is sofa's init())
@@ -681,15 +679,15 @@ void moduleAddNode(py::module &m) {
             sofa::core::objectmodel::Context, py_shared_ptr<Node>>
             p(m, "Node", sofapython3::doc::sofa::core::Node::Class);
 
-    PythonFactory::registerType<sofa::simulation::graph::DAGNode>(
+    PythonFactory::registerType<sofa::simulation::Node>(
                 [](sofa::core::objectmodel::Base* object)
     {
         return py::cast(dynamic_cast<Node*>(object->toBaseNode()));
     });
 
-    p.def(py::init(&__init__noname), sofapython3::doc::sofa::core::Node::init);
-    p.def(py::init(&__init__no_kwargs__), sofapython3::doc::sofa::core::Node::init1Arg, py::arg("name"));
-    p.def(py::init(&__init__), sofapython3::doc::sofa::core::Node::init1Arg);
+    p.def(py::init(&__init_noname__), sofapython3::doc::sofa::core::Node::init);
+    p.def(py::init(&__init_named__), sofapython3::doc::sofa::core::Node::init1Arg, py::arg("name"));
+    p.def(py::init(&__init_kwarged__), sofapython3::doc::sofa::core::Node::init1Arg, py::arg("name"));
     p.def("init", &init, sofapython3::doc::sofa::core::Node::initSofa );
     p.def("add", &addKwargs, sofapython3::doc::sofa::core::Node::addKwargs);
     p.def("addObject", &addObjectKwargs, sofapython3::doc::sofa::core::Node::addObjectKwargs);
