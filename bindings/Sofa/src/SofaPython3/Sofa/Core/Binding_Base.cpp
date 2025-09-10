@@ -133,7 +133,6 @@ bool BindingBase::SetLink(BaseLink* link, py::object value)
     return true;
 }
 
-
 void BindingBase::SetAttr(py::object self, const std::string& s, py::object value)
 {
     Base* self_d = py::cast<Base*>(self);
