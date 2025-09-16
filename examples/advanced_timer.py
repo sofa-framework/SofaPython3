@@ -34,7 +34,9 @@ class TimerController(Sofa.Core.Controller):
             CG_iterations = records['solve']['Mechanical (meca)']['NewtonStep']['StaticSolver::Solve'][i]['MBKSolve']['CG iterations']
             print(f"  Newton iteration #{i} took {total_time:.2f} ms using {int(CG_iterations)} CG iterations")
 
-        if not self.use_sofa_profiler_timer:
+        if self.use_sofa_profiler_timer:
+            Timer.end("Animate")
+        else:
             Timer.end("cg_timer")
 
 
