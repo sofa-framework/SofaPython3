@@ -28,10 +28,10 @@ class TimerController(Sofa.Core.Controller):
         step_time = records['solve']['Mechanical (meca)']['total_time']
         print(f"Step took {step_time:.2f} ms")
 
-        nb_iterations = records['solve']['Mechanical (meca)']['StaticSolver::Solve']['nb_iterations']
+        nb_iterations = records['solve']['Mechanical (meca)']['NewtonStep']['StaticSolver::Solve']['nb_iterations']
         for i in range(int(nb_iterations)):
-            total_time = records['solve']['Mechanical (meca)']['StaticSolver::Solve']['NewtonStep'][i]['total_time']
-            CG_iterations = records['solve']['Mechanical (meca)']['StaticSolver::Solve']['NewtonStep'][i]['MBKSolve']['CG iterations']
+            total_time = records['solve']['Mechanical (meca)']['NewtonStep']['StaticSolver::Solve'][i]['total_time']
+            CG_iterations = records['solve']['Mechanical (meca)']['NewtonStep']['StaticSolver::Solve'][i]['MBKSolve']['CG iterations']
             print(f"  Newton iteration #{i} took {total_time:.2f} ms using {int(CG_iterations)} CG iterations")
 
         if not self.use_sofa_profiler_timer:
@@ -70,7 +70,8 @@ def createScene(root):
 
     # Create our mechanical node
     root.addChild("meca")
-    root.meca.addObject("StaticSolver", newton_iterations=5, printLog=False)
+    root.meca.addObject("NewtonRaphsonSolver", name="newtonSolver_springs", maxNbIterationsNewton=5, maxNbIterationsLineSearch=1, warnWhenLineSearchFails=False, printLog=False)
+    root.meca.addObject("StaticSolver", newtonSolver="@newtonSolver_springs")
     root.meca.addObject("CGLinearSolver", iterations=25, tolerance=1e-5, threshold=1e-5)
 
     root.meca.addObject('MechanicalObject', name='mo', position='@../grid.position')
