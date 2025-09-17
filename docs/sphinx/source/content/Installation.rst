@@ -75,12 +75,14 @@ Setup your environment
 using runSofa
 *************
 
-Using SofaPython3 in runSofa requires loading the SofaPython3 plugin in your runSofa environment. If you downloaded and installed SOFA from the SOFA website (as explained above, see :ref:`getsofapython3`), you can load the SofaPython3 plugin using the PluginManager (in the GUI) or by auto-loading the plugin in runSofa: simply copy the file **plugin_list.conf.default** in *<SOFA_build>/lib*, and rename it **plugin_list.conf**, then add the line:
+Using SofaPython3 in runSofa requires loading the SofaPython3 plugin in your runSofa environment. If you downloaded and installed SOFA from the SOFA website (as explained above, see :ref:`getsofapython3`), you can load the SofaPython3 plugin using the PluginManager (in the GUI) or by auto-loading the plugin in runSofa run the following script:
+simply copy the file **plugin_list.conf.default** in *<SOFA_build>/lib*, and rename it **plugin_list.conf**, then add the line:
 
 	.. code-block:: text 
-
-		SofaPython3 NO_VERSION
-
+		cd <SOFA_ROOT>/build/v25.06/
+        cp lib/plugin_list.conf.default lib/plugin_list.conf.default.back
+        mv lib/plugin_list.conf.default lib/plugin_list.conf
+        { echo "SofaPython3 NO_VERSION"; cat lib/plugin_list.conf; } > temp && mv temp lib/plugin_list.conf
 	..
 		Note that adding the line to the file **plugin_list.conf.default** in *<SOFA_build>/lib* would work, but you would need to add the line everytime you compile the code.
 
