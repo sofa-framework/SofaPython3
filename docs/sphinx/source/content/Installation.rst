@@ -85,12 +85,12 @@ Using SofaPython3 in runSofa requires loading the SofaPython3 plugin in your run
 		mv lib/plugin_list.conf.default lib/plugin_list.conf
 		{ echo "SofaPython3 NO_VERSION"; cat lib/plugin_list.conf; } > temp && mv temp lib/plugin_list.conf
 	..
-		
+
 Having the SofaPython3 plugin active will allow you to open scene files using the ".py, .py3, .pyscn, .pyscn3" file extension in runSofa, with the command :
 
 	.. code-block:: bash
 
-		<SOFA_build>/bin/runSofa <your_python_file>
+		<SOFA_ROOT>/build/v25.06/bin/runSofa <your_python_file>
 
 
 using python3
