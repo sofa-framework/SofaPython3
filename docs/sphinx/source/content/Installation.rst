@@ -76,7 +76,7 @@ using runSofa
 *************
 
 Using SofaPython3 in runSofa requires loading the SofaPython3 plugin in your runSofa environment. If you downloaded and installed SOFA from the SOFA website (as explained above, see :ref:`getsofapython3`), you can load the SofaPython3 plugin using the PluginManager (in the GUI) or by auto-loading the plugin in runSofa run the following script:
-simply copy the file **plugin_list.conf.default** in *<SOFA_build>/lib*, and rename it **plugin_list.conf**, then add the line:
+simply copy the file **plugin_list.conf.default** in *<SOFA_build>/lib*, and rename it **plugin_list.conf**, then add the line "SofaPython3 NO_VERSION" can be done like this:
 
 	.. code-block:: text 
 		cd <SOFA_ROOT>/build/v25.06/
