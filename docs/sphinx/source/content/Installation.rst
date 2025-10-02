@@ -130,8 +130,9 @@ Before running your simulations, you must make sure to define the following envi
 		After that, all you need to do is open a Console (cmd.exe) and run: ``runSofa -lSofaPython3``
 
 
-⚠️ It must be noted that depending on the plugins you use, you might have to add the *site-packages/* paths associated to these plugins to your ``PYTHONPATH``.
-These are usually located in */path_to_plugin/lib/python3/site-packages*.
+⚠️ It must be noted that depending on the plugins you use, you might have to add the *site-packages/* paths associated to these plugins to your ``PYTHONPATH``. These are usually located in */path_to_plugin/lib/python3/site-packages*.
+Here is an example considering that you use the binary install of SOFA and you want to use both SofaPython3 and ImGui plugins in Python, then you could define ``export PYTHONPATH=$SOFA_ROOT/plugins/SofaPython3/lib/python3/site-packages/:$SOFA_ROOT/plugins/SofaImGui/lib/python3/site-packages/
+``
 
 To discover, how to use SOFA in any python3 interpreter, please refer to the associated `FirstSteps section <https://sofapython3.readthedocs.io/en/latest/content/FirstSteps.html#with-the-python3-interpreter>`_
 
