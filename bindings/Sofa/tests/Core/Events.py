@@ -42,7 +42,7 @@ class Test(unittest.TestCase):
         node.addObject("RequiredPlugin", name="Sofa.Component.AnimationLoop")
         node.addObject("RequiredPlugin", name="Sofa.Component.Constraint.Lagrangian.Solver")
         node.addObject("FreeMotionAnimationLoop", name="loop")
-        node.addObject("GenericConstraintSolver", name="constraintSolver")
+        node.addObject("ProjectedGaussSeidelConstraintSolver", name="constraintSolver")
         controller = node.addObject( MyController() )
 
         Sofa.Simulation.init(node)
