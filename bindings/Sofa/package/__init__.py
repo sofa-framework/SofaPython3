@@ -61,88 +61,104 @@ if sofa_root and sys.platform == 'win32':
         else:
             print("Warning: cannot guess SOFAPYTHON3_ROOT",
                   "Loading SofaPython3 modules will likely fail.")
+            sofapython3_root = None  # ensure downstream code handles the absence safely
 
-    # Windows-only: starting from python 3.8, python wont read the env. variable PATH to get SOFA's dlls.
+    # Helper functions for readability and robustness
+    def _collect_build_candidates(bin_path, modes):
+        candidates = [bin_path]
+        dev_candidates = []
+        for mode in modes:
+            mode_path = os.path.abspath(os.path.join(bin_path, mode))
+            if os.path.isdir(mode_path):
+                dev_candidates.append(mode_path)
+        return candidates, dev_candidates
+
+    def _select_bin_with_dll(candidates, dll_names):
+        selected = None
+        found_file = ""
+        for candidate in candidates:
+            for dll in dll_names:
+                test = os.path.join(candidate, dll)
+                if os.path.isfile(test):
+                    print(f"Found {dll} in {candidate}")
+                    selected = candidate
+                    found_file = test
+                    break
+            if selected:
+                break
+        return selected, found_file
+
+    # Windows-only: starting from python 3.8, python won't read the env. variable PATH to get SOFA's dlls.
     # os.add_dll_directory() is the new way to add paths for python to get external libraries.
     sofa_bin_path = os.path.join(sofa_root, "bin")
-    sofapython3_bin_path = os.path.join(sofapython3_root, "bin")
+    sofapython3_bin_path = os.path.join(sofapython3_root, "bin") if sofapython3_root else None
 
     # A user using a build configuration could have a multiple-configuration type build
     # which is typical on Windows and MSVC; and MacOS with XCode
     # If the user set the env.var SOFA_BUILD_CONFIGURATION, he can choose a preferred configuration.
     # If it is not found, it is considered as an error.
     sofa_build_configuration = os.environ.get('SOFA_BUILD_CONFIGURATION')
-    compilation_modes = []
     if sofa_build_configuration:
         print("SOFA_BUILD_CONFIGURATION is set to " + sofa_build_configuration)
         compilation_modes = [sofa_build_configuration]
     else:
-        compilation_modes = ["Release", "RelWithDebInfo", "Debug", "MinSizeRel"] # Standard multi-configuration modes in CMake
+        compilation_modes = ["Release", "RelWithDebInfo", "Debug", "MinSizeRel"]  # Standard multi-configuration modes in CMake
 
-    sofa_bin_compilation_modes = []
-    sofapython3_bin_compilation_modes = []
-    for mode in compilation_modes:
-        if os.path.isdir(os.path.abspath(os.path.join(sofa_bin_path, mode))):
-            sofa_bin_compilation_modes.append(os.path.join(sofa_bin_path, mode))
-        if os.path.isdir(os.path.abspath(os.path.join(sofapython3_bin_path, mode))):
-            sofapython3_bin_compilation_modes.append(os.path.join(sofapython3_bin_path, mode))
+    # Collect candidates
+    sofa_base_candidates, sofa_dev_candidates = _collect_build_candidates(sofa_bin_path, compilation_modes)
+    if sofapython3_bin_path:
+        sp3_base_candidates, sp3_dev_candidates = _collect_build_candidates(sofapython3_bin_path, compilation_modes)
+    else:
+        sp3_base_candidates, sp3_dev_candidates = [], []
 
-    if sofa_bin_compilation_modes:
+    if sofa_dev_candidates:
         print("Detected SOFA development build")
-    if sofapython3_bin_compilation_modes:
+    if sp3_dev_candidates:
         print("Detected SofaPython3 development build")
 
-    sofa_bin_candidates = [sofa_bin_path] + sofa_bin_compilation_modes
-    sofapython3_bin_candidates = [sofapython3_bin_path] + sofapython3_bin_compilation_modes
+    sofa_bin_candidates = sofa_base_candidates + sofa_dev_candidates
+    sofapython3_bin_candidates = sp3_base_candidates + sp3_dev_candidates
 
+    # Look for expected DLLs to pick the right bin folder
     sofa_helper_dll = ["Sofa.Helper.dll", "Sofa.Helper_d.dll"]
-    sofa_file_test = ""
-    for candidate in sofa_bin_candidates:
-        for dll in sofa_helper_dll:
-            sofa_file_test = os.path.join(candidate, dll)
-            if os.path.isfile(sofa_file_test):
-                print(f"Found {dll} in {candidate}")
-                sofa_bin_path = candidate
-                break
-        else:
-            continue
-        break
+    sofa_selected, sofa_file_test = _select_bin_with_dll(sofa_bin_candidates, sofa_helper_dll)
+    if sofa_selected:
+        sofa_bin_path = sofa_selected
 
     sofa_python3_dll = ["SofaPython3.dll", "SofaPython3_d.dll"]
-
     sofapython3_file_test = ""
-    for candidate in sofapython3_bin_candidates:
-        for dll in sofa_python3_dll:
-            sofapython3_file_test = os.path.join(candidate, dll)
-            if os.path.isfile(sofapython3_file_test):
-                print(f"Found {dll} in {candidate}")
-                sofapython3_bin_path = candidate
-                break
-        else:
-            continue
-        break
+    if sofapython3_bin_candidates:
+        sp3_selected, sofapython3_file_test = _select_bin_with_dll(sofapython3_bin_candidates, sofa_python3_dll)
+        if sp3_selected:
+            sofapython3_bin_path = sp3_selected
 
-    if not os.path.isfile(sofa_file_test):
+    # Warnings if not found
+    if not sofa_file_test:
         print("Warning: environment variable SOFA_ROOT is set but seems invalid.",
               "Loading SOFA libraries will likely fail.")
         print("SOFA_ROOT is currently: " + sofa_root)
-    if not os.path.isfile(sofapython3_file_test):
-        print("Warning: cannot find SofaPython3.dll at path: " + sofapython3_bin_path)
+    if not sofapython3_file_test:
+        if sofapython3_bin_path:
+            print("Warning: cannot find SofaPython3.dll at path: " + str(sofapython3_bin_path))
+        else:
+            print("Warning: SOFAPYTHON3_ROOT is not set or invalid; SofaPython3 DLL path cannot be determined.")
         print("This path will NOT be added to the DLL search path.",
               "Loading SofaPython3 python modules will likely fail.")
 
-    if sys.version_info.minor >= 8:
-        # Starting from python3.8 we need to explicitly find SOFA libraries
-        if os.path.isfile(sofa_file_test):
+    # Add directories to DLL search path or PATH depending on Python version capabilities
+    add_dll_dir_available = hasattr(os, 'add_dll_directory')
+    if add_dll_dir_available:
+        # Starting from Python 3.8 we need to explicitly register directories for DLL loading
+        if sofa_file_test:
             os.add_dll_directory(sofa_bin_path)
-        if os.path.isfile(sofapython3_file_test):
+        if sofapython3_file_test and sofapython3_bin_path:
             os.add_dll_directory(sofapython3_bin_path)
     else:
         # Add temporarily the bin/lib path to the env variable PATH
-        if os.path.isfile(sofa_file_test):
-            os.environ['PATH'] = sofa_bin_path + os.pathsep + os.environ['PATH']
-        if os.path.isfile(sofapython3_file_test):
-            os.environ['PATH'] = sofapython3_bin_path + os.pathsep + os.environ['PATH']
+        if sofa_file_test:
+            os.environ['PATH'] = sofa_bin_path + os.pathsep + os.environ.get('PATH', '')
+        if sofapython3_file_test and sofapython3_bin_path:
+            os.environ['PATH'] = sofapython3_bin_path + os.pathsep + os.environ.get('PATH', '')
 
 print("---------------------------------------")
 sys.stdout.flush()
