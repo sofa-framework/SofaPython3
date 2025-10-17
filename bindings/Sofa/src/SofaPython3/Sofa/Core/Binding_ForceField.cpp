@@ -177,6 +177,10 @@ namespace sofapython3
                 throw py::type_error("Can't read return value of AddKToMatrix. The method should return either a plain 2D matrix or a vector of tuples (i, j, val)");
             }
         }
+        else
+        {
+            throw py::type_error("Can't read return value of AddKToMatrix. A numpy array is expected");
+        }
     }
 
 
