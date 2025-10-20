@@ -21,6 +21,8 @@
 
 
 #include <pybind11/eigen.h>
+#include <sofa/linearalgebra/BTDMatrix.h>
+#include <sofa/linearalgebra/BlockVector.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
 
@@ -155,6 +157,8 @@ void moduleAddLinearSystem(py::module &m)
     bindLinearSystems<sofa::linearalgebra::DiagonalMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >(m);
     bindLinearSystems<sofa::linearalgebra::BlockDiagonalMatrix<3,SReal>, sofa::linearalgebra::FullVector<SReal> >(m);
     bindLinearSystems<sofa::linearalgebra::RotationMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >(m);
+
+    bindLinearSystems<sofa::linearalgebra::BTDMatrix<6, SReal>, sofa::linearalgebra::BlockVector<6, SReal> >(m);
 }
 
 }
