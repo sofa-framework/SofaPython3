@@ -17,14 +17,9 @@
 *******************************************************************************
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaPython3/SofaLinearSystem/Binding_LinearSystem.h>
-#include <SofaPython3/SofaLinearSystem/Binding_LinearSystem_doc.h>
-#include <pybind11/pybind11.h>
+#include <SofaPython3/SofaLinearSystem/Binding_LinearSystem.inl>
 
-#include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaPython3/PythonFactory.h>
 
-#include <sofa/component/linearsystem/TypedMatrixLinearSystem.h>
 #include <pybind11/eigen.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
@@ -38,12 +33,6 @@ using EigenSparseMatrix = Eigen::SparseMatrix<Real, Eigen::RowMajor>;
 
 template<class Real>
 using EigenMatrixMap = Eigen::Map<Eigen::SparseMatrix<Real, Eigen::RowMajor> >;
-
-template<class Real>
-using Vector = Eigen::Matrix<Real,Eigen::Dynamic, 1>;
-
-template<class Real>
-using EigenVectorMap = Eigen::Map<Vector<Real>>;
 
 template<class TBlock>
 EigenSparseMatrix<typename sofa::linearalgebra::CompressedRowSparseMatrix<TBlock>::Real>
@@ -70,62 +59,102 @@ toEigen(sofa::linearalgebra::CompressedRowSparseMatrix<TBlock>& matrix)
     }
 }
 
-template<class TBlock>
-void bindLinearSystems(py::module &m)
+template<class TMatrix, class TVector>
+void bindMatrixAccessCRS(LinearSystemClass<TMatrix, TVector>& c)
 {
-    using CRS = sofa::linearalgebra::CompressedRowSparseMatrix<TBlock>;
-    using Real = typename CRS::Real;
-    using CRSLinearSystem = sofa::component::linearsystem::TypedMatrixLinearSystem<CRS, sofa::linearalgebra::FullVector<Real> >;
+    using Real = typename TMatrix::Real;
+    using CRSLinearSystem = sofa::component::linearsystem::TypedMatrixLinearSystem<TMatrix, TVector>;
 
-    const std::string typeName = CRSLinearSystem::GetClass()->className + CRSLinearSystem::GetCustomTemplateName();
-
-    py::class_<CRSLinearSystem,
-               sofa::core::objectmodel::BaseObject,
-               sofapython3::py_shared_ptr<CRSLinearSystem> > c(m, typeName.c_str(), sofapython3::doc::linearsystem::linearSystemClass);
-
-    c.def("A", [](CRSLinearSystem& self) -> EigenSparseMatrix<Real>
-    {
-        if (CRS* matrix = self.getSystemMatrix())
+    const auto matrixAccess =
+        [](CRSLinearSystem& self) -> EigenSparseMatrix<Real>
         {
-            if (matrix->colsValue.empty()) //null matrix: contains no entries
+            if (TMatrix* matrix = self.getSystemMatrix())
             {
-                return EigenSparseMatrix<Real>{matrix->rows(), matrix->cols()};
+                if (matrix->colsValue.empty()) //null matrix: contains no entries
+                {
+                    return EigenSparseMatrix<Real>{matrix->rows(), matrix->cols()};
+                }
+                return toEigen(*matrix);
             }
-            return toEigen(*matrix);
-        }
-        return {};
-    }, sofapython3::doc::linearsystem::linearSystem_A);
+            return {};
+        };
 
-    c.def("b", [](CRSLinearSystem& self) -> Vector<Real>
-    {
-        if (auto* vector = self.getRHSVector())
+    c.def("A", matrixAccess, sofapython3::doc::linearsystem::linearSystem_CRS_A);
+    c.def("get_system_matrix", matrixAccess, sofapython3::doc::linearsystem::linearSystem_CRS_get_system_matrix);
+}
+
+template<>
+void bindMatrixAccess(LinearSystemClass<sofa::linearalgebra::CompressedRowSparseMatrix<SReal>, sofa::linearalgebra::FullVector<SReal>>& c)
+{
+    bindMatrixAccessCRS(c);
+}
+
+template<>
+void bindMatrixAccess(LinearSystemClass<sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Mat<2,2,SReal>>, sofa::linearalgebra::FullVector<SReal>>& c)
+{
+    bindMatrixAccessCRS(c);
+}
+
+template<>
+void bindMatrixAccess(LinearSystemClass<sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Mat<3,3,SReal>>, sofa::linearalgebra::FullVector<SReal>>& c)
+{
+    bindMatrixAccessCRS(c);
+}
+
+template<>
+void bindMatrixAccess(LinearSystemClass<sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Mat<4,4,SReal>>, sofa::linearalgebra::FullVector<SReal>>& c)
+{
+    bindMatrixAccessCRS(c);
+}
+
+template<>
+void bindMatrixAccess(LinearSystemClass<sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Mat<6,6,SReal>>, sofa::linearalgebra::FullVector<SReal>>& c)
+{
+    bindMatrixAccessCRS(c);
+}
+
+template<>
+void bindMatrixAccess(LinearSystemClass<sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Mat<8,8,SReal>>, sofa::linearalgebra::FullVector<SReal>>& c)
+{
+    bindMatrixAccessCRS(c);
+}
+
+template<class Real>
+using DenseMatrix = Eigen::Matrix<Real,Eigen::Dynamic, Eigen::Dynamic>;
+
+template<class Real>
+using EigenDenseMatrixMap = Eigen::Map<DenseMatrix<Real>>;
+
+template<>
+void bindMatrixAccess(LinearSystemClass<sofa::linearalgebra::FullMatrix<SReal>, sofa::linearalgebra::FullVector<SReal>>& c)
+{
+    using CRSLinearSystem = sofa::component::linearsystem::TypedMatrixLinearSystem<sofa::linearalgebra::FullMatrix<SReal>, sofa::linearalgebra::FullVector<SReal>>;
+
+    const auto matrixAccess =
+        [](CRSLinearSystem& self) -> EigenDenseMatrixMap<SReal>
         {
-            return EigenVectorMap<Real>(vector->ptr(), vector->size());
-        }
-        return {};
-    }, sofapython3::doc::linearsystem::linearSystem_b);
-
-    c.def("x", [](CRSLinearSystem& self) -> Vector<Real>
-    {
-        if (auto* vector = self.getSolutionVector())
-        {
-            return EigenVectorMap<Real>(vector->ptr(), vector->size());
-        }
-        return {};
-    }, sofapython3::doc::linearsystem::linearSystem_x);
-
-
-    /// register the binding in the downcasting subsystem
-    PythonFactory::registerType<CRSLinearSystem>([](sofa::core::objectmodel::Base* object)
-    {
-        return py::cast(dynamic_cast<CRSLinearSystem*>(object));
-    });
+            sofa::linearalgebra::FullMatrix<SReal>* matrix = self.getSystemMatrix();
+            const auto row = matrix ? matrix->rows() : 0;
+            const auto col = matrix ? matrix->cols() : 0;
+            return EigenDenseMatrixMap<SReal>(matrix ? matrix->ptr() : nullptr, row, col);
+        };
+    c.def("A", matrixAccess, sofapython3::doc::linearsystem::linearSystem_FullMatrix_A);
+    c.def("get_system_matrix", matrixAccess, sofapython3::doc::linearsystem::linearSystem_FullMatrix_get_system_matrix);
 }
 
 void moduleAddLinearSystem(py::module &m)
 {
-    bindLinearSystems<SReal>(m);
-    bindLinearSystems<sofa::type::Mat<3, 3, SReal> >(m);
+    bindLinearSystems<sofa::linearalgebra::FullMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >(m);
+    bindLinearSystems<sofa::linearalgebra::SparseMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >(m);
+    bindLinearSystems<sofa::linearalgebra::CompressedRowSparseMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >(m);
+    bindLinearSystems<sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Mat<2,2,SReal> >, sofa::linearalgebra::FullVector<SReal> >(m);
+    bindLinearSystems<sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Mat<3,3,SReal> >, sofa::linearalgebra::FullVector<SReal> >(m);
+    bindLinearSystems<sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Mat<4,4,SReal> >, sofa::linearalgebra::FullVector<SReal> >(m);
+    bindLinearSystems<sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Mat<6,6,SReal> >, sofa::linearalgebra::FullVector<SReal> >(m);
+    bindLinearSystems<sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Mat<8,8,SReal> >, sofa::linearalgebra::FullVector<SReal> >(m);
+    bindLinearSystems<sofa::linearalgebra::DiagonalMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >(m);
+    bindLinearSystems<sofa::linearalgebra::BlockDiagonalMatrix<3,SReal>, sofa::linearalgebra::FullVector<SReal> >(m);
+    bindLinearSystems<sofa::linearalgebra::RotationMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >(m);
 }
 
 }
