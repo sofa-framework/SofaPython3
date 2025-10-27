@@ -50,7 +50,7 @@ public:
     std::string getClassName() const override;
 
 private:
-    void callScriptMethod(const pybind11::object& self, sofa::core::objectmodel::Event* event,
+    bool callScriptMethod(const pybind11::object& self, sofa::core::objectmodel::Event* event,
         const std::string& methodName);
 };
 

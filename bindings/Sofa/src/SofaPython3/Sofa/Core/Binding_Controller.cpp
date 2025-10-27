@@ -68,7 +68,7 @@ void Controller_Trampoline::reinit()
 
 /// If a method named "methodName" exists in the python controller,
 /// methodName is called, with the Event's dict as argument
-void Controller_Trampoline::callScriptMethod(
+bool Controller_Trampoline::callScriptMethod(
         const py::object& self, Event* event, const std::string & methodName)
 {
     if(f_printLog.getValue())
@@ -81,8 +81,13 @@ void Controller_Trampoline::callScriptMethod(
     if( py::hasattr(self, methodName.c_str()) )
     {
         py::object fct = self.attr(methodName.c_str());
-        fct(PythonFactory::toPython(event));
+        py::object result = fct(PythonFactory::toPython(event));
+        if(result.is_none())
+            return false;
+
+        return py::cast<bool>(result);
     }
+    return false;
 }
 
 void Controller_Trampoline::handleEvent(Event* event)
@@ -95,13 +100,17 @@ void Controller_Trampoline::handleEvent(Event* event)
         {
             py::object fct = self.attr(name.c_str());
             if (PyCallable_Check(fct.ptr())) {
-                callScriptMethod(self, event, name);
+                bool isHandled = callScriptMethod(self, event, name);
+                if(isHandled)
+                    event->setHandled();
                 return;
             }
         }
 
         /// Is the fallback method available.
-        callScriptMethod(self, event, "onEvent");
+        bool isHandled = callScriptMethod(self, event, "onEvent");
+        if(isHandled)
+            event->setHandled();
     });
 }
 
