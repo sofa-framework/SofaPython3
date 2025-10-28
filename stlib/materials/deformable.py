@@ -29,6 +29,7 @@ def createScene(root) :
     from stlib.visual import VisualParameters
     from stlib.geometries.file import FileParameters
 
+    root.addObject('RequiredPlugin', name='Sofa.Component.Visual') # Needed to use components [VisualStyle]
     root.addObject("VisualStyle", displayFlags=["showBehavior"])
 
     bunnyParameters = EntityParameters()
@@ -42,4 +43,5 @@ def createScene(root) :
     #                                                     destinationType=ElementType.TRIANGLES)
     bunnyParameters.visual.geometry = FileParameters(filename="mesh/Bunny.stl")
     bunnyParameters.visual.color = [1, 1, 1, 0.5]
-    bunny = root.add(Entity, bunnyParameters)
+    bunny = root.add(Entity, parameters=bunnyParameters)
+    # bunny.init()
