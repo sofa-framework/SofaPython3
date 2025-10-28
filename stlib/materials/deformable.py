@@ -14,7 +14,12 @@ class DeformableBehaviorParameters(MaterialParameters):
     parameters : list[float] = dataclasses.field(default_factory=lambda: [1000, 0.45])  # young modulus, poisson ratio
 
     def __addDeformableMaterial(node):
-        addMass(node, node.parameters.elementType, massDensity=node.parameters.massDensity, lumping=node.parameters.massLumping)
+
+        massKwargs = {}
+        if node.parameters.elementType != ElementType.EDGES: #If we use the MeshMatrixMass, then the mass will need us to specify the mstate to use
+            massKwargs["geometryState"] = "@States"
+
+        addMass(node, node.parameters.elementType, massDensity=node.parameters.massDensity, lumping=node.parameters.massLumping, topology="@../Geometry/container", mass=massKwargs)
         # TODO : change this with inheritance
         if(node.parameters.constitutiveLawType == ConstitutiveLaw.HYPERELASTIC):
             addHyperelasticity(node, node.parameters.elementType, node.parameters.parameters, topology="@../Geometry/container")
