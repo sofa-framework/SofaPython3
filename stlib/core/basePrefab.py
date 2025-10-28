@@ -8,9 +8,9 @@ class BasePrefab(Sofa.Core.Node):
     A Prefab is a Sofa.Node that assembles a set of components and nodes
     """
 
-    def __init__(self, params: BasePrefabParameters):
-        Sofa.Core.Node.__init__(self, name=params.name)
-        self.parameters = params
+    def __init__(self, parameters: BasePrefabParameters):
+        Sofa.Core.Node.__init__(self, name=parameters.name)
+        self.parameters = parameters
 
     def init(self):
         raise NotImplemented("To be overridden by child class")
