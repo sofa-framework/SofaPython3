@@ -27,7 +27,7 @@ class DeformableBehaviorParameters(MaterialParameters):
 def createScene(root) :
     from stlib.entities import Entity, EntityParameters
     from stlib.visual import VisualParameters
-    from stlib.geometry import FileParameters
+    from stlib.geometries.file import FileParameters
 
     root.addObject("VisualStyle", displayFlags=["showBehavior"])
 
