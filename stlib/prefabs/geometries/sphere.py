@@ -1,4 +1,4 @@
-from stlib.geometry import GeometryParameters
+from stlib.prefabs.geometries import GeometryParameters
 
 class SphereParameters(GeometryParameters):
     def __init__(self,  center, radius, pointPerRad, dynamicTopology = False):

@@ -1,4 +1,4 @@
-from stlib.geometry import GeometryParameters
+from stlib.prefabs.geometries import GeometryParameters
 
 class CubeParameters(GeometryParameters):
     def __init__(self,  center, edgeLength, pointPerEdge, dynamicTopology = False):

@@ -1,5 +1,5 @@
-from stlib.prefabs.material import MaterialParameters
-from splib.core.enum_types import ConstitutiveLaw, ElementType
+from stlib.prefabs.materials import MaterialParameters
+from splib.core.enum_types import ConstitutiveLaw
 from stlib.core.baseParameters import Callable, Optional, dataclasses
 from splib.mechanics.linear_elasticity import *
 from splib.mechanics.hyperelasticity import *
@@ -27,8 +27,7 @@ class DeformableBehaviorParameters(MaterialParameters):
 def createScene(root) :
     from stlib.entities import Entity, EntityParameters
     from stlib.prefabs.visual import VisualParameters
-    from stlib.geometry.extract import ExtractParameters
-    from stlib.geometry.file import FileParameters    
+    from stlib.geometry import FileParameters
 
     root.addObject("VisualStyle", displayFlags=["showBehavior"])
 

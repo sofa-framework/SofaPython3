@@ -1,4 +1,4 @@
-from stlib.geometry import GeometryParameters, InternalDataProvider, Geometry
+from stlib.prefabs.geometries import GeometryParameters, InternalDataProvider, Geometry
 from stlib.core.baseParameters import dataclasses
 from splib.topology.dynamic import addDynamicTopology
 from splib.topology.loader import loadMesh
