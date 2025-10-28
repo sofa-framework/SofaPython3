@@ -1,5 +1,5 @@
 from stlib.core.baseParameters import BaseParameters, Optional, dataclasses
-from stlib.geometry import GeometryParameters
+from stlib.geometries import GeometryParameters
 
 
 

@@ -1,4 +1,4 @@
-__all__ = ["core","entities","prefabs","shapes"]
+__all__ = ["core","entities","geometries","materials","collision","visual"]
 
 import Sofa.Core
 def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):

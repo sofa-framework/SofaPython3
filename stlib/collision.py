@@ -1,7 +1,7 @@
 from stlib.core.basePrefab import BasePrefab
 from stlib.core.baseParameters import BaseParameters, Optional, dataclasses
-from stlib.prefabs.geometries import Geometry, GeometryParameters
-from stlib.prefabs.geometries.file import FileParameters
+from stlib.geometries import Geometry, GeometryParameters
+from stlib.geometries.file import FileParameters
 from splib.core.enum_types import CollisionPrimitive
 from splib.core.utils import DEFAULT_VALUE
 from splib.mechanics.collision_model import addCollisionModels

@@ -1,11 +1,11 @@
 from stlib.core.baseParameters import BaseParameters
-from stlib.prefabs.collision import CollisionParameters, Collision
-from stlib.prefabs.visual import VisualParameters, Visual
-from stlib.prefabs.material import Material, MaterialParameters
-from stlib.geometry import Geometry
+from stlib.collision import CollisionParameters, Collision
+from stlib.visual import VisualParameters, Visual
+from stlib.materials import Material, MaterialParameters
+from stlib.geometries import Geometry
 import dataclasses
 from typing import Callable, Optional
-from stlib.prefabs.geometries import GeometryParameters
+from stlib.geometries import GeometryParameters
 from splib.core.enum_types import StateType
 from stlib.core.basePrefab import BasePrefab
 

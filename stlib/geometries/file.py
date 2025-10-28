@@ -1,4 +1,4 @@
-from stlib.prefabs.geometries import GeometryParameters, InternalDataProvider, Geometry
+from stlib.geometries import GeometryParameters, InternalDataProvider, Geometry
 from stlib.core.baseParameters import dataclasses
 from splib.topology.loader import loadMesh
 from splib.core.enum_types import ElementType
