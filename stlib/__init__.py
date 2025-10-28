@@ -1,6 +1,7 @@
 __all__ = ["core","entities","geometries","materials","collision","visual"]
 
 import Sofa.Core
+
 def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
     def findName(cname, names):
         """Compute a working unique name in the node"""
@@ -13,35 +14,32 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
 
     # Check if a name is provided, if not, use the one of the class
     params = kwargs.copy()
-    isNode = False
-    if "name" not in params:
-        if isinstance(typeName, str):
-            params["name"] = typeName
-            isNode=True
-        elif isinstance(typeName, type) and issubclass(typeName, Sofa.Core.Node):
-            params["name"] = "Node"
-            isNode=True
-        elif isinstance(typeName, Sofa.Core.Node):
-            params["name"] = "Node"
-            isNode=True
-        elif isinstance(typeName, type) and issubclass(typeName, Sofa.Core.Object):
-            params["name"] = typeName.name.value
-        elif isinstance(typeName, type) and issubclass(typeName, Sofa.Core.ObjectDeclaration):
-            params["name"] = typeName.__name__
-        else:
-            raise RuntimeError("Invalid argument ", typeName)
+    # if "name" not in params:
+    #     if isinstance(typeName, str):
+    #         params["name"] = typeName
+    #     elif isinstance(typeName, type) and issubclass(typeName, Sofa.Core.Node):
+    #         params["name"] = typeName.__name__
+    #     elif isinstance(typeName, Sofa.Core.Node):
+    #         params["name"] = "Node"
+    #     elif isinstance(typeName, type) and issubclass(typeName, Sofa.Core.Object):
+    #         params["name"] = typeName.name.value
+    #     elif isinstance(typeName, type) and issubclass(typeName, Sofa.Core.ObjectDeclaration):
+    #         params["name"] = typeName.__name__
+    #     else:
+    #         raise RuntimeError("Invalid argument ", typeName)
 
-    # Check if the name already exists, if this happens, create a new one.
-    if params["name"] in self.children or params["name"] in self.objects:
-        names = {node.name.value for node in self.children}
-        names = names.union({object.name.value for object in self.objects})
-        params["name"] = findName(params["name"], names)
+    # # Check if the name already exists, if this happens, create a new one.
+    # if params["name"] in self.children or params["name"] in self.objects:
+    #     names = {node.name.value for node in self.children}
+    #     names = names.union({object.name.value for object in self.objects})
+    #     params["name"] = findName(params["name"], names)
 
     # Dispatch the creation to either addObject or addChild
-    if isinstance(typeName, type) and issubclass(typeName, Sofa.Core.Node):
-        pref = self.addChild(typeName(params["name"]))
+    if isinstance(typeName, type) and issubclass(typeName, core.basePrefab.BasePrefab):
+        pref = self.addChild(typeName(**params))
+        pref.init()
     elif isinstance(typeName, Sofa.Core.Node):
-        pref = self.addChild(typeName)
+        pref = self.addChild(typeName(**params))
     elif isinstance(typeName, type) and issubclass(typeName, Sofa.Core.Object):
         pref = self.addObject(typeName(**params))
     elif isinstance(typeName, type) and issubclass(typeName, Sofa.Core.ObjectDeclaration):

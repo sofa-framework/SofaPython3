@@ -21,7 +21,7 @@ class Visual(BasePrefab):
         BasePrefab.__init__(self, parameters)
 
     def init(self):
-        self.geometry = self.add(Geometry, self.parameters.geometry)
+        self.geometry = self.add(Geometry, parameters=self.parameters.geometry)
         self.addObject("OglModel", color=self.parameters.color, src=self.geometry.container.linkpath)
 
 
