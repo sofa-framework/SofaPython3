@@ -1,7 +1,14 @@
 __all__ = ["core","entities","prefabs","shapes"]
 
 import Sofa.Core
-def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
+
+from stlib.core.baseParameters import BaseParameters
+from stlib.core.basePrefab import BasePrefab
+
+
+def __genericAdd(self : Sofa.Core.Node, typeName, *param, **kwargs):
+
+
     def findName(cname, names):
         """Compute a working unique name in the node"""
         rname = cname
@@ -11,7 +18,37 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
             rname = cname + str(i+1)
         return rname
 
-    # Check if a name is provided, if not, use the one of the class
+    def checkName(context : Sofa.Core.Node, name):
+        # Check if the name already exists, if this happens, create a new one.
+        if name in context.children or name in context.objects:
+            names = {node.name.value for node in context.children}
+            names = names.union({object.name.value for object in context.objects})
+            name = findName(name, names)
+        return name
+
+
+    if len(param) == 1 and isinstance(typeName, type) and not issubclass(typeName, BasePrefab):
+        raise RuntimeError("Invalid argument : only prefabs take positionnal argument which should be a parameter")
+    elif len(param) > 1:
+        raise RuntimeError("Invalid argument : only one positionnal argument accepted and only when used with a prefab")
+    elif len(param) == 0 and isinstance(typeName, type) and issubclass(typeName, BasePrefab):
+        raise RuntimeError("Invalid argument : one positionnal argument is required when calling add with prefab type")
+    elif len(param) == 1 and isinstance(typeName, type) and issubclass(typeName, BasePrefab) and not isinstance(param[0], BaseParameters):
+        raise RuntimeError("Invalid argument : when calling add with prefab type the positionnal argument is expected to be a type derived from stlib.core.BaseParameter")
+
+
+    if len(param) == 1 and isinstance(typeName, type) and issubclass(typeName, BasePrefab):
+        param[0].name = checkName(self, param[0].name)
+        if(len(kwargs)):
+            param[0].kwargs = kwargs.copy()
+
+        newEntity = self.addChild(typeName(param[0]))
+        newEntity.init()
+        return newEntity
+
+    ## If we ever get here, it means we are not adding a prefab by giving its type name and its parameter set
+
+    # Check if a name is provided, if not, use the one of the class
     params = kwargs.copy()
     isNode = False
     if "name" not in params:
@@ -31,11 +68,7 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
         else:
             raise RuntimeError("Invalid argument ", typeName)
 
-    # Check if the name already exists, if this happens, create a new one.
-    if params["name"] in self.children or params["name"] in self.objects:
-        names = {node.name.value for node in self.children}
-        names = names.union({object.name.value for object in self.objects})
-        params["name"] = findName(params["name"], names)
+    params["name"] = checkName(self, params["name"])
 
     # Dispatch the creation to either addObject or addChild
     if isinstance(typeName, type) and issubclass(typeName, Sofa.Core.Node):
