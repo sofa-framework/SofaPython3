@@ -4,7 +4,9 @@ from splib.topology.dynamic import addDynamicTopology
 from splib.topology.static import addStaticTopology
 from splib.core.enum_types import ElementType
 from splib.core.utils import DEFAULT_VALUE
-from Sofa.Core import Object 
+from Sofa.Core import Object
+
+import numpy as np
 
 
 class Geometry(BasePrefab):...
@@ -32,6 +34,10 @@ class GeometryParameters(BaseParameters):
     data : Optional[InternalDataProvider] = None
 
     dynamicTopology : bool = False
+
+    def Data(self):
+        return InternalDataProvider()
+
 
 
 class Geometry(BasePrefab):
