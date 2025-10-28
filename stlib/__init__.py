@@ -1,4 +1,4 @@
-__all__ = ["core","entities","prefabs","shapes"]
+__all__ = ["core","entities","geometries","materials","collision","visual"]
 
 import Sofa.Core
 def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
@@ -11,7 +11,7 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
             rname = cname + str(i+1)
         return rname
 
-    # Check if a name is provided, if not, use the one of the class
+    # Check if a name is provided, if not, use the one of the class
     params = kwargs.copy()
     isNode = False
     if "name" not in params:
@@ -31,7 +31,7 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
         else:
             raise RuntimeError("Invalid argument ", typeName)
 
-    # Check if the name already exists, if this happens, create a new one.
+    # Check if the name already exists, if this happens, create a new one.
     if params["name"] in self.children or params["name"] in self.objects:
         names = {node.name.value for node in self.children}
         names = names.union({object.name.value for object in self.objects})
