@@ -75,7 +75,6 @@ class Test(unittest.TestCase):
             self.assertEqual(root.FirstNode.objects()[0].type.value, "RequiredPlugin")
             self.assertEqual(root.FirstNode.objects()[0].name.value, "FirstNode")
 
-            pass
 
         def test_generic_add_type_object(self):
             root = Sofa.Core.Node("rootNode")
@@ -84,7 +83,6 @@ class Test(unittest.TestCase):
             self.assertEqual(root.objects()[0].type.value, "RequiredPlugin")
             self.assertEqual(root.objects()[0].name.value, "FirstNode")
 
-            pass
 
         def test_generic_add_real_object(self):
             root = Sofa.Core.Node("rootNode")
@@ -94,7 +92,6 @@ class Test(unittest.TestCase):
             root.add(MyNode)
             self.assertEqual(root.children()[0].name.value, "MyNode")
 
-            pass
 
         def test_addChild(self):                
                 root = Sofa.Core.Node("rootNode")
