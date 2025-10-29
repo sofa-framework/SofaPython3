@@ -4,7 +4,9 @@ from splib.topology.dynamic import addDynamicTopology
 from splib.topology.static import addStaticTopology
 from splib.core.enum_types import ElementType
 from splib.core.utils import DEFAULT_VALUE
-from Sofa.Core import Object 
+from Sofa.Core import Object
+
+import numpy as np
 
 
 class Geometry(BasePrefab):...
@@ -33,6 +35,10 @@ class GeometryParameters(BaseParameters):
 
     dynamicTopology : bool = False
 
+    def Data(self):
+        return InternalDataProvider()
+
+
 
 class Geometry(BasePrefab):
     # container : Object # This should be more specialized into the right SOFA type
@@ -48,7 +54,7 @@ class Geometry(BasePrefab):
     def init(self):
 
         # Generate attribute (positions, edges, triangles, quads, tetrahedra, hexahedra) from the internal data provider
-        if self.parameters.data is not None :
+        if isinstance(self.parameters.data, InternalDataProvider) :
             self.parameters.data.generateAttribute(self)
         if self.parameters.dynamicTopology :
             if self.parameters.elementType is not None :
