@@ -54,7 +54,7 @@ class Geometry(BasePrefab):
     def init(self):
 
         # Generate attribute (positions, edges, triangles, quads, tetrahedra, hexahedra) from the internal data provider
-        if self.parameters.data is not None :
+        if isinstance(self.parameters.data, InternalDataProvider) :
             self.parameters.data.generateAttribute(self)
         if self.parameters.dynamicTopology :
             if self.parameters.elementType is not None :

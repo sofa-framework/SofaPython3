@@ -27,7 +27,7 @@ class Collision(BasePrefab):
 
     def init(self):
 
-        geom = self.add(Geometry, self.parameters.geometry)
+        geom = self.add(Geometry, parameters = self.parameters.geometry)
         
         self.addObject("MechanicalObject", template="Vec3", position=f"@{self.parameters.geometry.name}/container.position")
         for primitive in self.parameters.primitives:
