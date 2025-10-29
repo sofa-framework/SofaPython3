@@ -1,6 +1,12 @@
 __all__ = ["core","entities","prefabs","shapes"]
 
 import Sofa.Core
+
+def __apply(self : Sofa.Core.Node, typeName, **kwargs):
+    if not callable(typeName):
+        raise Exception("Invalid parameter")
+    return typeName(self, **kwargs)
+    
 def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
     def findName(cname, names):
         """Compute a working unique name in the node"""
@@ -54,3 +60,4 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
 
 # Inject the method so it become available as if it was part of Sofa.Core.Node
 Sofa.Core.Node.add = __genericAdd
+Sofa.Core.Node.apply = __apply
