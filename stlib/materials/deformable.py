@@ -1,5 +1,5 @@
-from stlib.prefabs.material import MaterialParameters
-from splib.core.enum_types import ConstitutiveLaw, ElementType
+from stlib.materials import MaterialParameters
+from splib.core.enum_types import ConstitutiveLaw
 from stlib.core.baseParameters import Callable, Optional, dataclasses
 from splib.mechanics.linear_elasticity import *
 from splib.mechanics.hyperelasticity import *
@@ -14,7 +14,12 @@ class DeformableBehaviorParameters(MaterialParameters):
     parameters : list[float] = dataclasses.field(default_factory=lambda: [1000, 0.45])  # young modulus, poisson ratio
 
     def __addDeformableMaterial(node):
-        addMass(node, node.parameters.elementType, massDensity=node.parameters.massDensity, lumping=node.parameters.massLumping)
+
+        massKwargs = {}
+        if node.parameters.elementType != ElementType.EDGES: #If we use the MeshMatrixMass, then the mass will need us to specify the mstate to use
+            massKwargs["geometryState"] = "@States"
+
+        addMass(node, node.parameters.elementType, massDensity=node.parameters.massDensity, lumping=node.parameters.massLumping, topology="@../Geometry/container", mass=massKwargs)
         # TODO : change this with inheritance
         if(node.parameters.constitutiveLawType == ConstitutiveLaw.HYPERELASTIC):
             addHyperelasticity(node, node.parameters.elementType, node.parameters.parameters, topology="@../Geometry/container")
@@ -26,10 +31,10 @@ class DeformableBehaviorParameters(MaterialParameters):
 
 def createScene(root) :
     from stlib.entities import Entity, EntityParameters
-    from stlib.prefabs.visual import VisualParameters
-    from stlib.geometry.extract import ExtractParameters
-    from stlib.geometry.file import FileParameters    
+    from stlib.visual import VisualParameters
+    from stlib.geometries.file import FileParameters
 
+    root.addObject('RequiredPlugin', name='Sofa.Component.Visual') # Needed to use components [VisualStyle]
     root.addObject("VisualStyle", displayFlags=["showBehavior"])
 
     bunnyParameters = EntityParameters()
@@ -43,4 +48,5 @@ def createScene(root) :
     #                                                     destinationType=ElementType.TRIANGLES)
     bunnyParameters.visual.geometry = FileParameters(filename="mesh/Bunny.stl")
     bunnyParameters.visual.color = [1, 1, 1, 0.5]
-    bunny = root.add(Entity, bunnyParameters)
+    bunny = root.add(Entity, parameters=bunnyParameters)
+    # bunny.init()

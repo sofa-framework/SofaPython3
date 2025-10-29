@@ -1,15 +1,12 @@
 from stlib.core.baseParameters import BaseParameters
-from stlib.core.basePrefab import BasePrefab
-from stlib.prefabs.collision import CollisionParameters, Collision
-from stlib.prefabs.visual import VisualParameters, Visual
-from stlib.prefabs.material import Material, MaterialParameters
-from stlib.geometry import Geometry
-from stlib.geometry.extract import ExtractParameters
+from stlib.collision import CollisionParameters, Collision
+from stlib.visual import VisualParameters, Visual
+from stlib.materials import Material, MaterialParameters
+from stlib.geometries import Geometry
 import dataclasses
-from typing import Callable, Optional, overload, Any
-from stlib.geometry import GeometryParameters
+from typing import Callable, Optional
+from stlib.geometries import GeometryParameters
 from splib.core.enum_types import StateType
-import Sofa
 from stlib.core.basePrefab import BasePrefab
 
 
@@ -46,22 +43,22 @@ class Entity(BasePrefab):
 
 
     def init(self):
-        self.geometry = self.add(Geometry, self.parameters.geometry)
+        self.geometry = self.add(Geometry, parameters=self.parameters.geometry)
 
         ### Check compatilibility of Material
         if self.parameters.material.stateType != self.parameters.stateType:
             print("WARNING: imcompatibility between templates of both the entity and the material")
             self.parameters.material.stateType = self.parameters.stateType
 
-        self.material = self.add(Material, self.parameters.material)
+        self.material = self.add(Material, parameters=self.parameters.material)
         self.material.States.position.parent = self.geometry.container.position.linkpath
         
         if self.parameters.collision is not None:
-            self.collision = self.add(Collision, self.parameters.collision)
+            self.collision = self.add(Collision, parameters=self.parameters.collision)
             self.addMapping(self.collision)
         
         if self.parameters.visual is not None:
-            self.visual = self.add(Visual, self.parameters.visual)
+            self.visual = self.add(Visual, parameters=self.parameters.visual)
             self.addMapping(self.visual)
 
 
