@@ -245,8 +245,11 @@ void BindingBase::SetDataFromArray(BaseData* data, const py::array& value)
                 return copyScalar<double>(data, nfo, src);
             else if(srcinfo.format=="f")
                 return copyScalar<float>(data, nfo, src);
-            else
-                throw std::runtime_error("SetAttrFromArray :: unsupported fileformat");
+           else{
+                std::stringstream tmp;
+                tmp << "SetAttrFromArray :: unsupported fileformat '" <<  srcinfo.format << "'" ;
+                throw std::runtime_error(tmp.str());
+            }
         }
 
     }
