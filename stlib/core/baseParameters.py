@@ -11,3 +11,9 @@ class BaseParameters(object):
 
     def toDict(self):
         return dataclasses.asdict(self)
+
+    @staticmethod
+    def fromParameters(other):
+        p = {}
+        p["name"] = other.name
+        return p

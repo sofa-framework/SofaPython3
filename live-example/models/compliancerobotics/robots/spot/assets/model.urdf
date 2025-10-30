@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (c) 2023 Boston Dynamics, Inc.  All rights reserved.
+
+Downloading, reproducing, distributing or otherwise using the SDK Software
+is subject to the terms and conditions of the Boston Dynamics Software
+Development Kit License (20191101-BDSDK-SL).
+-->
+<robot name="spot">
+  <!-- Robot Base Link -->
+  <link name="base">
+    <visual>
+      <origin/>
+      <geometry>
+        <mesh filename="meshes/base_link_0_geom_visual_mesh.stl"/>
+      </geometry>
+      <material name="base"> <color rgba="1 0.8431 0 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 -0.015"/>
+      <geometry>
+        <box size="0.85 0.24 0.18"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 -0.00496172"/>
+      <mass value="16.70765207"/>
+      <inertia ixx="0.081543792" ixy="0.0" ixz="0.0" iyy="0.549231154" iyz="0.0" izz="0.569454373"/>
+    </inertial>
+  </link>
+
+  <!-- Hip Links -->
+  <link name="fl.hip">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/fl_hip_0_geom_visual_mesh.stl"/>
+      </geometry>
+      <material name="fl.hip"> <color rgba="0.2 0.2 0.2 1"/></material>
+    </visual>
+    <inertial>
+      <origin xyz="-0.01586739 0.00855842 0.00000903"/>
+      <inertia ixx="0.00122166" ixy="-0.00017754" ixz="0.00000043" iyy="0.00158957" iyz="-0.00000049" izz="0.00172903"/>
+      <mass value="1.13688339"/>
+    </inertial>
+  </link>
+
+  <link name="fr.hip">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/fr_hip_0_geom_visual_mesh.stl"/>
+      </geometry>
+      <material name="fr.hip"> <color rgba="0.2 0.2 0.2 1"/></material>
+    </visual>
+    <inertial>
+      <origin xyz="-0.01586739 -0.00855842 0.00000903"/>
+      <inertia ixx="0.00122166" ixy="0.00017754" ixz="0.00000043" iyy="0.00158957" iyz="0.00000049" izz="0.00172903"/>
+      <mass value="1.13688339"/>
+    </inertial>
+  </link>
+
+  <link name="hl.hip">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hl_hip_0_geom_visual_mesh.stl"/>
+      </geometry>
+      <material name="hl.hip"> <color rgba="0.2 0.2 0.2 1"/></material>
+    </visual>
+    <inertial>
+      <origin xyz="0.01586739 0.00855842 0.00000903"/>
+      <inertia ixx="0.00122166" ixy="0.00017754" ixz="-0.00000043" iyy="0.00158957" iyz="-0.00000049" izz="0.00172903"/>
+      <mass value="1.13688339"/>
+    </inertial>
+  </link>
+
+  <link name="hr.hip">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/hr_hip_0_geom_visual_mesh.stl"/>
+      </geometry>
+      <material name="hr.hip"> <color rgba="0.2 0.2 0.2 1"/></material>
+    </visual>
+    <inertial>
+      <origin xyz="0.01586739 -0.00855842 0.00000903"/>
+      <inertia ixx="0.00122166" ixy="-0.00017754" ixz="-0.00000043" iyy="0.00158957" iyz="0.00000049" izz="0.00172903"/>
+      <mass value="1.13688339"/>
+    </inertial>
+  </link>
+
+  <!-- Upper Leg Links -->
+  <link name="fl.uleg">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/l_uleg_0_geom_visual_mesh.stl"/>
+      </geometry>
+      <material name="fl.uleg"> <color rgba="1 0.8431 0 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 -0.115"/>
+      <geometry>
+        <cylinder radius="0.045" length="0.35"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0.00214442 -0.01110184 -0.07881204"/>
+      <inertia ixx="0.02692501" ixy="-0.00008782" ixz="0.00054873" iyy="0.02583907" iyz="0.00207146" izz="0.00318737"/>
+      <mass value="2.25620359"/>
+    </inertial>
+  </link>
+
+  <link name="fr.uleg">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/r_uleg_0_geom_visual_mesh.stl"/>
+      </geometry>
+      <material name="fr.uleg"> <color rgba="1 0.8431 0 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 -0.115"/>
+      <geometry>
+        <cylinder radius="0.045" length="0.35"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0.00214442 0.01110184 -0.07881204"/>
+      <inertia ixx="0.02692501" ixy="0.00008782" ixz="0.00054873" iyy="0.02583907" iyz="-0.00207146" izz="0.00318737"/>
+      <mass value="2.25620359"/>
+    </inertial>
+  </link>
+
+  <link name="hl.uleg">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/l_uleg_0_geom_visual_mesh.stl"/>
+      </geometry>
+      <material name="hl.uleg"> <color rgba="1 0.8431 0 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 -0.115"/>
+      <geometry>
+        <cylinder radius="0.045" length="0.35"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0.00214442 -0.01110184 -0.07881204"/>
+      <inertia ixx="0.02692501" ixy="-0.00008782" ixz="0.00054873" iyy="0.02583907" iyz="0.00207146" izz="0.00318737"/>
+      <mass value="2.25620359"/>
+    </inertial>
+  </link>
+
+  <link name="hr.uleg">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/r_uleg_0_geom_visual_mesh.stl"/>
+      </geometry>
+      <material name="hr.uleg"> <color rgba="1 0.8431 0 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 -0.115"/>
+      <geometry>
+        <cylinder radius="0.045" length="0.35"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0.00214442 0.01110184 -0.07881204"/>
+      <inertia ixx="0.02692501" ixy="0.00008782" ixz="0.00054873" iyy="0.02583907" iyz="-0.00207146" izz="0.00318737"/>
+      <mass value="2.25620359"/>
+    </inertial>
+  </link>
+
+  <!--Lower Leg Links -->
+  <link name="fl.lleg">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/lleg_0_geom_visual_mesh.stl"/>
+      </geometry>
+      <material name="fl.lleg"> <color rgba="0.2 0.2 0.2 1"/></material>
+    </visual>
+    <collision>
+      <origin rpy="1.5708 0.0 0.0" xyz="0.0 0.0 -0.33532"/>
+      <geometry>
+        <cylinder radius="0.033" length="0.03"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 -0.045 0.0" xyz="0.0105 0.0 -0.15"/>
+      <geometry>
+        <cylinder radius="0.015" length="0.35"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0.00597360 0.0 -0.17466427"/>
+      <inertia ixx="0.00701356" ixy="0.0" ixz="0.00006600" iyy="0.00709946" iyz="0.0" izz="0.00014529"/>
+      <mass value="0.330"/>
+    </inertial>
+  </link>
+
+  <link name="fr.lleg">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/lleg_0_geom_visual_mesh.stl"/>
+      </geometry>
+      <material name="fr.lleg"> <color rgba="0.2 0.2 0.2 1"/></material>
+    </visual>
+    <collision>
+      <origin rpy="1.5708 0.0 0.0" xyz="0.0 0.0 -0.33532"/>
+      <geometry>
+        <cylinder radius="0.033" length="0.03"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 -0.045 0.0" xyz="0.0105 0.0 -0.15"/>
+      <geometry>
+        <cylinder radius="0.015" length="0.35"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0.00597360 0.0 -0.17466427"/>
+      <inertia ixx="0.00701356" ixy="0.0" ixz="0.00006600" iyy="0.00709946" iyz="0.0" izz="0.00014529"/>
+      <mass value="0.330"/>
+    </inertial>
+  </link>
+
+  <link name="hl.lleg">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/lleg_0_geom_visual_mesh.stl"/>
+      </geometry>
+      <material name="hl.lleg"> <color rgba="0.2 0.2 0.2 1"/></material>
+    </visual>
+    <collision>
+      <origin rpy="1.5708 0.0 0.0" xyz="0.0 0.0 -0.33532"/>
+      <geometry>
+        <cylinder radius="0.033" length="0.03"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 -0.045 0.0" xyz="0.0105 0.0 -0.15"/>
+      <geometry>
+        <cylinder radius="0.015" length="0.35"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0.00597360 0.0 -0.17466427"/>
+      <inertia ixx="0.00701356" ixy="0.0" ixz="0.00006600" iyy="0.00709946" iyz="0.0" izz="0.00014529"/>
+      <mass value="0.330"/>
+    </inertial>
+  </link>
+
+  <link name="hr.lleg">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/lleg_0_geom_visual_mesh.stl"/>
+      </geometry>
+      <material name="hr.lleg"> <color rgba="0.2 0.2 0.2 1"/></material>
+    </visual>
+    <collision>
+      <origin rpy="1.5708 0.0 0.0" xyz="0.0 0.0 -0.33532"/>
+      <geometry>
+        <cylinder radius="0.033" length="0.03"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.0 -0.045 0.0" xyz="0.0105 0.0 -0.15"/>
+      <geometry>
+        <cylinder radius="0.015" length="0.35"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0.00597360 0.0 -0.17466427"/>
+      <inertia ixx="0.00701356" ixy="0.0" ixz="0.00006600" iyy="0.00709946" iyz="0.0" izz="0.00014529"/>
+      <mass value="0.330"/>
+    </inertial>
+  </link>
+
+  <!--Skeleton: HX Joints -->
+  <joint name="fl.hx" type="revolute">
+    <parent link="base"/>
+    <child link="fl.hip"/>
+    <origin xyz="0.29785 0.05500 0.00000"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="45" lower="-0.785398" upper="0.785398" velocity="100"/>
+    <dynamics damping="0" friction="0"/>
+  </joint>
+
+  <joint name="fr.hx" type="revolute">
+    <parent link="base"/>
+    <child link="fr.hip"/>
+    <origin xyz="0.29785 -0.05500 0.00000"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="45" lower="-0.785398" upper="0.785398" velocity="100"/>
+    <dynamics damping="0" friction="0"/>
+  </joint>
+
+  <joint name="hl.hx" type="revolute">
+    <parent link="base"/>
+    <child link="hl.hip"/>
+    <origin xyz="-0.29785 0.05500 0.00000"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="45" lower="-0.785398" upper="0.785398" velocity="100"/>
+    <dynamics damping="0" friction="0"/>
+  </joint>
+
+  <joint name="hr.hx" type="revolute">
+    <parent link="base"/>
+    <child link="hr.hip"/>
+    <origin xyz="-0.29785 -0.05500 0.00000"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="45" lower="-0.785398" upper="0.785398" velocity="100"/>
+    <dynamics damping="0" friction="0"/>
+  </joint>
+
+  <!--Skeleton: HY Joints -->
+  <joint name="fl.hy" type="revolute">
+    <parent link="fl.hip"/>
+    <child link="fl.uleg"/>
+    <origin xyz="0.0 0.110945 0.0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="45" lower="-0.898845" upper="2.295108" velocity="100"/>
+    <dynamics damping="0" friction="0"/>
+  </joint>
+
+  <joint name="fr.hy" type="revolute">
+    <parent link="fr.hip"/>
+    <child link="fr.uleg"/>
+    <origin xyz="0.0 -0.110945 0.0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="45" lower="-0.898845" upper="2.295108" velocity="100"/>
+    <dynamics damping="0" friction="0"/>
+  </joint>
+
+  <joint name="hl.hy" type="revolute">
+    <parent link="hl.hip"/>
+    <child link="hl.uleg"/>
+    <origin xyz="0.0 0.110945 0.0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="45" lower="-0.898845" upper="2.295108" velocity="100"/>
+    <dynamics damping="0" friction="0"/>
+  </joint>
+
+  <joint name="hr.hy" type="revolute">
+    <parent link="hr.hip"/>
+    <child link="hr.uleg"/>
+    <origin xyz="0.0 -0.110945 0.0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="45" lower="-0.898845" upper="2.295108" velocity="100"/>
+    <dynamics damping="0" friction="0"/>
+  </joint>
+
+  <!--Skeleton: KN Joints -->
+  <joint name="fl.kn" type="revolute">
+    <parent link="fl.uleg"/>
+    <child link="fl.lleg"/>
+    <origin xyz="0.025 0.000 -0.3205"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="115" lower="-2.7929" upper="-0.2471" velocity="100"/>
+    <dynamics damping="0" friction="0"/>
+  </joint>
+
+  <joint name="fr.kn" type="revolute">
+    <parent link="fr.uleg"/>
+    <child link="fr.lleg"/>
+    <origin xyz="0.025 0.000 -0.3205"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="115" lower="-2.7929" upper="-0.2471" velocity="100"/>
+    <dynamics damping="0" friction="0"/>
+  </joint>
+
+  <joint name="hl.kn" type="revolute">
+    <parent link="hl.uleg"/>
+    <child link="hl.lleg"/>
+    <origin xyz="0.025 0.000 -0.3205"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="115" lower="-2.7929" upper="-0.2471" velocity="100"/>
+    <dynamics damping="0" friction="0"/>
+  </joint>
+
+  <joint name="hr.kn" type="revolute">
+    <parent link="hr.uleg"/>
+    <child link="hr.lleg"/>
+    <origin xyz="0.025 0.000 -0.3205"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="115" lower="-2.7929" upper="-0.2471" velocity="100"/>
+    <dynamics damping="0" friction="0"/>
+  </joint>
+
+  <!-- Arm Links -->
+  <!-- <link name="arm0.link_sh0">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/arm0.link_sh0.stl"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="-0.008399 0.000272 -0.024603"/>
+      <inertia ixx="0.008896" ixy="0.000005" ixz="-0.000193" iyy="0.004922" iyz="0.000033" izz="0.0073030"/>
+      <mass value="1.904699"/>
+    </inertial>
+  </link>
+
+  <link name="arm0.link_sh1">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/arm0.link_sh1.stl"/>
+      </geometry>
+    </visual>
+    <visual>
+      <geometry>
+        <mesh filename="meshes/arm0.link_hr0.stl"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0.08084909 -0.00167243 0.00045644"/>
+      <inertia ixx="0.00261526" ixy="-0.00040406" ixz="0.00010019" iyy="0.02703868" iyz="0.00000547" izz="0.02819929"/>
+      <mass value="1.85701942"/>
+    </inertial>
+  </link>
+
+  <link name="arm0.link_el0">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/arm0.link_el0.stl"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0.04476621 -0.00271130 0.04991363"/>
+      <inertia ixx="0.00175909" ixy="0.00006087" ixz="0.00092380" iyy="0.00269233" iyz="0.00005217" izz="0.00202854"/>
+      <mass value="0.94831958"/>
+    </inertial>
+  </link>
+
+  <link name="arm0.link_el1">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/arm0.link_el1.stl"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="-0.16867073 -0.01616121 0.00001149"/>
+      <inertia ixx="0.00117710" ixy="-0.00260549" ixz="0.00000156" iyy="0.01649389" iyz="-0.00000287" izz="0.01689901"/>
+      <mass value="1.01754820"/>
+    </inertial>
+  </link>
+
+  <link name="arm0.link_wr0">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/arm0.link_wr0.stl"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0.00952465 -0.01144406 0.00000186"/>
+      <inertia ixx="0.00046738" ixy="0.00006957" ixz="0.00000040" iyy="0.00044968" iyz="0.00000016" izz="0.00053616"/>
+      <mass value="0.58263740"/>
+    </inertial>
+  </link>
+
+  <link name="arm0.link_wr1">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/arm0.link_wr1.stl"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0.09751283 0.00009265 -0.01120523"/>
+      <inertia ixx="0.00098836" ixy="-0.00000126" ixz="-0.00036919" iyy="0.00197018" iyz="-0.00000074" izz="0.00165791"/>
+      <mass value="0.93335298"/>
+    </inertial>
+  </link>
+
+  <link name="arm0.link_fngr">
+    <visual>
+      <geometry>
+        <mesh filename="meshes/arm0.link_fngr.stl"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0.03565178 0.00067200 -0.01227516"/>
+      <inertia ixx="0.00025226" ixy="-0.00000536" ixz="-0.00015067" iyy="0.00048453" iyz="0.00000184" izz="0.00059145"/>
+      <mass value="0.22383315"/>
+    </inertial>
+  </link> -->
+
+  <!-- Arm Joints -->
+  <!-- <joint name="arm0.sh0" type="revolute">
+    <parent link="base"/>
+    <child link="arm0.link_sh0"/>
+    <origin xyz="0.292 0.0 0.188"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="90.9" lower="-2.61799" upper="3.14159" velocity="999"/>
+    <dynamics damping="0" friction="10"/>
+  </joint>
+
+  <joint name="arm0.sh1" type="revolute">
+    <parent link="arm0.link_sh0"/>
+    <child link="arm0.link_sh1"/>
+    <origin xyz="0.0 0.0 0.0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="181.8" lower="-3.14159" upper="0.523599" velocity="999"/>
+    <dynamics damping="0" friction="10"/>
+  </joint>
+
+  <joint name="arm0.el0" type="revolute">
+    <parent link="arm0.link_sh1"/>
+    <child link="arm0.link_el0"/>
+    <origin xyz="0.3385 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="90.9" lower="0" upper="3.14159" velocity="999"/>
+    <dynamics damping="0" friction="10"/>
+  </joint>
+
+  <joint name="arm0.el1" type="revolute">
+    <parent link="arm0.link_el0"/>
+    <child link="arm0.link_el1"/>
+    <origin xyz="0.40330 0.0 0.0750"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="30.3" lower="-2.792530" upper="2.792530" velocity="999"/>
+    <dynamics damping="0" friction="10"/>
+  </joint>
+
+  <joint name="arm0.wr0" type="revolute">
+    <parent link="arm0.link_el1"/>
+    <child link="arm0.link_wr0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="30.3" lower="-1.8326" upper="1.8326" velocity="999"/>
+    <dynamics damping="0" friction="10"/>
+  </joint>
+
+  <joint name="arm0.wr1" type="revolute">
+    <parent link="arm0.link_wr0"/>
+    <child link="arm0.link_wr1"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="30.3" lower="-2.87989" upper="2.87979" velocity="999"/>
+    <dynamics damping="0" friction="10"/>
+  </joint>
+
+  <joint name="arm0.f1x" type="revolute">
+    <parent link="arm0.link_wr1"/>
+    <child link="arm0.link_fngr"/>
+    <origin xyz="0.11745 0 0.014820"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="15.32" lower="-1.5708" upper="0.0" velocity="999"/>
+    <dynamics damping="0" friction="10"/>
+  </joint> -->
+</robot>

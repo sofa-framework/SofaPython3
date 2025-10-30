@@ -1,6 +1,12 @@
 __all__ = ["core","entities","geometries","materials","collision","visual"]
 
 import Sofa.Core
+
+def __apply(self : Sofa.Core.Node, typeName, **kwargs):
+    if not callable(typeName):
+        raise Exception("Invalid parameter")
+    return typeName(self, **kwargs)
+    
 from stlib.core.basePrefab import BasePrefab
 
 def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
@@ -66,3 +72,4 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
 
 # Inject the method so it become available as if it was part of Sofa.Core.Node
 Sofa.Core.Node.add = __genericAdd
+Sofa.Core.Node.apply = __apply
