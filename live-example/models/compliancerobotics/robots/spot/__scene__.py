@@ -1,6 +1,4 @@
 import Sofa
-from compliancerobotics.robots.spot import SpotRobot
-
 from splib.simulation.linear_solvers import addLinearSolver
 from splib.simulation.ode_solvers import addImplicitODE
 from splib.simulation.headers import setupDefaultHeader 
@@ -8,6 +6,10 @@ from splib.simulation.headers import setupDefaultHeader
 from stlib.core.basePrefab import BasePrefab
 from splib3 import animation
 from splib3.numerics.quat import Quat
+
+from compliancerobotics.robots.spot import SpotRobot
+from cristal.prefabs.interactivecamera import InteractiveCamera
+
 import numpy
 import math
 def setupScene(self, **kwargs):
@@ -78,20 +80,6 @@ class SpotWithGS(SpotRobot):
         g=child.add("PointCloudTransform", name="transform", input=child.loader.linkpath, output=child.geometry.linkpath,
             scale = [1.5,1.0,1.0])
         
-from stlib.core.baseParameters import BaseParameters, dataclasses
-class CameraParameters(BaseParameters):
-    pass    
-
-class Camera(BasePrefab):
-    def __init__(self, parameters : CameraParameters = None, **kwargs):
-        if parameters is None:
-            parameters = CameraParameters(**kwargs)
-        BasePrefab.__init__(self, parameters)
-        self.create_prefab()
-
-    def create_prefab(self):
-        self.add("InteractiveCamera", name="state", computeZClip=True, zFar=10000)    
-
 class EulerToQuaternion(Sofa.Core.Controller):
     def __init__(self, *args, **kwargs):
         Sofa.Core.Controller.__init__(self,*args, **kwargs)
@@ -239,7 +227,7 @@ def createScene(root):
     root.apply(setupScene)
     root.apply(setupAnimation)
 
-    root.add(Camera(name="camera"))
+    root.add(InteractiveCamera, name="camera")
 
     spot = Sofa.Core.Node("spot2")
     spot.add(SpotWithGS(name="model"))
