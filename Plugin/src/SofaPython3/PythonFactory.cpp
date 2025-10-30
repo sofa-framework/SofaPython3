@@ -508,7 +508,7 @@ bool PythonFactory::registerDefaultTypes()
     PythonFactory::registerType<sofa::defaulttype::Rigid3fTypes::Coord>("Rigid3f::Coord");
     PythonFactory::registerType<sofa::defaulttype::Rigid3Types::Coord>("Rigid3::Coord");
 
-    /// Quaternion
+    // Quaternion
     PythonFactory::registerType<sofa::type::Quat<double>>("Quatd");
     PythonFactory::registerType<sofa::type::Quat<float>>("Quatf");
     PythonFactory::registerType<sofa::type::Quat<SReal>>("Quat");
