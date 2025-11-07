@@ -37,7 +37,7 @@ using sofa::helper::logging::Message;
 #include <sofa/helper/DiffLib.h>
 using sofa::helper::getClosestMatch;
 
-#include <sofa/simulation/graph/DAGNode.h>
+#include <sofa/simulation/Node.h>
 using sofa::core::ExecParams;
 
 #include <SofaPython3/LinkPath.h>
@@ -163,14 +163,20 @@ std::string getLinkPath(Node* node){
     return ("@"+node->getPathName()).c_str();
 }
 
-py_shared_ptr<Node> __init__noname() {
-    auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>("unnamed");
-    return std::move(dag_node);
+py_shared_ptr<Node> __init_noname__() {
+    auto node = sofa::core::objectmodel::New<sofa::simulation::Node>("unnamed");
+    return std::move(node);
 }
 
-py_shared_ptr<Node> __init__(const std::string& name) {
-    auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>(name);
-    return std::move(dag_node);
+py_shared_ptr<Node> __init_named__(const std::string& name) {
+    auto node = sofa::core::objectmodel::New<sofa::simulation::Node>(name);
+    return std::move(node);
+}
+
+py_shared_ptr<Node> __init_kwarged__(const std::string& name, const py::kwargs& kwargs) {
+    auto node = sofa::core::objectmodel::New<sofa::simulation::Node>(name);
+    setDataFromKwargs(node.get(), kwargs);
+    return std::move(node);
 }
 
 /// Method: init (beware this is not the python __init__, this is sofa's init())
@@ -235,9 +241,47 @@ void setFieldsFromPythonValues(Base* self, const py::kwargs& dict)
     }
 }
 
+class NumpyReprFixerRAII
+{
+public:
+    NumpyReprFixerRAII()
+    {
+        using namespace pybind11::literals;
+
+        m_numpy = py::module_::import("numpy");
+        const std::string version = py::cast<std::string>(m_numpy.attr("__version__"));
+        m_majorVersion = std::stoi(version.substr(0,1));
+        if ( m_majorVersion > 1)
+        {
+            m_setPO =  m_numpy.attr("set_printoptions");
+            m_initialState = m_numpy.attr("get_printoptions")();
+            m_setPO("legacy"_a = "1.25");
+        }
+    }
+
+    ~NumpyReprFixerRAII()
+    {
+        if ( m_majorVersion > 1)
+        {
+            m_setPO(**m_initialState);
+        }
+    }
+
+private:
+    py::module_ m_numpy;
+    int m_majorVersion;
+    py::object m_setPO;
+    py::dict m_initialState;
+
+};
+
+
 /// Implement the addObject function.
 py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
+    //Instantiating this object will make sure the numpy representation is fixed during the call of this function, and comes back to its previous state after
+    [[maybe_unused]] const NumpyReprFixerRAII numpyReprFixer;
+
     std::string name {};
     if (kwargs.contains("name"))
     {
@@ -292,6 +336,8 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         if(d)
             d->setPersistent(true);
     }
+
+
     return PythonFactory::toPython(object.get());
 }
 
@@ -361,6 +407,9 @@ py::object createObject(Node* self, const std::string& type, const py::kwargs& k
 
 py::object addChildKwargs(Node* self, const std::string& name, const py::kwargs& kwargs)
 {
+    //Instantiating this object will make sure the numpy representation is fixed during the call of this function, and comes back to its previous state after
+    [[maybe_unused]] const NumpyReprFixerRAII numpyReprFixer;
+
     if (sofapython3::isProtectedKeyword(name))
         throw py::value_error("addChild: Cannot call addChild with name " + name + ": Protected keyword");
     BaseObjectDescription desc (name.c_str());
@@ -378,6 +427,7 @@ py::object addChildKwargs(Node* self, const std::string& name, const py::kwargs&
         if(d)
             d->setPersistent(true);
     }
+
 
     return py::cast(node);
 }
@@ -629,14 +679,15 @@ void moduleAddNode(py::module &m) {
             sofa::core::objectmodel::Context, py_shared_ptr<Node>>
             p(m, "Node", sofapython3::doc::sofa::core::Node::Class);
 
-    PythonFactory::registerType<sofa::simulation::graph::DAGNode>(
+    PythonFactory::registerType<sofa::simulation::Node>(
                 [](sofa::core::objectmodel::Base* object)
     {
         return py::cast(dynamic_cast<Node*>(object->toBaseNode()));
     });
 
-    p.def(py::init(&__init__noname), sofapython3::doc::sofa::core::Node::init);
-    p.def(py::init(&__init__), sofapython3::doc::sofa::core::Node::init1Arg, py::arg("name"));
+    p.def(py::init(&__init_noname__), sofapython3::doc::sofa::core::Node::init);
+    p.def(py::init(&__init_named__), sofapython3::doc::sofa::core::Node::init1Arg, py::arg("name"));
+    p.def(py::init(&__init_kwarged__), sofapython3::doc::sofa::core::Node::init1Arg, py::arg("name"));
     p.def("init", &init, sofapython3::doc::sofa::core::Node::initSofa );
     p.def("add", &addKwargs, sofapython3::doc::sofa::core::Node::addKwargs);
     p.def("addObject", &addObjectKwargs, sofapython3::doc::sofa::core::Node::addObjectKwargs);

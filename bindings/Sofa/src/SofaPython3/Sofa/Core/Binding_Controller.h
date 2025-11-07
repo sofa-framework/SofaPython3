@@ -43,12 +43,14 @@ public:
 
     void init() override;
     void reinit() override;
+    void draw(const sofa::core::visual::VisualParams* params) override;
+
     void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     std::string getClassName() const override;
 
 private:
-    void callScriptMethod(const pybind11::object& self, sofa::core::objectmodel::Event* event,
+    bool callScriptMethod(const pybind11::object& self, sofa::core::objectmodel::Event* event,
         const std::string& methodName);
 };
 

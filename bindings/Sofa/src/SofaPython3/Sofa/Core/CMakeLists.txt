@@ -19,6 +19,8 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Controller_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataEngine.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataEngine_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DrawTool.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DrawTool_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ForceField_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinkPath.h
@@ -27,6 +29,8 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Mass_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Mapping.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Mapping_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_NodeIterator.h
@@ -49,6 +53,8 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseMeshTopology.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_TaskScheduler.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_TaskScheduler_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_VisualParams.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_VisualParams_doc.h
 )
 
 set(SOURCE_FILES
@@ -56,6 +62,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseClass.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseData.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataDict.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DrawTool.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseObject.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseCamera.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseContext.cpp
@@ -71,6 +78,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinkPath.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Mass.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ObjectFactory.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Mapping.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Node.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_NodeIterator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_PointSetTopologyModifier.cpp
@@ -80,6 +88,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Topology.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseMeshTopology.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_TaskScheduler.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_VisualParams.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Core.cpp
 )
 

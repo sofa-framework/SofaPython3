@@ -27,6 +27,7 @@ using sofa::helper::logging::Message;
 #include <SofaPython3/Sofa/Core/Binding_BaseContext.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
 #include <SofaPython3/Sofa/Core/Binding_DataDict.h>
+#include <SofaPython3/Sofa/Core/Binding_DrawTool.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseData.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseCamera.h>
 #include <SofaPython3/Sofa/Core/Binding_ForceField.h>
@@ -37,6 +38,7 @@ using sofa::helper::logging::Message;
 #include <SofaPython3/Sofa/Core/Binding_DataEngine.h>
 #include <SofaPython3/Sofa/Core/Binding_ObjectFactory.h>
 #include <SofaPython3/Sofa/Core/Binding_LinkPath.h>
+#include <SofaPython3/Sofa/Core/Binding_Mapping.h>
 #include <SofaPython3/Sofa/Core/Binding_Node.h>
 #include <SofaPython3/Sofa/Core/Binding_NodeIterator.h>
 #include <SofaPython3/Sofa/Core/Binding_Prefab.h>
@@ -47,11 +49,13 @@ using sofa::helper::logging::Message;
 #include <SofaPython3/Sofa/Core/Binding_BaseMeshTopology.h>
 #include <SofaPython3/Sofa/Core/Binding_Topology.h>
 #include <SofaPython3/Sofa/Core/Binding_TaskScheduler.h>
+#include <SofaPython3/Sofa/Core/Binding_VisualParams.h>
 
 #include <SofaPython3/Sofa/Core/Data/Binding_DataString.h>
 #include <SofaPython3/Sofa/Core/Data/Binding_DataLink.h>
 #include <SofaPython3/Sofa/Core/Data/Binding_DataVectorString.h>
 #include <SofaPython3/Sofa/Core/Data/Binding_DataContainer.h>
+
 
 #include <sofa/core/init.h>
 
@@ -133,6 +137,7 @@ PYBIND11_MODULE(Core, core)
     moduleAddDataString(core);
     moduleAddDataLink(core);
     moduleAddDataVectorString(core);
+    moduleAddDrawTool(core);
     moduleAddBaseObject(core);
     moduleAddBaseCamera(core);
     moduleAddContactListener(core);
@@ -140,17 +145,19 @@ PYBIND11_MODULE(Core, core)
     moduleAddController(core);
     moduleAddDataEngine(core);
     moduleAddForceField(core);
-    moduleAddMass(core);
-    moduleAddObjectFactory(core);
     moduleAddLinkPath(core);
+    moduleAddMapping(core);
+    moduleAddMass(core);
     moduleAddNode(core);
     moduleAddNodeIterator(core);
+    moduleAddObjectFactory(core);
     moduleAddPrefab(core);
     moduleAddBaseLink(core);
     moduleAddTopology(core);
     moduleAddBaseMeshTopology(core);
     moduleAddPointSetTopologyModifier(core);
     moduleAddTaskScheduler(core);
+    moduleAddVisualParams(core);
 
     // called when the module is unloaded
     auto atexit = py::module_::import("atexit");

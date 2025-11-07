@@ -147,36 +147,39 @@ namespace sofapython3
 
         py::object ret = _addKToMatrix(mparams, nNodes, nDofs);
 
-        // if ret is numpy array
-        if(py::isinstance<py::array>(ret))
+        if(!py::isinstance<py::array>(ret))
         {
-            auto r = py::cast<py::array>(ret);
-            if (r.ndim() == 3 && r.shape(2) == 1)
+            throw py::type_error("Can't read return value of AddKToMatrix. A numpy array is expected");
+        }
+
+        // if ret is numpy array
+        auto r = py::cast<py::array>(ret);
+        if (r.ndim() == 3 && r.shape(2) == 1)
+        {
+            // read K as a plain 2D matrix
+            auto kMatrix = r.unchecked<double, 3>();
+            for (size_t x = 0 ; x < size_t(kMatrix.shape(0)) ; ++x)
             {
-                // read K as a plain 2D matrix
-                auto kMatrix = r.unchecked<double, 3>();
-                for (size_t x = 0 ; x < size_t(kMatrix.shape(0)) ; ++x)
+                for (size_t y = 0 ; y < size_t(kMatrix.shape(1)) ; ++y)
                 {
-                    for (size_t y = 0 ; y < size_t(kMatrix.shape(1)) ; ++y)
-                    {
-                        mat->add(int(offset + x), int(offset + y), kMatrix(x,y, 0));
-                    }
+                    mat->add(int(offset + x), int(offset + y), kMatrix(x,y, 0));
                 }
-            }
-            else if (r.ndim() == 2 && r.shape(1) == 3)
-            {
-                // consider ret to be a list of tuples [(i,j,[val])]
-                auto kMatrix = r.unchecked<double, 2>();
-                for (auto x = 0 ; x < kMatrix.shape(0) ; ++x)
-                {
-                    mat->add(int(offset + size_t(kMatrix(x,0))), int(offset + size_t(kMatrix(x,1))), kMatrix(x,2));
-                }
-            }
-            else
-            {
-                throw py::type_error("Can't read return value of AddKToMatrix. The method should return either a plain 2D matrix or a vector of tuples (i, j, val)");
             }
         }
+        else if (r.ndim() == 2 && r.shape(1) == 3)
+        {
+            // consider ret to be a list of tuples [(i,j,[val])]
+            auto kMatrix = r.unchecked<double, 2>();
+            for (auto x = 0 ; x < kMatrix.shape(0) ; ++x)
+            {
+                mat->add(int(offset + size_t(kMatrix(x,0))), int(offset + size_t(kMatrix(x,1))), kMatrix(x,2));
+            }
+        }
+        else
+        {
+            throw py::type_error("Can't read return value of AddKToMatrix. The method should return either a plain 2D matrix or a vector of tuples (i, j, val)");
+        }
+
     }
 
 
