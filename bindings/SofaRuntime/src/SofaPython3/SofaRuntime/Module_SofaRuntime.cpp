@@ -22,8 +22,7 @@
 #include <sofa/helper/system/PluginManager.h>
 namespace py = pybind11;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::graph::DAGSimulation ;
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation;
 
 #include <sofa/simpleapi/SimpleApi.h>
