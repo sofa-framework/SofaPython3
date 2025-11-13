@@ -508,6 +508,11 @@ bool PythonFactory::registerDefaultTypes()
     PythonFactory::registerType<sofa::defaulttype::Rigid3fTypes::Coord>("Rigid3f::Coord");
     PythonFactory::registerType<sofa::defaulttype::Rigid3Types::Coord>("Rigid3::Coord");
 
+    /// Quaternion
+    PythonFactory::registerType<sofa::type::Quat<double>>("Quatd");
+    PythonFactory::registerType<sofa::type::Quat<float>>("Quatf");
+    PythonFactory::registerType<sofa::type::Quat<SReal>>("Quat");
+
     // Rigid3 vectors
     PythonFactory::registerType<sofa::defaulttype::Rigid3dTypes::VecCoord>("Rigid3d::VecCoord");
     PythonFactory::registerType<sofa::defaulttype::Rigid3fTypes::VecCoord>("Rigid3f::VecCoord");
