@@ -60,6 +60,7 @@ class JaxForceField(Sofa.Core.ForceFieldVec3d):
         Sofa.Core.ForceFieldVec3d.__init__(self, *args, **kwargs)
         self.length = length
         self.stiffness = stiffness
+        self.dense_to_sparse = None
 
     def addForce(self, mechanical_parameters, out_force, position, velocity):
         with out_force.writeableArray() as wa:
@@ -69,8 +70,38 @@ class JaxForceField(Sofa.Core.ForceFieldVec3d):
         with df.writeableArray() as wa:
             wa[:] += get_dforce(self.mstate.position.value, self.length, self.stiffness, dx.value) * mechanical_parameters['kFactor']
 
+    # Option 1: Return the jacobian as a dense array (must have shape (n, n, 1) to be interpreted as such).
+    #           Note: Very slow for big sparse matrices.
+    # def addKToMatrix(self, mechanical_parameters, n_particles, n_dimensions):
+    #     jacobian = get_kmatrix(self.mstate.position.value, self.length, self.stiffness)
+    #     return np.array(jacobian).reshape((n_particles*n_dimensions, n_particles*n_dimensions, 1))
+
+    # Option 2: Return the non-zero coefficients of the jacobian as an array with rows (i, j, value).
+    #           Note: The extraction of the non-zero coefficients is faster with JAX on GPU.
+    # def addKToMatrix(self, mechanical_parameters, n_particles, n_dimensions):
+    #     jacobian = get_kmatrix(self.mstate.position.value, self.length, self.stiffness)
+    #     jacobian = jacobian.reshape((n_particles*n_dimensions, n_particles*n_dimensions))
+    #     i, j = jacobian.nonzero()
+    #     sparse_jacobian = jnp.stack([i, j, jacobian[i, j]], axis=1)
+    #     return np.array(sparse_jacobian)
+
+    # Option 2 optimization: We know the sparsity of the jacobian in advance (diagonal by 3x3 blocks).
     def addKToMatrix(self, mechanical_parameters, n_particles, n_dimensions):
-        return get_kmatrix(self.mstate.position.value, self.length, self.stiffness)
+        if self.dense_to_sparse is None:
+            # i = [0, 0, 0,  1, 1, 1,  2, 2, 2,  3, 3, 3,  ...]
+            # j = [0, 1, 2,  0, 1, 2,  0, 1, 2,  3, 4, 5,  ...]
+            i = jnp.repeat(jnp.arange(n_particles*n_dimensions), 3)
+            j = jnp.repeat(jnp.arange(n_particles*n_dimensions).reshape((-1, 3)), 3, axis=0).reshape(-1)
+            self.dense_to_sparse = lambda jac: jnp.stack([i, j, jac[i, j]], axis=1)
+            self.dense_to_sparse = jax.jit(self.dense_to_sparse)  # slightly faster with jit
+
+        jacobian = get_kmatrix(self.mstate.position.value, self.length, self.stiffness)
+        jacobian = jacobian.reshape((n_particles*n_dimensions, n_particles*n_dimensions))
+        sparse_jacobian = self.dense_to_sparse(jacobian)
+        sparse_jacobian = np.array(sparse_jacobian)
+        # Note: with the computations optimized, the conversion below can account for
+        #       ~90% of the time spent in this function.
+        return np.array(sparse_jacobian)
 
 
 def createScene(root, method="implicit-matrix-assembly", n_particles=1_000, use_sofa=False):
