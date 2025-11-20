@@ -95,15 +95,7 @@ std::ostream& operator<<(std::ostream& out, const py::buffer_info& p)
 
 std::string getPathTo(Base* b)
 {
-    BaseNode* node = dynamic_cast<BaseNode*>(b);
-    if(node)
-        return node->getPathName();
-    BaseObject* object = dynamic_cast<BaseObject*>(b);
-    if(object)
-        return object->getPathName();
-
-    assert(true && "Only Base & BaseObject are supported");
-    return "";
+    return b->getPathName();
 }
 
 const char* getFormat(const AbstractTypeInfo& nfo)
