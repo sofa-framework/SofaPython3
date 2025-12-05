@@ -32,7 +32,7 @@ namespace sofapython3 {
 
 void moduleAddGuiManager(py::module& m)
 {
-    py::class_<sofa::gui::common::GUIManager> guiManager(m, "GUIManager");
+    py::class_<sofa::gui::common::GUIManager> guiManager(m, "GUIManager", "Class managing the GUI creation, closing and its properties");
 
     /*
      * Sofa.Gui.GUIManager.ListSupportedGUI
@@ -147,6 +147,16 @@ void moduleAddGuiManager(py::module& m)
     )doc";
     guiManager.def_static("SetDimension", &sofa::gui::common::GUIManager::SetDimension, setDimensionDoc);
 
+    /*
+     * Sofa.Gui.GUIManager.CenterWindow
+     */
+    const auto centerWindowDoc = R"doc(
+        Center the GUI's window on screen .
+
+        This must be called after Sofa.Gui.GUIManager.createGUI
+
+    )doc";
+    guiManager.def_static("CenterWindow", &sofa::gui::common::GUIManager::CenterWindow, centerWindowDoc);
 
     /*
      * Sofa.Gui.GUIManager.SetFullScreen

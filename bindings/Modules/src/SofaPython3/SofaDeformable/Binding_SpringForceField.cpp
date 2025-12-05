@@ -23,7 +23,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/cast.h>
 
-#include <SofaDeformable/SpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <SofaPython3/SofaDeformable/Binding_SpringForceField.h>
@@ -40,14 +40,16 @@ namespace py { using namespace pybind11; }
 template<class DataType>
 void bindSpringForcefield(py::module& m) {
     // template the SpringForceField to use it with different types of MechanicalStates such as Vec3 or Rigid3
-    using SpringForceField = sofa::component::interactionforcefield::SpringForceField<DataType>;
+    using SpringForceField = sofa::component::solidmechanics::spring::SpringForceField<DataType>;
 
-    using sofa::component::interactionforcefield::LinearSpring;
+    using sofa::component::solidmechanics::spring::LinearSpring;
     typedef LinearSpring<SReal> LinearSpringR;
 
     // create a python binding for the c++ class SpringForceField from SofaDeformable
     // no init binding, because creation should be done via node.addObject("SpringForceField")
-    std::string type_name = sofa::helper::NameDecoder::getTypeName<SpringForceField>();
+    std::string type_name = SpringForceField::GetClass()->className+"_"+
+                            DataType::Name();
+
     py::class_<SpringForceField,
             sofa::core::objectmodel::BaseObject,
             py_shared_ptr<SpringForceField>> s (m, type_name.c_str(), sofapython3::doc::SofaDeformable::SpringForceFieldClass);

@@ -1,32 +1,28 @@
-# Required import for python
-import Sofa
-
-
 # Choose in your script to activate or not the GUI
 USE_GUI = True
 
-
 def main():
-    import SofaRuntime
-    import Sofa.Gui
-    # Make sure to load all SOFA libraries
-    SofaRuntime.importPlugin("SofaBaseMechanics")
-    SofaRuntime.importPlugin("SofaOpenglVisual")
+    # Required import for python
+    import Sofa
+    import SofaImGui
 
     #Create the root node
     root = Sofa.Core.Node("root")
     # Call the below 'createScene' function to create the scene graph
     createScene(root)
-    Sofa.Simulation.init(root)
+    Sofa.Simulation.initRoot(root)
 
     if not USE_GUI:
         for iteration in range(10):
             Sofa.Simulation.animate(root, root.dt.value)
     else:
+        # Required import to manage the GUI
+        import Sofa.Gui
+
         # Find out the supported GUIs
         print ("Supported GUIs are: " + Sofa.Gui.GUIManager.ListSupportedGUI(","))
-        # Launch the GUI (qt or qglviewer)
-        Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
+        # Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
+        Sofa.Gui.GUIManager.Init("myscene", "imgui")
         Sofa.Gui.GUIManager.createGUI(root, __file__)
         Sofa.Gui.GUIManager.SetDimension(1080, 1080)
         # Initialization of the scene will be done here
@@ -39,8 +35,8 @@ def main():
 
 # Function called when the scene graph is being created
 def createScene(root):
-    # Scene must now include a VisualLoop
-    root.addObject('DefaultVisualManagerLoop')
+
+    root.addObject('RequiredPlugin', name='Sofa.Component.StateContainer')
 
     # Scene must now include a AnimationLoop
     root.addObject('DefaultAnimationLoop')

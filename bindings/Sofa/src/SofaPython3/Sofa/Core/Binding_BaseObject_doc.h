@@ -24,15 +24,14 @@ namespace sofapython3::doc::baseObject
 {
 static auto Class =
         R"(
-        The class object is a base class for simulation components.
+        Base class for components which can be added in a simulation
 
         An object defines a part of the functionnality in the simulation
         (stores state data, specify topology, compute forces, etc).
         Each simulation object is related to a context, which gives access to all available external data.
         It is able to process events, if listening enabled (default is false).
 
-        :Example of use:
-
+        Example of use:
         .. code-block:: python
 
             import Sofa.Core
@@ -46,6 +45,11 @@ static auto Class =
             root.obj.position.value # Access the position of the object
 
         )";
+static auto draw =
+        R"(
+        Implement this function to draw an object in the 3D view.
+        )";
+
 static auto init =
         R"(
         Initialization method called at graph creation and modification, during top-down traversal.Initialize data.

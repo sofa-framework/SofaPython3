@@ -30,7 +30,7 @@ using sofa::simulation::Node;
 
 void moduleAddBaseGui(py::module& m)
 {
-    py::class_<sofa::gui::common::BaseGUI, std::unique_ptr<sofa::gui::common::BaseGUI, py::nodelete>> baseGUI(m, "BaseGUI");
+    py::class_<sofa::gui::common::BaseGUI, std::unique_ptr<sofa::gui::common::BaseGUI, py::nodelete>> baseGUI(m, "BaseGUI", "Base class defining all methods each GUI must implement");
 
     /*
      * Sofa.Gui.BaseGUI.SetBackgroundImage
@@ -42,6 +42,17 @@ void moduleAddBaseGui(py::module& m)
         :type filename: str
     )doc";
     baseGUI.def("setBackgroundImage", &sofa::gui::common::BaseGUI::setBackgroundImage, SetBackgroundImageDoc);
+
+    /*
+     * Sofa.Gui.BaseGUI.SetConfigDirectoryPath
+     */
+    const auto SetConfigDirectoryPathDoc = R"doc(
+        Set the configuration directory.
+
+        :param filename: Path the configuration directory to set.
+        :type filename: str
+    )doc";
+    baseGUI.def_static("SetConfigDirectoryPath", &sofa::gui::common::BaseGUI::setConfigDirectoryPath, SetConfigDirectoryPathDoc);
 
 }
 

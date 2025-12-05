@@ -22,25 +22,12 @@
 #include <SofaPython3/PythonFactory.h>
 #include <SofaPython3/DataHelper.h>
 
-#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/simulation/Node.h>
 
 #include "sofa/simulation/AnimateBeginEvent.h"
 using sofa::simulation::AnimateBeginEvent;
 #include "sofa/simulation/AnimateEndEvent.h"
 using sofa::simulation::AnimateEndEvent;
-//#include "sofa/simulation/CollisionBeginEvent.h"
-//#include "sofa/simulation/CollisionEndEvent.h"
-//#include "sofa/simulation/IntegrateBeginEvent.h"
-//#include "sofa/simulation/IntegrateEndEvent.h"
-//#include "sofa/simulation/PauseEvent.h"
-//#include "sofa/simulation/PositionEvent.h"
-//#include "sofa/simulation/UpdateMappingEndEvent.h"
-
-//#include "sofa/core/objectmodel/DetachNodeEvent.h"
-//#include "sofa/core/objectmodel/GUIEvent.h"
-//#include "sofa/core/objectmodel/HapticDeviceEvent.h"
-//#include "sofa/core/objectmodel/IdleEvent.h"
-//#include "sofa/core/objectmodel/JoystickEvent.h"
 #include "sofa/core/objectmodel/KeypressedEvent.h"
 using sofa::core::objectmodel::KeypressedEvent;
 #include "sofa/core/objectmodel/KeyreleasedEvent.h"
@@ -52,6 +39,7 @@ using sofa::core::objectmodel::ScriptEvent;
 using sofa::core::objectmodel::Event;
 
 #include <SofaPython3/PythonEnvironment.h>
+#include <SofaPython3/LinkPath.h>
 
 #include <sofa/core/topology/Topology.h>
 
@@ -200,7 +188,8 @@ py::object PythonFactory::valueToPython_ro(sofa::core::objectmodel::BaseData* da
     /// we can expose the field as a numpy.array (no copy)
     if(nfo.Container() && nfo.SimpleLayout())
     {
-        auto capsule = py::capsule(new Base::SPtr(data->getOwner()));
+        auto capsule = py::capsule(new Base::SPtr(data->getOwner()),
+                                   [](void*p){ delete static_cast<Base::SPtr*>(p); } );
         py::buffer_info ninfo = toBufferInfo(*data);
         py::array a(pybind11::dtype(ninfo), ninfo.shape,
                     ninfo.strides, ninfo.ptr, capsule);
@@ -293,6 +282,12 @@ void copyFromListOf<std::string>(BaseData& d, const AbstractTypeInfo& nfo, const
 
 void PythonFactory::fromPython(BaseData* d, const py::object& o)
 {
+    if(py::isinstance<sofapython3::LinkPath>(o))
+    {
+        d->setParent(py::cast<LinkPath&>(o).targetData);
+        return;
+    }
+
     const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
 
     // Is this data field a container ?
@@ -508,7 +503,17 @@ bool PythonFactory::registerDefaultTypes()
     PythonFactory::registerType<sofa::core::topology::Topology::Hexa>("Hexa");
     PythonFactory::registerType<sofa::core::topology::Topology::Penta>("Penta");
 
-    // State vectors
+    // Rigid
+    PythonFactory::registerType<sofa::defaulttype::Rigid3dTypes::Coord>("Rigid3d::Coord");
+    PythonFactory::registerType<sofa::defaulttype::Rigid3fTypes::Coord>("Rigid3f::Coord");
+    PythonFactory::registerType<sofa::defaulttype::Rigid3Types::Coord>("Rigid3::Coord");
+
+    /// Quaternion
+    PythonFactory::registerType<sofa::type::Quat<double>>("Quatd");
+    PythonFactory::registerType<sofa::type::Quat<float>>("Quatf");
+    PythonFactory::registerType<sofa::type::Quat<SReal>>("Quat");
+
+    // Rigid3 vectors
     PythonFactory::registerType<sofa::defaulttype::Rigid3dTypes::VecCoord>("Rigid3d::VecCoord");
     PythonFactory::registerType<sofa::defaulttype::Rigid3fTypes::VecCoord>("Rigid3f::VecCoord");
     PythonFactory::registerType<sofa::defaulttype::Rigid3Types::VecCoord>("Rigid3::VecCoord");

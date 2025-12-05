@@ -24,6 +24,7 @@
 #include <numeric>
 #include <sstream>
 #include <pybind11/stl.h>
+#include <sofa/core/ObjectFactoryJson.h>
 
 using sofa::core::ObjectFactory;
 namespace py { using namespace pybind11; }
@@ -168,9 +169,10 @@ py::dict dataAlias(const ObjectFactory::ClassEntry &self)
 
 
 void moduleAddObjectFactory(py::module &m) {
-    py::class_<ObjectFactory> factory (m, "ObjectFactory", sofapython3::doc::objectmodel::ObjectFactoryClass);
+    py::class_<ObjectFactory> factory (m, "ObjectFactory",
+                                       sofapython3::doc::objectmodel::ObjectFactoryClass);
 
-    py::class_<ObjectFactory::ClassEntry> entry(m, sofapython3::doc::objectmodel::ClassEntryClass);
+    py::class_<ObjectFactory::ClassEntry> entry(m, "ClassEntry", sofapython3::doc::objectmodel::ClassEntryClass);
     entry.def_property_readonly("className", &className);
     entry.def_property_readonly("aliases", &aliases);
     entry.def_property_readonly("description", &description);
@@ -221,6 +223,10 @@ void moduleAddObjectFactory(py::module &m) {
     factory.def_property_readonly_static("targets", [](const py::object &){
         return getTargets(*ObjectFactory::getInstance());
     }, doc::objectmodel::ObjectFactory_targets);
+
+    factory.def_static("dump_json", [](){
+        return sofa::core::ObjectFactoryJson::dump(ObjectFactory::getInstance());
+    }, doc::objectmodel::ObjectFactory_dump_json);
 }
 
 } /// namespace sofapython3

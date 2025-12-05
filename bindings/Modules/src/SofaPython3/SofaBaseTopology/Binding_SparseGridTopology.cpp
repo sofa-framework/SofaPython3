@@ -23,10 +23,10 @@
 #include "Binding_SparseGridTopology.h"
 #include "Binding_SparseGridTopology_doc.h"
 
-#include <SofaBaseTopology/SparseGridTopology.h>
+#include <sofa/component/topology/container/grid/SparseGridTopology.h>
 #include <SofaPython3/PythonFactory.h>
 
-using sofa::component::topology::SparseGridTopology;
+using sofa::component::topology::container::grid::SparseGridTopology;
 using sofa::core::objectmodel::BaseObject;
 
 PYBIND11_DECLARE_HOLDER_TYPE(Base, sofa::core::sptr<Base>, true)
@@ -46,7 +46,7 @@ void moduleAddSparseGridTopology(pybind11::module& m) {
 
     // findCube (pos)
     c.def("findCube", [](SparseGridTopology & self, const py::list & l) {
-        sofa::type::Vector3 pos;
+        sofa::type::Vec3 pos;
         pos[0] = l[0].cast<double>();
         pos[1] = l[1].cast<double>();
         pos[2] = l[2].cast<double>();

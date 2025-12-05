@@ -1,10 +1,10 @@
-General overview
-================
+Welcome to SofaPython3 documentation !
+======================================
 
 The SofaPython3 project brings python bindings for the `SOFA simulation framework <https://www.sofa-framework.org>`_.
 Thereby, it allows users to use most of the components and features found in SOFA directly into their python scripts.
 
-This project is composed of two modules: a *SOFA plugin* and several *python modules*.
+This project is composed of two modules: a *SOFA plugin* in the *SofaPython3/Plugin/* repository & several *python modules* in the *SofaPython3/bindings/* repository.
 
 1. The **SofaPython3 plugin** embeds a python interpreter and a SOFA scene loader. This plugin allows one to load a python
 script as the main simulation scene file. The scene loader will automatically detect the ".py", ".py3", ".py3scn" or
@@ -18,22 +18,27 @@ that the python version is compatible. Hence, the python interpreter embedded in
 to load these binding modules. In addition, one could load the binding modules directly inside their own python
 interpreter without requiring the load of the plugin.
 
-.. figure:: images/SP3_global_arch.png
+.. figure:: images/SofaPython3-logo.png
     :alt: How SP3 fits in the SOFA usage pipeline
     :align: center
-
-Content
--------
+    :width: 300
 
 .. toctree::
-   :glob:
-   :maxdepth: 1
+    :hidden:
+    :maxdepth: 5
+    :caption: Content
+    :numbered: 3
+    
+    content/Installation
+    content/FirstSteps
+    content/Modules
+    content/PythonLibraries
+    content/CustomModule
+    content/Compilation
+    content/Contributing 
 
-   menu/Compilation
-   menu/SofaPlugin
-   menu/SofaModule
-   menu/pythonLibraries
-   menu/CustomModule
-   menu/Contributing
-
-   
+Indices and tables
+==================
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

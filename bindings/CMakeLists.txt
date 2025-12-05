@@ -1,6 +1,11 @@
 project(Bindings)
 
-set(BINDINGS_MODULE_LIST Sofa SofaRuntime SofaGui SofaTypes Modules)
+set(BINDINGS_MODULE_LIST Sofa SofaRuntime SofaTypes Modules)
+
+if(SP3_WITH_SOFAGUI)
+    list(APPEND BINDINGS_MODULE_LIST SofaGui)
+endif()
+
 if(SP3_WITH_SOFAEXPORTER)
     list(APPEND BINDINGS_MODULE_LIST SofaExporter)
 endif()
@@ -24,6 +29,7 @@ if(UNIX)
         set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
     endif()
 endif()
+
 
 foreach(bindings_module ${BINDINGS_MODULE_LIST})
     add_subdirectory(${bindings_module})

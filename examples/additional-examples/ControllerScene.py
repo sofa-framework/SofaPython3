@@ -90,7 +90,7 @@ def createScene(root):
     root.name = 'root'
     root.gravity = [0.0, 9.8, 0.0]
 
-    loader = root.addObject('MeshObjLoader', name='loader',
+    loader = root.addObject('MeshOBJLoader', name='loader',
                             filename="mesh/liver.obj")
     te = root.addObject("TransformEngine", name="te",
                         input_position=loader.position.getLinkPath(), rotation=[0,0,0])
@@ -108,8 +108,9 @@ def createScene(root):
 
 def main():
     # Load the required plugins
-    SofaRuntime.importPlugin("SofaOpenglVisual")
-    SofaRuntime.importPlugin("SofaGeneralEngine")
+    SofaRuntime.importPlugin("Sofa.GL.Component")
+    SofaRuntime.importPlugin("Sofa.Component")
+
 
     # Check and save if the script is called from python environment
     global _runAsPythonScript
@@ -118,7 +119,7 @@ def main():
     # Create and initialize the scene
     root = Sofa.Core.Node()
     createScene(root)
-    Sofa.Simulation.init(root)
+    Sofa.Simulation.initRoot(root)
 
     # Run simulation
     for i in range(0, 360):

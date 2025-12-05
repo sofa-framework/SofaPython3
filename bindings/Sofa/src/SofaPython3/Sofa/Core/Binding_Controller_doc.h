@@ -22,8 +22,9 @@
 
 namespace sofapython3::doc::controller
 {
-static auto Controller = R"(
-        An Interface for user interaction on SOFA Components.
+static auto controllerClass =
+        R"(
+        Overridable class for user interaction on SOFA Components
 
         It can catch events to trigger actions, such as onAnimateBeginEvent, onAnimateEndEvent or onPythonScriptEvent.
         A new custom controller class needs to be defined to use a controller in a script,

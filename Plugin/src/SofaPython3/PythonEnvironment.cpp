@@ -60,6 +60,13 @@ MSG_REGISTER_CLASS(sofapython3::PythonEnvironment, "SofaPython3::PythonEnvironme
 namespace sofapython3
 {
 
+class PythonEnvironmentModule
+{
+public:
+    py::module m_sofaModule ;
+    py::module m_sofaRuntimeModule ;
+};
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief The PythonEnvironmentData class which hold "static" data as long as python is running
 ///
@@ -85,7 +92,7 @@ public:
     void reset()
     {
         for(auto s : m_argv){
-            PyMem_Free(s);
+            PyMem_RawFree(s);
         }
         m_argv.clear();
         addedPath.clear();
@@ -102,8 +109,6 @@ public:
     }
 
     std::set<std::string> addedPath;
-
-    py::module m_sofamodule ;
 private:
     std::vector<wchar_t*> m_argv;
 };
@@ -113,9 +118,28 @@ PythonEnvironmentData* PythonEnvironment::getStaticData()
     static PythonEnvironmentData* m_staticdata { nullptr } ;
 
     if( !m_staticdata )
+    {
+        // TODO: replace new with reference counted pointer (make_unique or make_shared)
         m_staticdata = new PythonEnvironmentData();
-
+    }
     return m_staticdata;
+}
+
+PythonEnvironmentModule* PythonEnvironment::getStaticModule()
+{
+    PythonEnvironment::gil lock;
+
+    static PythonEnvironmentModule* m_staticmodule { nullptr } ;
+    if( !m_staticmodule )
+    {
+        // TODO: replace new with reference counted pointer (make_unique or make_shared)
+        m_staticmodule = new PythonEnvironmentModule();
+        executePython([]{
+            getStaticModule()->m_sofaModule = py::module::import("Sofa");
+            getStaticModule()->m_sofaRuntimeModule = py::module::import("SofaRuntime");
+        });
+    }
+    return m_staticmodule;
 }
 
 std::string PythonEnvironment::pluginLibraryPath = "";
@@ -152,19 +176,9 @@ void PythonEnvironment::Init()
     if( !SceneLoaderFactory::getInstance()->getEntryFileExtension("py3") )
     {
         msg_info("SofaPython3") << "Registering a scene loader for [.py, .py3, .pyscn, .py3scn] files." ;
+        // TODO: replace new with reference counted pointer (make_unique or make_shared)
         SceneLoaderFactory::getInstance()->addEntry(new SceneLoaderPY3());
     }
-
-
-#if defined(__linux__)
-    // WARNING: workaround to be able to import python libraries on linux (like
-    // numpy), at least on Ubuntu (see http://bugs.python.org/issue4434). It is
-    // not fixing the real problem, but at least it is working for now.
-    // dmarchal: The problem still exists python3 10/10/2018.
-    std::string pythonLibraryName = "libpython" + std::string(pythonVersion,0,3) + "m.so";
-    dlopen( pythonLibraryName.c_str(), RTLD_LAZY|RTLD_GLOBAL );
-    msg_info("SofaPython3") << "Shared library name is '" << pythonLibraryName << "'" ;
-#endif
 
     /// Prevent the python terminal from being buffered, not to miss or mix up traces.
     if( putenv( (char*)"PYTHONUNBUFFERED=1" ) )
@@ -179,28 +193,25 @@ void PythonEnvironment::Init()
         static const PyThreadState* init = PyEval_SaveThread(); (void) init;
     }
 
-    PyEval_InitThreads();
-    gil lock;
-
     // Required for sys.path, used in addPythonModulePath().
-    PyRun_SimpleString("import sys");
+    executePython([]{ PyRun_SimpleString("import sys");});
 
     // Force C locale.
-    PyRun_SimpleString("import locale");
-    PyRun_SimpleString("locale.setlocale(locale.LC_ALL, 'C')");
+    executePython([]{ PyRun_SimpleString("import locale");});
+    executePython([]{ PyRun_SimpleString("locale.setlocale(locale.LC_ALL, 'C')");});
 
     // Workaround: try to import numpy and to launch numpy.finfo to cache data;
     // this prevents a deadlock when calling numpy.finfo from a worker thread.
-    PyRun_SimpleString("try:\n\timport numpy;numpy.finfo(float)\nexcept:\n\tpass");
+    executePython([]{ PyRun_SimpleString("try:\n\timport numpy;numpy.finfo(float)\nexcept:\n\tpass");});
 
     // Workaround: try to import scipy from the main thread this prevents a deadlock when importing
     // scipy from a worker thread when we use the SofaScene asynchronous loading
-    PyRun_SimpleString("try:\n\tfrom scipy import misc, optimize\nexcept:\n\tpass\n");
+    executePython([]{ PyRun_SimpleString("try:\n\tfrom scipy import misc, optimize\nexcept:\n\tpass\n");});
 
     // If the script directory is not available (e.g. if the interpreter is invoked interactively
     // or if the script is read from standard input), path[0] is the empty string,
     // which directs Python to search modules in the current directory first.
-    PyRun_SimpleString(std::string("sys.path.insert(0,\"\")").c_str());
+    executePython([]{ PyRun_SimpleString(std::string("sys.path.insert(0,\"\")").c_str());});
 
     // Add the paths to the plugins' python modules to sys.path.  Those paths
     // are read from all the files in 'etc/sofa/python.d'
@@ -215,20 +226,34 @@ void PythonEnvironment::Init()
         }
     }
 
-    /// Add the directories listed in the SOFAPYTHON_PLUGINS_PATH environnement
-    /// variable (colon-separated) to sys.path
-    char * pathVar = getenv("SOFAPYTHON_PLUGINS_PATH");
-    if (pathVar != nullptr)
+    /// Add the directories listed in the SOFAPYTHON3_PLUGINS_PATH environnement
+    /// variable to sys.path
+    const std::string envVarName = "SOFAPYTHON3_PLUGINS_PATH";
+    const std::string deprecatedEnvVarName = "SOFAPYTHON_PLUGINS_PATH";
+    std::string usedEnvVarName = envVarName;
+
+    char* deprecatedPathVar = getenv(deprecatedEnvVarName.c_str());
+    char* pathVar = getenv(envVarName.c_str());
+    
+    // case where only the deprecated env var is set
+    if (pathVar == nullptr && deprecatedPathVar != nullptr)
     {
-        std::istringstream ss(pathVar);
-        std::string path;
-        while(std::getline(ss, path, ':'))
-        {
-            if (FileSystem::exists(path))
-                addPythonModulePathsFromDirectory(path);
-            else
-                msg_warning("SofaPython3") << "no such directory: '" + path + "'";
-        }
+        msg_deprecated("SofaPython3") << deprecatedEnvVarName << " environment variable is deprecated, use " << envVarName << " instead.";
+        usedEnvVarName = "SOFAPYTHON_PLUGINS_PATH";
+    }
+    // case where both env vars are set
+    else if (pathVar != nullptr && deprecatedPathVar != nullptr)
+    {
+        msg_deprecated("SofaPython3") << deprecatedEnvVarName << " and " << envVarName << " environment variables are both set.";
+        msg_deprecated("SofaPython3") << deprecatedEnvVarName << " is deprecated, and only " << envVarName << " will be used.";
+    }
+    
+    sofa::helper::system::FileRepository pluginPathsRepository(envVarName.c_str());
+    const auto& pluginPaths = pluginPathsRepository.getPaths();
+    for (auto pluginPath : pluginPaths)
+    {
+        std::string cleanPath = FileSystem::cleanPath(pluginPath);
+        addPythonModulePath(cleanPath);
     }
 
     // Add sites-packages wrt the plugin
@@ -237,11 +262,10 @@ void PythonEnvironment::Init()
     // Lastly, we (try to) add modules from the root of SOFA
     addPythonModulePathsFromDirectory( Utils::getSofaPathPrefix() );
 
-    getStaticData()->m_sofamodule = py::module::import("Sofa");
-    PyRun_SimpleString("import SofaRuntime");
+    executePython([]{ PyRun_SimpleString("import SofaRuntime");});
 
     // python livecoding related
-    PyRun_SimpleString("from Sofa.livecoding import onReimpAFile");
+    executePython([]{ PyRun_SimpleString("from Sofa.livecoding import onReimpAFile");});
 
     // general sofa-python stuff
 
@@ -253,7 +277,7 @@ void PythonEnvironment::Init()
     for( const auto& elem : map)
     {
         Plugin p = elem.second;
-        if ( p.getModuleName() == sofa_tostring(SOFA_TARGET) )
+        if ( strcmp(p.getModuleName(), sofa_tostring(SOFA_TARGET)) == 0 )
         {
             pluginLibraryPath = elem.first;
         }
@@ -300,7 +324,10 @@ void PythonEnvironment::Release()
 {
     /// Finish the Python Interpreter
     /// obviously can't use raii here
-    if(  Py_IsInitialized() ) {
+    static bool isReleased = false;
+    if(  Py_IsInitialized() && !isReleased) {
+        isReleased = true;
+
         PyGILState_Ensure();
         py::finalize_interpreter();
         getStaticData()->reset();
@@ -310,17 +337,21 @@ void PythonEnvironment::Release()
 
 void PythonEnvironment::addPythonModulePath(const std::string& path)
 {
+    if (!(FileSystem::exists(path) && FileSystem::isDirectory(path)))
+    {
+        msg_warning("SofaPython3") << "Could not add '" + path + "'" << " to sys.path (it does not exist or is not a directory)";
+        return;
+    }
+
     PythonEnvironmentData* data = getStaticData() ;
-    if (  data->addedPath.find(path)==data->addedPath.end()) {
+    if (  data->addedPath.find(path)==data->addedPath.end())
+    {
         // note not to insert at first 0 place
         // an empty string must be at first so modules can be found in the current directory first.
 
-        {
-            gil lock;
-            PyRun_SimpleString(std::string("sys.path.insert(1,\""+path+"\")").c_str());
-        }
+        executePython([&]{ PyRun_SimpleString(std::string("sys.path.insert(1,\""+path+"\")").c_str());});
 
-        msg_info("SofaPython3") << "Added '" + path + "' to sys.path";
+        msg_info("SofaPython3")<< "Added '" + path + "' to sys.path";
         data->addedPath.insert(path);
     }
 }
@@ -346,10 +377,19 @@ void PythonEnvironment::addPythonModulePathsFromDirectory(const std::string& dir
         return;
     }
 
+    // Using python<MAJOR>.<MINOR> directory suffix for modules paths is now the recommanded
+    // standard location: https://docs.python.org/3.11/install/#how-installation-works and
+    // https://docs.python.org/3.11/library/site.html#module-site 
+    const auto pythonVersionFull = std::string{Py_GetVersion()};
+    const auto pythonVersion = pythonVersionFull.substr(0, pythonVersionFull.find(" ")); // contains major.minor.patch
+    const auto pythonVersionMajorMinor = pythonVersion.substr(0, pythonVersion.rfind(".")); // contains only manjor.minor
+    const auto pythonMajorMinorSuffix = "/python" + pythonVersionMajorMinor;
+
     std::vector<std::string> searchDirs = {
         directory,
         directory + "/lib",
-        directory + "/python3"
+        directory + pythonMajorMinorSuffix,
+        directory + "/python3" // deprecated
     };
 
     // Iterate in the pluginsDirectory and add each sub directory with a 'python' name
@@ -361,12 +401,23 @@ void PythonEnvironment::addPythonModulePathsFromDirectory(const std::string& dir
         const std::string subdir = directory + "/" + *i;
         if (FileSystem::exists(subdir) && FileSystem::isDirectory(subdir))
         {
-            searchDirs.push_back(subdir + "/python3");
+            const std::vector<std::string> suffixes = {
+              pythonMajorMinorSuffix,
+              "/python3" // deprecated
+            };
+            for (const auto& suffix : suffixes)
+            {
+              const auto pythonSubdir = subdir + suffix;
+              if (FileSystem::exists(pythonSubdir) && FileSystem::isDirectory(pythonSubdir))
+              {
+                searchDirs.push_back(pythonSubdir);
+              }
+            }
         }
     }
 
     // For each of the directories in pythonDirs, search for a site-packages entry
-    for(std::string searchDir : searchDirs)
+    for(std::string& searchDir : searchDirs)
     {
         // Search for a subdir "site-packages"
         if (FileSystem::exists(searchDir + "/site-packages") && FileSystem::isDirectory(searchDir + "/site-packages"))
@@ -384,8 +435,19 @@ void PythonEnvironment::addPythonModulePathsFromPlugin(const std::string& plugin
         Plugin p = elem.second;
         if ( p.getModuleName() == pluginName )
         {
-            std::string pluginLibraryPath = elem.first;
+            // 1. Try to find the plugin directory starting from SOFA root
+            for ( auto path : sofa::helper::system::PluginRepository.getPaths() )
+            {
+                std::string pluginRoot = FileSystem::cleanPath( path + "/" + pluginName );
+                if ( FileSystem::exists(pluginRoot) && FileSystem::isDirectory(pluginRoot) )
+                {
+                    addPythonModulePathsFromDirectory(pluginRoot);
+                    return;
+                }
+            }
 
+            // 2. Try to find the plugin directory starting from the plugin library
+            std::string pluginLibraryPath = elem.first;
             // moduleRoot can be 1 or 2 levels above the library directory
             // like "plugin_name/lib/plugin_name.so"
             // or "sofa_root/bin/Release/plugin_name.dll"
@@ -396,7 +458,6 @@ void PythonEnvironment::addPythonModulePathsFromPlugin(const std::string& plugin
                 moduleRoot = FileSystem::getParentDirectory(moduleRoot);
                 maxDepth++;
             }
-
             addPythonModulePathsFromDirectory(moduleRoot);
             return;
         }
@@ -407,7 +468,9 @@ void PythonEnvironment::addPythonModulePathsFromPlugin(const std::string& plugin
 void PythonEnvironment::addPluginManagerCallback()
 {
     PluginManager::getInstance().addOnPluginLoadedCallback(pluginLibraryPath,
-        [](const std::string& pluginLibraryPath, const Plugin& plugin) {
+        [](const std::string& pluginLibraryPath, const Plugin& plugin)
+        {
+            SOFA_UNUSED(pluginLibraryPath);
             // search for plugin with PluginRepository
             for ( auto path : sofa::helper::system::PluginRepository.getPaths() )
             {
@@ -418,6 +481,12 @@ void PythonEnvironment::addPluginManagerCallback()
                     return;
                 }
             }
+        }
+    );
+    PluginManager::getInstance().addOnPluginCleanupCallbacks(pluginLibraryPath,
+        []()
+        {
+            PythonEnvironment::Release();
         }
     );
 }
@@ -508,22 +577,15 @@ std::string PythonEnvironment::getStackAsString()
 
 std::string PythonEnvironment::getPythonCallingPointString()
 {
-    return py::cast<std::string>(getStaticData()->m_sofamodule.attr("getPythonCallingPointAsString")());
+    gil lock;
+    return py::cast<std::string>(getStaticModule()->m_sofaModule.attr("getPythonCallingPointAsString")());
 }
 
 sofa::helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAsFileInfo()
 {
-    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaRuntime"));
-    PyObject* res = PyDict_GetItemString(pDict, "getPythonCallingPoint");
-    if(res && PySequence_Check(res) ){
-        PyObject* filename = PySequence_GetItem(res, 0) ;
-        PyObject* number = PySequence_GetItem(res, 1) ;
-        std::string tmp=PyBytes_AsString(filename);
-        auto lineno = PyLong_AsLong(number);
-        Py_DECREF(res) ;
-        return SOFA_FILE_INFO_COPIED_FROM(tmp, lineno);
-    }
-    return SOFA_FILE_INFO_COPIED_FROM("undefined", -1);
+    gil lock;
+    py::tuple cp = getStaticModule()->m_sofaRuntimeModule.attr("getPythonCallingPoint")();
+    return SOFA_FILE_INFO_COPIED_FROM(py::cast<std::string>(cp[0]), py::cast<int>(cp[1]));
 }
 
 void PythonEnvironment::setArguments(const std::string& filename, const std::vector<std::string>& arguments)
@@ -546,9 +608,8 @@ void PythonEnvironment::setArguments(const std::string& filename, const std::vec
 
 void PythonEnvironment::SceneLoaderListerner::rightBeforeLoadingScene()
 {
-    gil lock;
     // unload python modules to force importing their eventual modifications
-    PyRun_SimpleString("SofaRuntime.unloadModules()");
+    executePython([]{ PyRun_SimpleString("SofaRuntime.unloadModules()");});
 }
 
 void PythonEnvironment::setAutomaticModuleReload( bool b )
@@ -561,8 +622,7 @@ void PythonEnvironment::setAutomaticModuleReload( bool b )
 
 void PythonEnvironment::excludeModuleFromReload( const std::string& moduleName )
 {
-    gil lock;
-    PyRun_SimpleString( std::string( "try: SofaRuntime.__SofaPythonEnvironment_modulesExcludedFromReload.append('" + moduleName + "')\nexcept:pass" ).c_str() );
+    executePython([&]{ PyRun_SimpleString( std::string( "try: SofaRuntime.__SofaPythonEnvironment_modulesExcludedFromReload.append('" + moduleName + "')\nexcept:pass" ).c_str() );});
 }
 
 static const bool debug_gil = false;

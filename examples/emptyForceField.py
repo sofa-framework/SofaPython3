@@ -37,7 +37,12 @@ class EmptyForceField(Sofa.Core.ForceFieldVec3d):
 
 def createScene(root):
     root.dt = 0.01
-    root.addObject('DefaultVisualManagerLoop')
+    root.bbox = [[-1, -1, -1],[1,1,1]]
+
+    root.addObject("RequiredPlugin", pluginName=["Sofa.Component.LinearSolver.Iterative",
+                                                 "Sofa.Component.ODESolver.Backward",
+                                                 "Sofa.Component.StateContainer"
+                                                 ])
     root.addObject('DefaultAnimationLoop')
 
     node1 = root.addChild("Node1")
@@ -51,16 +56,14 @@ def createScene(root):
 
 
 def main():
-    import SofaRuntime
+    import SofaImGui
     import Sofa.Gui
-    SofaRuntime.importPlugin("SofaOpenglVisual")
-    SofaRuntime.importPlugin("SofaImplicitOdeSolver")
 
     root=Sofa.Core.Node("root")
     createScene(root)
-    Sofa.Simulation.init(root)
+    Sofa.Simulation.initRoot(root)
 
-    Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
+    Sofa.Gui.GUIManager.Init("myscene", "imgui")
     Sofa.Gui.GUIManager.createGUI(root, __file__)
     Sofa.Gui.GUIManager.SetDimension(1080, 1080)
     Sofa.Gui.GUIManager.MainLoop(root)

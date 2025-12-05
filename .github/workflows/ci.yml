@@ -18,14 +18,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-10.15, windows-2019]
+        os: [ubuntu-22.04, macos-14, windows-2022]
         sofa_branch: [master]
-        python_version: ['3.9']
+        python_version: ['3.10']
 
     steps:
       - name: Setup SOFA and environment
         id: sofa
-        uses: sofa-framework/sofa-setup-action@v4
+        uses: sofa-framework/sofa-setup-action@v5
         with:
           sofa_root: ${{ github.workspace }}/sofa
           sofa_version: ${{ matrix.sofa_branch }}
@@ -40,18 +40,19 @@ jobs:
       
       - name: Setup cache for ccache files
         if: ${{ runner.os != 'Windows' }}
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache_${{ runner.os }}
       
       - name: Build and install
+        id: build-install
         shell: bash
         run: |
           cmake_options="-GNinja \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INSTALL_PREFIX="$WORKSPACE_INSTALL_PATH" \
-            -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake" \
+            -DCMAKE_PREFIX_PATH="$SOFA_ROOT/lib/cmake:$pybind11_DIR" \
             -DPYTHON_ROOT=$PYTHON_ROOT -DPython_ROOT=$PYTHON_ROOT \
             -DPYTHON_EXECUTABLE=$PYTHON_EXE -DPython_EXECUTABLE=$PYTHON_EXE"
           if [ -e "$(command -v ccache)" ]; then
@@ -72,7 +73,42 @@ jobs:
             echo ${CCACHE_BASEDIR}
             ccache -s
           fi
-        
+
+
+      - name: Set env vars for stubfiles
+        shell: bash
+        run: |
+          #Setup env
+           # Set env vars for tests
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            echo "$WORKSPACE_INSTALL_PATH/lib" >> $GITHUB_PATH
+            echo "$WORKSPACE_INSTALL_PATH/bin" >> $GITHUB_PATH
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            echo "DYLD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
+          else  # Linux
+            echo "LD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
+          fi
+
+          echo "PYTHONPATH=$WORKSPACE_INSTALL_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
+
+      - name: Generate stubfiles
+        id: gen-stub
+        shell: bash
+        run: |
+          
+          #Install stubgen
+          ${{ steps.sofa.outputs.python_exe }} -m pip install mypy pybind11-stubgen
+
+          #For now use pybind11. This might be parametrized as an input of this action
+          echo "Launching the stub generation with '${{ steps.sofa.outputs.python_exe }} ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.py -d $WORKSPACE_INSTALL_PATH/lib/python3/site-packages -m Sofa --use_pybind11'"
+
+          ${{ steps.sofa.outputs.python_exe }} ${{ env.WORKSPACE_SRC_PATH }}/scripts/generate_stubs.py -d "$WORKSPACE_INSTALL_PATH/lib/python3/site-packages" -m Sofa --use_pybind11
+
+          #Go back to previous env
+          echo "PYTHONPATH=" | tee -a $GITHUB_ENV
+
+
+
       - name: Set env vars for artifacts
         shell: bash
         run: |
@@ -83,17 +119,19 @@ jobs:
           if [[ "${{ github.event.inputs.is_nightly }}" == "true" ]]; then
             ARTIFACT_VERSION="${ARTIFACT_VERSION}-nightly"
           fi
-          ARTIFACT_NAME="${PROJECT_NAME}_${ARTIFACT_VERSION}_python-${{ matrix.python_version }}_for-SOFA-${{ matrix.sofa_branch }}_${{ runner.os }}"
+          ARTIFACT_NAME="${PROJECT_NAME}_${ARTIFACT_VERSION}_python-${{ matrix.python_version }}_for-SOFA-${{ steps.sofa.outputs.sofa_version }}_${{ runner.os }}"
           echo "ARTIFACT_NAME=$ARTIFACT_NAME" | tee -a $GITHUB_ENV
 
       - name: Create artifact
-        uses: actions/upload-artifact@v2
+        id: gen-artifact
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path: ${{ env.WORKSPACE_INSTALL_PATH }}
 
       - name: Install artifact
-        uses: actions/download-artifact@v2
+        id: install-artifact
+        uses: actions/download-artifact@v4.1.7
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path: ${{ env.WORKSPACE_ARTIFACT_PATH }}
@@ -106,9 +144,12 @@ jobs:
             echo "$WORKSPACE_ARTIFACT_PATH/lib" >> $GITHUB_PATH
             echo "$WORKSPACE_ARTIFACT_PATH/bin" >> $GITHUB_PATH
           elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            echo "SOFA_PLUGIN_PATH=$WORKSPACE_ARTIFACT_PATH/lib" | tee -a $GITHUB_ENV
             echo "DYLD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
+          else  # Linux
+            echo "SOFA_PLUGIN_PATH=$WORKSPACE_ARTIFACT_PATH/lib" | tee -a $GITHUB_ENV
+            echo "LD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           fi
-          echo "LD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
           echo "PYTHONPATH=$WORKSPACE_ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
           # Add execution right on the tests
           chmod +x $WORKSPACE_ARTIFACT_PATH/bin/*.Tests${{ steps.sofa.outputs.exe }}
@@ -133,6 +174,7 @@ jobs:
           python -c "import sys; print('sys.version = ' + str(sys.version)); print('sys.path = ' + str(sys.path))"
 
       - name: Run test Binding.Sofa.Tests
+        id: test-sofa
         if: always()
         shell: bash
         run: |
@@ -140,6 +182,7 @@ jobs:
           ./bin/Bindings.Sofa.Tests${{ steps.sofa.outputs.exe }}
       
       - name: Run test Bindings.SofaRuntime.Tests
+        id: test-sofaruntime
         if: always()
         shell: bash
         run: |
@@ -147,6 +190,7 @@ jobs:
           ./bin/Bindings.SofaRuntime.Tests${{ steps.sofa.outputs.exe }}
       
       - name: Run test Bindings.SofaTypes.Tests
+        id: test-sofatypes
         if: always()
         shell: bash
         run: |
@@ -154,21 +198,55 @@ jobs:
           ./bin/Bindings.SofaTypes.Tests${{ steps.sofa.outputs.exe }}
       
       - name: Run test Bindings.Modules.Tests
+        id: test-sofamodules
         if: always()
         shell: bash
         run: |
           cd $WORKSPACE_ARTIFACT_PATH
           ./bin/Bindings.Modules.Tests${{ steps.sofa.outputs.exe }}
 
+      - name: Notify dashboard
+        if: always() && startsWith(github.repository, 'sofa-framework') && startsWith(github.ref, 'refs/heads/master') # we are not on a fork and on master
+        env:       
+          DASH_AUTH: ${{ secrets.PLUGIN_DASH }}
+        shell: bash
+        run: |
+          test_status=$([ '${{ steps.test-sofa.outcome }}' == 'success' ] && \
+                        [ '${{ steps.test-sofaruntime.outcome }}' == 'success' ] && \
+                        [ '${{ steps.test-sofatypes.outcome }}' == 'success' ] && \
+                        [ '${{ steps.test-sofamodules.outcome }}' == 'success' ] && \
+                        echo 'true' || echo 'false')
+
+          build_status=$([ '${{ steps.build-install.outcome }}' == 'success' ] && \
+                         [ '${{ steps.gen-stub.outcome }}' == 'success' ] && \
+                         echo 'true' || echo 'false')
+
+          binary_status=$([ '${{ steps.gen-artifact.outcome }}' == 'success' ] && \
+                         [ '${{ steps.install-artifact.outcome }}' == 'success' ] && \
+                         echo 'true' || echo 'false')
+
+          os=$(echo "${{ matrix.os }}" | awk -F- '{ print $1 }')
+                        
+
+          curl -X POST -H "X-API-KEY: $DASH_AUTH" -H "Content-Type: application/json" -d \
+          "{\"id\":\"$(echo "${{ github.repository }}" | awk -F/ '{ print $2 }')\",\
+           \"github_ref\":\"${{ github.sha }}\",\
+           \"url\":\"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\",\
+           \"os\":\"$os\",\
+           \"build\":$build_status,\
+           \"tests\":$test_status,\
+           \"binary\":$binary_status}"\
+           https://sofa-framework.org:5000/api/v1/plugins
+
   deploy:
     name: Deploy artifacts
-    if: always() && startsWith(github.ref, 'refs/heads/') # we are on a branch (not a PR)
+    if: always() && startsWith(github.repository, 'sofa-framework') && (startsWith(github.ref, 'refs/heads/') || startsWith(github.ref, 'refs/tags/')) # we are not on a fork and on a branch or a tag (not a PR)
     needs: [build-and-test]
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
       - name: Get artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           path: artifacts
 
@@ -184,9 +262,10 @@ jobs:
           
           RELEASE_NAME="${{ github.ref_name }}"
           RELEASE_TAGNAME="release-${{ github.ref_name }}"
+          BRANCH_NAME="$RELEASE_NAME"
           if [[ "${{ github.event.inputs.is_nightly }}" == "true" ]]; then
-              RELEASE_NAME="$RELEASE_NAME-nightly"
-              RELEASE_TAGNAME="$RELEASE_TAGNAME-nightly"
+              RELEASE_NAME="nightly-$RELEASE_NAME"
+              RELEASE_TAGNAME="nightly-$RELEASE_TAGNAME"
           fi
           RELEASE_DATE="$(date +'%Y-%m-%d (at %T UTC)')"
           echo "RELEASE_NAME=$RELEASE_NAME" | tee -a $GITHUB_ENV
@@ -194,7 +273,7 @@ jobs:
           echo "RELEASE_DATE=$RELEASE_DATE" | tee -a $GITHUB_ENV
 
       - name: Delete old release
-        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        uses: dev-drprasad/delete-tag-and-release@v0.2.1
         with:
           tag_name: ${{ env.RELEASE_TAGNAME }}
           delete_release: true
@@ -207,7 +286,8 @@ jobs:
         with:
           name: ${{ env.RELEASE_NAME }}
           tag_name: ${{ env.RELEASE_TAGNAME }}
-          fail_on_unmatched_files: true
+          fail_on_unmatched_files: false
+          target_commitish: ${{ github.sha }}
           body: |
             Last updated on ${{ env.RELEASE_DATE }}
           files: |

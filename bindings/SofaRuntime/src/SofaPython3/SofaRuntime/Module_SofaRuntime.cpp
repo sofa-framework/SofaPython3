@@ -19,13 +19,13 @@
 ******************************************************************************/
 
 #include <pybind11/eval.h>
+#include <sofa/helper/system/PluginManager.h>
 namespace py = pybind11;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
-using sofa::simulation::graph::DAGSimulation ;
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation;
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simpleapi/SimpleApi.h>
 namespace simpleapi = sofa::simpleapi;
 
 #include <sofa/helper/Utils.h>
@@ -52,8 +52,8 @@ using sofapython3::SceneLoaderPY3;
 
 #include <sofa/helper/BackTrace.h>
 
-#include <SofaSimulationCommon/init.h>
-#include <SofaSimulationGraph/init.h>
+#include <sofa/simulation/common/init.h>
+#include <sofa/simulation/graph/init.h>
 
 #include "Timer/Submodule_Timer.h"
 
@@ -67,29 +67,9 @@ using sofa::helper::logging::MainConsoleMessageHandler;
 #include <sofa/core/init.h>
 #include <sofa/helper/init.h>
 #include <sofa/simulation/init.h>
-#include <SofaSimulationGraph/init.h>
-#include <SofaSimulationCommon/init.h>
 
 namespace sofapython3
 {
-
-
-class SofaInitializer
-{
-public:
-    // TODO, ces trucs sont fort laid. Normalement ce devrait être une joli plugin qui
-    // appelle le init.
-    SofaInitializer(){
-        sofa::simulation::common::init();
-        sofa::simulation::graph::init();
-        sofa::simulation::setSimulation(new DAGSimulation());
-    }
-
-    ~SofaInitializer(){
-        sofa::simulation::common::cleanup();
-        sofa::simulation::graph::cleanup();
-    }
-};
 
 static std::vector<std::string>  getCategories(const std::string& className)
 {
@@ -111,35 +91,9 @@ static std::vector<std::string>  getCategories(const std::string& className)
     return categories ;
 }
 
-static SofaInitializer s;
-
 /// The first parameter must be named the same as the module file to load.
 PYBIND11_MODULE(SofaRuntime, m) {
-
-    m.doc() = R"doc(
-              Expose aspect specific to the application/runtime
-              -------------------------------------------------
-
-              .. autosummary::
-                  :toctree:_autosummary/_autosummary
-
-                  SofaRuntime.importPlugin
-
-
-              Example of use:
-                .. code-block:: python
-
-                   import SofaRuntime
-                   SofaRuntime.importPlugin("SofaSparseSolver")
-
-              )doc";
-
-    // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
-    sofa::core::init();
-    sofa::helper::init();
-    sofa::simulation::core::init();
-    sofa::simulation::graph::init();
-    sofa::simulation::common::init();
+    m.doc() = R"doc(Control of the SofaRuntime)doc";
 
     // Add the plugin directory to PluginRepository
     const std::string& pluginDir = Utils::getExecutableDirectory();
@@ -161,6 +115,44 @@ PYBIND11_MODULE(SofaRuntime, m) {
         return simpleapi::importPlugin(name);
     }, "import a sofa plugin into the current environment");
 
+    m.def("unload_plugin", [](const std::string& name)
+    {
+        auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
+        pluginManager.unloadPlugin(name);
+    }, "unload a sofa plugin");
+
+    m.def("load_plugins_from_ini_file", [](const std::string& iniFile)
+    {
+        auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
+        pluginManager.readFromIniFile(iniFile);
+    }, "import a list of plugins defined in a file");
+
+    m.def("auto_load_plugins", []()
+    {
+        std::string configPluginPath = "plugin_list.conf";
+        std::string defaultConfigPluginPath = "plugin_list.conf.default";
+
+        sofa::type::vector<std::string> loadedPlugins;
+        if (sofa::helper::system::PluginRepository.findFile(configPluginPath, "", nullptr))
+        {
+            msg_info("SofaRuntime") << "Loading automatically plugin list in " << configPluginPath;
+            sofa::helper::system::PluginManager::getInstance().readFromIniFile(configPluginPath, loadedPlugins);
+        }
+        if (sofa::helper::system::PluginRepository.findFile(defaultConfigPluginPath, "", nullptr))
+        {
+            msg_info("SofaRuntime") << "Loading automatically plugin list in " << defaultConfigPluginPath;
+            sofa::helper::system::PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath, loadedPlugins);
+        }
+
+        if (sofa::core::ObjectFactory* objectFactory = sofa::core::ObjectFactory::getInstance())
+        {
+            for (const auto& pluginName : loadedPlugins)
+            {
+                objectFactory->registerObjectsFromPlugin(pluginName);
+            }
+        }
+    }, "automatically load plugins from configuration files");
+
     m.def("init", []() {
         MessageDispatcher::clearHandlers();
         MessageDispatcher::addHandler(&MainConsoleMessageHandler::getInstance());
@@ -172,6 +164,7 @@ PYBIND11_MODULE(SofaRuntime, m) {
     m.def("getCategories", &getCategories);
 
     addSubmoduleTimer(m);
+
 }
 
 }  // namespace sofapython3

@@ -20,9 +20,9 @@
 
 #include <vector>
 
-#include <SofaPython3/PythonTest.h>
+#include <SofaPython3Testing/PythonTest.h>
 #include <sofa/helper/Utils.h>
-#include <SofaPython3/PythonTestExtractor.h>
+#include <SofaPython3Testing/PythonTestExtractor.h>
 
 using sofapython3::PythonTest ;
 using sofapython3::PythonTestExtractor ;
@@ -58,7 +58,6 @@ static struct PythonModule_Sofa_tests : public PythonTestExtractor
         addTestDirectory(executable_directory+"/Bindings.Sofa.Tests.d/Helper", "Sofa_Helper_");
         addTestDirectory(executable_directory+"/Bindings.Sofa.Tests.d/Simulation", "Sofa_Simulation_");
         addTestDirectory(executable_directory+"/Bindings.Sofa.Tests.d/Types", "Sofa_Types_");
-        addTestDirectory(executable_directory+"/Bindings.Sofa.Tests.d/Components", "Sofa_Components_");
     }
 } python_tests;
 

@@ -96,21 +96,16 @@ class SofaSim():
     def __init__(self):
         # Register all the common component in the factory.
         SofaRuntime.PluginRepository.addFirstPath(os.path.join(sofa_directory, 'bin'))
-        SofaRuntime.importPlugin('SofaOpenglVisual')
-        SofaRuntime.importPlugin("SofaComponentAll")
-        SofaRuntime.importPlugin("SofaGeneralLoader")
-        SofaRuntime.importPlugin("SofaImplicitOdeSolver")
-        SofaRuntime.importPlugin("SofaLoader")
-        SofaRuntime.importPlugin("SofaSimpleFem")
-        SofaRuntime.importPlugin("SofaBoundaryCondition")
-        SofaRuntime.importPlugin("SofaMiscForceField")
+        SofaRuntime.importPlugin('Sofa.GL.Component')
+        SofaRuntime.importPlugin("Sofa.Component")
+
         self.root = Sofa.Core.Node("Root")
         root = self.root
         root.gravity = [0, -1., 0]
         root.addObject("VisualStyle", displayFlags="showBehaviorModels showAll")
         root.addObject("MeshGmshLoader", name="meshLoaderCoarse",
                        filename="mesh/liver.msh")
-        root.addObject("MeshObjLoader", name="meshLoaderFine",
+        root.addObject("MeshOBJLoader", name="meshLoaderFine",
                        filename="mesh/liver-smooth.obj")
 
         root.addObject("EulerImplicitSolver")
@@ -134,7 +129,7 @@ class SofaSim():
         liver.addObject("FixedConstraint", indices="2 3 50")
 
         visual = liver.addChild("visual")
-        visual.addObject('MeshObjLoader', name="meshLoader_0", filename="mesh/liver-smooth.obj", handleSeams="1")
+        visual.addObject('MeshOBJLoader', name="meshLoader_0", filename="mesh/liver-smooth.obj", handleSeams="1")
         visual.addObject('OglModel', name="VisualModel", src="@meshLoader_0", color='red')
         visual.addObject('BarycentricMapping', input="@..", output="@VisualModel", name="visual mapping")
 
@@ -148,7 +143,7 @@ class SofaSim():
 
     def init_sim(self):
         # start the simulator
-        Sofa.Simulation.init(self.root)
+        Sofa.Simulation.initRoot(self.root)
 
     def step_sim(self):
         self.visuals.camera.position = self.visuals.camera.position + [-0.0002, 0, 0]

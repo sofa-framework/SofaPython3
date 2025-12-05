@@ -29,6 +29,8 @@ namespace sofapython3
 
 PYBIND11_MODULE(SofaGL, m)
 {
+    m.doc() = "Exposes the rendering API using OpenGL";
+
     moduleAddDrawToolGL(m);
 }
 

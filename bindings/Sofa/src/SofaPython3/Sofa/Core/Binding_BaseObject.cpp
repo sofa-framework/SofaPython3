@@ -29,6 +29,7 @@
 // Imports for getCategories
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/CollisionModel.h>
@@ -188,10 +189,21 @@ py::object __getitem__(BaseObject &self, std::string s)
     return getItem(self, s);
 }
 
-void moduleAddBaseObject(py::module& m)
+auto getBaseObjectBinding(py::module& m)
 {
     /// Register the BaseObject binding into the pybind11 typing system
-    py::class_<BaseObject, Base, py_shared_ptr<BaseObject>>p(m, "Object", sofapython3::doc::baseObject::Class);
+    static py::class_<BaseObject, Base, py_shared_ptr<BaseObject>>p(m, "Object", sofapython3::doc::baseObject::Class);
+    return p;
+}
+
+void moduleForwardAddBaseObject(py::module& m)
+{
+    getBaseObjectBinding(m);
+}
+
+void moduleAddBaseObject(py::module& m)
+{
+    auto p = getBaseObjectBinding(m);
 
     /// Register the BaseObject binding into the downcasting subsystem
     PythonFactory::registerType<sofa::core::objectmodel::BaseObject>(

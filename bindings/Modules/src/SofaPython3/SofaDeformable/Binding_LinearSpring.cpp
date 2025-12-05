@@ -20,8 +20,7 @@
 
 #include <pybind11/pybind11.h>
 
-#include <SofaDeformable/config.h>
-#include <SofaDeformable/SpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
 
 #include <SofaPython3/SofaDeformable/Binding_LinearSpring.h>
 #include <SofaPython3/SofaDeformable/Binding_LinearSpring_doc.h>
@@ -29,7 +28,7 @@
 
 namespace sofapython3 {
 
-using sofa::component::interactionforcefield::LinearSpring;
+using sofa::component::solidmechanics::spring::LinearSpring;
 typedef LinearSpring<SReal> LinearSpringR;
 
 namespace py { using namespace pybind11; }

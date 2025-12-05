@@ -37,11 +37,15 @@ class Test(unittest.TestCase):
                  c.init()
                  c.reinit()
 
+                 self.assertEqual(c.getClassName(), "Controller")
+
          def test_constructorOverriden(self):
                  root = Sofa.Core.Node("rootNode")
                  root.addObject(MyController(name="controller"))
                  root.controller.init()
                  root.controller.reinit()
+
+                 self.assertEqual(root.controller.getClassName(), "MyController")
 
          def test_constructorOverriddenWithArgs(self):
              root = Sofa.Core.Node("rootNode")

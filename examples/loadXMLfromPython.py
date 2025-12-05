@@ -7,9 +7,8 @@ def createScene(root):
 	# Call the above function to create the scene graph
 	scene="""
 			<Node dt="0.005" gravity="0 0 0">
-				<RequiredPlugin name="SofaOpenglVisual" />
-				<DefaultVisualManagerLoop/>
-				<DefaultAnimationLoop/>
+                <RequiredPlugin name="Sofa.GL.Component.Rendering2D" />
+                <RequiredPlugin name="Sofa.Component.StateContainer" />
 
 				<Node name="child1">
 					<MechanicalObject template="Rigid3d" position="0 0 0   0 0 0 1" showObject="1"/>
@@ -30,17 +29,17 @@ def createScene(root):
 
 
 def main():
-	import SofaRuntime
+	import SofaImGui
 	import Sofa.Gui
 
 	root = Sofa.Core.Node("root")
 	createScene(root)
-	Sofa.Simulation.init(root)
+	Sofa.Simulation.initRoot(root)
 
 	# Find out the supported GUIs
 	print ("Supported GUIs are: " + Sofa.Gui.GUIManager.ListSupportedGUI(","))
-	# Launch the GUI (qt or qglviewer)
-	Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
+	# Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
+	Sofa.Gui.GUIManager.Init("myscene", "imgui")
 	Sofa.Gui.GUIManager.createGUI(root, __file__)
 	Sofa.Gui.GUIManager.SetDimension(1080, 1080)
 	# Initialization of the scene will be done here

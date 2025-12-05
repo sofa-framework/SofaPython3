@@ -22,6 +22,8 @@
 #include <sofa/defaulttype/init.h>
 
 #include <SofaPython3/Sofa/Types/Binding_BoundingBox.h>
+#include <SofaPython3/Sofa/Types/Binding_CompressedRowSparseMatrix.h>
+#include <SofaPython3/Sofa/Types/Binding_RGBAColor.h>
 
 namespace sofapython3 {
 /// The first parameter must be named the same as the module file to load.
@@ -32,16 +34,12 @@ PYBIND11_MODULE(Types, types)
     sofa::defaulttype::init();
 
     types.doc() = R"doc(
-           Default data types
-           -------------------------------
-
-           .. autosummary::
-               Sofa.Types.BoundingBox
-               ...
-
+            Defines SOFA types (BoundingBox)
        )doc";
 
+    moduleAddRGBAColor(types);
     moduleAddBoundingBox(types);
+    moduleAddCompressedRowSparseMatrix(types);
 }
 
 }  // namespace sofapython3

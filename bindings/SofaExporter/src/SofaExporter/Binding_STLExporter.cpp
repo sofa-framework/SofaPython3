@@ -24,9 +24,9 @@
 
 #include <SofaPython3/PythonFactory.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
-#include <SofaExporter/STLExporter.h>
+#include <sofa/component/io/mesh/STLExporter.h>
 
-using  sofa::component::exporter::STLExporter;
+using  sofa::component::io::mesh::STLExporter;
 
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
@@ -41,9 +41,9 @@ void moduleAddSTLExporter(py::module &m)
         return py::cast(dynamic_cast<STLExporter*>(object));
     });
 
-    py::class_<STLExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<STLExporter>> p(m, "STLExporter");
+    py::class_<STLExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<STLExporter>> p(m, "STLExporter", sofapython3::doc::SofaExporter::STLExporter::docstring);
 
-    p.def("write", &STLExporter::write, sofapython3::doc::SofaExporter::STLExporter::write::docstring);
+    p.def("write", &STLExporter::write);
 }
 
 } // namespace sofapython3

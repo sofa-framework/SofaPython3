@@ -1,8 +1,14 @@
 project(Bindings.Modules)
 
-set(MODULEBINDINGS_MODULE_LIST SofaBaseTopology SofaDeformable)
+set(MODULEBINDINGS_MODULE_LIST
+    SofaBaseTopology
+    SofaDeformable
+    SofaLinearSolver
+    SofaLinearSystem
+    SofaConstraintSolver
+)
 
-find_package(Sofa.GL QUIET)
+sofa_find_package(Sofa.GL QUIET)
 if(Sofa.GL_FOUND)
 	list(APPEND MODULEBINDINGS_MODULE_LIST SofaGL)
 else()
@@ -11,6 +17,7 @@ endif()
 
 
 foreach(modulebindings_module ${MODULEBINDINGS_MODULE_LIST})
+    message(STATUS "Adding binding module ${modulebindings_module}")
 	add_subdirectory(src/SofaPython3/${modulebindings_module})
 endforeach()
 

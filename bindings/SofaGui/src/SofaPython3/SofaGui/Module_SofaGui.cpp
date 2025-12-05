@@ -20,16 +20,22 @@
 
 #include <pybind11/pybind11.h>
 
-#include <SofaGui/initSofaGui.h>
 #include <sofa/core/init.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem;
 
-#if SOFAGUI_HAVE_SOFAGUIQT
-#include <sofa/gui/qt/qt.conf.h>
-#endif // SOFAGUI_HAVE_SOFAGUIQT
+#if __has_include(<sofa/gui/batch/init.h>)
+#include <sofa/gui/batch/init.h>
+#define HAS_GUI_BATCH
+#endif
+
+#if __has_include(<sofa/gui/headlessrecorder/init.h>)
+#include <sofa/gui/headlessrecorder/init.h>
+#define HAS_GUI_HEADLESSRECORDER
+#endif
+
 
 #include "Binding_BaseGui.h"
 #include "Binding_GUIManager.h"
@@ -41,12 +47,11 @@ namespace sofapython3 {
 PYBIND11_MODULE(Gui, m) {
 
     m.doc() = R"doc(
-            Sofa.Gui
-            -----------------------
+            Controls the graphical user interface
 
-            Example of use:
-
+            Example:
                 .. code-block:: python
+
                     import Sofa.Gui
 
                     supported_gui = Sofa.Gui.GUIManager.ListSupportedGUI(",")
@@ -57,35 +62,16 @@ PYBIND11_MODULE(Gui, m) {
                     Sofa.Gui.GUIManager.MainLoop(root)
                     Sofa.Gui.GUIManager.closeGUI()
 
-
-                .. automodule:: Gui
-                    :toctree: _autosummary
-                    :members:
              )doc";
 
-#if SOFAGUI_HAVE_SOFAGUIQT
-    std::string sofaPrefixAbsolute = sofa::helper::Utils::getSofaPathPrefix();
-    std::string inputFilepath = FileSystem::cleanPath(sofaPrefixAbsolute + "/bin/qt.conf");
-    bool success = sofa::gui::qt::loadQtConfWithCustomPrefix(inputFilepath, sofaPrefixAbsolute);
-    if(success)
-    {
-        msg_info("Sofa.Gui") << "Loaded qt.conf from " << inputFilepath << " customized with Prefix = " << sofaPrefixAbsolute;
-    }
-    else
-    {
-        msg_warning("Sofa.Gui") << "Failed loading and/or customizing qt.conf from " << inputFilepath;
+// forcefullly link libraries at compile-time
+#ifdef HAS_GUI_BATCH
+    sofa::gui::batch::init();
+#endif
+#ifdef HAS_GUI_HEADLESSRECORDER
+    sofa::gui::headlessrecorder::init();
+#endif
 
-        std::cout << "qt_resource_data:" << std::endl;
-        for (int i = 0 ; i < qt_resource_data.size() ; ++i) {
-           std::cout << qt_resource_data[i];
-        }
-        std::cout << std::endl;
-    }
-#endif // SOFAGUI_HAVE_SOFAGUIQT
-
-    // This is needed to make sure the GuiMain library (libSofaGuiMain.so) is correctly
-    // linked since the GUIs are statically created during the load of the library.
-    sofa::gui::initSofaGui();
     sofa::core::init();
 
     moduleAddBaseGui(m);

@@ -22,10 +22,10 @@
 #include "Binding_RegularGridTopology.h"
 #include "Binding_RegularGridTopology_doc.h"
 
-#include <SofaBaseTopology/RegularGridTopology.h>
+#include <sofa/component/topology/container/grid/RegularGridTopology.h>
 #include <SofaPython3/PythonFactory.h>
 
-using sofa::component::topology::RegularGridTopology;
+using sofa::component::topology::container::grid::RegularGridTopology;
 using sofa::core::objectmodel::BaseObject;
 
 PYBIND11_DECLARE_HOLDER_TYPE(Base, sofa::core::sptr<Base>, true)

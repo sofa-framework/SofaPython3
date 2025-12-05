@@ -19,14 +19,17 @@
 ******************************************************************************/
 
 
+#include <pybind11/detail/common.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/Node.h>
 
 #include <SofaPython3/DataHelper.h>
+#include <SofaPython3/LinkPath.h>
 #include <SofaPython3/DataCache.h>
 #include <SofaPython3/PythonFactory.h>
+
 
 using sofa::core::objectmodel::BaseLink;
 
@@ -60,6 +63,12 @@ std::string toSofaParsableString(const py::handle& p)
     {
         py::object o = p.attr("tolist")();
         return toSofaParsableString(o);
+    }
+
+    // if the object is a link path we set it.
+    if(py::isinstance<sofapython3::LinkPath>(p))
+    {
+        return py::str(p);
     }
 
     return py::repr(p);
@@ -238,14 +247,17 @@ py::slice toSlice(const py::object& o)
 }
 
 
-std::map<void*, py::array>& getObjectCache()
+std::map<void*, std::pair<int, py::array>>& getObjectCache()
 {
-    static std::map<void*, py::array>* s_objectcache {nullptr} ;
-    if(!s_objectcache)
-    {
-        s_objectcache=new std::map<void*, py::array>();
-    }
-    return *s_objectcache;
+    static std::map<void*, std::pair<int, py::array>>  s_objectcache{};
+    return s_objectcache;
+}
+
+
+void clearCache()
+{
+    msg_info("SofaPython3") << "Clearing Sofa.Core cache...";
+    getObjectCache().clear();
 }
 
 void trimCache()
@@ -294,7 +306,7 @@ size_t getSize(BaseData* self)
 
 py::buffer_info toBufferInfo(BaseData& m)
 {
-    scoped_read_access guard(&m);
+    m.updateIfDirty();
 
     const AbstractTypeInfo& nfo { *m.getValueTypeInfo() };
     auto itemNfo = nfo.BaseType();
@@ -316,22 +328,32 @@ py::buffer_info toBufferInfo(BaseData& m)
             format = py::format_descriptor<double>::value;
         else if(nfo.byteSize() == 4)
             format = py::format_descriptor<float>::value;
+    // TODO add nfo.Text()
+    /* } else if(nfo.Text()) { */
+    /*     format = py::format_descriptor<char>::value; */
+    /* } */
+    }
+    else {
+        throw py::type_error("Invalid type");
     }
 
     size_t datasize = nfo.byteSize();
 
     std::tuple<int,int> shape = getShape(&m);
-    size_t  ndim = getNDim(&m);
 
-    void* ptr = const_cast<void*>(nfo.getValuePtr(m.getValueVoidPtr()));
+    // By default, ptr is set to nullptr. It is updated by a call to getValuePtr only if the data is not empty. Otherwise the ptr passed to the py::buffer_info remains nullptr. 
+    void* ptr = nullptr;
+    if (std::get<0>(shape) != 0)
+        ptr = const_cast<void*>(nfo.getValuePtr(m.getValueVoidPtr()));
+
     if( !itemNfo->Container() ){
         return py::buffer_info(
                     ptr, /* Pointer to buffer */
                     datasize,                              /* Size of one scalar */
                     format,                                /* Python struct-style format descriptor */
                     1,                                     /* Number of dimensions */
-        { std::get<0>(shape) },                              /* Buffer dimensions */
-        { datasize }                           /* Strides (in bytes) for each index */
+                    { std::get<0>(shape) },                              /* Buffer dimensions */
+                    { datasize }                           /* Strides (in bytes) for each index */
                     );
     }
     py::buffer_info ninfo(
@@ -339,17 +361,20 @@ py::buffer_info toBufferInfo(BaseData& m)
                 datasize,                              /* Size of one scalar */
                 format,                                /* Python struct-style format descriptor */
                 2,                                     /* Number of dimensions */
-    { std::get<0>(shape), std::get<1>(shape)},                        /* Buffer dimensions */
-    { datasize * std::get<1>(shape) ,    datasize }                         /* Strides (in bytes) for each index */
+                { std::get<0>(shape), std::get<1>(shape)},                        /* Buffer dimensions */
+                { datasize * std::get<1>(shape) ,    datasize }                         /* Strides (in bytes) for each index */
                 );
     return ninfo;
 }
 
 py::object convertToPython(BaseData* d)
 {
+    assert(d != nullptr);
+
     const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
-    if(hasArrayFor(d))
+    if(hasArrayFor(d)){
         return getPythonArrayFor(d);
+    }
 
     if(nfo.Container())
     {
@@ -361,31 +386,42 @@ py::object convertToPython(BaseData* d)
         }
         else
         {
-            size_t dim0 = nfo.size(d->getValueVoidPtr())/nfo.size();
-            size_t dim1 = nfo.size();
-            for(size_t i=0;i<dim0;i++)
+            if (nfo.size() != 0)
             {
-
-                py::list list1;
-                for(size_t j=0;j<dim1;j++)
+                size_t dim0 = nfo.size(d->getValueVoidPtr())/nfo.size();
+                size_t dim1 = nfo.size();
+                for(size_t i=0;i<dim0;i++)
                 {
-                    if(nfo.Integer())
-                        list1.append(nfo.getIntegerValue(d->getValueVoidPtr(),i*dim1+j));
-                    if(nfo.Scalar())
-                        list1.append(nfo.getScalarValue(d->getValueVoidPtr(),i*dim1+j));
+                    py::list list1;
+                    for(size_t j=0;j<dim1;j++)
+                    {
+                        if(nfo.Integer())
+                            list1.append(nfo.getIntegerValue(d->getValueVoidPtr(),i*dim1+j));
+                        else if(nfo.Scalar())
+                            list1.append(nfo.getScalarValue(d->getValueVoidPtr(),i*dim1+j));
+                        else
+                            throw py::type_error("Invalid type");
+                    }
+                    list.append(list1);
                 }
-                list.append(list1);
+            }
+            else
+            {
+                throw std::runtime_error("Abstract type info corresponding to Data " + d->getName() + " is empty\n");
             }
         }
         return std::move(list);
     }
 
-    if(nfo.Integer())
+    if(nfo.Integer()){
         return py::cast(nfo.getIntegerValue(d->getValueVoidPtr(), 0));
-    if(nfo.Text())
+    }
+    if(nfo.Text()){
         return py::cast(d->getValueString());
-    if(nfo.Scalar())
+    }
+    if(nfo.Scalar()){
         return py::cast(nfo.getScalarValue(d->getValueVoidPtr(), 0));
+    }
 
     return py::cast(d->getValueString());
 }
@@ -400,31 +436,32 @@ py::array resetArrayFor(BaseData* d)
 {
     //todo: protect the function.
     auto& memcache = getObjectCache();
-    auto capsule = py::capsule(new Base::SPtr(d->getOwner()));
+    auto capsule = py::capsule(new Base::SPtr(d->getOwner()), [](void*p){ delete static_cast<Base::SPtr*>(p); } );
 
     py::buffer_info ninfo = toBufferInfo(*d);
     py::array a(pybind11::dtype(ninfo), ninfo.shape,
                 ninfo.strides, ninfo.ptr, capsule);
 
-    memcache[d] = a;
+    memcache[d] = std::make_pair(d->getCounter(), a);
     return a;
 }
 
 py::array getPythonArrayFor(BaseData* d)
 {
     auto& memcache = getObjectCache();
-    if(d->isDirty() || memcache.find(d) == memcache.end())
+    auto mementry = memcache.find(d);
+    if(d->isDirty() || mementry == memcache.end() || std::get<0>(mementry->second) != d->getCounter())
     {
-        auto capsule = py::capsule(new Base::SPtr(d->getOwner()));
+        auto capsule = py::capsule(new Base::SPtr(d->getOwner()), [](void*p){ delete static_cast<Base::SPtr*>(p); } );
 
         py::buffer_info ninfo = toBufferInfo(*d);
         py::array a(pybind11::dtype(ninfo), ninfo.shape,
                     ninfo.strides, ninfo.ptr, capsule);
 
-        memcache[d] = a;
+        memcache[d] = std::make_pair(d->getCounter(), a);
         return a;
     }
-    return memcache[d];
+    return std::get<1>(memcache[d]);
 }
 
 
@@ -463,7 +500,7 @@ BaseData* deriveTypeFromParent(sofa::core::objectmodel::BaseContext* ctx, const 
 bool isProtectedKeyword(const std::string& name)
 {
     if (name == "children" || name == "objects" || name == "parents" ||
-            name == "data" || name == "links")
+            name == "data" || name == "links" || name == "linkpath")
     {
         return true;
     }
@@ -605,6 +642,7 @@ BaseLink* addLink(py::object py_self, const std::string& name, py::object value,
 
     BaseLink::InitLink<Base> initlink(self, name, help);
 
+    // TODO: replace new keyword with a reference counted pointer (make_unique or make_shared)
     BaseLink* link = new sofa::core::objectmodel::SingleLink<Base, Base, BaseLink::FLAG_MULTILINK>(initlink);
     if (py::isinstance<std::string>(value))
     {
@@ -617,8 +655,32 @@ BaseLink* addLink(py::object py_self, const std::string& name, py::object value,
     else if (py::isinstance<Base*>(value))
         link->setLinkedBase(py::cast<Base*>(value));
 
-//    self->addLink(link);
+    //    self->addLink(link);
     return link;
 }
+
+
+void setDataFromKwargs(Base* obj, const pybind11::kwargs& kwargs)
+{
+    const auto typeHandleBaseData = py::detail::get_type_handle(typeid(BaseData), false);
+    const auto typeHandleLinkPath = py::detail::get_type_handle(typeid(LinkPath), false);
+
+    for (auto & kv : kwargs)
+    {
+        BaseData* d = obj->findData(py::cast<std::string>(kv.first));
+        if(d)
+        {
+            if (py::isinstance(kv.second, typeHandleBaseData))
+                d->setParent(kv.second.cast<BaseData*>());
+            else if (py::isinstance(kv.second, typeHandleLinkPath))
+                d->setParent(py::str(kv.second));
+            else if (py::isinstance<py::str>(kv.second))
+                d->read(py::str(kv.second));
+            else
+                PythonFactory::fromPython(d, py::cast<py::object>(kv.second));
+        }
+    }
+}
+
 
 }  // namespace sofapython3

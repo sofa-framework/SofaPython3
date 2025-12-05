@@ -3,12 +3,17 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaPython3 QUIET REQUIRED COMPONENTS Plugin Bindings.Sofa)
+find_package(Sofa.Config QUIET REQUIRED)
+sofa_find_package(SofaPython3 QUIET REQUIRED COMPONENTS Plugin Bindings.Sofa)
 
 # Required by Bindings.Modules.SofaBaseTopology
-find_package(SofaBaseTopology QUIET REQUIRED)
+sofa_find_package(Sofa.Component.Topology.Container.Grid QUIET REQUIRED)
+
 # Required by Bindings.Modules.SofaDeformable
-find_package(SofaDeformable QUIET REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.Spring QUIET REQUIRED)
+
+# Required by Bindings.Modules.SofaLinearSolver
+sofa_find_package(Sofa.Component.LinearSolver.Iterative QUIET REQUIRED)
 
 # If we are importing this config file and the target is not yet there this is indicating that
 # target is an imported one. So we include it

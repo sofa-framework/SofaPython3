@@ -24,7 +24,7 @@
 #include <pybind11/stl.h>
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaBaseVisual/BaseCamera.h>
+#include <sofa/component/visual/BaseCamera.h>
 
 #include <SofaPython3/Sofa/Core/Binding_BaseCamera.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseCamera_doc.h>
@@ -33,7 +33,7 @@
 
 namespace py { using namespace pybind11; }
 using sofa::core::objectmodel::BaseObject;
-using sofa::component::visualmodel::BaseCamera;
+using sofa::component::visual::BaseCamera;
 
 namespace sofapython3 {
 
@@ -55,7 +55,6 @@ std::vector<double> getOpenGLProjectionMatrix(BaseCamera* self)
 
 std::vector<double> getOpenGLModelViewMatrix(BaseCamera* self)
 {
-    auto s = self->p_position.getValue();
     static std::vector<double> m {16};
     m.resize(16);
     self->getOpenGLModelViewMatrix(m.data());

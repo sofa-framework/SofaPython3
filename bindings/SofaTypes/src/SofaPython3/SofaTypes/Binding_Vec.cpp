@@ -22,17 +22,18 @@
 #include <functional>
 #include <pybind11/operators.h>
 #include <sstream>
+
+#include <sofa/defaulttype/typeinfo/TypeInfo_Vec.h>
+
 using sofa::type::Vec;
 
-#define BINDING_VEC_MAKE_NAME(N, T)                                            \
-    std::string(std::string("Vec") + std::to_string(N) + typeid(T).name())
-
-namespace pyVec {
+namespace pyVec 
+{
 template <sofa::Size N, class T> std::string __str__(const Vec<N, T> &v, bool repr)
 {
     std::stringstream s ;
     s.imbue(std::locale("C"));
-    s << ((repr) ? (BINDING_VEC_MAKE_NAME(N, T) + "(") : ("("));
+    s << ((repr) ? (sofa::defaulttype::DataTypeInfo< Vec<N, T> >::name() + "(") : ("("));
     s << v[0];
     for (size_t i = 1; i < v.size(); ++i)
         s <<  ", " << v[i];
@@ -86,7 +87,7 @@ template <sofa::Size N, class T>
 py::class_<Vec<N,T>> addVec(py::module &m)
 {
     typedef Vec<N, T> VecClass;
-    py::class_<Vec<N, T>> p(m, BINDING_VEC_MAKE_NAME(N, T).c_str());
+    py::class_<Vec<N, T>> p(m, sofa::defaulttype::DataTypeInfo< Vec<N, T> >::name().c_str());
 
     p.def(py::init<>());                 // empty ctor
     p.def(py::init<const VecClass &>()); // copy ctor

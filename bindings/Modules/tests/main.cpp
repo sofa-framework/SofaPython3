@@ -18,8 +18,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaPython3/PythonTest.h>
-#include <SofaPython3/PythonTestExtractor.h>
+#include <SofaPython3Testing/PythonTest.h>
+#include <SofaPython3Testing/PythonTestExtractor.h>
 #include <sofa/helper/Utils.h>
 
 #include <sofa/helper/logging/Messaging.h>
@@ -39,6 +39,8 @@ static struct Tests : public sofapython3::PythonTestExtractor
 
         const std::string executable_directory = sofa::helper::Utils::getExecutableDirectory();
         addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaDeformable", "SofaDeformable_");
+        addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaLinearSolver", "SofaLinearSolver_");
+        addTestDirectory(executable_directory+"/Bindings.Modules.Tests.d/SofaConstraintSolver", "SofaConstraintSolver_");
     }
 } python_tests;
 

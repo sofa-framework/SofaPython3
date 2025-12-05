@@ -28,7 +28,10 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/MechanicalParams.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <sofa/core/behavior/DefaultMultiMatrixAccessor.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+
+#include <pybind11/eigen.h>
 
 #include <SofaPython3/PythonEnvironment.h>
 using sofapython3::PythonEnvironment;
@@ -49,6 +52,7 @@ namespace sofapython3
     using sofa::defaulttype::Vec3dTypes;
     using sofa::defaulttype::Vec2dTypes;
     using sofa::defaulttype::Vec1dTypes;
+    using sofa::defaulttype::Vec6dTypes;
     using sofa::defaulttype::Rigid3dTypes;
     using sofa::defaulttype::Rigid2dTypes;
 
@@ -137,50 +141,53 @@ namespace sofapython3
 
         size_t offset = mref.offset;
         // nNodes is the number of nodes (positions) of the object whose K matrix we're computing
-        int nNodes = int(mparams->readX(mstate)->getValue().size());
+        int nNodes = int(mparams->readX(mstate.get())->getValue().size());
         // nDofs is the number of degrees of freedom per-element of the object whose K matrix we're computing
         int nDofs = Coord::total_size;
 
         py::object ret = _addKToMatrix(mparams, nNodes, nDofs);
 
-        // if ret is numpy array
-        if(py::isinstance<py::array>(ret))
+        if(!py::isinstance<py::array>(ret))
         {
-            auto r = py::cast<py::array>(ret);
-            if (r.ndim() == 3 && r.shape(2) == 1)
+            throw py::type_error("Can't read return value of AddKToMatrix. A numpy array is expected");
+        }
+
+        // if ret is numpy array
+        auto r = py::cast<py::array>(ret);
+        if (r.ndim() == 3 && r.shape(2) == 1)
+        {
+            // read K as a plain 2D matrix
+            auto kMatrix = r.unchecked<double, 3>();
+            for (size_t x = 0 ; x < size_t(kMatrix.shape(0)) ; ++x)
             {
-                // read K as a plain 2D matrix
-                auto kMatrix = r.unchecked<double, 3>();
-                for (size_t x = 0 ; x < size_t(kMatrix.shape(0)) ; ++x)
+                for (size_t y = 0 ; y < size_t(kMatrix.shape(1)) ; ++y)
                 {
-                    for (size_t y = 0 ; y < size_t(kMatrix.shape(1)) ; ++y)
-                    {
-                        mat->add(int(offset + x), int(offset + y), kMatrix(x,y, 0));
-                    }
+                    mat->add(int(offset + x), int(offset + y), kMatrix(x,y, 0));
                 }
-            }
-            else if (r.ndim() == 2 && r.shape(1) == 3)
-            {
-                // consider ret to be a list of tuples [(i,j,[val])]
-                auto kMatrix = r.unchecked<double, 2>();
-                for (auto x = 0 ; x < kMatrix.shape(0) ; ++x)
-                {
-                    mat->add(int(offset + size_t(kMatrix(x,0))), int(offset + size_t(kMatrix(x,1))), kMatrix(x,2));
-                }
-            }
-            else
-            {
-                throw py::type_error("Can't read return value of AddKToMatrix. The method should return either a plain 2D matrix or a vector of tuples (i, j, val)");
             }
         }
+        else if (r.ndim() == 2 && r.shape(1) == 3)
+        {
+            // consider ret to be a list of tuples [(i,j,[val])]
+            auto kMatrix = r.unchecked<double, 2>();
+            for (auto x = 0 ; x < kMatrix.shape(0) ; ++x)
+            {
+                mat->add(int(offset + size_t(kMatrix(x,0))), int(offset + size_t(kMatrix(x,1))), kMatrix(x,2));
+            }
+        }
+        else
+        {
+            throw py::type_error("Can't read return value of AddKToMatrix. The method should return either a plain 2D matrix or a vector of tuples (i, j, val)");
+        }
+
     }
 
 
     template<class TDOFType>
-    void declare_forcefield(py::module &m, std::string typestr) {
-        std::string pyclass_name = std::string("ForceField") + typestr;
+    void declare_forcefield(py::module &m) {
+        const std::string pyclass_name = std::string("ForceField") + TDOFType::Name();
         py::class_<ForceField<TDOFType>, BaseObject, ForceField_Trampoline<TDOFType>, py_shared_ptr<ForceField<TDOFType>>> f(m, pyclass_name.c_str(), py::dynamic_attr(), py::multiple_inheritance(), sofapython3::doc::forceField::forceFieldClass);
-        
+
         f.def(py::init([](py::args &args, py::kwargs &kwargs) {
             auto ff = sofa::core::sptr<ForceField_Trampoline<TDOFType>> (new ForceField_Trampoline<TDOFType>());
 
@@ -204,15 +211,54 @@ namespace sofapython3
             }
             return ff;
         }));
+
+        using Real = typename TDOFType::Real;
+        using EigenSparseMatrix = Eigen::SparseMatrix<typename TDOFType::Real, Eigen::RowMajor>;
+        using EigenMatrixMap = Eigen::Map<EigenSparseMatrix>;
+
+        f.def("assembleKMatrix", [](ForceField<TDOFType>& self) -> EigenSparseMatrix
+        {
+            sofa::linearalgebra::CompressedRowSparseMatrix<Real> matrix;
+
+            if (const auto* mstate = self.getMState())
+            {
+                const auto matrixSize = static_cast<sofa::linearalgebra::BaseMatrix::Index>(mstate->getMatrixSize());
+                matrix.resize(matrixSize, matrixSize);
+
+                sofa::core::behavior::DefaultMultiMatrixAccessor accessor;
+                accessor.addMechanicalState(mstate);
+                accessor.setGlobalMatrix(&matrix);
+
+                auto mparams = *MechanicalParams::defaultInstance();
+                mparams.setKFactor(1.).setMFactor(0.).setBFactor(0.);
+
+                self.addKToMatrix(&mparams, &accessor);
+            }
+            matrix.compress();
+
+            if (matrix.getColsValue().empty() || matrix.rowBegin.empty() || matrix.colsIndex.empty())
+                return {};
+
+            return EigenMatrixMap(matrix.rows(), matrix.cols(), matrix.getColsValue().size(),
+                                (typename EigenMatrixMap::StorageIndex*)matrix.rowBegin.data(),
+                                (typename EigenMatrixMap::StorageIndex*)matrix.colsIndex.data(),
+                                matrix.colsValue.data());
+        }, sofapython3::doc::forceField::assembleKMatrix);
+
+        PythonFactory::registerType<ForceField<TDOFType>>([](sofa::core::objectmodel::Base* object)
+        {
+            return py::cast(dynamic_cast<ForceField<TDOFType>*>(object));
+        });
     }
 
 
 void moduleAddForceField(py::module &m) {
-    declare_forcefield<Vec3dTypes>(m, "Vec3d");
-    declare_forcefield<Vec2dTypes>(m, "Vec2d");
-    declare_forcefield<Vec1dTypes>(m, "Vec1d");
-    declare_forcefield<Rigid3dTypes>(m, "Rigid3d");
-    declare_forcefield<Rigid2dTypes>(m, "Rigid2d");
+    declare_forcefield<Vec3dTypes>(m);
+    declare_forcefield<Vec2dTypes>(m);
+    declare_forcefield<Vec1dTypes>(m);
+    declare_forcefield<Vec6dTypes>(m);
+    declare_forcefield<Rigid3dTypes>(m);
+    declare_forcefield<Rigid2dTypes>(m);
 }
 
 }  // namespace sofapython3

@@ -23,6 +23,7 @@
 #include <vector>
 #include <string>
 #include <sofa/helper/logging/FileInfo.h>
+#include <SofaPython3/DataHelper.h>
 
 /// Fixes compile errors:
 /// removing all slots macros is necessary if embedded in a Qt project
@@ -52,6 +53,7 @@ using sofa::simulation::SceneLoader ;
 
 /// Forward definition
 class PythonEnvironmentData ;
+class PythonEnvironmentModule ;
 
 class SOFAPYTHON3_API PythonEnvironment
 {
@@ -118,6 +120,7 @@ public:
     /// to be able to react when a scene is loaded
     struct SceneLoaderListerner : public SceneLoader::Listener
     {
+        using SceneLoader::Listener::rightBeforeLoadingScene;
         /// possibly unload python modules to force importing their eventual modifications
         virtual void rightBeforeLoadingScene();
         static SceneLoaderListerner* getInstance() {
@@ -154,6 +157,7 @@ public:
 
 private:
     static PythonEnvironmentData* getStaticData() ;
+    static PythonEnvironmentModule* getStaticModule() ;
     static std::string pluginLibraryPath;
     static inline bool s_isInitialized{false};
 };

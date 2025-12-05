@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(SofaPython3 VERSION 20.12.00)
+project(SofaPython3 VERSION 24.12.99)
 
-find_package(SofaFramework REQUIRED)
+find_package(Sofa.Config REQUIRED)
 
 # Detect if SofaPython3 is a subproject of another project (eg. when compiled within Sofa)
 if (NOT "${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
@@ -41,8 +41,13 @@ if(SP3_BUILD_TEST)
     find_package(Threads REQUIRED)
 endif()
 
-find_package(SofaExporter QUIET)
-CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAEXPORTER "Bind the SOFA exporter component." ON "SofaExporter_FOUND" OFF)
+sofa_find_package(Sofa.Component.IO.Mesh QUIET)
+CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAEXPORTER "Bind the SOFA exporter component." ON "Sofa.Component.IO.Mesh_FOUND" OFF)
+
+
+sofa_find_package(Sofa.GUI.Common QUIET)
+CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAGUI "Bind the SOFA gui component." ON "Sofa.GUI.Common_FOUND" OFF)
+
 
 # BUILD OPTIONS
 if (NOT SP3_COMPILED_AS_SUBPROJECT)
@@ -109,6 +114,7 @@ if(EXISTS "${Python_INCLUDE_DIR}")
 elseif(EXISTS "${Python_INCLUDE_DIRS}")
     set(PYTHON_INCLUDE_DIR "${Python_INCLUDE_DIRS}" CACHE INTERNAL "" FORCE)
 endif()
+string(REGEX MATCH "[0-9]+\.[0-9]+" PythonMAJMIN "${Python_VERSION}")
 
 # Set the minimum pybind11 version to 2.3 (before that the pybind11::embed target did not exist)
 find_package(pybind11 2.3 CONFIG QUIET REQUIRED)
@@ -145,6 +151,8 @@ message(STATUS "Python:
     Libraries: ${Python_LIBRARIES}
     User site: ${PYTHON_USER_SITE}"
 )
+
+
 message(STATUS "pybind11:
     Version: ${pybind11_VERSION}
     Config: ${pybind11_CONFIG}"
@@ -175,6 +183,9 @@ add_subdirectory(Plugin)
 add_subdirectory(bindings)
 add_subdirectory(examples)
 add_subdirectory(docs)
+if (SP3_BUILD_TEST)
+    add_subdirectory(Testing)
+endif()
 
 SP3_add_python_package(
     SOURCE_DIRECTORY

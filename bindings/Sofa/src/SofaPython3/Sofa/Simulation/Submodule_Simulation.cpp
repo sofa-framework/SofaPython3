@@ -22,10 +22,9 @@
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
+#include <memory>
+#include "SofaPython3/DataHelper.h"
 using sofa::simulation::Simulation;
-
-#include <SofaSimulationGraph/DAGSimulation.h>
-using sofa::simulation::graph::DAGSimulation;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
@@ -37,10 +36,13 @@ using sofa::simulation::Simulation;
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/VisualLoop.h>
 #include <SofaPython3/Sofa/Simulation/Submodule_Simulation_doc.h>
+#include <SofaPython3/Sofa/Simulation/Binding_SceneCheck.h>
+#include <SofaPython3/Sofa/Simulation/Binding_SceneCheckMainRegistry.h>
 
 #include <sofa/core/init.h>
 #include <sofa/simulation/init.h>
-#include <SofaSimulationGraph/init.h>
+#include <sofa/simulation/common/init.h>
+#include <sofa/simulation/graph/init.h>
 
 namespace py = pybind11;
 
@@ -54,32 +56,59 @@ PYBIND11_MODULE(Simulation, simulation)
     sofa::simulation::core::init();
     sofa::simulation::graph::init();
 
-    if(!sofa::simulation::getSimulation())
-        sofa::simulation::setSimulation(new DAGSimulation());
-
     simulation.doc() =sofapython3::doc::simulation::Class;
 
-    simulation.def("print", [](Node* n){ sofa::simulation::getSimulation()->print(n); }, sofapython3::doc::simulation::print);
-    simulation.def("animate", [](Node* n, SReal dt=0.0){ sofa::simulation::getSimulation()->animate(n, dt); },sofapython3::doc::simulation::animate);
-    simulation.def("init", [](Node* n){ sofa::simulation::getSimulation()->init(n); }, sofapython3::doc::simulation::init);
-    simulation.def("initVisual", [](Node* n){ n->getVisualLoop()->initStep(sofa::core::visual::VisualParams::defaultInstance()); });
-    simulation.def("reset", [](Node* n){ sofa::simulation::getSimulation()->reset(n); }, sofapython3::doc::simulation::reset);
-    simulation.def("load", [](const std::string & name) {
-        sofa::simulation::Node::SPtr node = sofa::simulation::getSimulation()->load(name);
+    moduleAddSceneCheck(simulation);
+    moduleAddSceneCheckMainRegistry(simulation);
+
+    simulation.def("print", [](Node* n){ sofa::simulation::node::print(n); }, sofapython3::doc::simulation::print);
+    simulation.def("animate", [](Node* n, SReal dt=0.0){ sofa::simulation::node::animate(n, dt); },sofapython3::doc::simulation::animate);
+    simulation.def("init", [](Node* n){ sofa::simulation::node::init(n); }, sofapython3::doc::simulation::init);
+    simulation.def("initRoot", [](Node* n){ sofa::simulation::node::initRoot(n); }, sofapython3::doc::simulation::initRoot);
+    simulation.def("initVisual", [](Node* n){ n->getVisualLoop()->initStep(sofa::core::visual::VisualParams::defaultInstance()); }, sofapython3::doc::simulation::initVisual);
+    simulation.def("reset", [](Node* n){ sofa::simulation::node::reset(n); }, sofapython3::doc::simulation::reset);
+  
+    simulation.def("load", [](const std::string & name)
+    {
+        sofa::simulation::Node::SPtr node = sofa::simulation::node::load(name);
         return node ? py::cast(node.get()) : py::none();
     }, sofapython3::doc::simulation::load);
-    simulation.def("unload", [](Node* n){ sofa::simulation::getSimulation()->unload(n); }, sofapython3::doc::simulation::unload);
-    simulation.def("animateNSteps", [](Node *n, int n_steps, SReal dt=0.0){
+  
+    simulation.def("unload", [](Node* n)
+    {
+            auto& memcache = getObjectCache();
+            sofa::simulation::node::unload(n);
+            memcache.clear();
+    }, sofapython3::doc::simulation::unload);
+  
+    simulation.def("animateNSteps", [](Node *n, int n_steps, SReal dt=0.0)
+    {
         for (int i = 0; i < n_steps; i++)
         {
-            sofa::simulation::getSimulation()->animate(n, dt); //Execute one timestep. If dt is 0, the dt parameter in the graph will be used
+            sofa::simulation::node::animate(n, dt); //Execute one timestep. If dt is 0, the dt parameter in the graph will be used
         }
     }, sofapython3::doc::simulation::animateNSteps, py::arg("root_node"), py::arg("n_steps") = 1, py::arg("dt") = 0.0);
-    simulation.def("updateVisual", [](Node* n){ sofa::simulation::getSimulation()->updateVisual(n); });
+  
+    simulation.def("updateVisual", [](Node* n)
+    {
+        sofa::simulation::node::updateVisual(n);
+    }, sofapython3::doc::simulation::updateVisual);
+
     simulation.def("initTextures", [](Node* n)
     {
-        sofa::simulation::getSimulation()->initTextures(n);
+        sofa::simulation::node::initTextures(n);
     });
+
+    // called when the module is unloaded
+    auto atexit = py::module_::import("atexit");
+    atexit.attr("register")(py::cpp_function([]() {
+
+        sofa::simulation::core::cleanup();
+        sofa::simulation::common::cleanup();
+        sofa::simulation::graph::cleanup();
+
+        msg_info("SofaPython3.Simulation") << "Sofa.Simulation unload()";
+    }));
 }
 
 } /// namespace sofapython3

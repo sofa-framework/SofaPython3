@@ -29,16 +29,23 @@ class RestShapeForceField(Sofa.Core.ForceFieldVec3d):
     #    print(" Python::addKToMatrix: ", a, " ", b)
 
 
-def createScene(node):
-        node.addObject("RequiredPlugin", name="SofaOpenglVisual")
-        node.addObject("RequiredPlugin", name="SofaSparseSolver")
-        node.addObject("RequiredPlugin", name="SofaImplicitOdeSolver")
-        node.addObject("OglLineAxis")
-        node.addObject("DefaultAnimationLoop", name="loop")
-        node.addObject("EulerImplicitSolver")
-        node.addObject("CGLinearSolver", tolerance=1e-12, threshold=1e-12, iterations=25)
+def createScene(root):
 
-        o = node.addChild("Object")
+        root.addObject("RequiredPlugin", pluginName=["Sofa.GL.Component",
+                                                     "Sofa.Component.ODESolver.Backward",
+                                                     "Sofa.Component.LinearSolver.Direct",
+                                                     "Sofa.Component.LinearSolver.Iterative",
+                                                     "Sofa.Component.Mass",
+                                                     "Sofa.Component.StateContainer",
+                                                     "Sofa.Component.Visual"
+                                                      ])
+
+        root.addObject("LineAxis")
+        root.addObject("DefaultAnimationLoop", name="loop")
+        root.addObject("EulerImplicitSolver")
+        root.addObject("CGLinearSolver", tolerance=1e-12, threshold=1e-12, iterations=25)
+
+        o = root.addChild("Object")
         c = o.addObject("MechanicalObject", name="mechanical", position=[0.0,0.0,0.0, 1.0,0.0,0.0])
         c.showObject = True
         c.showColor = [1.0,0.0,0.0,1.0]
@@ -47,21 +54,18 @@ def createScene(node):
         o.addObject("UniformMass", name="mass", totalMass=[0.1])
         o.addObject( RestShapeForceField(name="CPPObject", ks=2.0, kd=0.1))
 
-        return node
+        return root
 
 
 def main():
-    import SofaRuntime
+    import SofaImGui
     import Sofa.Gui
-    SofaRuntime.importPlugin("SofaOpenglVisual")
-    SofaRuntime.importPlugin("SofaBaseMechanics")
-    SofaRuntime.importPlugin("SofaImplicitOdeSolver")
 
     root=Sofa.Core.Node("root")
     createScene(root)
-    Sofa.Simulation.init(root)
+    Sofa.Simulation.initRoot(root)
 
-    Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
+    Sofa.Gui.GUIManager.Init("myscene", "imgui")
     Sofa.Gui.GUIManager.createGUI(root, __file__)
     Sofa.Gui.GUIManager.SetDimension(1080, 1080)
     Sofa.Gui.GUIManager.MainLoop(root)

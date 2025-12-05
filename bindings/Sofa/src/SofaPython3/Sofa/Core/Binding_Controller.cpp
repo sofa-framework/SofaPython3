@@ -20,7 +20,7 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/cast.h>
-
+#include <sofa/core/visual/VisualParams.h>
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_Controller.h>
 #include <SofaPython3/Sofa/Core/Binding_Controller_doc.h>
@@ -45,6 +45,13 @@ std::string Controller_Trampoline::getClassName() const
     return py::str(py::cast(this).get_type().attr("__name__"));
 }
 
+void Controller_Trampoline::draw(const sofa::core::visual::VisualParams* params)
+{
+    PythonEnvironment::executePython(this, [this, params](){
+        PYBIND11_OVERLOAD(void, Controller, draw, params);
+    });
+}
+
 void Controller_Trampoline::init()
 {
     PythonEnvironment::executePython(this, [this](){
@@ -61,7 +68,7 @@ void Controller_Trampoline::reinit()
 
 /// If a method named "methodName" exists in the python controller,
 /// methodName is called, with the Event's dict as argument
-void Controller_Trampoline::callScriptMethod(
+bool Controller_Trampoline::callScriptMethod(
         const py::object& self, Event* event, const std::string & methodName)
 {
     if(f_printLog.getValue())
@@ -74,8 +81,13 @@ void Controller_Trampoline::callScriptMethod(
     if( py::hasattr(self, methodName.c_str()) )
     {
         py::object fct = self.attr(methodName.c_str());
-        fct(PythonFactory::toPython(event));
+        py::object result = fct(PythonFactory::toPython(event));
+        if(result.is_none())
+            return false;
+
+        return py::cast<bool>(result);
     }
+    return false;
 }
 
 void Controller_Trampoline::handleEvent(Event* event)
@@ -88,13 +100,17 @@ void Controller_Trampoline::handleEvent(Event* event)
         {
             py::object fct = self.attr(name.c_str());
             if (PyCallable_Check(fct.ptr())) {
-                callScriptMethod(self, event, name);
+                bool isHandled = callScriptMethod(self, event, name);
+                if(isHandled)
+                    event->setHandled();
                 return;
             }
         }
 
         /// Is the fallback method available.
-        callScriptMethod(self, event, "onEvent");
+        bool isHandled = callScriptMethod(self, event, "onEvent");
+        if(isHandled)
+            event->setHandled();
     });
 }
 
@@ -104,7 +120,7 @@ void moduleAddController(py::module &m) {
             BaseObject,
             py_shared_ptr<Controller>> f(m, "Controller",
                                          py::dynamic_attr(),
-                                         sofapython3::doc::controller::Controller);
+                                         sofapython3::doc::controller::controllerClass);
 
     f.def(py::init([](py::args& /*args*/, py::kwargs& kwargs)
           {
@@ -131,6 +147,9 @@ void moduleAddController(py::module &m) {
 
     f.def("init", &Controller::init);
     f.def("reinit", &Controller::reinit);
+    f.def("draw", [](Controller& self, sofa::core::visual::VisualParams* params){
+        self.draw(params);
+    }, pybind11::return_value_policy::reference);
 }
 
 

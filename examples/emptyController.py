@@ -39,6 +39,10 @@ class EmptyController(Sofa.Core.Controller):
 
         if ord(key) == 20:  # right
             print("You pressed the Right key")
+        
+        if key == 'M':       # M key of the keyboard
+            print("You pressed the M key")
+
 
     def onKeyreleasedEvent(self, event):
         key = event['key']
@@ -53,6 +57,10 @@ class EmptyController(Sofa.Core.Controller):
 
         if ord(key) == 20:  # right
             print("You released the Right key")
+
+        if key == 'M':       # M key of the keyboard
+            print("You released the M key")
+
 
     def onMouseEvent(self, event):
         if (event['State']== 0): # mouse moving
@@ -85,6 +93,7 @@ class EmptyController(Sofa.Core.Controller):
 
 def createScene(root):
     root.dt = 0.01
+    root.bbox = [[-1, -1, -1],[1,1,1]]
     root.addObject('DefaultVisualManagerLoop')
     root.addObject('DefaultAnimationLoop')
 
@@ -93,13 +102,14 @@ def createScene(root):
 
 
 def main():
-    import SofaRuntime
+    import SofaImGui
     import Sofa.Gui
-    SofaRuntime.importPlugin("SofaOpenglVisual")
+
     root=Sofa.Core.Node("root")
     createScene(root)
+    Sofa.Simulation.initRoot(root)
 
-    Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
+    Sofa.Gui.GUIManager.Init("myscene", "imgui")
     Sofa.Gui.GUIManager.createGUI(root, __file__)
     Sofa.Gui.GUIManager.SetDimension(1080, 1080)
     Sofa.Gui.GUIManager.MainLoop(root)

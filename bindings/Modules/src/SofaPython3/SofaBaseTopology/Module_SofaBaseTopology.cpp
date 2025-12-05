@@ -23,7 +23,7 @@
 #include <SofaPython3/SofaBaseTopology/Binding_RegularGridTopology.h>
 #include <SofaPython3/SofaBaseTopology/Binding_SparseGridTopology.h>
 
-#include <SofaBaseTopology/initSofaBaseTopology.h>
+#include <sofa/component/topology/container/grid/init.h>
 
 namespace py { using namespace pybind11; }
 
@@ -32,7 +32,9 @@ namespace sofapython3
 
 PYBIND11_MODULE(SofaBaseTopology, m)
 {
-    sofa::component::initSofaBaseTopology();
+    m.doc() = "Implements some topology component (Regular and SparseGridTopology)";
+
+    sofa::component::topology::container::grid::init();
 
     moduleAddRegularGridTopology(m);
     moduleAddSparseGridTopology(m);

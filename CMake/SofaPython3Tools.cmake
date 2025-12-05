@@ -34,12 +34,11 @@ macro(SP3_get_python_user_site)
     endif()
 endmacro()
 
-# - Create a python package by copying the source directory to the destination directory. Every files within the
-#   source directory will be configured with the current cmake variables available (see CMake configure_file documentation)
+# - Create a python package by copying the source directory to the destination directory.
 #
 # SP3_add_python_package(PACKAGE_NAME SOURCE_DIRECTORY TARGET_DIRECTORY)
-#  SOURCE_DIRECTORY   - (input) the source path of the directory to be configured and copied to the target directory.
-#  TARGET_DIRECTORY   - (input) the target path of the directory that will contain the configured files.
+#  SOURCE_DIRECTORY   - (input) the source path of the directory to be copied to the target directory.
+#  TARGET_DIRECTORY   - (input) the target path of the directory that will contain the copied files.
 #                               Files will be at LIBRARY_OUTPUT_DIRECTORY/SP3_PYTHON_PACKAGES_DIRECTORY/TARGET_DIRECTORY.
 function(SP3_add_python_package)
     set(options)
@@ -53,12 +52,8 @@ function(SP3_add_python_package)
     file(GLOB_RECURSE files RELATIVE ${A_SOURCE_DIRECTORY} ${A_SOURCE_DIRECTORY}/*)
     foreach(file_relative_path ${files})
         set(file_absolute_path ${A_SOURCE_DIRECTORY}/${file_relative_path})
-        configure_file(
-            ${file_absolute_path}
-            ${OUTPUT_DIRECTORY}/${file_relative_path}
-            @ONLY
-        )
         get_filename_component(relative_directory ${file_relative_path} DIRECTORY)
+        file(COPY ${file_absolute_path} DESTINATION ${OUTPUT_DIRECTORY}/${relative_directory})
         install(
             FILES "${OUTPUT_DIRECTORY}/${file_relative_path}"
             DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}/${relative_directory}"
@@ -122,7 +117,7 @@ function(SP3_add_python_module)
     # We are doing manually what's usually done with pybind11_add_module(${A_TARGET} SHARED "${A_SOURCES}")
     # since we got some problems on MacOS using recent versions of pybind11 where the SHARED argument wasn't taken
     # into account
-    python_add_library(${A_TARGET} SHARED "${A_SOURCES}")
+    python_add_library(${A_TARGET} SHARED ${A_HEADERS} ${A_SOURCES})
     add_library(SofaPython3::${A_TARGET} ALIAS ${A_TARGET})
 
     if ("${pybind11_VERSION}" VERSION_GREATER_EQUAL "2.6.0")

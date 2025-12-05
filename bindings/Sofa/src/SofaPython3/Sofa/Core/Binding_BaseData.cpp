@@ -29,6 +29,7 @@
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseData.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseData_doc.h>
+#include <SofaPython3/Sofa/Core/Binding_LinkPath.h>
 #include <SofaPython3/Sofa/Core/Data/Binding_DataContainer.h>
 #include <SofaPython3/DataHelper.h>
 #include <SofaPython3/PythonFactory.h>
@@ -86,7 +87,8 @@ py::list toList(BaseData* self)
 
 py::array array(BaseData* self)
 {
-    auto capsule = py::capsule(new Base::SPtr(self->getOwner()));
+    auto capsule = py::capsule(new Base::SPtr(self->getOwner()),
+                               [](void*p){ delete static_cast<Base::SPtr*>(p); });
     py::buffer_info ninfo = toBufferInfo(*self);
     py::array a(pybind11::dtype(ninfo), ninfo.shape,
                 ninfo.strides, ninfo.ptr, capsule);
@@ -94,25 +96,29 @@ py::array array(BaseData* self)
     return a;
 }
 
-py::object writeableArrayWithType(BaseData* self, py::object f)
+std::unique_ptr<DataContainerContext> writeableArrayWithType(BaseData* self, py::object f)
 {
     if(self!=nullptr)
-        return py::cast(new DataContainerContext(self, f));
+        return std::make_unique<DataContainerContext>(self, f);
 
-    return py::none();
+    return nullptr;
 }
 
-py::object writeableArray(BaseData* self)
+std::unique_ptr<DataContainerContext> writeableArray(BaseData* self)
 {
     if(self!=nullptr)
-        return py::cast(new DataContainerContext(self, py::none()));
+        return std::make_unique<DataContainerContext>(self, py::none());
 
-    return py::none();
+    return nullptr;
 }
 
-void __setattr__(py::object self, const std::string& s, py::object value)
+py::object getValue(py::object self)
 {
-    SOFA_UNUSED(s);
+    return PythonFactory::valueToPython_ro(py::cast<BaseData*>(self));
+}
+
+void setValue(py::object self, py::object value)
+{
     BaseData* selfdata = py::cast<BaseData*>(self);
 
     if(py::isinstance<DataContainer>(value))
@@ -130,30 +136,47 @@ void __setattr__(py::object self, const std::string& s, py::object value)
     BindingBase::SetAttr(py::cast(selfdata->getOwner()),selfdata->getName(),value);
 }
 
+void __setattr__(py::object self, const std::string& s, py::object value)
+{
+    SOFA_UNUSED(s);
+    setValue(self, value);
+}
+
 py::object __getattr__(py::object self, const std::string& s)
 {
     /// If this is data.value we returns the content value of the data field converted into
     /// a python object that is easy to manipulate. The conversion is done with the toPython
     /// function.
     if(s == "value")
-        return PythonFactory::valueToPython_ro(py::cast<BaseData*>(self));
+    {
+        return getValue(self);
+    }
 
     if(s == "linkpath")
-        return py::cast((py::cast<BaseData*>(self))->getLinkPath());
+        return py::cast(sofapython3::LinkPath(py::cast<BaseData*>(self)));
 
     /// BaseData does not support dynamic attributes, if you think this is an important feature
     /// please request for its integration.
     throw py::attribute_error("There is no attribute '"+s+"'");
 }
 
+
+
 void setParent(BaseData* self, BaseData* parent)
 {
     self->setParent(parent);
 }
 
-void setParentFromLinkPath(BaseData* self, const std::string& parent)
+void setParentFromLinkPathStr(BaseData* self, const std::string& parent)
 {
     self->setParent(parent);
+}
+
+void setParentFromLinkPath(BaseData* self, const LinkPath& parent)
+{
+    if(!parent.isPointingToData())
+        throw std::runtime_error("The provided linkpath is not containing a linkable data");
+    self->setParent(parent.targetData);
 }
 
 bool hasParent(BaseData *self)
@@ -176,13 +199,32 @@ py::object getOwner(BaseData& self)
     return PythonFactory::toPython(self.getOwner());
 }
 
+std::string getValueTypeString(BaseData* data)
+{
+    return data->getValueTypeInfo()->name();
+}
+
+auto getPythonClassForBaseData(py::module& m)
+{
+    /// Register the BaseData binding into the pybind11 system.
+    static py::class_<BaseData, std::unique_ptr<sofa::core::objectmodel::BaseData, pybind11::nodelete>> data(m, "Data", sofapython3::doc::baseData::BaseDataClass);
+    return data;
+}
+
+void moduleForwardAddBaseData(py::module& m)
+{
+    getPythonClassForBaseData(m);
+}
+
 void moduleAddBaseData(py::module& m)
 {
     /// Register the BaseData binding into the pybind11 system.
-    py::class_<BaseData, std::unique_ptr<sofa::core::objectmodel::BaseData, pybind11::nodelete>> data(m, "Data", sofapython3::doc::baseData::BaseDataClass);
+    auto data =getPythonClassForBaseData(m);
     data.def("getName", [](BaseData& b){ return b.getName(); }, sofapython3::doc::baseData::getName);
     data.def("setName", [](BaseData& b, const std::string& s){ b.setName(s); }, sofapython3::doc::baseData::setName);
     data.def("getCounter", [](BaseData& self) { return self.getCounter(); }, sofapython3::doc::baseData::getCounter);
+    data.def("setValue", setValue);
+    data.def("getValue", getValue);
     data.def("getHelp", &BaseData::getHelp, sofapython3::doc::baseData::getHelp);
     data.def("unset", [](BaseData& b){ b.unset(); }, sofapython3::doc::baseData::unset);
     data.def("getOwner", &getOwner, sofapython3::doc::baseData::getOwner);
@@ -201,10 +243,11 @@ void moduleAddBaseData(py::module& m)
     data.def("__setattr__", __setattr__);
     data.def("__getattr__", __getattr__);
     data.def("getValueString",&BaseData::getValueString, sofapython3::doc::baseData::getValueString);
-    data.def("getValueTypeString", &BaseData::getValueTypeString, sofapython3::doc::baseData::getValueTypeString);
+    data.def("getValueTypeString", &getValueTypeString, sofapython3::doc::baseData::getValueTypeString);
     data.def("isPersistent", &BaseData::isPersistent, sofapython3::doc::baseData::isPersistent);
     data.def("setPersistent", &BaseData::setPersistent, sofapython3::doc::baseData::setPersistent);
     data.def("setParent", setParent, sofapython3::doc::baseData::setParent);
+    data.def("setParent", setParentFromLinkPathStr, sofapython3::doc::baseData::setParent);
     data.def("setParent", setParentFromLinkPath, sofapython3::doc::baseData::setParent);
     data.def("hasParent", hasParent, sofapython3::doc::baseData::hasParent);
     data.def("read", &BaseData::read, sofapython3::doc::baseData::read);

@@ -24,6 +24,9 @@
 
 namespace sofapython3 {
 
+    /// Forward declaration in pybind11.
+    /// more details in: https://github.com/sofa-framework/SofaPython3/pull/457
+    void moduleForwardAddBaseLink(pybind11::module& m);
     void moduleAddBaseLink(pybind11::module& m);
 
 } /// sofapython3

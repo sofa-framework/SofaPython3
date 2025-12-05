@@ -25,13 +25,13 @@ class TimerController(Sofa.Core.Controller):
         else:
             records = Timer.getRecords("cg_timer")
 
-        step_time = records['AnimateVisitor']['Mechanical (meca)']['total_time']
+        step_time = records['solve']['Mechanical (meca)']['total_time']
         print(f"Step took {step_time:.2f} ms")
 
-        nb_iterations = records['AnimateVisitor']['Mechanical (meca)']['StaticSolver::Solve']['nb_iterations']
+        nb_iterations = records['solve']['Mechanical (meca)']['StaticSolver::Solve']['nb_iterations']
         for i in range(int(nb_iterations)):
-            total_time = records['AnimateVisitor']['Mechanical (meca)']['StaticSolver::Solve']['NewtonStep'][i]['total_time']
-            CG_iterations = records['AnimateVisitor']['Mechanical (meca)']['StaticSolver::Solve']['NewtonStep'][i]['MBKSolve']['CG iterations']
+            total_time = records['solve']['Mechanical (meca)']['StaticSolver::Solve']['NewtonStep'][i]['total_time']
+            CG_iterations = records['solve']['Mechanical (meca)']['StaticSolver::Solve']['NewtonStep'][i]['MBKSolve']['CG iterations']
             print(f"  Newton iteration #{i} took {total_time:.2f} ms using {int(CG_iterations)} CG iterations")
 
         if not self.use_sofa_profiler_timer:
@@ -43,15 +43,21 @@ def createScene(root):
     root.dt = 0.01
 
     # List of required plugins
-    root.addObject('RequiredPlugin', name='SofaBaseMechanics')
-    root.addObject('RequiredPlugin', name='SofaSparseSolver')
-    root.addObject('RequiredPlugin', name='SofaGraphComponent')
-    root.addObject('RequiredPlugin', name='SofaOpenglVisual')
-    root.addObject('RequiredPlugin', name='SofaPreconditioner')
-    root.addObject('RequiredPlugin', name='SofaBoundaryCondition')
-    root.addObject('RequiredPlugin', name='SofaEngine')
-    root.addObject('RequiredPlugin', name='SofaImplicitOdeSolver')
-    root.addObject('RequiredPlugin', name='SofaSimpleFem')
+    root.addObject("RequiredPlugin", pluginName=['Sofa.Component.Constraint.Projective',
+    'Sofa.Component.Engine.Select',
+    'Sofa.Component.LinearSolver.Iterative',
+    'Sofa.Component.MechanicalLoad',
+    'Sofa.Component.ODESolver.Backward',
+    'Sofa.Component.SolidMechanics.FEM.Elastic',
+    'Sofa.Component.StateContainer',
+    'Sofa.Component.Topology.Container.Dynamic',
+    'Sofa.Component.Topology.Container.Grid',
+    'Sofa.Component.Visual'
+    ])
+
+
+    # AnimationLoop
+    root.addObject('DefaultAnimationLoop')
 
     # Visual style
     root.addObject('VisualStyle', displayFlags='showBehaviorModels showForceFields')
@@ -60,7 +66,7 @@ def createScene(root):
     root.addObject( TimerController() )
 
     # Create a grid topology of 10x10x60 centered on (0,0,0)
-    root.addObject('RegularGridTopology', name='grid', min=[-5, -5, -30], max=[5, 5, 30], n=[11, 11, 61])
+    root.addObject('RegularGridTopology', name='grid', min=[-5, -5, -30], max=[5, 5, 30], n=[6, 6, 16])
 
     # Create our mechanical node
     root.addChild("meca")
@@ -74,7 +80,7 @@ def createScene(root):
     root.meca.addObject('BoxROI', name='base_roi', box=[-5.01, -5.01, -30.01, 30.01, 30.01, -29.99])
     root.meca.addObject('BoxROI', name='top_roi',  box=[-5.01, -5.01, +29.99, 5.01, 5.01, +30.01], quad='@mechanical_topology.quads')
 
-    root.meca.addObject('FixedConstraint', indices='@base_roi.indices')
+    root.meca.addObject('FixedProjectiveConstraint', indices='@base_roi.indices')
     root.meca.addObject('QuadSetGeometryAlgorithms')
     root.meca.addObject('QuadPressureForceField', pressure=[0, -30, 0], quadList='@top_roi.quadInROI', showForces=False)
 
@@ -83,7 +89,7 @@ def createScene(root):
 def main():
     root = Sofa.Core.Node("root")
     createScene(root)
-    Sofa.Simulation.init(root)
+    Sofa.Simulation.initRoot(root)
 
     # Run the simulation for 5 steps
     for iteration in range(5):

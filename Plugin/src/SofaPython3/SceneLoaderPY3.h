@@ -58,6 +58,9 @@ public:
 
     /// get the list of file extensions
     virtual void getExtensionList(ExtensionList* list) override;
+
+    bool syntaxForAddingRequiredPlugin(const std::string& pluginName, const std::vector<std::string>& listComponents,
+                                       std::ostream& ss, sofa::simulation::Node* nodeWhereAdded) override;
 };
 
 } // namespace sofapython3

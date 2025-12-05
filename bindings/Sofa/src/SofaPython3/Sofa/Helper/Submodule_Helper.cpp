@@ -18,7 +18,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/core/init.h>
 #include <sofa/helper/init.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <SofaPython3/PythonEnvironment.h>
@@ -26,6 +25,7 @@
 #include <SofaPython3/Sofa/Helper/System/Submodule_System.h>
 #include <SofaPython3/Sofa/Helper/Binding_MessageHandler.h>
 #include <SofaPython3/Sofa/Helper/Binding_Vector.h>
+#include <SofaPython3/Sofa/Helper/Binding_Utils.h>
 
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
@@ -108,53 +108,57 @@ static void parse_emitter_message_then(py::args args, const Action& action) {
 PYBIND11_MODULE(Helper, helper)
 {
     // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
-    sofa::core::init();
     sofa::helper::init();
 
     helper.doc() = R"doc(
-           Utility functions
-           -----------------------
-           The 'info' messages are emitted *only* when the object.printLog is
-           set to True.
+            Allows to create vectors of different types, or to print messages
 
-           Examples:
+            SOFA provides a fully feature messaging system allowing to emit messages.
+            The way the message are printed depends on the application. Messages can be routed the console, log files,
+            GUI or ignored.
 
-            .. code-block:: python
+            There are several kind of messages.
 
-               msg_info("something bad happens")
-               msg_info(sofaObject, "something bad happens")
-               msg_info(sofaNode, "something bad happens")
-               msg_info(emitting_file, emitting_loc, "something bad happens")
-               msg_info(sofaObject, "something bad happens", emitting_file, emitting_loc)
-               msg_info(sofaNode, "something bad happens", emitting_file, emitting_loc)
+            The 'info' messages are emitted *only* when the object.printLog is set to True.
+            The 'warning' messages are emitted when the object want the user to be informed.
+            The 'error' messages are emitted when the object cannot perform as expected.
+            The 'deprecated' messages are indicating that some feature are now deprecated and thus be fixed as soon as possible.
+            In general we provide updates tips with deprecated messages.
 
-           Notes:
-               The way the message are printed depends on the application.
-               Messages can be routed the console, log files, GUI or ignored.
+            Example:
+             .. code-block:: python
 
-           .. autosummary::
-               Sofa.Helper.msg_info
-               Sofa.Helper.msg_warning
-               Sofa.Helper.msg_error
-               Sofa.Helper.msg_deprecated
-               Sofa.Helper.msg_fatal
+               msg_error("something bad happens")
+               msg_error(sofaObject, "something bad happens")
+               msg_warning(sofaNode, "something happens that sofaNode must be award of")
+               msg_warning(emitting_file, emitting_loc, "something bad happens at given location")
+               msg_info(sofaObject, "something happens", emitting_file, emitting_loc)
+               msg_info(sofaNode, "something happens", emitting_file, emitting_loc)
+
        )doc";
 
     helper.def("msg_info", [](py::args args) { MESSAGE_DISPATCH(msg_info); },
-            R"(Emit an info message from python.)"
+            R"(Emit an info message from python)"
             );
     helper.def("msg_warning", [](py::args args) { MESSAGE_DISPATCH(msg_warning); },
-    R"(Emit a warning message from python.)");
+    R"(Emit a warning message from python)");
     helper.def("msg_error", [](py::args args) { MESSAGE_DISPATCH(msg_error); },
-    R"(Emit an error message from python.)");
+    R"(Emit an error message from python)");
     helper.def("msg_deprecated", [](py::args args) { MESSAGE_DISPATCH(msg_deprecated); },
-    R"(Emit a deprecated message from python.)");
+    R"(Emit a deprecated message from python)");
     helper.def("msg_fatal", [](py::args args) { MESSAGE_DISPATCH(msg_fatal); },
-    R"(Emit a fatal error message from python.)");
+    R"(Emit a fatal error message from python)");
 
     moduleAddMessageHandler(helper);
     moduleAddVector(helper);
     moduleAddSystem(helper);
+    moduleAddUtils(helper);
+
+    auto atexit = py::module_::import("atexit");
+    atexit.attr("register")(py::cpp_function([]() {
+        sofa::helper::cleanup();
+        msg_info("SofaPython3.Helper") << "Sofa.Helper unload()";
+    }));
 }
 
 } ///namespace sofapython3

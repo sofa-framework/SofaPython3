@@ -24,7 +24,7 @@
 #include <pybind11/stl.h>
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaBaseCollision/ContactListener.h>
+#include <sofa/component/collision/response/contact/ContactListener.h>
 
 #include <SofaPython3/Sofa/Core/Binding_ContactListener.h>
 #include <SofaPython3/Sofa/Core/Binding_ContactListener_doc.h>
@@ -34,7 +34,7 @@
 
 namespace py { using namespace pybind11; }
 using sofa::core::objectmodel::BaseObject;
-using sofa::core::collision::ContactListener;
+using sofa::component::collision::response::contact::ContactListener;
 
 namespace sofapython3
 {
@@ -45,15 +45,15 @@ namespace sofapython3
         contactData["numberOfContacts"] = numberOfContacts;
 
         const std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> contactElements = listener.getContactElements();
-        const std::vector<std::tuple<unsigned int, sofa::type::Vector3, unsigned int, sofa::type::Vector3>> contactPoints = listener.getContactPoints();
+        const std::vector<std::tuple<unsigned int, sofa::type::Vec3, unsigned int, sofa::type::Vec3>> contactPoints = listener.getContactPoints();
 
         std::vector<unsigned int> collisionElementsModel1;
         std::vector<unsigned int> collisionElementsModel2;
         collisionElementsModel1.reserve(numberOfContacts);
         collisionElementsModel2.reserve(numberOfContacts);
 
-        std::vector<sofa::type::Vector3> collisionPointsModel1;
-        std::vector<sofa::type::Vector3> collisionPointsModel2;
+        std::vector<sofa::type::Vec3> collisionPointsModel1;
+        std::vector<sofa::type::Vec3> collisionPointsModel2;
         collisionPointsModel1.reserve(numberOfContacts);
         collisionPointsModel2.reserve(numberOfContacts);
 
@@ -97,9 +97,9 @@ void moduleAddContactListener(pybind11::module &m)
 
     c.def("getNumberOfContacts", &ContactListener::getNumberOfContacts);
     c.def("getContactData", &getContactData);
-    c.def("getDistances", &sofa::core::collision::ContactListener::getDistances);
-    c.def("getContactPoints", &sofa::core::collision::ContactListener::getContactPoints);
-    c.def("getContactElements", &sofa::core::collision::ContactListener::getContactElements);
+    c.def("getDistances", &ContactListener::getDistances);
+    c.def("getContactPoints", &ContactListener::getContactPoints);
+    c.def("getContactElements", &ContactListener::getContactElements);
 
     /// register the ContactListener binding in the downcasting subsystem
     PythonFactory::registerType<ContactListener>([](sofa::core::objectmodel::Base* object)

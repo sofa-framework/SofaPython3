@@ -23,6 +23,22 @@
 namespace sofapython3::doc::forceField
 {
 static auto forceFieldClass = R"(
-                         An overridable class to create your own customized force field.
+                         Overridable class to create your own customized force field
                          )";
+
+static constexpr const char* assembleKMatrix = R"(
+Assemble the stiffness matrix of a force field.
+
+Note that this function is not free. It assembles the stiffness matrix whether or not it has been assembled previously
+to add it into the global system matrix. Besides, the function does not prevent side effects of a second matrix assembly
+in a single time step.
+
+Typical usage example:
+FEM = root.addObject('HexahedronFEMForceField', name="FEM", youngModulus="4000", poissonRatio="0.3", method="large")
+...
+stiffness_matrix = self.force_field.assembleKMatrix()
+
+Returns:
+    A scipy.sparse.csr_matrix object representing the stiffness matrix of the force field
+)";
 }
