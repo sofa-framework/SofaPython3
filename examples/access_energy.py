@@ -34,7 +34,7 @@ def createScene(rootNode, dt=0.01, m=1, g=1, L=100, mu=0):
     rootNode.addObject('ParallelBVHNarrowPhase')
     rootNode.addObject('MinProximityIntersection', name='Proximity', alarmDistance='10', contactDistance='0.02')
     rootNode.addObject('CollisionResponse', name='Response', response='FrictionContactConstraint', responseParams=f'mu={mu}')
-    rootNode.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations='10', multithreading='true', tolerance='1.0e-3')
+    rootNode.addObject('BlockGaussSeidelConstraintSolver', maxIterations='10', multithreading='true', tolerance='1.0e-3')
 
     boxTranslation = "-20 -0.9 0"
     rootNode.addObject('MeshOBJLoader', name='Loader-box', filename='mesh/cube.obj', translation=boxTranslation)
