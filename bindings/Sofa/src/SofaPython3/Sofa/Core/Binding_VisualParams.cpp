@@ -1,6 +1,6 @@
 /******************************************************************************
-*                              SofaPython3 plugin                             *
-*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2021 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -18,28 +18,32 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/core/init.h>
-#include <sofa/defaulttype/init.h>
+#include <sofa/type/Quat.h>
+#include <pybind11/pybind11.h>
+#include <pybind11/pytypes.h>
+#include <pybind11/stl.h>
 
-#include <SofaPython3/Sofa/Types/Binding_BoundingBox.h>
-#include <SofaPython3/Sofa/Types/Binding_CompressedRowSparseMatrix.h>
-#include <SofaPython3/Sofa/Types/Binding_RGBAColor.h>
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <sofa/core/visual/VisualParams.h>
+
+#include <SofaPython3/Sofa/Core/Binding_VisualParams.h>
+#include <SofaPython3/Sofa/Core/Binding_VisualParams_doc.h>
+
+#include <SofaPython3/PythonFactory.h>
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/type/RGBAColor.h>
+
+namespace py { using namespace pybind11; }
+using sofa::core::visual::VisualParams;
 
 namespace sofapython3 {
-/// The first parameter must be named the same as the module file to load.
-PYBIND11_MODULE(Types, types)
+
+void moduleAddVisualParams(py::module &m)
 {
-    // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
-    sofa::core::init();
-    sofa::defaulttype::init();
+    py::class_<VisualParams> vp(m, "VisualParams", sofapython3::doc::visualparams::baseVisualParamsClass);
 
-    types.doc() = R"doc(
-            Defines SOFA types (BoundingBox)
-       )doc";
-
-    moduleAddRGBAColor(types);
-    moduleAddBoundingBox(types);
-    moduleAddCompressedRowSparseMatrix(types);
+    vp.def("getDrawTool", [](VisualParams *self){ return self->drawTool(); },
+           pybind11::return_value_policy::reference);
 }
 
-}  // namespace sofapython3
+} /// namespace sofapython3

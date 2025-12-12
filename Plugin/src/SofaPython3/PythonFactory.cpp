@@ -503,7 +503,17 @@ bool PythonFactory::registerDefaultTypes()
     PythonFactory::registerType<sofa::core::topology::Topology::Hexa>("Hexa");
     PythonFactory::registerType<sofa::core::topology::Topology::Penta>("Penta");
 
-    // State vectors
+    // Rigid
+    PythonFactory::registerType<sofa::defaulttype::Rigid3dTypes::Coord>("Rigid3d::Coord");
+    PythonFactory::registerType<sofa::defaulttype::Rigid3fTypes::Coord>("Rigid3f::Coord");
+    PythonFactory::registerType<sofa::defaulttype::Rigid3Types::Coord>("Rigid3::Coord");
+
+    /// Quaternion
+    PythonFactory::registerType<sofa::type::Quat<double>>("Quatd");
+    PythonFactory::registerType<sofa::type::Quat<float>>("Quatf");
+    PythonFactory::registerType<sofa::type::Quat<SReal>>("Quat");
+
+    // Rigid3 vectors
     PythonFactory::registerType<sofa::defaulttype::Rigid3dTypes::VecCoord>("Rigid3d::VecCoord");
     PythonFactory::registerType<sofa::defaulttype::Rigid3fTypes::VecCoord>("Rigid3f::VecCoord");
     PythonFactory::registerType<sofa::defaulttype::Rigid3Types::VecCoord>("Rigid3::VecCoord");

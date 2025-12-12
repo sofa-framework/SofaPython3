@@ -1,6 +1,6 @@
 /******************************************************************************
-*                              SofaPython3 plugin                             *
-*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2021 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -18,28 +18,24 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/core/init.h>
-#include <sofa/defaulttype/init.h>
+#pragma once
 
-#include <SofaPython3/Sofa/Types/Binding_BoundingBox.h>
-#include <SofaPython3/Sofa/Types/Binding_CompressedRowSparseMatrix.h>
-#include <SofaPython3/Sofa/Types/Binding_RGBAColor.h>
+namespace sofapython3::doc::visualparams {
 
-namespace sofapython3 {
-/// The first parameter must be named the same as the module file to load.
-PYBIND11_MODULE(Types, types)
-{
-    // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
-    sofa::core::init();
-    sofa::defaulttype::init();
+static auto baseVisualParamsClass =
+        R"(
+        VisualParams is a component that manages and provides rendering-related parameters for the simulation's objected.
+        It determine draw distance, access the camera position or viewing frustum and handle display flags
+        like wireframe, texture, lighting as well as provide a drawTool object that can be used to render things.
 
-    types.doc() = R"doc(
-            Defines SOFA types (BoundingBox)
-       )doc";
+        Example:
+            class MyController(Sofa.Core.Controller):
+                def __init__(self, *args, *kwargs):
+                    Sofa.Core.Controller.__init__(self, *args, **kwargs)
 
-    moduleAddRGBAColor(types);
-    moduleAddBoundingBox(types);
-    moduleAddCompressedRowSparseMatrix(types);
-}
+                def draw(self, visual_params):
+                    dt = visual_param.getDrawTool()
+                    dt.drawPoint([0,0,0])
+        )";
 
-}  // namespace sofapython3
+} // namespace sofapython3::doc::visualParams
