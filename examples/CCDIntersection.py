@@ -46,7 +46,7 @@ def createScene(root_node):
     root_node.addObject('VisualStyle', displayFlags="showVisual")
     root_node.addObject('ConstraintAttachButtonSetting')
     root_node.addObject('FreeMotionAnimationLoop', computeBoundingBox=False)
-    root_node.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=1000, tolerance=1.0e-6)
+    root_node.addObject('BlockGaussSeidelConstraintSolver', maxIterations=1000, tolerance=1.0e-6)
     root_node.addObject('CollisionPipeline', name="Pipeline")
     root_node.addObject('ParallelBruteForceBroadPhase', name="BroadPhase")
     root_node.addObject('ParallelBVHNarrowPhase', name="NarrowPhase")
