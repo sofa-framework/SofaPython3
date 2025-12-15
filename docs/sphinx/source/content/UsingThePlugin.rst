@@ -362,7 +362,7 @@ We first add a collision model for the scene in general, that is stating how a c
 	# Collision pipeline
 	rootNode.addObject('DefaultPipeline')
 	rootNode.addObject('FreeMotionAnimationLoop')
-	rootNode.addObject('ProjectedGaussSeidelConstraintSolver', tolerance="1e-6", maxIterations="1000")
+	rootNode.addObject('BlockGaussSeidelConstraintSolver', tolerance="1e-6", maxIterations="1000")
 	rootNode.addObject('BruteForceBroadPhase')
 	rootNode.addObject('BVHNarrowPhase')
 	rootNode.addObject('RuleBasedContactManager', responseParams="mu="+str(0.0), name='Response', response='FrictionContactConstraint')
@@ -473,7 +473,7 @@ Here is the entire code of the scene :
             # Collision pipeline
             rootNode.addObject('DefaultPipeline')
             rootNode.addObject('FreeMotionAnimationLoop')
-            rootNode.addObject('ProjectedGaussSeidelConstraintSolver', tolerance="1e-6", maxIterations="1000")
+            rootNode.addObject('BlockGaussSeidelConstraintSolver', tolerance="1e-6", maxIterations="1000")
             rootNode.addObject('BruteForceBroadPhase')
             rootNode.addObject('BVHNarrowPhase')
             rootNode.addObject('RuleBasedContactManager', responseParams="mu="+str(0.0), name='Response', response='FrictionContactConstraint')
