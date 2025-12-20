@@ -108,13 +108,14 @@ class Test(unittest.TestCase):
 
         root.addObject('DefaultAnimationLoop')
 
-        root.addObject('RequiredPlugin', name='Sofa.Component.Topology.Container.Grid')
-        root.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Backward')
-        root.addObject('RequiredPlugin', name='Sofa.Component.LinearSolver.Direct')
-        root.addObject('RequiredPlugin', name='Sofa.Component.Engine.Select')
         root.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Projective')
-        root.addObject('RequiredPlugin', name='Sofa.Component.SolidMechanics.FEM.Elastic')
+        root.addObject('RequiredPlugin', name='Sofa.Component.Engine.Select')
+        root.addObject('RequiredPlugin', name='Sofa.Component.LinearSolver.Direct')
         root.addObject('RequiredPlugin', name='Sofa.Component.Mass')
+        root.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Backward')
+        root.addObject('RequiredPlugin', name='Sofa.Component.SolidMechanics.FEM.Elastic')
+        root.addObject('RequiredPlugin', name='Sofa.Component.StateContainer')
+        root.addObject('RequiredPlugin', name='Sofa.Component.Topology.Container.Grid')
 
         root.addObject('EulerImplicitSolver', rayleighStiffness="0.1", rayleighMass="0.1")
         root.addObject('SparseLDLSolver', template=linear_solver_template)

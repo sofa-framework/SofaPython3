@@ -67,7 +67,7 @@ void bindLinearSolvers(py::module &m)
 
     c.def("A", [](CRSLinearSolver& self) -> EigenSparseMatrix
     {
-        if (CRS* matrix = self.getSystemMatrix())
+        if (CRS* matrix = self.l_linearSystem->getSystemMatrix())
         {
             return toEigen(*matrix);
         }
@@ -76,7 +76,7 @@ void bindLinearSolvers(py::module &m)
 
     c.def("b", [](CRSLinearSolver& self) -> Vector
     {
-        if (auto* vector = self.getSystemRHVector())
+        if (auto* vector = self.l_linearSystem->getRHSVector())
         {
             return EigenVectorMap(vector->ptr(), vector->size());
         }
@@ -85,7 +85,7 @@ void bindLinearSolvers(py::module &m)
 
     c.def("x", [](CRSLinearSolver& self) -> Vector
     {
-        if (auto* vector = self.getSystemLHVector())
+        if (auto* vector = self.l_linearSystem->getSolutionVector())
         {
             return EigenVectorMap(vector->ptr(), vector->size());
         }
