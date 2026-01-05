@@ -206,7 +206,7 @@ void PythonEnvironment::Init()
 
     // Workaround: try to import scipy from the main thread this prevents a deadlock when importing
     // scipy from a worker thread when we use the SofaScene asynchronous loading
-    executePython([]{ PyRun_SimpleString("try:\n\tfrom scipy import misc, optimize\nexcept:\n\tpass\n");});
+    executePython([]{ PyRun_SimpleString("try:\n\tfrom scipy import optimize\nexcept:\n\tpass\n");});
 
     // If the script directory is not available (e.g. if the interpreter is invoked interactively
     // or if the script is read from standard input), path[0] is the empty string,
