@@ -33,7 +33,6 @@ namespace sofapython3
 {
 
 /**
-/**
  * @brief Converts AdvancedTimer records to a Python dictionary structure
  *
  * This function processes the timer records and builds a hierarchical Python dictionary
