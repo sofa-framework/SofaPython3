@@ -114,6 +114,12 @@ function(SP3_add_python_module)
 
     find_package(pybind11 CONFIG QUIET REQUIRED)
 
+    # Ensure FindPython created Python::Python (needed by python_add_library)
+    if(NOT TARGET Python::Python)
+    	find_package(Python REQUIRED COMPONENTS Interpreter Development Development.Module Development.Embed)
+    endif()
+
+
     # We are doing manually what's usually done with pybind11_add_module(${A_TARGET} SHARED "${A_SOURCES}")
     # since we got some problems on MacOS using recent versions of pybind11 where the SHARED argument wasn't taken
     # into account
