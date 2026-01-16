@@ -1,0 +1,4 @@
+numpy == 1.26
+cgal == 6.0
+vtk
+pypcd4
