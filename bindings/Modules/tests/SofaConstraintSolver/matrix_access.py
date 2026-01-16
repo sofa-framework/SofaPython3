@@ -39,7 +39,7 @@ class Test(unittest.TestCase):
         ext.addObject("DistanceMapping", name="distanceMapping", topology="@../edge_container")
         ext.addObject("UniformConstraint", template="Vec1d", iterative=True)
 
-        Sofa.Simulation.init(root)
+        Sofa.Simulation.initRoot(root)
         Sofa.Simulation.animate(root, 0.0001)
 
         return root
