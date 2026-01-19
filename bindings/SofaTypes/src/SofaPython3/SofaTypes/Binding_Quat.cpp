@@ -129,22 +129,10 @@ void moduleAddQuat(py::module &m) {
   });
 
   p.def("__str__", [](Quat &self) {
-    std::string s("(");
-    s += std::to_string(self[0])
-            + ", " + std::to_string(self[1])
-            + ", " + std::to_string(self[2])
-            + ", " + std::to_string(self[3])
-            + ")";
-    return s;
+      return pyQuat::__str__(self, false);
   });
   p.def("__repr__", [](Quat &self) {
-      std::string s("Quat(");
-      s += std::to_string(self[0])
-              + ", " + std::to_string(self[1])
-              + ", " + std::to_string(self[2])
-              + ", " + std::to_string(self[3])
-              + ")";
-      return s;
+      return pyQuat::__str__(self, true);
   });
 
 }

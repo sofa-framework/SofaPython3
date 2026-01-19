@@ -4,6 +4,7 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaTypes/Binding_Mat.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaTypes/Binding_Quat.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaTypes/Binding_Vec.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaTypes/Binding_Transform.h
 )
 
 set(SOURCE_FILES
@@ -11,6 +12,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaTypes/Binding_Mat.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaTypes/Binding_Quat.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaTypes/Binding_Vec.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaTypes/Binding_Transform.cpp
 )
 
 SP3_add_python_package(
