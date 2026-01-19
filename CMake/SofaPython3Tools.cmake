@@ -47,7 +47,7 @@ function(SP3_add_python_package)
 
     cmake_parse_arguments(A "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    set(OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY})
+    set(OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY})
 
     file(GLOB_RECURSE files RELATIVE ${A_SOURCE_DIRECTORY} ${A_SOURCE_DIRECTORY}/*)
     foreach(file_relative_path ${files})
@@ -56,7 +56,7 @@ function(SP3_add_python_package)
         file(COPY ${file_absolute_path} DESTINATION ${OUTPUT_DIRECTORY}/${relative_directory})
         install(
             FILES "${OUTPUT_DIRECTORY}/${file_relative_path}"
-            DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}/${relative_directory}"
+            DESTINATION "${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${A_TARGET_DIRECTORY}/${relative_directory}"
         )
     endforeach()
 
@@ -178,7 +178,7 @@ function(SP3_add_python_module)
         ${A_TARGET}
         PROPERTIES
             OUTPUT_NAME ${MODULE_NAME}
-            LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
+            LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
     )
     get_target_property(TARGET_LIBRARY_OUTPUT_DIRECTORY ${A_TARGET} LIBRARY_OUTPUT_DIRECTORY)
 
@@ -198,23 +198,23 @@ function(SP3_add_python_module)
     # Get the relative path from this binding module to the install lib directory
     # For example, for lib/python3/site-packages/Sofa/Core.***.so, the relative path will be
     # "../../.."
-    file(RELATIVE_PATH from_target_to_lib "${TARGET_LIBRARY_OUTPUT_DIRECTORY}" "${CMAKE_BINARY_DIR}/lib")
+    file(RELATIVE_PATH from_target_to_lib "${TARGET_LIBRARY_OUTPUT_DIRECTORY}" "${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}")
     file(TO_CMAKE_PATH "${from_target_to_lib}" from_target_to_lib) # prettify this path
 
     # RPATH needed to find dependencies in <SofaPython3_install_dir>/lib
     list(APPEND TARGET_DEPENDENCIES_RPATH
-        "$ORIGIN/${from_target_to_lib}/../lib"
-        "$$ORIGIN/${from_target_to_lib}/../lib"
-        "@loader_path/${from_target_to_lib}/../lib"
-        "@executable_path/${from_target_to_lib}/../lib"
+        "$ORIGIN/${from_target_to_lib}/../${ARCHIVE_OUTPUT_DIRECTORY}"
+        "$$ORIGIN/${from_target_to_lib}/../${ARCHIVE_OUTPUT_DIRECTORY}"
+        "@loader_path/${from_target_to_lib}/../${ARCHIVE_OUTPUT_DIRECTORY}"
+        "@executable_path/${from_target_to_lib}/../${ARCHIVE_OUTPUT_DIRECTORY}"
         )
 
     # RPATH needed to find dependencies in <SOFA_install_dir>/lib
     list(APPEND TARGET_DEPENDENCIES_RPATH
-        "$ORIGIN/${from_target_to_lib}/../../../lib"
-        "$$ORIGIN/${from_target_to_lib}/../../../lib"
-        "@loader_path/${from_target_to_lib}/../../../lib"
-        "@executable_path/${from_target_to_lib}/../../../lib"
+        "$ORIGIN/${from_target_to_lib}/../../../${ARCHIVE_OUTPUT_DIRECTORY}"
+        "$$ORIGIN/${from_target_to_lib}/../../../${ARCHIVE_OUTPUT_DIRECTORY}"
+        "@loader_path/${from_target_to_lib}/../../../${ARCHIVE_OUTPUT_DIRECTORY}"
+        "@executable_path/${from_target_to_lib}/../../../${ARCHIVE_OUTPUT_DIRECTORY}"
         )
 
     if (APPLE)
@@ -278,10 +278,10 @@ function(SP3_add_python_module)
             # Alright, now we have the path from the current target towards the "plugins" relocatable directory of SOFA
             # We can compute the relative path from the current target towards the dependency relocatable path.
             list(APPEND TARGET_DEPENDENCIES_RPATH
-                "$ORIGIN/${from_target_to_lib}/../../../${DEPENDENCY_RELOCATABLE_INSTALL_DIR}/lib"
-                "$$ORIGIN/${from_target_to_lib}/../../../${DEPENDENCY_RELOCATABLE_INSTALL_DIR}/lib"
-                "@loader_path/${from_target_to_lib}/../../../${DEPENDENCY_RELOCATABLE_INSTALL_DIR}/lib"
-                "@executable_path/${from_target_to_lib}/../../../${DEPENDENCY_RELOCATABLE_INSTALL_DIR}/lib"
+                "$ORIGIN/${from_target_to_lib}/../../../${DEPENDENCY_RELOCATABLE_INSTALL_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}"
+                "$$ORIGIN/${from_target_to_lib}/../../../${DEPENDENCY_RELOCATABLE_INSTALL_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}"
+                "@loader_path/${from_target_to_lib}/../../../${DEPENDENCY_RELOCATABLE_INSTALL_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}"
+                "@executable_path/${from_target_to_lib}/../../../${DEPENDENCY_RELOCATABLE_INSTALL_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}"
                 )
         endif()
     endforeach()
@@ -314,17 +314,17 @@ function(SP3_add_python_module)
             ${A_TARGET}
             PROPERTIES
                 # https://cmake.org/cmake/help/latest/prop_tgt/LIBRARY_OUTPUT_DIRECTORY_CONFIG.html#prop_tgt:LIBRARY_OUTPUT_DIRECTORY_<CONFIG>
-                RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
-                RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
-                RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
-                RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
-                RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
+                RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
+                RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
+                RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
+                RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
+                RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
 
-                ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}/libraries"
-                ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}/libraries"
-                ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}/libraries"
-                ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}/libraries"
-                ARCHIVE_OUTPUT_DIRECTORY_MINSIZEREL "${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}/libraries"
+                ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}/libraries"
+                ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}/libraries"
+                ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}/libraries"
+                ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}/libraries"
+                ARCHIVE_OUTPUT_DIRECTORY_MINSIZEREL "${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}/libraries"
         )
     endif()
 
@@ -333,16 +333,16 @@ function(SP3_add_python_module)
         install(
             TARGETS ${A_TARGET}
             EXPORT ${A_PACKAGE}Targets
-            RUNTIME DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT applications
-            LIBRARY DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
-            ARCHIVE DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
+            RUNTIME DESTINATION "${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT applications
+            LIBRARY DESTINATION "${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
+            ARCHIVE DESTINATION "${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
         )
     elseif (DESTINATION)
         install(
             TARGETS ${A_TARGET}
-            RUNTIME DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT applications
-            LIBRARY DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
-            ARCHIVE DESTINATION "lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
+            RUNTIME DESTINATION "${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT applications
+            LIBRARY DESTINATION "${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
+            ARCHIVE DESTINATION "${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}" COMPONENT libraries
         )
     endif()
 
