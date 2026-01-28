@@ -279,7 +279,7 @@ class SOFAService(rpyc.SlaveService):
         """
         self.exposed_sofa_root = Sofa.Core.Node("root")
         createScene(self.exposed_sofa_root)
-        Sofa.Simulation.initRoot(self.exposed_sofa_root)
+        self.exposed_init_root()
 
     def exposed_build_scene_graph_from_file(self, filename:str):
         """
@@ -294,7 +294,7 @@ class SOFAService(rpyc.SlaveService):
 
         self.exposed_sofa_root = Sofa.Core.Node("root")
         foo.createScene(self.exposed_sofa_root)
-        Sofa.Simulation.initRoot(self.exposed_sofa_root)
+        self.exposed_init_root()
 
 
     def exposed_setup_shared_memory_for_data(self, dataPaths:list[str], delayed=False):
@@ -354,13 +354,19 @@ class SOFAService(rpyc.SlaveService):
         """Return list of all data paths currently shared via shared memory."""
         return self.sharedPaths
 
+    def exposed_init_root(self):
+        """Initialize the root node."""
+        if(not self.exposed_sofa_root.isInitialized()):
+            Sofa.Simulation.initRoot(self.exposed_sofa_root)
 
     def exposed_step_simulation(self):
         """
         Run one step of the simulation.
         If shared memory hasn’t been set up yet, attempt setup now.
         """
+
         Sofa.Simulation.animate(self.exposed_sofa_root, self.exposed_sofa_root.dt.value)
+
         if(not self.sharedMemoryIsSet):
             self.__internal_setup_shared_memory()
 
@@ -382,6 +388,7 @@ class SOFAService(rpyc.SlaveService):
 
     def __simulation_loop(self):
         """Continuous simulation loop run by background thread."""
+
         while self.animate:
             Sofa.Simulation.animate(self.exposed_sofa_root, self.exposed_sofa_root.dt.value)
     
