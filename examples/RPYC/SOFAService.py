@@ -1,3 +1,5 @@
+import os
+
 import rpyc
 import time
 import threading
@@ -370,7 +372,20 @@ class SOFAService(rpyc.SlaveService):
         if(not self.sharedMemoryIsSet):
             self.__internal_setup_shared_memory()
 
+    def exposed_get_cwd(self):
+        """
+        Returns current working dir
+        """
+        return os.getcwd()
 
+    def exposed_set_cwd(self, dir):
+        """
+        Change the current working dir of the server
+        Returns old dir,current working dir
+        """
+        oldDir = os.getcwd()
+        os.chdir(dir)
+        return oldDir, os.getcwd()
 
     #################################################
     ### Multithreaded automatic execution methods
