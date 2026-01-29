@@ -75,6 +75,22 @@ class CGAL_Mesh_from_polyhedron(CGAL_Mesh_from):
         self.IOUtil.write_out(filename)
         
 
+# Function called when the scene graph is being created
+def createScene(root, file_name):
+    
+    root.addObject("RequiredPlugin", pluginName=["Sofa.Component.IO.Mesh",
+    "Sofa.GL.Component.Rendering3D", "Sofa.Component.Topology.Container.Dynamic","Sofa.Component.StateContainer"])
+
+    root.addObject("DefaultAnimationLoop")
+    loader = root.addObject("MeshVTKLoader", name="VTKLoader", filename=file_name)
+    root.addObject("TetrahedronSetTopologyContainer", name="Topology", src="@VTKLoader")
+    root.addObject("TetrahedronSetGeometryAlgorithms", name="Geometry", drawTetrahedra=True)
+    root.addObject("MechanicalObject", name="DoFsContainer")
+
+    return root
+
+
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Creates a mesh from an input file containing a polyhedron representing the surface.")   
@@ -129,6 +145,25 @@ if __name__ == "__main__":
 
     cmfp.write_out(args.output)
     print(f"The script took a total of {toc(1)}")
+
+
+    import Sofa
+    import SofaImGui
+    import Sofa.Gui
+
+    #Create the root node
+    root = Sofa.Core.Node("root")
+    # Call the below 'createScene' function to create the scene graph
+    createScene(root, args.output)
+    Sofa.Simulation.initRoot(root)
+
+    # Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
+    Sofa.Gui.GUIManager.Init("myscene", "imgui")
+    Sofa.Gui.GUIManager.createGUI(root, __file__)
+    Sofa.Gui.GUIManager.SetDimension(1080, 1080)
+    # Initialization of the scene will be done here
+    Sofa.Gui.GUIManager.MainLoop(root)
+    Sofa.Gui.GUIManager.closeGUI()
 
 
 
