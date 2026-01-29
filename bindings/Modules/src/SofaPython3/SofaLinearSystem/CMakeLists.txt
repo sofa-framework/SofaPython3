@@ -2,6 +2,7 @@ project(Bindings.Modules.SofaLinearSystem)
 
 set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinearSystem.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinearSystem.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinearSystem_doc.h
 )
 
