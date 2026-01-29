@@ -38,7 +38,7 @@ class Test(unittest.TestCase):
     def setUp(self) -> None:
         self.root = Sofa.Core.Node()
         create_scene(self.root)
-        Sofa.Simulation.init(self.root)
+        Sofa.Simulation.initRoot(self.root)
 
     def tearDown(self) -> None:
         Sofa.Simulation.unload(self.root)

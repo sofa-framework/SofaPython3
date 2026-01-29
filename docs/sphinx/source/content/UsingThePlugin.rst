@@ -188,7 +188,7 @@ Within a python3 interpreter, your simulation requires more than only the ``crea
             createScene(root)
 
             # Once defined, initialization of the scene graph
-            Sofa.Simulation.init(root)
+            Sofa.Simulation.initRoot(root)
 
             # Run as many simulation steps (here 10 steps are computed)
             for iteration in range(10):
@@ -219,7 +219,7 @@ By structuring your scripts this way, you get the advantage to have a script loa
         createScene(root)
 
         # Once defined, initialization of the scene graph
-        Sofa.Simulation.init(root)
+        Sofa.Simulation.initRoot(root)
 
         # Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
         import SofaImGui
@@ -429,7 +429,7 @@ Here is the entire code of the scene :
         createScene(root)
 
         # Once defined, initialization of the scene graph
-        Sofa.Simulation.init(root)
+        Sofa.Simulation.initRoot(root)
 
         # Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
         Sofa.Gui.GUIManager.Init("myscene", "imgui")
@@ -596,7 +596,7 @@ In the same way, Data can be modified (write access) using the ``.value`` access
         createScene(root)
 
         # Once defined, initialization of the scene graph
-        Sofa.Simulation.init(root)
+        Sofa.Simulation.initRoot(root)
 
         # Run the simulation for 10 steps
         for iteration in range(10):

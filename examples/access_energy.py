@@ -82,7 +82,7 @@ def main():
     mu = .1
     root = Sofa.Core.Node("root")
     createScene(root, dt=1e-4, m=m, g=g, mu=mu, L=1000)
-    Sofa.Simulation.init(root)
+    Sofa.Simulation.initRoot(root)
     Sofa.Simulation.animate(root, root.dt.value)
 
     Ks, Us = [], []
