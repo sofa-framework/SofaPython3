@@ -26,7 +26,7 @@ class Test(unittest.TestCase):
         root.addObject('FixedConstraint', indices="@box.indices")
         root.addObject('HexahedronFEMForceField', name="FEM", youngModulus="4000", poissonRatio="0.3", method="large")
 
-        Sofa.Simulation.init(root)
+        Sofa.Simulation.initRoot(root)
         Sofa.Simulation.animate(root, 0.0001)
 
         return root

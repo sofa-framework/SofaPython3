@@ -45,7 +45,7 @@ class Test(unittest.TestCase):
         node.addObject("BlockGaussSeidelConstraintSolver", name="constraintSolver")
         controller = node.addObject( MyController() )
 
-        Sofa.Simulation.init(node)
+        Sofa.Simulation.initRoot(node)
         for i in range(10):
             Sofa.Simulation.animate(node, 0.01)
 
