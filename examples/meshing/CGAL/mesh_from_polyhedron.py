@@ -98,7 +98,9 @@ if __name__ == "__main__":
     parser.add_argument("-i", "--input", default='data/torus.obj', help="The input file containing the surface. Format must be taken form ['.g', '.obj', '.stl', '.ply', '.vtk', '.vtp']")
     parser.add_argument( "-o", "--output", default='torusVol.vtk', help="The output file to save the computed volumetric mesh")
     parser.add_argument( "-r", "--refiner", default='None', help="Use refiner to erfine the mesh. Values are amongst ['None', 'Lloyd', 'Odt', 'Perturb']")  
-    parser.add_argument( "-c", "--criteria", default='"facet_angle=25 edge_size=0.4 facet_size=0.15 facet_distance=0.008 cell_radius_edge_ration=3"', help="Set of parameters in the form of \"facet_angle=25 edge_size=0.4 facet_size=0.15 facet_distance=0.008 cell_radius_edge_ration=3\" that can be customized. If one is not specified, its default value is used")  
+    parser.add_argument( "-c", "--criteria", default='"facet_angle=25 edge_size=0.4 facet_size=0.15 facet_distance=0.008 cell_radius_edge_ration=3"', help="Set of parameters in the form of \"facet_angle=25 edge_size=0.4 facet_size=0.15 facet_distance=0.008 cell_radius_edge_ration=3\" that can be customized. If one is not specified, its default value is used")
+    parser.add_argument( "-d", "--display", action='store_true', help="If flag is added, a SOFA scene will be launched showing the generated mesh")
+
     args = parser.parse_args() 
 
     tic(1)
@@ -147,23 +149,25 @@ if __name__ == "__main__":
     print(f"The script took a total of {toc(1)}")
 
 
-    import Sofa
-    import SofaImGui
-    import Sofa.Gui
+    if args.display:
 
-    #Create the root node
-    root = Sofa.Core.Node("root")
-    # Call the below 'createScene' function to create the scene graph
-    createScene(root, args.output)
-    Sofa.Simulation.initRoot(root)
+        import Sofa
+        import SofaImGui
+        import Sofa.Gui
 
-    # Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
-    Sofa.Gui.GUIManager.Init("myscene", "imgui")
-    Sofa.Gui.GUIManager.createGUI(root, __file__)
-    Sofa.Gui.GUIManager.SetDimension(1080, 1080)
-    # Initialization of the scene will be done here
-    Sofa.Gui.GUIManager.MainLoop(root)
-    Sofa.Gui.GUIManager.closeGUI()
+        #Create the root node
+        root = Sofa.Core.Node("root")
+        # Call the below 'createScene' function to create the scene graph
+        createScene(root, args.output)
+        Sofa.Simulation.initRoot(root)
+
+        # Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
+        Sofa.Gui.GUIManager.Init("myscene", "imgui")
+        Sofa.Gui.GUIManager.createGUI(root, __file__)
+        Sofa.Gui.GUIManager.SetDimension(1080, 1080)
+        # Initialization of the scene will be done here
+        Sofa.Gui.GUIManager.MainLoop(root)
+        Sofa.Gui.GUIManager.closeGUI()
 
 
 
