@@ -32,23 +32,38 @@ using sofa::helper::AdvancedTimer;
 namespace sofapython3
 {
 
+/**
+ * @brief Converts AdvancedTimer records to a Python dictionary structure
+ *
+ * This function processes the timer records and builds a hierarchical Python dictionary
+ * that represents the timer data in a format that's easy to use in Python.
+ *
+ * @param id The timer ID to get records for
+ * @return A Python dictionary representing the timer records
+ */
 py::dict getRecords(const std::string & id) {
     using sofa::helper::Record;
     using sofa::helper::system::thread::ctime_t;
-    using sofa::helper::system::thread::CTime;
 
-    static auto timer_freq = CTime::getTicksPerSec();
-    auto getTime = [](ctime_t t)
+    auto getTime = [](ctime_t t, ctime_t referenceTime)
     {
-        return 1000. * t / timer_freq;
+        constexpr double nbMillisecPerSec = 1000.;
+        return nbMillisecPerSec * sofa::helper::system::thread::CTime::toSecond(t - referenceTime);
     };
 
     const auto records = AdvancedTimer::getRecords(id);
 
-    std::stack<py::dict> tokens;
-    py::dict token, token_temp;
-    tokens.push(token);
-    ctime_t t0;
+    // Stack of dictionaries that represents the hierarchical structure of timer records
+    // Each element in the stack corresponds to a different level in the timer hierarchy.
+    std::stack<py::dict> hierarchyStack;
+
+    // Current dictionary being processed at the top of the stack
+    // Represents the most recently created level in the timer hierarchy.
+    py::dict currentLevel;
+
+    py::dict token_temp;
+    hierarchyStack.push(currentLevel);
+    std::optional<ctime_t> referenceTime;
 
     for (const auto& r : records)
     {
@@ -57,97 +72,67 @@ py::dict getRecords(const std::string & id) {
         case Record::RNONE:
             break;
         case Record::RBEGIN: // Timer begins
-            token = tokens.top();
-            if (token.contains(r.label.c_str()))
+        case Record::RSTEP_BEGIN: // Step begins
+            currentLevel = hierarchyStack.top();
+            if (currentLevel.contains(r.label.c_str()))
             {
-                if (py::list::check_(token[r.label.c_str()]))
+                if (py::list::check_(currentLevel[r.label.c_str()]))
                 {
                     token_temp = py::dict();
-                    py::list(token[r.label.c_str()]).append(token_temp);
-                    token = token_temp;
+                    py::list(currentLevel[r.label.c_str()]).append(token_temp);
+                    currentLevel = token_temp;
                 }
-                else if (py::dict::check_(token[r.label.c_str()]))
+                else if (py::dict::check_(currentLevel[r.label.c_str()]))
                 {
-                    token_temp = token[r.label.c_str()];
-                    token[r.label.c_str()] = py::list();
-                    py::list(token[r.label.c_str()]).append(token_temp);
+                    token_temp = currentLevel[r.label.c_str()];
+                    currentLevel[r.label.c_str()] = py::list();
+                    py::list(currentLevel[r.label.c_str()]).append(token_temp);
                     token_temp = py::dict();
-                    py::list(token[r.label.c_str()]).append(token_temp);
-                    token = token_temp;
+                    py::list(currentLevel[r.label.c_str()]).append(token_temp);
+                    currentLevel = token_temp;
                 }
                 else
                 {
-                    msg_error("Timer::getRecords") << "Got an unexpected token of type '" << std::string(py::str(token.get_type())) << "'.";
+                    msg_error("Timer::getRecords") << "Got an unexpected token of type '" << std::string(py::str(currentLevel.get_type())) << "'.";
                     break;
                 }
             }
             else
             {
-                token[r.label.c_str()] = py::dict();
-                token = token[r.label.c_str()];
+                // Creating a new level in the hierarchy for the current timer label
+                currentLevel[r.label.c_str()] = py::dict();
+                // Update the current level to the one just added
+                currentLevel = currentLevel[r.label.c_str()];
             }
-            t0 = r.time;
-            token["start_time"] = getTime(r.time - t0);
-            tokens.push(token);
+            if (r.type == Record::RBEGIN)
+            {
+                referenceTime = r.time;
+            }
+            if (!referenceTime.has_value())
+            {
+                msg_error("Timer::getRecords") << "Reference time not set.";
+                break;
+            }
+            currentLevel["start_time"] = getTime(r.time, *referenceTime);
+            hierarchyStack.push(currentLevel);
             break;
         case Record::REND: // Timer ends
-            token = tokens.top();
-            token["end_time"] = getTime(r.time - t0);
-            token["total_time"] = getTime(r.time - t0) - py::cast<float>(token["start_time"]);
-            tokens.pop();
-            break;
-        case Record::RSTEP_BEGIN: // Step begins
-            token = tokens.top();
-            if (token.contains(r.label.c_str()))
-            {
-                if (py::list::check_(token[r.label.c_str()]))
-                {
-                    token_temp = py::dict();
-                    py::list(token[r.label.c_str()]).append(token_temp);
-                    token = token_temp;
-                }
-                else if (py::dict::check_(token[r.label.c_str()]))
-                {
-                    token_temp = token[r.label.c_str()];
-                    token[r.label.c_str()] = py::list();
-                    py::list(token[r.label.c_str()]).append(token_temp);
-                    token_temp = py::dict();
-                    py::list(token[r.label.c_str()]).append(token_temp);
-                    token = token_temp;
-                }
-                else
-                {
-                    msg_error("Timer::getRecords") << "Got an unexpected token of type '" << std::string(py::str(token.get_type())) << "'.";
-                    break;
-                }
-            }
-            else
-            {
-                token[r.label.c_str()] = py::dict();
-                token = token[r.label.c_str()];
-            }
-            token["start_time"] = getTime(r.time - t0);
-            tokens.push(token);
-            break;
         case Record::RSTEP_END: // Step ends
-            token = tokens.top();
-            token["end_time"] = getTime(r.time - t0);
-            token["total_time"] = getTime(r.time - t0) - py::cast<float>(token["start_time"]);
-            tokens.pop();
+            currentLevel = hierarchyStack.top();
+            currentLevel["end_time"] = getTime(r.time, *referenceTime);
+            currentLevel["total_time"] = getTime(r.time, *referenceTime) - py::cast<float>(currentLevel["start_time"]);
+            hierarchyStack.pop();
             break;
         case Record::RVAL_SET: // Sets a value
-            token = tokens.top();
-            token[r.label.c_str()] = r.val;
-            break;
         case Record::RVAL_ADD: // Sets a value
-            token = tokens.top();
-            token[r.label.c_str()] = r.val;
+            currentLevel = hierarchyStack.top();
+            currentLevel[r.label.c_str()] = r.val;
             break;
         default:
-            token = tokens.top();
-            token[r.label.c_str()] = py::list();
-            token = token[r.label.c_str()];
-            token["start_time"] = r.time;
+            currentLevel = hierarchyStack.top();
+            currentLevel[r.label.c_str()] = py::list();
+            currentLevel = currentLevel[r.label.c_str()];
+            currentLevel["start_time"] = r.time;
             break;
         }
     }
@@ -155,28 +140,28 @@ py::dict getRecords(const std::string & id) {
     // There should be two remaining records: Top level "record" + "timer starts". The "timer starts" record remains in
     // the stack since we normally get the records before the timer ends (ending the timer in Sofa destroys the
     // records...)
-    if (tokens.size() == 2)
+    if (hierarchyStack.size() == 2)
     {
-        token = tokens.top();
-        tokens.pop();
+        currentLevel = hierarchyStack.top();
+        hierarchyStack.pop();
     }
-    else if (tokens.size() == 1)
+    else if (hierarchyStack.size() == 1)
     {
         // This should not happen unless we successfully got the timer records AFTER the timer has ends, which would mean
         // that Sofa's advanced timer has improved, let not warn the user for that.
-        token = tokens.top();
+        currentLevel = hierarchyStack.top();
     }
 
     // Pop the last token ("records")
-    tokens.pop();
+    hierarchyStack.pop();
 
     // The stack should be empty by now
-    if (!tokens.empty())
+    if (!hierarchyStack.empty())
     {
-        msg_error("Timer::getRecords") << "Records stack leaked.";
+        msg_error("Timer::getRecords") << "Records stack leaked (" << hierarchyStack.size() << " elements).";
     }
 
-    return token;
+    return currentLevel;
 }
 
 py::module addSubmoduleTimer(py::module &m)
