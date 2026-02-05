@@ -2,10 +2,12 @@ project(Bindings.SofaRuntime)
 
 set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/Module_SofaRuntime.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/PythonMessageHandler.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/Timer/Submodule_Timer.cpp
 )
 
 set(HEADER_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/PythonMessageHandler.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/Timer/Submodule_Timer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/SofaRuntime/Timer/Submodule_Timer_doc.h
 )
