@@ -62,7 +62,7 @@ using sofapython3::SceneLoaderPY3;
 #include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
 using sofa::helper::logging::MessageDispatcher;
 using sofa::helper::logging::MainPerComponentLoggingMessageHandler;
-using sofa::helper::logging::MainConsoleMessageHandler;
+#include <SofaPython3/SofaRuntime/PythonMessageHandler.h>
 
 #include <sofa/core/init.h>
 #include <sofa/helper/init.h>
@@ -155,9 +155,9 @@ PYBIND11_MODULE(SofaRuntime, m) {
 
     m.def("init", []() {
         MessageDispatcher::clearHandlers();
-        MessageDispatcher::addHandler(&MainConsoleMessageHandler::getInstance());
+        MessageDispatcher::addHandler(&MainPythonMessageHandler::getInstance());
         MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance());
-    });
+    }, "redirect SOFA messages to Python's sys.stdout");
 
     m.add_object("DataRepository", py::cast(&sofa::helper::system::DataRepository));
     m.add_object("PluginRepository", py::cast(&sofa::helper::system::PluginRepository));
