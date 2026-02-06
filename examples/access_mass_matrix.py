@@ -28,15 +28,16 @@ def createScene(root):
     root.addObject('VisualStyle', displayFlags="showBehaviorModels showForceFields")
 
     root.addObject("RequiredPlugin", pluginName=['Sofa.Component.Constraint.Projective',
-                                                    'Sofa.Component.Engine.Select',
-                                                    'Sofa.Component.LinearSolver.Direct',
-                                                    'Sofa.Component.LinearSystem',
-                                                    'Sofa.Component.Mass',
-                                                    'Sofa.Component.ODESolver.Backward',
-                                                    'Sofa.Component.SolidMechanics.FEM.Elastic',
-                                                    'Sofa.Component.StateContainer',
-                                                    'Sofa.Component.Topology.Container.Grid',
-                                                    'Sofa.Component.Visual'
+                                                 'Sofa.Component.Engine.Select',
+                                                 'Sofa.Component.LinearSolver.Direct',
+                                                 'Sofa.Component.LinearSolver.Ordering',
+                                                 'Sofa.Component.LinearSystem',
+                                                 'Sofa.Component.Mass',
+                                                 'Sofa.Component.ODESolver.Backward',
+                                                 'Sofa.Component.SolidMechanics.FEM.Elastic',
+                                                 'Sofa.Component.StateContainer',
+                                                 'Sofa.Component.Topology.Container.Grid',
+                                                 'Sofa.Component.Visual'
                                                  ])
 
     root.addObject('DefaultAnimationLoop')
@@ -57,8 +58,10 @@ def createScene(root):
     # This component distributes the matrix contributions to the other systems
     root.addObject('CompositeLinearSystem', template="CompressedRowSparseMatrixMat3x3d", name="solverSystem",
                    linearSystems="@matrices/system @matrices/M", solverLinearSystem="@matrices/system")
-    # It is important to define the linear system in the linear solver: the CompositeLinearSystem
-    root.addObject('SparseLDLSolver', ordering='Natural', template="CompressedRowSparseMatrixMat3x3d",
+
+    root.addObject('NaturalOrderingMethod', name='ordering')
+    # It is important to configure the solver to work on the CompositeLinearSystem
+    root.addObject('SparseLDLSolver', orderingMethod='@ordering', template="CompressedRowSparseMatrixMat3x3d",
                    linearSystem="@solverSystem")
 
     beam1 = root.addChild('Beam1')
