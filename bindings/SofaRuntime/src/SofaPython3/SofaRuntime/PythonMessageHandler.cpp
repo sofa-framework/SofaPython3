@@ -30,27 +30,28 @@ namespace
 {
 
 using namespace std::string_literals;
-auto red { "\033[31m"s };
-auto green { "\033[32m"s };
-auto orange { "\033[38;5;214m"s };
-auto magenta { "\033[35m"s };
-auto blue { "\033[34m"s };
-auto reset { "\033[0m"s };
+const std::string red { "\033[31m"s };
+const std::string green { "\033[32m"s };
+const std::string orange { "\033[38;5;214m"s };
+const std::string magenta { "\033[35m"s };
+const std::string blue { "\033[34m"s };
+const std::string reset { "\033[0m"s };
 
 std::string format(const std::string& type, const std::string& color)
 {
     return color + "[" + type + "] " + reset;
 };
 
-std::string_view getPrefixText(sofa::helper::logging::Message::Type type)
+const std::string& getPrefixText(sofa::helper::logging::Message::Type type)
 {
-    static std::string advice = format("SUGGESTION", green);
-    static std::string deprecated = format("DEPRECATED", orange);
-    static std::string warning = format("WARNING", orange);
-    static std::string info = format("INFO", green);
-    static std::string error = format("ERROR", red);
-    static std::string fatal = format("FATAL", magenta);
-    static std::string empty = format("EMPTY", reset);
+    static const std::string advice = format("SUGGESTION", green);
+    static const std::string deprecated = format("DEPRECATED", orange);
+    static const std::string warning = format("WARNING", orange);
+    static const std::string info = format("INFO", green);
+    static const std::string error = format("ERROR", red);
+    static const std::string fatal = format("FATAL", magenta);
+    static const std::string empty = format("EMPTY", reset);
+    static const std::string nothing{};
 
     switch (type)
     {
@@ -62,8 +63,8 @@ std::string_view getPrefixText(sofa::helper::logging::Message::Type type)
     case sofa::helper::logging::Message::Fatal      : return fatal;
     case sofa::helper::logging::Message::TEmpty     : return empty;
 
-    default:
-        return "";
+    case sofa::helper::logging::Message::TypeCount:
+        return nothing;
     }
 }
 
