@@ -117,6 +117,24 @@ bool Controller_Trampoline::callCachedMethod(const py::object& method, Event* ev
     return py::cast<bool>(result);
 }
 
+void Controller_Trampoline::invalidateMethodCache(const std::string& methodName)
+{
+    if (!m_cacheInitialized)
+        return;
+
+    if (methodName == "onEvent")
+    {
+        // Clear the dedicated fallback cache; handleEvent will re-resolve it lazily
+        m_hasOnEvent = false;
+        m_onEventMethod = py::object();
+        m_onEventDirty = true;
+        return;
+    }
+
+    // Remove the entry so getCachedMethod will re-resolve it on next call
+    m_methodCache.erase(methodName);
+}
+
 std::string Controller_Trampoline::getClassName() const
 {
     PythonEnvironment::gil acquire {"getClassName"};
@@ -203,6 +221,21 @@ void Controller_Trampoline::handleEvent(Event* event)
             return;
         }
 
+        // Re-resolve "onEvent" if it was invalidated by a __setattr__ call
+        if (m_onEventDirty)
+        {
+            m_onEventDirty = false;
+            if (py::hasattr(m_pySelf, "onEvent"))
+            {
+                py::object fct = m_pySelf.attr("onEvent");
+                if (PyCallable_Check(fct.ptr()))
+                {
+                    m_hasOnEvent = true;
+                    m_onEventMethod = fct;
+                }
+            }
+        }
+
         // Fall back to the generic "onEvent" method if available
         if (m_hasOnEvent)
         {
@@ -249,6 +282,22 @@ void moduleAddController(py::module &m) {
     f.def("draw", [](Controller& self, sofa::core::visual::VisualParams* params){
         self.draw(params);
     }, pybind11::return_value_policy::reference);
+
+    // Override __setattr__ to invalidate the method cache when an "on*" attribute is reassigned
+    f.def("__setattr__", [](py::object self, const std::string& s, py::object value) {
+        // If the attribute starts with "on", invalidate the cached method
+        if (s.rfind("on", 0) == 0)
+        {
+            auto* trampoline = dynamic_cast<Controller_Trampoline*>(py::cast<Controller*>(self));
+            if (trampoline)
+            {
+                trampoline->invalidateMethodCache(s);
+            }
+        }
+
+        // Delegate to the base class __setattr__
+        BindingBase::__setattr__(self, s, value);
+    });
 }
 
 

@@ -54,6 +54,9 @@ public:
 
     std::string getClassName() const override;
 
+    /// Invalidates a specific entry in the method cache (called when a user reassigns an on* attribute)
+    void invalidateMethodCache(const std::string& methodName);
+
 private:
     /// Initializes the Python object cache (m_pySelf and method cache)
     void initializePythonCache();
@@ -80,6 +83,9 @@ private:
 
     /// Cached reference to the fallback "onEvent" method
     pybind11::object m_onEventMethod;
+
+    /// Flag indicating whether the "onEvent" fallback needs re-resolution
+    bool m_onEventDirty = false;
 
     /// Flag indicating whether the cache has been initialized
     bool m_cacheInitialized = false;
