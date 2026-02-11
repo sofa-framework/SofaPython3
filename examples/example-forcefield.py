@@ -22,7 +22,7 @@ class RestShapeForceField(Sofa.Core.ForceFieldVec3d):
         with out_force.writeableArray() as wa:
             wa[:] += ( (self.initpos-pos.value) * self.ks.value  )
                  
-    def addDForce(self, df, dx, params):
+    def addDForce(self, params, df, dx):
         pass
         
     #def addKToMatrix(self, a, b):
