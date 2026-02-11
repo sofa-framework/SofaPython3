@@ -25,7 +25,7 @@ class RestShapeForceField(Sofa.Core.ForceFieldVec3d):
     def addDForce(self, params, df, dx):
         pass
         
-    #def addKToMatrix(self, a, b):
+    #def addKToMatrix(self, params, number_of_nodes, number_of_dofs_per_node):
     #    print(" Python::addKToMatrix: ", a, " ", b)
 
 
