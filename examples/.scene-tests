@@ -10,3 +10,6 @@ iterations "access_stiffness_matrix.py" "3"
 
 # Ignore additional examples
 ignore "additional-examples/.*"
+
+# Ignore jax examples
+ignore "jax/*"
