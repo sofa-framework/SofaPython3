@@ -255,7 +255,7 @@ class Test(unittest.TestCase):
         root.addObject("PointSetTopologyContainer", points=[[0, 0, 0], [1, 0, 0]])
         modifier = root.addObject("PointSetTopologyModifier")
         mo = root.addObject("MechanicalObject")
-        Sofa.Simulation.init(root)
+        Sofa.Simulation.initRoot(root)
 
         modifier.addPoints(10, True)
         self.assertEqual(len(mo.position), 12)
@@ -269,7 +269,7 @@ class Test(unittest.TestCase):
         root.addObject("PointSetTopologyContainer", points=[[0, 0, 0], [1, 0, 0]])
         modifier = root.addObject("PointSetTopologyModifier")
         mo = root.addObject("MechanicalObject")
-        Sofa.Simulation.init(root)
+        Sofa.Simulation.initRoot(root)
 
         modifier.addPoints(10, True)
         with mo.position.writeable() as w:
@@ -283,7 +283,7 @@ class Test(unittest.TestCase):
         root = create_scene("rootNode")
         v = numpy.array([[0, 0, 0], [1, 1, 1], [2, 2, 2], [3, 3, 3]])
         c = root.addObject("MechanicalObject", name="t", position=v.tolist())
-        Sofa.Simulation.init(root)
+        Sofa.Simulation.initRoot(root)
 
         numpy.testing.assert_array_equal(c.position.array(), v)
 

@@ -18,17 +18,17 @@ class ExempleMessageHandler(Sofa.Helper.MessageHandler):
 
     def process(self, msg):
         """Prints the message in the console and count the number of errors, warnings and infos."""
-        if msg["type"] == "Error":
-            self.print_error(msg["sender"], msg["message"])
+        if msg['type'] == "Error":
+            self.print_error(msg['sender'], msg['message'])
             self.num_errors += 1
-        elif msg["type"] == "Warning":
-            self.print_warning(msg["sender"], msg["message"])
+        elif msg['type'] == "Warning":
+            self.print_warning(msg['sender'], msg['message'])
             self.num_warnings += 1
-        elif msg["type"] == "Info":
-            self.print_info(msg["sender"], msg["message"])
+        elif msg['type'] == "Info":
+            self.print_info(msg['sender'], msg['message'])
             self.num_infos += 1
         else:
-            print(f"{msg["type"]} {msg['message']}")
+            print(f"{msg['type']} {msg['message']}")
 
     @staticmethod
     def print_error(sender, message):

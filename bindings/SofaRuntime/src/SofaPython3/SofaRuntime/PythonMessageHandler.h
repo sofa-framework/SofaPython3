@@ -1,6 +1,6 @@
 /******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2021 INRIA, USTL, UJF, CNRS, MGH                     *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -15,22 +15,27 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #pragma once
 
-#include <pybind11/pybind11.h>
-#include <sofa/core/fwd.h>
+#include <sofa/helper/logging/MessageHandler.h>
 
 namespace sofapython3
 {
 
-pybind11::object getItem(const sofa::core::objectmodel::BaseObject & self, const std::string& path);
+class PythonMessageHandler : public sofa::helper::logging::MessageHandler
+{
+public:
+    PythonMessageHandler() = default;
+    void process(sofa::helper::logging::Message& m) override ;
+};
 
-void moduleForwardAddBaseObject(pybind11::module &m);
-void moduleAddBaseObject(pybind11::module &m);
-
-} /// namespace sofapython
-
-
+class MainPythonMessageHandler
+{
+public:
+    static PythonMessageHandler& getInstance() ;
+};
+} // namespace sofapython3

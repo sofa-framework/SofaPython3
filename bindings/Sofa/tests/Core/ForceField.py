@@ -67,7 +67,7 @@ class Test(unittest.TestCase):
                           use_iterative_solver=False)
 
         # do some steps here
-        Sofa.Simulation.init(root)
+        Sofa.Simulation.initRoot(root)
 
         for i in range(0, 100):
             Sofa.Simulation.animate(root, root.dt.value)
@@ -80,7 +80,7 @@ class Test(unittest.TestCase):
         root = rssffScene(use_implicit_scheme=True, use_iterative_solver=True)
 
         # do some steps here
-        Sofa.Simulation.init(root)
+        Sofa.Simulation.initRoot(root)
 
         for i in range(0, 100):
             Sofa.Simulation.animate(root, root.dt.value)
@@ -93,7 +93,7 @@ class Test(unittest.TestCase):
         root = rssffScene(use_implicit_scheme=True, use_iterative_solver=False)
 
         # do some steps here
-        Sofa.Simulation.init(root)
+        Sofa.Simulation.initRoot(root)
 
         for i in range(0, 100):
             Sofa.Simulation.animate(root, root.dt.value)
@@ -127,7 +127,7 @@ class Test(unittest.TestCase):
         root.addObject('FixedConstraint', indices="@box.indices")
         root.addObject('HexahedronFEMForceField', name="FEM", youngModulus="4000", poissonRatio="0.3", method="large")
 
-        Sofa.Simulation.init(root)
+        Sofa.Simulation.initRoot(root)
         Sofa.Simulation.animate(root, 0.0001)
 
         return root
