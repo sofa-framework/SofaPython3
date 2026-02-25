@@ -65,11 +65,13 @@ void moduleAddBaseMeshTopology(py::module& m) {
     c.def("getNbTriangles", &BaseMeshTopology::getNbTriangles);
     c.def("getNbTetrahedra", &BaseMeshTopology::getNbTetrahedra);
     c.def("getNbHexahedra", &BaseMeshTopology::getNbHexahedra);
+    c.def("getNbPrisms", &BaseMeshTopology::getNbPrisms);
+    c.def("getNbPyramids", &BaseMeshTopology::getNbPyramids);
     c.def("getNbQuads", &BaseMeshTopology::getNbQuads);
     c.def("getNbTetras", &BaseMeshTopology::getNbTetras);
 
     c.def("getEdge", 
-      [] (BaseMeshTopology &self, const sofa::Index & index) -> std::array<sofa::Index, 2> {
+      [] (BaseMeshTopology &self, const sofa::Index & index) -> std::array<sofa::Index, sofa::geometry::Edge::NumberOfNodes> {
           const auto & e = self.getEdge(index);
           return {{e[0], e[1]}};
       },
@@ -78,7 +80,7 @@ void moduleAddBaseMeshTopology(py::module& m) {
     );
 
     c.def("getTriangle",
-      [] (BaseMeshTopology &self, const sofa::Index & index) -> std::array<sofa::Index, 3> {
+      [] (BaseMeshTopology &self, const sofa::Index & index) -> std::array<sofa::Index, sofa::geometry::Triangle::NumberOfNodes> {
           const auto & t = self.getTriangle(index);
           return {{t[0], t[1], t[2]}};
       },
@@ -87,7 +89,7 @@ void moduleAddBaseMeshTopology(py::module& m) {
     );
 
     c.def("getQuad",
-      [] (BaseMeshTopology &self, const sofa::Index & index) -> std::array<sofa::Index, 4> {
+      [] (BaseMeshTopology &self, const sofa::Index & index) -> std::array<sofa::Index, sofa::geometry::Quad::NumberOfNodes> {
           const auto & q = self.getQuad(index);
           return {{q[0], q[1], q[2], q[3]}};
       },
@@ -96,7 +98,7 @@ void moduleAddBaseMeshTopology(py::module& m) {
     );
 
     c.def("getTetrahedron",
-      [] (BaseMeshTopology & self, const sofa::Index & index) -> std::array<sofa::Index, 4> {
+      [] (BaseMeshTopology & self, const sofa::Index & index) -> std::array<sofa::Index, sofa::geometry::Tetrahedron::NumberOfNodes> {
           const auto & n = self.getTetrahedron(index);
           return {{n[0], n[1], n[2], n[3]}};
       },
@@ -105,12 +107,30 @@ void moduleAddBaseMeshTopology(py::module& m) {
     );
 
     c.def("getHexahedron",
-      [] (BaseMeshTopology & self, const sofa::Index & index) -> std::array<sofa::Index, 8> {
+      [] (BaseMeshTopology & self, const sofa::Index & index) -> std::array<sofa::Index, sofa::geometry::Hexahedron::NumberOfNodes> {
           const auto & n = self.getHexahedron(index);
           return {{n[0], n[1], n[2], n[3], n[4], n[5], n[6], n[7]}};
       },
       py::arg("index"),
       "Returns the vertices of Hexahedron at index."
+    );
+
+    c.def("getPrism",
+        [] (BaseMeshTopology & self, const sofa::Index & index) -> std::array<sofa::Index, sofa::geometry::Prism::NumberOfNodes> {
+            const auto & n = self.getPrism(index);
+            return {{n[0], n[1], n[2], n[3], n[4], n[5]}};
+        },
+        py::arg("index"),
+        "Returns the vertices of Prism at index."
+    );
+
+    c.def("getPyramid",
+        [] (BaseMeshTopology & self, const sofa::Index & index) -> std::array<sofa::Index, sofa::geometry::Pyramid::NumberOfNodes> {
+            const auto & n = self.getPyramid(index);
+            return {{n[0], n[1], n[2], n[3], n[4]}};
+        },
+        py::arg("index"),
+        "Returns the vertices of Pyramid at index."
     );
 
     c.def("getLocalEdgesInTetrahedron", 

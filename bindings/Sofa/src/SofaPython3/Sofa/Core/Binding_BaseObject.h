@@ -21,12 +21,10 @@
 #pragma once
 
 #include <pybind11/pybind11.h>
+#include <sofa/core/fwd.h>
 
-namespace sofa::core::objectmodel {
-class BaseObject;
-}
-
-namespace sofapython3 {
+namespace sofapython3
+{
 
 pybind11::object getItem(const sofa::core::objectmodel::BaseObject & self, const std::string& path);
 

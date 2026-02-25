@@ -21,7 +21,7 @@ class Test(unittest.TestCase):
                                                      "Sofa.Component.Topology.Container.Dynamic"])
 
         root.addObject("FreeMotionAnimationLoop", solveVelocityConstraintFirst=True)
-        root.addObject("ProjectedGaussSeidelConstraintSolver", name="constraint_solver", tolerance=1e-9, maxIterations=1000)
+        root.addObject("BlockGaussSeidelConstraintSolver", name="constraint_solver", tolerance=1e-9, maxIterations=1000)
         root.addObject("StringMeshCreator", name="loader", resolution="20")
 
         root.addObject("EulerImplicitSolver")
@@ -39,7 +39,7 @@ class Test(unittest.TestCase):
         ext.addObject("DistanceMapping", name="distanceMapping", topology="@../edge_container")
         ext.addObject("UniformConstraint", template="Vec1d", iterative=True)
 
-        Sofa.Simulation.init(root)
+        Sofa.Simulation.initRoot(root)
         Sofa.Simulation.animate(root, 0.0001)
 
         return root

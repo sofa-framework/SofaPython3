@@ -13,7 +13,7 @@ Example:
     n.addChild("Node2")
     n.addObject("MechanicalObject", name="dofs")
 
-    Sofa.Simulation.init(n)
+    Sofa.Simulation.initRoot(n)
     Sofa.Simulation.print(n)
 
 """

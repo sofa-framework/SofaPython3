@@ -48,7 +48,7 @@ static auto Class =
                 # Add a mechanical component to MyNode
                 n.addObject("MechanicalObject", name="dofs")
 
-                Sofa.Simulation.init(root)
+                Sofa.Simulation.initRoot(root)
                 Sofa.Simulation.print(root)
 
         The child nodes, components and parents can be accessed using generator attributes.

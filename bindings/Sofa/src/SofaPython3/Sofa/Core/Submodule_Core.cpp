@@ -100,7 +100,7 @@ PYBIND11_MODULE(Core, core)
                 # Add a mechanical component to MyNode
                 n.addObject("MechanicalObject", name="dofs")
 
-                Sofa.Simulation.init(root)
+                Sofa.Simulation.initRoot(root)
                 Sofa.Simulation.print(root)
 
        )doc";
