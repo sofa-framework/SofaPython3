@@ -11,6 +11,7 @@ import Sofa
 
 
 # Some configuration for JAX: device and precision
+# jax.config.update('jax_default_device', jax.devices('cpu')[0])
 jax.config.update("jax_default_device", jax.devices("gpu")[0])  # default "gpu"
 jax.config.update("jax_enable_x64", True)  # default False (ie use float32)
 
