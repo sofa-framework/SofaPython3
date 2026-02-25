@@ -6,12 +6,13 @@ import numpy as np
 def main():
     import SofaRuntime
     import Sofa.Gui
+    import SofaImGui
 
     root = Sofa.Core.Node("root")
     createScene(root)
     Sofa.Simulation.init(root)
 
-    Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
+    Sofa.Gui.GUIManager.Init("myscene", "imgui")
     Sofa.Gui.GUIManager.createGUI(root, __file__)
     Sofa.Gui.GUIManager.SetDimension(1080, 600)
     Sofa.Gui.GUIManager.MainLoop(root)
@@ -21,20 +22,24 @@ def main():
 def createScene(root):
     root.gravity=[0, -9.81, 0]
     root.dt=0.01
+    root.bbox=[[-0.5, -0.5, -0.5], [0.5, 0.5, 0.5]]
 
     root.addObject('DefaultAnimationLoop')
     root.addObject('DefaultVisualManagerLoop')
+    root.addObject('RequiredPlugin', pluginName=['Sofa.Component.Constraint.Projective', 'Sofa.Component.Diffusion', 'Sofa.Component.Engine.Select',
+                                                 'Sofa.Component.LinearSolver.Direct', 'Sofa.Component.LinearSolver.Iterative', 'Sofa.Component.Mass', 'Sofa.Component.ODESolver.Backward', 'Sofa.Component.SolidMechanics.FEM.Elastic',
+                                                 'Sofa.Component.Topology.Container.Dynamic', 'Sofa.Component.Topology.Container.Grid', 'Sofa.Component.Topology.Mapping', 'Sofa.Component.Visual', 'Sofa.GL.Component.Engine', 'Sofa.GL.Component.Rendering2D',
+                                                 'Sofa.GL.Component.Rendering3D', 'Sofa.Component.StateContainer', 'Sofa.Component.Mapping.Linear'])
     root.addObject('VisualStyle', displayFlags="hideCollisionModels showVisualModels hideForceFields showBehaviorModels")
-    root.addObject('RequiredPlugin', pluginName="Sofa.Component.Constraint.Projective Sofa.Component.Diffusion Sofa.Component.Engine.Select Sofa.Component.LinearSolver.Direct Sofa.Component.LinearSolver.Iterative Sofa.Component.Mass Sofa.Component.ODESolver.Backward Sofa.Component.SolidMechanics.FEM.Elastic Sofa.Component.Topology.Container.Dynamic Sofa.Component.Topology.Container.Grid Sofa.Component.Topology.Mapping Sofa.Component.Visual Sofa.GL.Component.Engine Sofa.GL.Component.Rendering2D Sofa.GL.Component.Rendering3D")
 
-    root.addObject('RegularGridTopology', name="gridGenerator", nx=16, ny=6, nz=6, xmin=0, xmax=1, ymin=0, ymax=0.2, zmin=0, zmax=0.2)
-    root.addObject("OglColorMap", legendTitle="A-dimensional temperature", min=0, max=1, showLegend=True, colorScheme="Blue to Red")
+    gridGenerator = root.addObject('RegularGridTopology', name="gridGenerator", nx=16, ny=6, nz=6, xmin=0, xmax=1, ymin=0, ymax=0.2, zmin=0, zmax=0.2)
+    root.addObject("OglColorMap", legendTitle="A-dimensional temperature", legendOffset=[60,0], legendSize=20, min=0, max=1, showLegend=True, colorScheme="Blue to Red")
 
 
     tetraTopo = root.addChild('TetraTopology')
-    tetraTopo.addObject("TetrahedronSetTopologyContainer", name="tetContainer", tags="3dgeometry")
+    tetrahedraContainer = tetraTopo.addObject("TetrahedronSetTopologyContainer", name="tetContainer", tags="3dgeometry")
     tetraTopo.addObject("TetrahedronSetTopologyModifier", name="Modifier")
-    tetraTopo.addObject("Hexa2TetraTopologicalMapping", input="@../gridGenerator", output="@tetContainer")
+    tetraTopo.addObject("Hexa2TetraTopologicalMapping", input=gridGenerator.linkpath, output=tetrahedraContainer.linkpath)
     tetraTopo.addObject("MechanicalObject", name="tetraO", position="@../gridGenerator.position", tags="3dgeometry")
     tetraTopo.addObject("BoxROI", name="BoundaryCondition", box=[-0.01, -0.01, -0.01, 0.01, 0.21, 0.21])
 
@@ -42,10 +47,10 @@ def createScene(root):
     meca = tetraTopo.addChild("Mechanics")
     meca.addObject("EulerImplicitSolver", name="Euler Impl IntegrationScheme")
     meca.addObject("SparseLDLSolver", name="LDL LinearSolver", template="CompressedRowSparseMatrixMat3x3d")
-    meca.addObject("TetrahedronSetTopologyContainer", name="tetContainer", src="@../tetContainer")
+    meca.addObject("TetrahedronSetTopologyContainer", name="tetContainer", src=tetrahedraContainer.linkpath)
     meca.addObject("TetrahedronSetGeometryAlgorithms", name="tetGeometry", template="Vec3d")
-    meca.addObject("MechanicalObject", name="MO", position="@../tetraO.position")
-    meca.addObject("MeshMatrixMass", template="Vec3d,Vec3d", name="Mass", massDensity=100, topology="@tetContainer", geometryState="@MO")
+    elasticMO = meca.addObject("MechanicalObject", name="MO", position="@../tetraO.position")
+    meca.addObject("MeshMatrixMass", template="Vec3d,Vec3d", name="Mass", massDensity=100, topology=tetrahedraContainer.linkpath, geometryState="@MO")
     meca.addObject("FixedConstraint", name="FixedBoundaryCondition", indices="@../BoundaryCondition.indices")
 
     #initialization of the vector multiplying the local Young's modulus (need to activate updateStiffness=True)
@@ -59,14 +64,14 @@ def createScene(root):
     thermo.addObject("TetrahedronSetTopologyContainer", name="tetContainer", src="@../tetContainer")
     thermo.addObject("TetrahedronSetGeometryAlgorithms", name="tetGeometry", template="Vec3d")
     thermo.addObject("MechanicalObject", name="Temperatures", template="Vec1d", size=576, showObject=True)
-    thermo.addObject("MeshMatrixMass", template="Vec1d,Vec3d", name="Conductivity", massDensity=1.0, topology="@../tetContainer", geometryState="@../Mechanics/MO")
+    thermo.addObject("MeshMatrixMass", template="Vec1d,Vec3d", name="Conductivity", massDensity=1.0, topology=tetrahedraContainer.linkpath, geometryState=elasticMO.linkpath)
     thermo.addObject("FixedConstraint", name="Heating", indices=495)
     thermo.addObject("TetrahedronDiffusionFEMForceField", name="DiffusionForceField", template="Vec1d", constantDiffusionCoefficient=0.05, tagMechanics="3dgeometry", mstate="@Temperatures")
 
     thermoVisu = thermo.addChild("Visu")
     thermoVisu.addObject("TextureInterpolation", template="Vec1d", name="EngineInterpolation", input_states="@../Temperatures.position",  input_coordinates="@../../Mechanics/MO.position",  min_value=0.,  max_value=1.,  manual_scale=True , drawPotentiels=False,  showIndicesScale=5e-05)
     thermoVisu.addObject("OglModel", template="Vec3d", name="oglPotentiel", handleDynamicTopology="0", texcoords="@EngineInterpolation.output_coordinates" ,texturename="textures/heatColor.bmp", scale3d=[1, 1, 1], material="Default Diffuse 1 1 1 1 0.5 Ambient 1 1 1 1 0.3 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material ")
-    thermoVisu.addObject("IdentityMapping", input="@../../Mechanics/MO", output="@oglPotentiel")
+    thermoVisu.addObject("IdentityMapping", input=elasticMO.linkpath, output="@oglPotentiel")
 
     # Add the controller
     root.addObject(ThermoMecaController(name = "MultiPhysicsController", ThermalObject=thermo.Temperatures, MechanicalForceField=meca.LinearElasticity))
