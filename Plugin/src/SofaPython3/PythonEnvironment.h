@@ -120,9 +120,8 @@ public:
     /// to be able to react when a scene is loaded
     struct SceneLoaderListerner : public SceneLoader::Listener
     {
-        using SceneLoader::Listener::rightBeforeLoadingScene;
         /// possibly unload python modules to force importing their eventual modifications
-        virtual void rightBeforeLoadingScene();
+        virtual void rightBeforeLoadingScene(SceneLoader* sceneLoader) override;
         static SceneLoaderListerner* getInstance() {
             static SceneLoaderListerner sceneLoaderListerner;
             return &sceneLoaderListerner; }

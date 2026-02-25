@@ -606,8 +606,9 @@ void PythonEnvironment::setArguments(const std::string& filename, const std::vec
     PySys_SetArgvEx( data->size(), data->getDataBuffer(), 0);
 }
 
-void PythonEnvironment::SceneLoaderListerner::rightBeforeLoadingScene()
+void PythonEnvironment::SceneLoaderListerner::rightBeforeLoadingScene(SceneLoader* sceneLoader)
 {
+    SOFA_UNUSED(sceneLoader);
     // unload python modules to force importing their eventual modifications
     executePython([]{ PyRun_SimpleString("SofaRuntime.unloadModules()");});
 }
