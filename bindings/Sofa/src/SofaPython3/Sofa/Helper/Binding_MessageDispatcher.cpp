@@ -33,8 +33,13 @@ void sofapython3::moduleAddMessageDispatcher(pybind11::module &m)
         Configuration of the message dispatcher.
     )doc";
 
-    messageDispatcherModule.def("clearHandlers",
+    messageDispatcherModule.def("clear_handlers",
         [](){
             sofa::helper::logging::MessageDispatcher::clearHandlers();
         }, "Removes all registered message handlers.");
+
+    messageDispatcherModule.def("num_handlers",
+        [](){
+            return sofa::helper::logging::MessageDispatcher::getHandlers().size();
+        }, "Returns the number of registered message handlers.");
 }
