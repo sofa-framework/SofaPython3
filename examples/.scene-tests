@@ -13,3 +13,6 @@ ignore "additional-examples/.*"
 
 # Ignore jax examples
 ignore "jax/*"
+
+#Ignore meshing examples
+ignore "meshing/*"
