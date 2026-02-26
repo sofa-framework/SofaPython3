@@ -1,6 +1,7 @@
 project(Bindings.Sofa.Helper)
 
 set(HEADER_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_MessageDispatcher.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_MessageHandler.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Utils.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Vector.h
@@ -9,6 +10,7 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_MessageDispatcher.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_MessageHandler.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Utils.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Vector.cpp
