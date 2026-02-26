@@ -19,7 +19,7 @@ from mesh_from_polyhedron import CGAL_Mesh_from_polyhedron
 
 class CGAL_Mesh_from_pointcloud(CGAL_Mesh_from):
     def __init__(self, pointcloud ):
-        print(f"Transformaing input data into CGAL data structure...")
+        print(f"Transforming input data into CGAL data structure...")
         tic()
         self.pointcloud = []
         for point in pointcloud:
