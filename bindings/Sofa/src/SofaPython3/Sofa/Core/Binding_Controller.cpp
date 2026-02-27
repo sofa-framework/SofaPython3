@@ -139,8 +139,7 @@ std::string Controller_Trampoline::getClassName() const
 {
     PythonEnvironment::gil acquire {"getClassName"};
 
-    // Use cached self if available, otherwise cast
-    if (m_cacheInitialized && m_pySelf)
+    if (m_pySelf)
     {
         return py::str(py::type::of(m_pySelf).attr("__name__"));
     }
