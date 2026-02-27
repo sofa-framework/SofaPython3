@@ -47,7 +47,6 @@ Controller_Trampoline::~Controller_Trampoline()
     {
         PythonEnvironment::gil acquire {"~Controller_Trampoline"};
         m_methodCache.clear();
-        m_onEventMethod = py::object();
         m_pySelf = py::object();
     }
 }
@@ -60,16 +59,8 @@ void Controller_Trampoline::initializePythonCache()
     // Must be called with GIL held
     m_pySelf = py::cast(this);
 
-    // Cache the fallback "onEvent" method if it exists
-    if (py::hasattr(m_pySelf, "onEvent"))
-    {
-        py::object fct = m_pySelf.attr("onEvent");
-        if (PyCallable_Check(fct.ptr()))
-        {
-            m_hasOnEvent = true;
-            m_onEventMethod = fct;
-        }
-    }
+    // Pre-cache the fallback "onEvent" method via the standard cache path
+    getCachedMethod("onEvent");
 
     m_cacheInitialized = true;
 }
@@ -121,15 +112,6 @@ void Controller_Trampoline::invalidateMethodCache(const std::string& methodName)
 {
     if (!m_cacheInitialized)
         return;
-
-    if (methodName == "onEvent")
-    {
-        // Clear the dedicated fallback cache; handleEvent will re-resolve it lazily
-        m_hasOnEvent = false;
-        m_onEventMethod = py::object();
-        m_onEventDirty = true;
-        return;
-    }
 
     // Remove the entry so getCachedMethod will re-resolve it on next call
     m_methodCache.erase(methodName);
@@ -208,37 +190,14 @@ void Controller_Trampoline::handleEvent(Event* event)
         // Build the event-specific method name (e.g., "onAnimateBeginEvent")
         std::string methodName = std::string("on") + event->getClassName();
 
-        // Try to get the cached method for this specific event type
+        // Try the event-specific method first, then fall back to generic "onEvent"
         py::object method = getCachedMethod(methodName);
+        if (!method)
+            method = getCachedMethod("onEvent");
 
         if (method)
         {
-            // Found a specific handler for this event type
             bool isHandled = callCachedMethod(method, event);
-            if (isHandled)
-                event->setHandled();
-            return;
-        }
-
-        // Re-resolve "onEvent" if it was invalidated by a __setattr__ call
-        if (m_onEventDirty)
-        {
-            m_onEventDirty = false;
-            if (py::hasattr(m_pySelf, "onEvent"))
-            {
-                py::object fct = m_pySelf.attr("onEvent");
-                if (PyCallable_Check(fct.ptr()))
-                {
-                    m_hasOnEvent = true;
-                    m_onEventMethod = fct;
-                }
-            }
-        }
-
-        // Fall back to the generic "onEvent" method if available
-        if (m_hasOnEvent)
-        {
-            bool isHandled = callCachedMethod(m_onEventMethod, event);
             if (isHandled)
                 event->setHandled();
         }

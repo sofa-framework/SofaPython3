@@ -74,18 +74,9 @@ private:
     /// Cached Python self reference (avoids repeated py::cast(this))
     pybind11::object m_pySelf;
 
-    /// Cache of Python method objects, keyed by method name
+    /// Cache of Python method objects, keyed by method name (including "onEvent" fallback)
     /// Stores the method object if it exists, or an empty object if checked and not found
     std::unordered_map<std::string, pybind11::object> m_methodCache;
-
-    /// Flag indicating whether the fallback "onEvent" method exists
-    bool m_hasOnEvent = false;
-
-    /// Cached reference to the fallback "onEvent" method
-    pybind11::object m_onEventMethod;
-
-    /// Flag indicating whether the "onEvent" fallback needs re-resolution
-    bool m_onEventDirty = false;
 
     /// Flag indicating whether the cache has been initialized
     bool m_cacheInitialized = false;
