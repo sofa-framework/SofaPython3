@@ -284,8 +284,8 @@ void moduleAddController(py::module &m) {
 
     // Override __setattr__ to invalidate the method cache when an "on*" attribute is reassigned
     f.def("__setattr__", [](py::object self, const std::string& s, py::object value) {
-        // If the attribute starts with "on", invalidate the cached method
-        if (s.rfind("on", 0) == 0)
+        // If the attribute starts with "on" and the new value is callable, invalidate the cached method
+        if (s.rfind("on", 0) == 0 && PyCallable_Check(value.ptr()))
         {
             auto* trampoline = dynamic_cast<Controller_Trampoline*>(py::cast<Controller*>(self));
             if (trampoline)
