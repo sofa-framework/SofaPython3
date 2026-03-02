@@ -12,9 +12,9 @@ Prerequisites
 
 If you downloaded and installed SOFA and its headers from the `SOFA website <https://www.sofa-framework.org/download/>`_, make sure to have python3.10 installed on your computer.
 
-.. tabs::
+.. tab-set::
 
-        .. tab:: Ubuntu
+        .. tab-item:: Ubuntu
 
 			Run in a terminal:
 
@@ -31,7 +31,7 @@ If you downloaded and installed SOFA and its headers from the `SOFA website <htt
 				sudo apt install libopengl0
 
 
-        .. tab:: MacOS
+        .. tab-item:: MacOS
 
 			Run in a terminal:
 
@@ -54,7 +54,7 @@ If you downloaded and installed SOFA and its headers from the `SOFA website <htt
 				pip3 install numpy
 
 
-        .. tab:: Windows
+        .. tab-item:: Windows
 
 		Download and install `Python 3.10 64bit <https://www.python.org/ftp/python/3.10.10/python-3.10.10-amd64.exe>`_
 
@@ -98,9 +98,9 @@ Within a python3 interpreter
 Before running your simulations, you must make sure to define the following environment variables:
 
 
-.. tabs::
+.. tab-set::
 
-        .. tab:: Ubuntu
+        .. tab-item:: Ubuntu
 
 			Run in a terminal:
 
@@ -109,7 +109,7 @@ Before running your simulations, you must make sure to define the following envi
 				export SOFA_ROOT=/path/to/SOFA_install
 				export PYTHONPATH=/path/to/SofaPython3/lib/python3/site-packages:$PYTHONPATH
 
-        .. tab:: MacOS
+        .. tab-item:: MacOS
 
 			Run in a terminal:
 
@@ -120,7 +120,7 @@ Before running your simulations, you must make sure to define the following envi
 				export PATH="/usr/local/opt/python@3.10/bin/:$PATH"
 
 
-        .. tab:: Windows
+        .. tab-item:: Windows
 
 		    * Create a system variable **SOFA_ROOT** and set it to ``<SOFA-install-directory>``
 		    * Create a system variable **PYTHON_ROOT** and set it to ``<Python3-install-directory>``
@@ -188,7 +188,7 @@ Within a python3 interpreter, your simulation requires more than only the ``crea
             createScene(root)
 
             # Once defined, initialization of the scene graph
-            Sofa.Simulation.init(root)
+            Sofa.Simulation.initRoot(root)
 
             # Run as many simulation steps (here 10 steps are computed)
             for iteration in range(10):
@@ -219,7 +219,7 @@ By structuring your scripts this way, you get the advantage to have a script loa
         createScene(root)
 
         # Once defined, initialization of the scene graph
-        Sofa.Simulation.init(root)
+        Sofa.Simulation.initRoot(root)
 
         # Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
         import SofaImGui
@@ -362,7 +362,7 @@ We first add a collision model for the scene in general, that is stating how a c
 	# Collision pipeline
 	rootNode.addObject('DefaultPipeline')
 	rootNode.addObject('FreeMotionAnimationLoop')
-	rootNode.addObject('ProjectedGaussSeidelConstraintSolver', tolerance="1e-6", maxIterations="1000")
+	rootNode.addObject('BlockGaussSeidelConstraintSolver', tolerance="1e-6", maxIterations="1000")
 	rootNode.addObject('BruteForceBroadPhase')
 	rootNode.addObject('BVHNarrowPhase')
 	rootNode.addObject('RuleBasedContactManager', responseParams="mu="+str(0.0), name='Response', response='FrictionContactConstraint')
@@ -429,7 +429,7 @@ Here is the entire code of the scene :
         createScene(root)
 
         # Once defined, initialization of the scene graph
-        Sofa.Simulation.init(root)
+        Sofa.Simulation.initRoot(root)
 
         # Launch the GUI (imgui is now by default, to use Qt please refer to the example "basic-useQtGui.py")
         Sofa.Gui.GUIManager.Init("myscene", "imgui")
@@ -473,7 +473,7 @@ Here is the entire code of the scene :
             # Collision pipeline
             rootNode.addObject('DefaultPipeline')
             rootNode.addObject('FreeMotionAnimationLoop')
-            rootNode.addObject('ProjectedGaussSeidelConstraintSolver', tolerance="1e-6", maxIterations="1000")
+            rootNode.addObject('BlockGaussSeidelConstraintSolver', tolerance="1e-6", maxIterations="1000")
             rootNode.addObject('BruteForceBroadPhase')
             rootNode.addObject('BVHNarrowPhase')
             rootNode.addObject('RuleBasedContactManager', responseParams="mu="+str(0.0), name='Response', response='FrictionContactConstraint')
@@ -596,7 +596,7 @@ In the same way, Data can be modified (write access) using the ``.value`` access
         createScene(root)
 
         # Once defined, initialization of the scene graph
-        Sofa.Simulation.init(root)
+        Sofa.Simulation.initRoot(root)
 
         # Run the simulation for 10 steps
         for iteration in range(10):

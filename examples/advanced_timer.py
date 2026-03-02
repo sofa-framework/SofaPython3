@@ -13,17 +13,17 @@ class TimerController(Sofa.Core.Controller):
         self.use_sofa_profiler_timer = False
 
     def onAnimateBeginEvent(self, event):
-        if len(Timer.getRecords('Animate')):
+        if Timer.isEnabled('Animate'):
+            # The 'Animate' timer that SOFA is supposed to start is already running, we can use it directly
             self.use_sofa_profiler_timer = True
         else:
+            # SOFA did not start the 'Animate' timer (e.g., when batch UI and no computation time sampling):
+            # we need to start another one manually
             Timer.setEnabled("cg_timer", True)
             Timer.begin("cg_timer")
 
     def onAnimateEndEvent(self, event):
-        if self.use_sofa_profiler_timer:
-            records = Timer.getRecords("Animate")
-        else:
-            records = Timer.getRecords("cg_timer")
+        records = Timer.getRecords("Animate" if self.use_sofa_profiler_timer else "cg_timer")
 
         step_time = records['solve']['Mechanical (meca)']['total_time']
         print(f"Step took {step_time:.2f} ms")
@@ -43,18 +43,18 @@ def createScene(root):
     root.dt = 0.01
 
     # List of required plugins
-    root.addObject("RequiredPlugin", pluginName=['Sofa.Component.Constraint.Projective',
-    'Sofa.Component.Engine.Select',
-    'Sofa.Component.LinearSolver.Iterative',
-    'Sofa.Component.MechanicalLoad',
-    'Sofa.Component.ODESolver.Backward',
-    'Sofa.Component.SolidMechanics.FEM.Elastic',
-    'Sofa.Component.StateContainer',
-    'Sofa.Component.Topology.Container.Dynamic',
-    'Sofa.Component.Topology.Container.Grid',
-    'Sofa.Component.Visual'
+    root.addObject("RequiredPlugin", pluginName=[
+        'Sofa.Component.Constraint.Projective',
+        'Sofa.Component.Engine.Select',
+        'Sofa.Component.LinearSolver.Iterative',
+        'Sofa.Component.MechanicalLoad',
+        'Sofa.Component.ODESolver.Backward',
+        'Sofa.Component.SolidMechanics.FEM.Elastic',
+        'Sofa.Component.StateContainer',
+        'Sofa.Component.Topology.Container.Dynamic',
+        'Sofa.Component.Topology.Container.Grid',
+        'Sofa.Component.Visual'
     ])
-
 
     # AnimationLoop
     root.addObject('DefaultAnimationLoop')
@@ -63,26 +63,29 @@ def createScene(root):
     root.addObject('VisualStyle', displayFlags='showBehaviorModels showForceFields')
 
     # Add the python controller in the scene
-    root.addObject( TimerController() )
+    root.addObject(TimerController())
 
     # Create a grid topology of 10x10x60 centered on (0,0,0)
     root.addObject('RegularGridTopology', name='grid', min=[-5, -5, -30], max=[5, 5, 30], n=[6, 6, 16])
 
     # Create our mechanical node
-    root.addChild("meca")
-    root.meca.addObject("StaticSolver", newton_iterations=5, printLog=False)
-    root.meca.addObject("CGLinearSolver", iterations=25, tolerance=1e-5, threshold=1e-5)
+    with root.addChild("meca") as meca:
+        meca.addObject("NewtonRaphsonSolver", name="newtonSolver_springs", maxNbIterationsNewton=5,
+                       maxNbIterationsLineSearch=1, warnWhenLineSearchFails=False, printLog=False)
+        meca.addObject("StaticSolver", newtonSolver="@newtonSolver_springs")
+        meca.addObject("CGLinearSolver", iterations=25, tolerance=1e-5, threshold=1e-5)
 
-    root.meca.addObject('MechanicalObject', name='mo', position='@../grid.position')
-    root.meca.addObject('HexahedronSetTopologyContainer', name='mechanical_topology', src='@../grid')
-    root.meca.addObject('HexahedronFEMForceField', youngModulus=3000, poissonRatio=0)
+        meca.addObject('MechanicalObject', name='mo', position='@../grid.position')
+        meca.addObject('HexahedronSetTopologyContainer', name='mechanical_topology', src='@../grid')
+        meca.addObject('HexahedronFEMForceField', youngModulus=3000, poissonRatio=0)
 
-    root.meca.addObject('BoxROI', name='base_roi', box=[-5.01, -5.01, -30.01, 30.01, 30.01, -29.99])
-    root.meca.addObject('BoxROI', name='top_roi',  box=[-5.01, -5.01, +29.99, 5.01, 5.01, +30.01], quad='@mechanical_topology.quads')
+        meca.addObject('BoxROI', name='base_roi', box=[-5.01, -5.01, -30.01, 30.01, 30.01, -29.99])
+        meca.addObject('BoxROI', name='top_roi', box=[-5.01, -5.01, +29.99, 5.01, 5.01, +30.01],
+                       quad='@mechanical_topology.quads')
 
-    root.meca.addObject('FixedProjectiveConstraint', indices='@base_roi.indices')
-    root.meca.addObject('QuadSetGeometryAlgorithms')
-    root.meca.addObject('QuadPressureForceField', pressure=[0, -30, 0], quadList='@top_roi.quadInROI', showForces=False)
+        meca.addObject('FixedProjectiveConstraint', indices='@base_roi.indices')
+        meca.addObject('QuadSetGeometryAlgorithms')
+        meca.addObject('QuadPressureForceField', pressure=[0, -30, 0], quadList='@top_roi.quadInROI', showForces=False)
 
 
 # When not using runSofa, this main function will be called python

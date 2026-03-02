@@ -723,5 +723,18 @@ void moduleAddNode(py::module &m) {
     p.def("sendEvent", &sendEvent, sofapython3::doc::sofa::core::Node::sendEvent);
     p.def("computeEnergy", &computeEnergy, sofapython3::doc::sofa::core::Node::computeEnergy);
 
+    p.def("__enter__", [](py::object self)
+    {
+        if(pybind11::hasattr(self, "onCtxEnter"))
+            self.attr("onCtxEnter")(self);
+        return self;
+    });
+
+    p.def("__exit__",
+          [](py::object self, py::object type, py::object value, py::object traceback)
+    {
+        if(pybind11::hasattr(self, "onCtxExit"))
+            self.attr("onCtxExit")(self, type, value, traceback);
+    });
 }
 } /// namespace sofapython3

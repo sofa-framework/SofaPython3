@@ -44,7 +44,7 @@ def createScene(root):
 
     root.addObject('FreeMotionAnimationLoop')
     # Constraint solver computing the constraint/contact forces, stored in the constraint space (normal , tangential_1, tangential_2)
-    constraint_solver = root.addObject('ProjectedGaussSeidelConstraintSolver', maxIterations=1000, tolerance=1e-6, computeConstraintForces=True)
+    constraint_solver = root.addObject('BlockGaussSeidelConstraintSolver', maxIterations=1000, tolerance=1e-6, computeConstraintForces=True)
 
     root.addObject('VisualStyle', displayFlags="showCollisionModels hideVisualModels showForceFields")
     root.addObject('CollisionPipeline', name="collision_pipeline")

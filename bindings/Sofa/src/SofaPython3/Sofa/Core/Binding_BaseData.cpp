@@ -45,18 +45,6 @@ using sofa::defaulttype::AbstractTypeInfo;
 namespace sofapython3
 {
 
-std::string getPathName(BaseData& self)
-{
-    Base* b= self.getOwner();
-    std::string prefix = getPathTo(b);
-    return prefix+"."+self.getName();
-}
-
-std::string getLinkPath(BaseData& self)
-{
-    return "@"+getPathName(self);
-}
-
 bool hasChanged(BaseData& data)
 {
     if (data.isDirty()) {
@@ -230,8 +218,8 @@ void moduleAddBaseData(py::module& m)
     data.def("getOwner", &getOwner, sofapython3::doc::baseData::getOwner);
     data.def("getParent", &BaseData::getParent, sofapython3::doc::baseData::getParent);
     data.def("typeName", [](BaseData& data){ return data.getValueTypeInfo()->name(); }, sofapython3::doc::baseData::typeName);
-    data.def("getPathName", getPathName, sofapython3::doc::baseData::getPathName);
-    data.def("getLinkPath", getLinkPath, sofapython3::doc::baseData::getLinkPath);
+    data.def("getPathName", &BaseData::getPathName, sofapython3::doc::baseData::getPathName);
+    data.def("getLinkPath", &BaseData::getLinkPath, sofapython3::doc::baseData::getLinkPath);
     data.def("hasChanged", hasChanged, sofapython3::doc::baseData::hasChanged);
     data.def("isSet", isSet, sofapython3::doc::baseData::isSet);
     data.def("toList", toList, sofapython3::doc::baseData::toList);
