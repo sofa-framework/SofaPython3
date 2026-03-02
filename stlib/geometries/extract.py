@@ -41,7 +41,7 @@ class ExtractInternalDataProvider(InternalDataProvider):
         elif self.sourceType == ElementType.HEXAHEDRA:
             node.addObject("Hexa2QuadTopologicalMapping", input=fromLink, output=node.container.linkpath)
         else:
-            Sofa.msg_error("[stlib/geometry/exctrat.py]", "Element type: " + str(self.sourceType) + " not supported.")
+            Sofa.msg_error(self, "Element type: " + str(self.sourceType) + " not supported.")
 
         self.position = node.container.position.linkpath
         if node.container.findData("edges") is not None:

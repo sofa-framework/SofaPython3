@@ -22,10 +22,12 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
             name = findName(name, names)
         return name
 
+    def is_prefab(typeSpecifier):
+        return isinstance(typeSpecifier, type) and issubclass(typeSpecifier, BasePrefab)
 
     # Check if a name is provided, if not, use the one of the class
     params = kwargs.copy()
-    if isinstance(typeName, type) and issubclass(typeName, BasePrefab): #Only for prefabs
+    if is_prefab(typeName): #Only for prefabs
         if len(params.keys()) > 1 or (len(params.keys()) == 1 and "parameters" not in params):
             raise RuntimeError("Invalid argument, a prefab takes only the \"parameters\" kwargs as input")
 
@@ -43,13 +45,13 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
         else:
             raise RuntimeError("Invalid argument ", typeName)
 
-    if isinstance(typeName, type) and issubclass(typeName, BasePrefab) and len(params.keys()) == 1:
+    if is_prefab(typeName) and len(params.keys()) == 1:
         params["parameters"].name = checkName(self, params["parameters"].name)
     else:
         params["name"] = checkName(self, params["name"])
 
     # Dispatch the creation to either addObject or addChild
-    if isinstance(typeName, type) and issubclass(typeName, BasePrefab):
+    if is_prefab(typeName):
         pref = self.addChild(typeName(**params))
         pref.init()
     elif isinstance(typeName, Sofa.Core.Node):

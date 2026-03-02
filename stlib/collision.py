@@ -27,7 +27,7 @@ class Collision(BasePrefab):
 
     def init(self):
 
-        geom = self.add(Geometry, self.parameters.geometry)
+        geom = self.add(Geometry, parameters=self.parameters.geometry)
         
         self.addObject("MechanicalObject", template="Vec3", position=f"@{self.parameters.geometry.name}/container.position")
         for primitive in self.parameters.primitives:
@@ -55,7 +55,7 @@ def createScene(root):
     # parameters.kwargs = {
     #                     "TriangleCollisionModel":{"contactStiffness": 100.0, "contactFriction": 0.5}
     #                 }
-    collision = root.add(Collision, parameters)
+    collision = root.add(Collision, parameters=parameters)
 
     # OR set the parameters post creation
     # collision.TriangleCollisionModel.contactStiffness = 100.0

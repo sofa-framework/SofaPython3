@@ -36,4 +36,4 @@ def createScene(root):
     parameters = Visual.getParameters() 
     parameters.name = "LiverVisual"
     parameters.geometry = FileParameters(filename="mesh/liver.obj")
-    root.add(Visual, parameters)
+    root.add(Visual, parameters=parameters)
