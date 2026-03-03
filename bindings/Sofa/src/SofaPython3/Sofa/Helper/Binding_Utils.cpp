@@ -51,14 +51,16 @@ void moduleAddUtils(py::module &m) {
     utils.def_static("GetVersion",
         []()
         {
-            std::stringstream version;
-            constexpr auto major = SOFA_VERSION / 10000;
-            constexpr auto minor = SOFA_VERSION / 100 % 100;
-            version << 'v'
-                << std::setfill('0') << std::setw(2) << major
-                << "."
-                << std::setfill('0') << std::setw(2) << minor;
-            return version.str();
+            static const std::string sofaVersion = []() {
+                std::stringstream version;
+                constexpr auto major = SOFA_VERSION / 10000;
+                constexpr auto minor = SOFA_VERSION / 100 % 100;
+                version << 'v'
+                    << std::setfill('0') << std::setw(2) << major
+                    << "."
+                    << std::setfill('0') << std::setw(2) << minor;
+                return version.str();
+            }();
         },
         "Returns the version of SOFA as a string in the format 'vMM.mm', where MM is the major version and mm is the minor version.");
 }
