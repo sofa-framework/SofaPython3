@@ -60,11 +60,12 @@ class ExtractInternalDataProvider(InternalDataProvider):
 class ExtractParameters(GeometryParameters):
     def __init__(self, 
                  sourceParameters : GeometryParameters, 
-                 destinationType : ElementType,):
+                 destinationType : ElementType,
+                 dynamicTopology : bool = False):
         GeometryParameters.__init__(self,
                                     data = ExtractInternalDataProvider(destinationType = destinationType, 
                                                                        sourceType = sourceParameters.elementType,
                                                                        sourceName = sourceParameters.name), 
-                                    dynamicTopology = True,
+                                    dynamicTopology = dynamicTopology,
                                     elementType = destinationType)
         
