@@ -65,16 +65,17 @@ class Entity(BasePrefab):
     def addMapping(self, destinationPrefab):
 
         template = f'{self.parameters.stateType},Vec3' # TODO: check that it is always true
-        
+
+        #TODO: all paths are expecting Geometry to be called Geomtry and so on. We need to robustify this by using the name parameter somehow
         if( self.parameters.stateType == StateType.VEC3):
             destinationPrefab.addObject("BarycentricMapping", 
                                         output=destinationPrefab.linkpath, 
-                                        output_topology=destinationPrefab.geometry.container.linkpath,
-                                        input=self.material.linkpath, 
-                                        input_topology=self.geometry.container.linkpath, 
+                                        output_topology=destinationPrefab.Geometry.container.linkpath,
+                                        input=self.Material.linkpath,
+                                        input_topology=self.Geometry.container.linkpath,
                                         template=template)
         else:
             destinationPrefab.addObject("RigidMapping", 
                                          output=destinationPrefab.linkpath, 
-                                        input=self.material.linkpath, 
+                                        input=self.Material.linkpath,
                                         template=template)

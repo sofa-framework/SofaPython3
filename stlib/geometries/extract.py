@@ -25,7 +25,7 @@ class ExtractInternalDataProvider(InternalDataProvider):
 
         InternalDataProvider.__init__(self)
 
-    def generateAttribute(self, parent : Geometry):                
+    def generateAttribute(self, parent : Geometry):
         node = parent.addChild("ExtractedGeometry")
 
         #TODO: Specify somewhere in the doc that this should only be used for mapped topologies that extract parent topology surface
@@ -34,8 +34,8 @@ class ExtractInternalDataProvider(InternalDataProvider):
         # !!! also, on a fail, nothing is added to the graph, which makes things harder to debug
         # !!! also, does not work because of the function canCreate(), which checks the input (not yet created?)
         # this is all related
-        fromLink = "@../../Geometry.container" # TODO: can we do better than this?
-        addDynamicTopology(node, elementType=self.sourceType)
+        fromLink = "@../../../Geometry/container" # TODO: can we do better than this?
+        addDynamicTopology(node, elementType=self.destinationType, container={"position" : fromLink + ".position"})
         if self.sourceType == ElementType.TETRAHEDRA:
             node.addObject("Tetra2TriangleTopologicalMapping", input=fromLink, output=node.container.linkpath)
         elif self.sourceType == ElementType.HEXAHEDRA:
@@ -60,12 +60,11 @@ class ExtractInternalDataProvider(InternalDataProvider):
 class ExtractParameters(GeometryParameters):
     def __init__(self, 
                  sourceParameters : GeometryParameters, 
-                 destinationType : ElementType,  
-                 dynamicTopology : bool = False, ):
+                 destinationType : ElementType,):
         GeometryParameters.__init__(self,
                                     data = ExtractInternalDataProvider(destinationType = destinationType, 
                                                                        sourceType = sourceParameters.elementType,
                                                                        sourceName = sourceParameters.name), 
-                                    dynamicTopology = dynamicTopology, 
+                                    dynamicTopology = True,
                                     elementType = destinationType)
         

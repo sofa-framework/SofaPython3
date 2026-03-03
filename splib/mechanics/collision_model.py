@@ -24,7 +24,7 @@ def addCollisionModels(node, primitive : CollisionPrimitive,
             node.addObject("TriangleCollisionModel", name="TriangleCollision", topology=topology, selfCollision=selfCollision, proximity=proximity, contactStiffness=contactStiffness, contactFriction=contactFriction, group=group,**kwargs)
             return
         case CollisionPrimitive.SPHERES:
-            node.addObject("SphereCollisionModel", name="SphereCollision", topology=topology, selfCollision=selfCollision, proximity=proximity, contactStiffness=contactStiffness, contactFriction=contactFriction, group=group, radius=spheresRadius, **kwargs)
+            node.addObject("SphereCollisionModel", name="SphereCollision", selfCollision=selfCollision, proximity=proximity, contactStiffness=contactStiffness, contactFriction=contactFriction, group=group, radius=spheresRadius, **kwargs)
             return
         case _:
             return
