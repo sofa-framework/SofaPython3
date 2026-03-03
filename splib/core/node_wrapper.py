@@ -25,7 +25,9 @@ class ObjectWrapper(BaseWrapper):
             parameters["name"] = kwargs["name"]
             if kwargs["name"] in kwargs:
                 if isinstance(kwargs[kwargs["name"]], dict):
-                    parameters = {**parameters, **kwargs[kwargs["name"]]}
+                    for param in kwargs[kwargs["name"]]:
+                        if not(isinstance(kwargs[kwargs["name"]][param],defaultValueType)):
+                            parameters = {**parameters, param : kwargs[kwargs["name"]][param]}
                 else:
                     print("[Warning] You are passing a keyword arg with the same name as one obj without it being a Dict, it will not be used. ")
 

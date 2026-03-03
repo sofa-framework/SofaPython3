@@ -13,14 +13,20 @@ class FileInternalDataProvider(InternalDataProvider):
         InternalDataProvider.__init__(self,**kwargs)
 
     def generateAttribute(self, parent : Geometry):    
-        loadMesh(parent, self.filename)      
+        loadMesh(parent, self.filename)
 
-        self.position = str(parent.loader.position.linkpath)
-        self.edges = str(parent.loader.edges.linkpath)
-        self.triangles = str(parent.loader.triangles.linkpath)
-        self.quads = str(parent.loader.quads.linkpath)
-        self.hexahedra = str(parent.loader.hexahedra.linkpath)
-        self.tetrahedra = str(parent.loader.tetras.linkpath)
+        if hasattr(parent.loader, 'position'):
+            self.position = str(parent.loader.position.linkpath)
+        if hasattr(parent.loader, 'edges'):
+            self.edges = str(parent.loader.edges.linkpath)
+        if hasattr(parent.loader, 'triangles'):
+            self.triangles = str(parent.loader.triangles.linkpath)
+        if hasattr(parent.loader, 'quads'):
+            self.quads = str(parent.loader.quads.linkpath)
+        if hasattr(parent.loader, 'hexahedra'):
+            self.hexahedra = str(parent.loader.hexahedra.linkpath)
+        if hasattr(parent.loader, 'tetrahedra'):
+            self.tetrahedra = str(parent.loader.tetrahedra.linkpath)
 
 
 
