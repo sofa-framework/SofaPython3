@@ -13,7 +13,7 @@ class DeformableBehaviorParameters(MaterialParameters):
     elementType : ElementType = ElementType.TETRAHEDRA
     parameters : list[float] = dataclasses.field(default_factory=lambda: [1000, 0.45])  # young modulus, poisson ratio
 
-    def addDeformableMaterial(node):
+    def __addDeformableMaterial(node):
 
         massKwargs = {}
         if node.parameters.elementType != ElementType.EDGES: #If we use the MeshMatrixMass, then the mass will need us to specify the mstate to use
@@ -26,7 +26,7 @@ class DeformableBehaviorParameters(MaterialParameters):
         else:
             addLinearElasticity(node, node.parameters.elementType, node.parameters.parameters[0], node.parameters.parameters[1], topology="@../Geometry/container")
 
-    addMaterial : Optional[Callable] = addDeformableMaterial
+    addMaterial : Optional[Callable] = __addDeformableMaterial
 
 
 def createScene(root) :
