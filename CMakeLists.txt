@@ -203,6 +203,12 @@ SP3_add_python_package(
     TARGET_DIRECTORY
         splib
 )
+SP3_add_python_package(
+    SOURCE_DIRECTORY
+        ${CMAKE_CURRENT_SOURCE_DIR}/stlib
+    TARGET_DIRECTORY
+        stlib
+)
 
 sofa_create_package(
     PACKAGE_NAME ${PROJECT_NAME}
