@@ -11,10 +11,10 @@ class GetVersionTest(unittest.TestCase):
     structure.
     """
     def test_exist(self):
-        self.assertTrue(hasattr(Sofa.Helper.Utils, "GetVersion"))
+        self.assertTrue(hasattr(Sofa.Helper, "GetVersion"))
 
     def test_version_format(self):
-        version = Sofa.Helper.Utils.GetVersion()
+        version = Sofa.Helper.GetVersion()
         print(f"SOFA Version: {version}")
         self.assertTrue(version.startswith('v'))
         version = version.replace('v', '')

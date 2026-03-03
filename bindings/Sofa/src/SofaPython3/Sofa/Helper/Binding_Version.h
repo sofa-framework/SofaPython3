@@ -18,33 +18,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#pragma once
+
 #include <pybind11/pybind11.h>
-
-#include <SofaPython3/Sofa/Helper/Binding_Utils.h>
-#include <SofaPython3/PythonFactory.h>
-
-#include <sofa/helper/Utils.h>
-
-/// Makes an alias for the pybind11 namespace to increase readability.
-namespace py { using namespace pybind11; }
 
 namespace sofapython3
 {
-    
-void moduleAddUtils(py::module &m) {
-    py::class_<sofa::helper::Utils> utils(m, "Utils");
-    utils.doc() = "Utility class with convenient functions.";
 
-    const auto GetSofaUserLocalDirectoryDoc = R"doc(
-        Get the directory where is stored the sofa configuration.
-    )doc";
-    utils.def_static("GetSofaUserLocalDirectory", &sofa::helper::Utils::getSofaUserLocalDirectory, GetSofaUserLocalDirectoryDoc);
-    
-    const auto GetSofaDataDirectoryDoc = R"doc(
-        Get the directory where is stored the sofa output data such as screenshots.
-    )doc";
-    utils.def_static("GetSofaDataDirectory", &sofa::helper::Utils::getSofaDataDirectory, GetSofaDataDirectoryDoc);
-}
-
+void moduleAddVersion(pybind11::module &m);
 
 }

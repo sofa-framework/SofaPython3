@@ -20,30 +20,37 @@
 
 #include <pybind11/pybind11.h>
 
-#include <SofaPython3/Sofa/Helper/Binding_Utils.h>
 #include <SofaPython3/PythonFactory.h>
+#include <SofaPython3/Sofa/Helper/Binding_Version.h>
 
-#include <sofa/helper/Utils.h>
+#include <iomanip>
+#include <sofa/version.h>
+
 
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
 
 namespace sofapython3
 {
-    
-void moduleAddUtils(py::module &m) {
-    py::class_<sofa::helper::Utils> utils(m, "Utils");
-    utils.doc() = "Utility class with convenient functions.";
 
-    const auto GetSofaUserLocalDirectoryDoc = R"doc(
-        Get the directory where is stored the sofa configuration.
-    )doc";
-    utils.def_static("GetSofaUserLocalDirectory", &sofa::helper::Utils::getSofaUserLocalDirectory, GetSofaUserLocalDirectoryDoc);
-    
-    const auto GetSofaDataDirectoryDoc = R"doc(
-        Get the directory where is stored the sofa output data such as screenshots.
-    )doc";
-    utils.def_static("GetSofaDataDirectory", &sofa::helper::Utils::getSofaDataDirectory, GetSofaDataDirectoryDoc);
+void moduleAddVersion(py::module &m)
+{
+    m.def("GetVersion",
+        []()
+        {
+            static const std::string sofaVersion = []() {
+                std::stringstream version;
+                constexpr auto major = SOFA_VERSION / 10000;
+                constexpr auto minor = SOFA_VERSION / 100 % 100;
+                version << 'v'
+                    << std::setfill('0') << std::setw(2) << major
+                    << "."
+                    << std::setfill('0') << std::setw(2) << minor;
+                return version.str();
+            }();
+            return sofaVersion;
+        },
+        "Returns the version of SOFA as a string in the format 'vMM.mm', where MM is the major version and mm is the minor version.");
 }
 
 
