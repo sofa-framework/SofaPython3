@@ -477,7 +477,7 @@ void moduleAddBase(py::module &m)
     base.def("getDefinitionSourceFilePos", &Base::getDefinitionSourceFilePos, sofapython3::doc::base::getDefinitionSourceFilePos);
     base.def("getDefinitionSourceFileName", &Base::getDefinitionSourceFileName, sofapython3::doc::base::getDefinitionSourceFileName);
     base.def("getInstanciationSourceFilePos", &Base::getInstanciationSourceFilePos, sofapython3::doc::base::getInstanciationSourceFilePos);
-    base.def("getInstanciationFileName", &Base::getInstanciationSourceFileName, sofapython3::doc::base::getInstanciationSourceFilePos);
+    base.def("getInstanciationSourceFileName", &Base::getInstanciationSourceFileName, sofapython3::doc::base::getInstanciationSourceFileName);
 
     base.def("setDefinitionSourceFilePos", &Base::setDefinitionSourceFilePos, sofapython3::doc::base::setDefinitionSourceFilePos);
     base.def("setDefinitionSourceFileName", &Base::setDefinitionSourceFileName, sofapython3::doc::base::setDefinitionSourceFileName);
