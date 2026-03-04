@@ -31,6 +31,7 @@ def setupDefaultHeader(node, displayFlags = "showVisualModels", backgroundColor=
                                                  'Sofa.Component.Visual',
                                                  ],
                                                   **kwargs)
+    node.addObject('DefaultVisualManagerLoop')
     node.addObject('DefaultAnimationLoop',name="animation", parallelODESolving=parallelComputing, **kwargs)
 
     return node
