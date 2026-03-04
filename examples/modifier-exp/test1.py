@@ -4,7 +4,7 @@ import Sofa
 class Parameters(object):
     name : str = ""
     def __init__(self, **kwargs):
-        print(f"parameters {kwargs}")
+        print(f"Params {kwargs}")
         for k,v in kwargs.items():
             setattr(self, k, v)
 
@@ -104,15 +104,22 @@ class BilateralInteractionModifierParameters(ModifierParameters):
       
     def __init__(self, **kwargs):
         ModifierParameters.__init__(self, **kwargs)
-        
+
     def toDict(self):
         return ModifierParameters.toDict(self) | {"object1":self.object1,"object2":self.object2}
 
 class BilateralInteractionModifier(Modifier):
     def __init__(self, parameters : BilateralInteractionModifierParameters = BilateralInteractionModifierParameters()):
         Modifier.__init__(self, parameters=parameters)
+
         self.object1 = parameters.object1
         self.object2 = parameters.object2        
+
+        if self.object1 is None:
+            raise Exception("It is mandatory to have 'object1'")
+        
+        if self.object2 is None:
+            raise Exception("It is mandatory to have 'object2'")
 
         h = getpythonCallingPoint(3)
         self.setInstanciationSourceFileName(h[0])
@@ -147,6 +154,9 @@ class SolverFromSceneModifier(Modifier):
     def __init__(self, parameters : SolversFromSceneModifierParameters = SolversFromSceneModifierParameters()):
         Modifier.__init__(self, parameters=parameters)
         self.root = parameters.root
+        
+        if self.root is None:
+            raise Exception("It is mandatory to have 'root' parameter for this modifier")
 
         h = getpythonCallingPoint(3)
         self.setInstanciationSourceFileName(h[0])
@@ -157,7 +167,6 @@ class SolverFromSceneModifier(Modifier):
         constraints = find_component(lambda x: x.getClassName() == "Lagrangian", self.root)
         constraints = [constraint.name.value for constraint in constraints]
 
-        print("I'm modifing ", constraints)
         if "UnilateralLagrangianConstraint" in constraints:
             self.root.addObject("GenericConstraintCorrection")
 
@@ -173,8 +182,12 @@ class HeaderToSceneModifierParameters(ModifierParameters):
 class HeaderToSceneModifier(Modifier):
     def __init__(self, parameters : SolversFromSceneModifierParameters = SolversFromSceneModifierParameters()):
         Modifier.__init__(self, parameters=parameters)
-        self.root = parameters.root
 
+        self.root = parameters.root
+        
+        if self.root is None:
+            raise Exception("It is mandatory to have 'root' parameter for this modifier")
+        
     def apply(self):
         # Traverse scene to deduce stuff 
 
@@ -201,6 +214,17 @@ def createScene(root):
     root.Example2.addModifier(BilateralInteractionModifier, parameters=BilateralInteractionModifierParameters(name="constraint", 
                                                                                                               object1=root.Example2.prefab1,
                                                                                                               object2=root.Example2.prefab2))
+
+    # The same but with the parameters written before calling the modifier 
+    root.addChild("Example2bis")
+    root.Example2bis.add(MyEntity, parameters=MyEntityParameters(name="prefab1"))
+    root.Example2bis.add(MyEntity, parameters=MyEntityParameters(name="prefab2"))
+    parameters = BilateralInteractionModifierParameters()
+    parameters.name="constraint"
+    parameters.object1=root.Example2bis.prefab1
+    parameters.object2=root.Example2bis.prefab2
+    root.Example2bis.addModifier(BilateralInteractionModifier, parameters=parameters)
+
 
     # Add a modifier in the root node, this modifier deduce something from the scene and modify anywhere in the scene. 
     root.addModifier(SolverFromSceneModifier, parameters=SolversFromSceneModifierParameters(name="bottom-up-fix", 
