@@ -4,7 +4,6 @@ import Sofa
 class Parameters(object):
     name : str = ""
     def __init__(self, **kwargs):
-        print(f"Params {kwargs}")
         for k,v in kwargs.items():
             setattr(self, k, v)
 
@@ -33,7 +32,6 @@ class Modifier(Sofa.Core.Controller):
 Sofa.Core.Modifier = Modifier
 
 def addModifier(self, type, parameters:Parameters, **kwargs) -> Modifier:
-    print("Add modifier ")
     if "Modifiers" not in self.children:
         self.addChild("Modifiers")
     o = self.Modifiers.addObject(type(parameters=parameters, **kwargs))
@@ -42,7 +40,6 @@ def addModifier(self, type, parameters:Parameters, **kwargs) -> Modifier:
 Sofa.Core.Node.addModifier = addModifier 
 
 def add(self, type, parameters:Parameters) -> Sofa.Core.Base:
-    print("Add object")
     if issubclass(type, Sofa.Core.Node):
         return self.addChild(type(parameters)) 
 Sofa.Core.Node.add = add    
@@ -135,7 +132,7 @@ class BilateralInteractionModifier(Modifier):
         b.setInstanciationSourceFileName(self.getInstanciationSourceFileName())
         b.setInstanciationSourceFilePos(self.getInstanciationSourceFilePos())
 
-class SolversFromSceneModifierParameters(ModifierParameters):
+class HeaderFromSceneModifierParameters(ModifierParameters):
     root : Sofa.Core.Node = None
 
     def __init__(self, **kwargs):
@@ -150,8 +147,8 @@ def find_component(cond, node):
         c += find_component(cond, child)
     return c
 
-class SolverFromSceneModifier(Modifier):
-    def __init__(self, parameters : SolversFromSceneModifierParameters = SolversFromSceneModifierParameters()):
+class HeaderFromSceneModifier(Modifier):
+    def __init__(self, parameters : HeaderFromSceneModifierParameters = HeaderFromSceneModifierParameters()):
         Modifier.__init__(self, parameters=parameters)
         self.root = parameters.root
         
@@ -164,11 +161,11 @@ class SolverFromSceneModifier(Modifier):
 
     def apply(self):
         # Traverse scene to deduce stuff 
-        constraints = find_component(lambda x: x.getClassName() == "Lagrangian", self.root)
-        constraints = [constraint.name.value for constraint in constraints]
-
+        constraints = find_component(lambda x: True, self.root)
+        constraints = [constraint.getClassName() for constraint in constraints]
+        print(f"Lagrangian {constraints}")
         if "UnilateralLagrangianConstraint" in constraints:
-            self.root.addObject("GenericConstraintCorrection")
+            self.root.addObject("FreeMotionAnimationLoop")
 
 class HeaderToSceneModifierParameters(ModifierParameters):
     root : Sofa.Core.Node = None
@@ -180,7 +177,7 @@ class HeaderToSceneModifierParameters(ModifierParameters):
         return ModifierParameters.toDict(self) | {"root":self.root}
 
 class HeaderToSceneModifier(Modifier):
-    def __init__(self, parameters : SolversFromSceneModifierParameters = SolversFromSceneModifierParameters()):
+    def __init__(self, parameters : HeaderFromSceneModifierParameters = HeaderFromSceneModifierParameters()):
         Modifier.__init__(self, parameters=parameters)
 
         self.root = parameters.root
@@ -227,7 +224,7 @@ def createScene(root):
 
 
     # Add a modifier in the root node, this modifier deduce something from the scene and modify anywhere in the scene. 
-    root.addModifier(SolverFromSceneModifier, parameters=SolversFromSceneModifierParameters(name="bottom-up-fix", 
+    root.addModifier(HeaderFromSceneModifier, parameters=HeaderFromSceneModifierParameters(name="bottom-up-fix", 
                                                                                             root=root))
 
     # Add a modifier in the root node, this modifier deduce something from the scene and modify top down the scene. 
