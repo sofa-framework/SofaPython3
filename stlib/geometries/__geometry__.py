@@ -12,9 +12,9 @@ import numpy as np
 class Geometry(BasePrefab):...
 
 @dataclasses.dataclass
-class InternalDataProvider(object):
+class InternalDataProvider:
     position : Any = None
-    # Topology information
+    
     edges      : Any = DEFAULT_VALUE
     triangles  : Any = DEFAULT_VALUE
     quads      : Any = DEFAULT_VALUE
@@ -29,28 +29,19 @@ class InternalDataProvider(object):
 class GeometryParameters(BaseParameters):
     name : str = "Geometry"
 
-    # Type of the highest degree element
-    elementType : Optional[ElementType] = None
+    elementType : Optional[ElementType] = None # Type of the highest degree element
     data : Optional[InternalDataProvider] = None
 
     dynamicTopology : bool = False
 
-    def Data(self):
-        return InternalDataProvider()
-
-
 
 class Geometry(BasePrefab):
-    # container : Object # This should be more specialized into the right SOFA type
-    # modifier : Optional[Object]
 
     parameters : GeometryParameters
 
     def __init__(self, parameters: GeometryParameters):
         BasePrefab.__init__(self, parameters)
         
-
-    
     def init(self):
 
         # Generate attribute (positions, edges, triangles, quads, tetrahedra, hexahedra) from the internal data provider
@@ -59,14 +50,16 @@ class Geometry(BasePrefab):
 
         if self.parameters.dynamicTopology :
             if self.parameters.elementType is not None :
-                addDynamicTopology(self, elementType=self.parameters.elementType, container = {
-                                                                                                "position": self.parameters.data.position,
-                                                                                                "edges": self.parameters.data.edges,
-                                                                                                "triangles": self.parameters.data.triangles,
-                                                                                                "quads": self.parameters.data.quads,
-                                                                                                "tetrahedra": self.parameters.data.tetrahedra,
-                                                                                                "hexahedra": self.parameters.data.hexahedra
-                                                                                            })
+                addDynamicTopology(self, 
+                                   elementType=self.parameters.elementType, 
+                                   container = {
+                                                "position": self.parameters.data.position,
+                                                "edges": self.parameters.data.edges,
+                                                "triangles": self.parameters.data.triangles,
+                                                "quads": self.parameters.data.quads,
+                                                "tetrahedra": self.parameters.data.tetrahedra,
+                                                "hexahedra": self.parameters.data.hexahedra
+                                                })
             else:
                 raise ValueError
         else:

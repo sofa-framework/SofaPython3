@@ -29,12 +29,13 @@ class FileInternalDataProvider(InternalDataProvider):
             self.tetrahedra = str(parent.loader.tetrahedra.linkpath)
 
 
-
+@dataclasses.dataclass
 class FileParameters(GeometryParameters):
 
-    def __init__(self, filename, dynamicTopology = False, elementType : ElementType = None ):
-        GeometryParameters.__init__(self,
-                                    data = FileInternalDataProvider(filename=filename), 
-                                    dynamicTopology = dynamicTopology, 
-                                    elementType = elementType)
+    filename : str = "mesh/cube.obj"
+    dynamicTopology : bool = False
+    elementType : ElementType = None
+
+    def __post_init__(self):
+        self.data = FileInternalDataProvider(filename=self.filename)
         

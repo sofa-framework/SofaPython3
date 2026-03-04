@@ -1,13 +1,11 @@
-from stlib.core.baseParameters import BaseParameters, Optional, dataclasses
-from stlib.geometries import GeometryParameters
-
+from stlib.core.baseParameters import Optional, dataclasses
+from stlib.materials import MaterialParameters
+from splib.core.utils import DEFAULT_VALUE
+from splib.core.enum_types import StateType
 
 
 @dataclasses.dataclass
-class RigidParameters(BaseParameters):
+class RigidParameters(MaterialParameters):
+    
+    stateType : StateType = StateType.RIGID
 
-    geometry : GeometryParameters
-    mass : Optional[float] = None
-
-    def toDict(self):
-        return dataclasses.asdict(self)
