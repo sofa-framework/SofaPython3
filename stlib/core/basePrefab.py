@@ -15,7 +15,15 @@ class BasePrefab(Sofa.Core.Node):
     def init(self):
         raise NotImplemented("To be overridden by child class")
         
-    
+    def applyModifier(self, modifierType, parameters, *args ):
+        if "Modifiers" not in self.children:
+            self.addChild("Modifiers")
+
+        modifier = self.Modifiers.addObject(modifierType(parameters=parameters))
+        modifier.modify(*args)
+
+
+
     def localToGlobalCoordinates(pointCloudInput, pointCloudOutput):
         raise NotImplemented("Send an email to Damien, he will help you. Guaranteed :)")
     
