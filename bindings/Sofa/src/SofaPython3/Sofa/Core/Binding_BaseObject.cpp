@@ -56,6 +56,7 @@
 #include <sofa/core/CategoryLibrary.h>
 #include <pybind11/stl.h>
 
+#include <sofa/simulation/Node.h>
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
 
@@ -99,11 +100,20 @@ py::list getSlaves(BaseObject &self)
    return slaveList;
 }
 
-py::object getContext(const BaseObject &self)
+py::object getContext(BaseObject &self)
 {
-    const sofa::core::objectmodel::BaseContext* context =  self.getContext();
+    sofa::core::objectmodel::BaseContext* context =  self.getContext();
     if (context){
-        return PythonFactory::toPython(const_cast<sofa::core::objectmodel::BaseContext*>(context));
+        return PythonFactory::toPython(context);
+    }
+    return py::none();
+}
+
+py::object getOwner(BaseObject &self)
+{
+    sofa::simulation::Node* node = dynamic_cast<sofa::simulation::Node*>(self.getContext());
+    if (node){
+        return PythonFactory::toPython(node);
     }
     return py::none();
 }
@@ -218,6 +228,7 @@ void moduleAddBaseObject(py::module& m)
     p.def("getLinkPath", [](const BaseObject &self){ return std::string("@") + self.getPathName(); }, sofapython3::doc::baseObject::getLink);
     p.def("getSlaves", getSlaves, sofapython3::doc::baseObject::getSlaves);
     p.def("getContext", getContext, sofapython3::doc::baseObject::getContext);
+    p.def("getOwner", getOwner);
     p.def("getMaster", getMaster, sofapython3::doc::baseObject::getMaster);
     p.def("addSlave", &BaseObject::addSlave, sofapython3::doc::baseObject::addSlave);
     p.def("storeResetState", &BaseObject::storeResetState, sofapython3::doc::baseObject::storeResetState);
