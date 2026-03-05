@@ -174,9 +174,29 @@ namespace sofapython3
     }
 
     void moduleAddMapping(py::module &m) {
-        declareMapping<Rigid3dTypes, Vec3dTypes>(m);
+        declareMapping<Vec1dTypes, Vec1dTypes>(m);
+        declareMapping<Vec1dTypes, Vec2dTypes>(m);
+        declareMapping<Vec1dTypes, Vec3dTypes>(m);
+
+        declareMapping<Vec2dTypes, Vec2dTypes>(m);
+        declareMapping<Vec2dTypes, Vec1dTypes>(m);
+
         declareMapping<Vec3dTypes, Vec3dTypes>(m);
+        declareMapping<Vec3dTypes, Vec2dTypes>(m);
         declareMapping<Vec3dTypes, Vec1dTypes>(m);
+
+        declareMapping<Vec6dTypes, Vec6dTypes>(m);
+        declareMapping<Vec6dTypes, Vec3dTypes>(m);
+        declareMapping<Vec6dTypes, Vec1dTypes>(m);
+
+        declareMapping<Rigid2dTypes, Vec2dTypes>(m);
+        declareMapping<Rigid2dTypes, Rigid2dTypes>(m);
+
+        declareMapping<Rigid3dTypes, Vec6dTypes>(m);
+        declareMapping<Rigid3dTypes, Vec3dTypes>(m);
+        declareMapping<Rigid3dTypes, Vec1dTypes>(m);
+        declareMapping<Rigid3dTypes, Rigid3dTypes>(m);
+        declareMapping<Vec3dTypes, Rigid3dTypes>(m);
     }
 
 }  // namespace sofapython3
