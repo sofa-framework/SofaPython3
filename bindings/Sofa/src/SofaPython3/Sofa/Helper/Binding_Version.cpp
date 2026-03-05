@@ -17,22 +17,41 @@
 *******************************************************************************
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaPython3/Sofa/Simulation/Binding_SceneCheck.h>
-#include <SofaPython3/Sofa/Simulation/Binding_SceneCheck_doc.h>
-#include <sofa/simulation/SceneCheck.h>
+
+#include <pybind11/pybind11.h>
+
+#include <SofaPython3/PythonFactory.h>
+#include <SofaPython3/Sofa/Helper/Binding_Version.h>
+
+#include <iomanip>
+#include <sofa/version.h>
+
+
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
 
 namespace sofapython3
 {
 
-namespace py { using namespace pybind11; }
-
-void moduleAddSceneCheck(pybind11::module &m)
+void moduleAddVersion(py::module &m)
 {
-    py::class_<sofa::simulation::SceneCheck, std::shared_ptr<sofa::simulation::SceneCheck>> s
-    (m, "SceneCheck", sofapython3::doc::simulation::SceneCheckClass);
-
-    s.def("getName", &sofa::simulation::SceneCheck::getName, sofapython3::doc::simulation::SceneCheck_getName);
-    s.def("getDesc", &sofa::simulation::SceneCheck::getDesc, sofapython3::doc::simulation::SceneCheck_getDesc);
+    m.def("GetVersion",
+        []()
+        {
+            static const std::string sofaVersion = []() {
+                std::stringstream version;
+                constexpr auto major = SOFA_VERSION / 10000;
+                constexpr auto minor = SOFA_VERSION / 100 % 100;
+                version << 'v'
+                    << std::setfill('0') << std::setw(2) << major
+                    << "."
+                    << std::setfill('0') << std::setw(2) << minor;
+                return version.str();
+            }();
+            return sofaVersion;
+        },
+        "Returns the version of SOFA as a string in the format 'vMM.mm', where MM is the major version and mm is the minor version.");
 }
+
 
 }

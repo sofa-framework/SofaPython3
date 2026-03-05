@@ -195,6 +195,11 @@ def unloadModules():
     for name in toremove:
         del(sys.modules[name]) # unload it
 
+def GetVersion():
+    """Returns the version of SOFA as a string in the format 'vMM.mm', where MM is the major version and mm is the
+       minor version.
+    """
+    return Sofa.Helper.GetVersion()
 
 def formatStackForSofa(o):
     """ format the stack trace provided as a parameter into a string like that:

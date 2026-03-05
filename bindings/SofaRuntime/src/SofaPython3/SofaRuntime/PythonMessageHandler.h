@@ -1,6 +1,6 @@
 /******************************************************************************
-*                              SofaPython3 plugin                             *
-*                  (c) 2021 CNRS, University of Lille, INRIA                  *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -15,24 +15,27 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaPython3/Sofa/Simulation/Binding_SceneCheck.h>
-#include <SofaPython3/Sofa/Simulation/Binding_SceneCheck_doc.h>
-#include <sofa/simulation/SceneCheck.h>
+#pragma once
+
+#include <sofa/helper/logging/MessageHandler.h>
 
 namespace sofapython3
 {
 
-namespace py { using namespace pybind11; }
-
-void moduleAddSceneCheck(pybind11::module &m)
+class PythonMessageHandler : public sofa::helper::logging::MessageHandler
 {
-    py::class_<sofa::simulation::SceneCheck, std::shared_ptr<sofa::simulation::SceneCheck>> s
-    (m, "SceneCheck", sofapython3::doc::simulation::SceneCheckClass);
+public:
+    PythonMessageHandler() = default;
+    void process(sofa::helper::logging::Message& m) override ;
+};
 
-    s.def("getName", &sofa::simulation::SceneCheck::getName, sofapython3::doc::simulation::SceneCheck_getName);
-    s.def("getDesc", &sofa::simulation::SceneCheck::getDesc, sofapython3::doc::simulation::SceneCheck_getDesc);
-}
-
-}
+class MainPythonMessageHandler
+{
+public:
+    static PythonMessageHandler& getInstance() ;
+};
+} // namespace sofapython3

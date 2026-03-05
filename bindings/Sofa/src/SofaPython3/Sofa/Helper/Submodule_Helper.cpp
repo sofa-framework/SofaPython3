@@ -26,6 +26,7 @@
 #include <SofaPython3/Sofa/Helper/Binding_MessageHandler.h>
 #include <SofaPython3/Sofa/Helper/Binding_Vector.h>
 #include <SofaPython3/Sofa/Helper/Binding_Utils.h>
+#include <SofaPython3/Sofa/Helper/Binding_Version.h>
 
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
@@ -153,6 +154,7 @@ PYBIND11_MODULE(Helper, helper)
     moduleAddVector(helper);
     moduleAddSystem(helper);
     moduleAddUtils(helper);
+    moduleAddVersion(helper);
 
     auto atexit = py::module_::import("atexit");
     atexit.attr("register")(py::cpp_function([]() {
