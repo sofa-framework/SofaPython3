@@ -1,5 +1,5 @@
-from stlib.core.baseParameters import BaseParameters, Callable, Optional, dataclasses, Any
-from splib.core.utils import defaultValueType, DEFAULT_VALUE, isDefault
+from stlib.core.baseParameters import BaseParameters, Callable, Optional, dataclasses
+from splib.core.utils import DEFAULT_VALUE
 from splib.core.enum_types import StateType
 
 from stlib.core.basePrefab import BasePrefab
@@ -9,15 +9,14 @@ from splib.mechanics.mass import addMass
 class MaterialParameters(BaseParameters):
     name : str = "Material"
 
-    massDensity : float = DEFAULT_VALUE
+    massDensity : float = 1e-6
     massLumping : bool = DEFAULT_VALUE
 
     stateType : StateType = StateType.VEC3
 
-    addMaterial : Optional[Callable] = lambda node : addMass(node, node.parameters.stateType, massDensity=node.parameters.massDensity, lumping=node.parameters.massLumping)
+    addMaterial : Optional[Callable] = lambda node : addMass(node, elementType=None, massDensity=node.parameters.massDensity, lumping=node.parameters.massLumping)
 
 
-# TODO : previously called Behavior
 class Material(BasePrefab):
 
     parameters : MaterialParameters
@@ -27,5 +26,5 @@ class Material(BasePrefab):
 
 
     def init(self):
-        self.addObject("MechanicalObject", name="States", template=str(self.parameters.stateType))
+        self.addObject("MechanicalObject", template=str(self.parameters.stateType))
         self.parameters.addMaterial(self)

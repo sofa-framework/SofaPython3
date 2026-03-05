@@ -1,14 +1,9 @@
 from stlib.geometries import GeometryParameters
+from stlib.geometries.file import FileParameters
+import dataclasses
 
-class CubeParameters(GeometryParameters):
-    def __init__(self,  center, edgeLength, pointPerEdge, dynamicTopology = False):
 
-        customGeom = CubeParameters.createData(center, edgeLength, pointPerEdge)
-        GeometryParameters.__init__(data = customGeom, dynamicTopology = dynamicTopology)
+@dataclasses.dataclass
+class CubeParameters(FileParameters):
 
-    @staticmethod
-    def createData(center, edgeLength, pointPerEdge) -> GeometryParameters.Data :
-        data = GeometryParameters.Data()
-        #Fill data
-        return data
-        
+    filename : str = "mesh/cube.obj"

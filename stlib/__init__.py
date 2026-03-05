@@ -1,29 +1,35 @@
-__all__ = ["core","entities","geometries","materials","collision","visual"]
+__all__ = ["core","entities","geometries","materials","modifiers","collision","visual"]
 
 import Sofa.Core
 from stlib.core.basePrefab import BasePrefab
-
-def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
-    def findName(cname, names):
-        """Compute a working unique name in the node"""
-        rname = cname
-        for i in range(0, len(names)):
-            if rname not in names:
-                return rname
-            rname = cname + str(i+1)
-        return rname
+from stlib.core.baseEntity import BaseEntity
+from stlib.core.baseEntityModifier import BaseEntityModifier
 
 
-    def checkName(context : Sofa.Core.Node, name):
-        # Check if the name already exists, if this happens, create a new one.
-        if name in context.children or name in context.objects:
-            names = {node.name.value for node in context.children}
-            names = names.union({object.name.value for object in context.objects})
-            name = findName(name, names)
-        return name
+def __findName(cname, names):
+    """Compute a working unique name in the node
+    """
+    rname = cname
+    for i in range(0, len(names)):
+        if rname not in names:
+            return rname
+        rname = cname + str(i+1)
+    return rname
 
 
-    # Check if a name is provided, if not, use the one of the class
+def __checkName(context : Sofa.Core.Node, name):
+    """Check if the name already exists, if this happens, create a new one.
+    """
+    if name in context.children or name in context.objects:
+        names = {node.name.value for node in context.children}
+        names = names.union({object.name.value for object in context.objects})
+        name = __findName(name, names)
+    return name
+
+
+def __processParameters(self : Sofa.Core.Node, typeName, **kwargs):
+    """Check if a name is provided, if not, use the one of the class
+    """
     params = kwargs.copy()
     if isinstance(typeName, type) and issubclass(typeName, BasePrefab): #Only for prefabs
         if len(params.keys()) > 1 or (len(params.keys()) == 1 and "parameters" not in params):
@@ -44,25 +50,56 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
             raise RuntimeError("Invalid argument ", typeName)
 
     if isinstance(typeName, type) and issubclass(typeName, BasePrefab) and len(params.keys()) == 1:
-        params["parameters"].name = checkName(self, params["parameters"].name)
+        params["parameters"].name = __checkName(self, params["parameters"].name)
     else:
-        params["name"] = checkName(self, params["name"])
+        params["name"] = __checkName(self, params["name"])
+
+    return params
+
+
+def __create(self: Sofa.Core.Node, typeName, **kwargs):
+
+    params = __processParameters(self, typeName, **kwargs)
+
+    if isinstance(typeName, type) and issubclass(typeName, BaseEntityModifier):
+        node = typeName(**params)
+        node.creator = self
+        return node
+    if isinstance(typeName, type) and issubclass(typeName, BasePrefab):
+        return typeName(**params)
+    elif isinstance(typeName, Sofa.Core.Node):
+        return typeName(**params)
+    
+    return 
+
+
+def __genericAdd(self: Sofa.Core.Node, typeName, **kwargs):
 
     # Dispatch the creation to either addObject or addChild
     if isinstance(typeName, type) and issubclass(typeName, BasePrefab):
+        params = __processParameters(self, typeName, **kwargs)
         pref = self.addChild(typeName(**params))
         pref.init()
+    elif isinstance(typeName, Sofa.Core.Node) and issubclass(typeName.__class__, BaseEntity):
+        pref = self.addChild(typeName)
+        pref.init()
     elif isinstance(typeName, Sofa.Core.Node):
-        pref = self.addChild(typeName(**params))
+        pref = self.addChild(typeName)
     elif isinstance(typeName, type) and issubclass(typeName, Sofa.Core.Object):
+        params = __processParameters(self, typeName, **kwargs)
         pref = self.addObject(typeName(**params))
     elif isinstance(typeName, type) and issubclass(typeName, Sofa.Core.ObjectDeclaration):
+        params = __processParameters(self, typeName, **kwargs)
         pref = self.addObject(typeName.__name__, **params)
     elif isinstance(typeName, str):
+        params = __processParameters(self, typeName, **kwargs)
         pref = self.addObject(typeName, **params)
     else:
         raise RuntimeError("Invalid argument", typeName)
+
     return pref
+
 
 # Inject the method so it become available as if it was part of Sofa.Core.Node
 Sofa.Core.Node.add = __genericAdd
+Sofa.Core.Node.create = __create

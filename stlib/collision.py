@@ -5,7 +5,7 @@ from stlib.geometries.file import FileParameters
 from splib.core.enum_types import CollisionPrimitive
 from splib.core.utils import DEFAULT_VALUE
 from splib.mechanics.collision_model import addCollisionModels
-from Sofa.Core import Object 
+from splib.core.utils import setRequiresCollisionPipeline
 
 @dataclasses.dataclass
 class CollisionParameters(BaseParameters):
@@ -18,7 +18,7 @@ class CollisionParameters(BaseParameters):
     group : Optional[int] = DEFAULT_VALUE
     contactDistance : Optional[float] = DEFAULT_VALUE
 
-    geometry : GeometryParameters = dataclasses.field(default_factory = lambda : GeometryParameters())
+    geometry : GeometryParameters = GeometryParameters()
 
 
 class Collision(BasePrefab):
@@ -28,7 +28,8 @@ class Collision(BasePrefab):
     def init(self):
 
         geom = self.add(Geometry, parameters = self.parameters.geometry)
-        
+
+        setRequiresCollisionPipeline(rootnode=self.getRoot())
         self.addObject("MechanicalObject", template="Vec3", position=f"@{self.parameters.geometry.name}/container.position")
         for primitive in self.parameters.primitives:
             addCollisionModels(self, primitive,
@@ -36,26 +37,21 @@ class Collision(BasePrefab):
                                selfCollision=self.parameters.selfCollision, 
                                group=self.parameters.group, 
                                **self.parameters.kwargs)
-            
-
-    @staticmethod
-    def getParameters(**kwargs) -> CollisionParameters:
-        return CollisionParameters(**kwargs)
 
 
 def createScene(root):
 
-    root.addObject("VisualStyle", displayFlags="showCollisionModels")
+    root.add("VisualStyle", displayFlags="showCollisionModels")
 
     # Create a visual from a mesh file
-    parameters = Collision.getParameters()
+    parameters = CollisionParameters()
     parameters.group = 1
     parameters.geometry = FileParameters(filename="mesh/cube.obj")
     # Expert parameters
     # parameters.kwargs = {
     #                     "TriangleCollisionModel":{"contactStiffness": 100.0, "contactFriction": 0.5}
     #                 }
-    collision = root.add(Collision, parameters)
+    collision = root.add(Collision, parameters=parameters)
 
     # OR set the parameters post creation
     # collision.TriangleCollisionModel.contactStiffness = 100.0

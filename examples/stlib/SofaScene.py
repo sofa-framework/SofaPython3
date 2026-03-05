@@ -99,7 +99,7 @@ def createScene(root):
     SParams.material.parameters = [200, 0.45]
 
     def SAddMaterial(node):
-        DeformableBehaviorParameters.addDeformableMaterial(node)
+        DeformableBehaviorParameters.addMaterial(node)
         #TODO deal with that is a more smooth way in the material directly
         node.addObject("LinearSolverConstraintCorrection", name="ConstraintCorrection", linearSolver=SNode.LinearSolver.linkpath, ODESolver=SNode.ODESolver.linkpath)
 
