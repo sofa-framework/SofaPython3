@@ -154,8 +154,14 @@ PYBIND11_MODULE(SofaRuntime, m) {
     }, "automatically load plugins from configuration files");
 
     m.def("init", []() {
-        MessageDispatcher::clearHandlers();
+
+        // Replaces MainConsoleMessageHandler by MainPythonMessageHandler:
+        // - MainConsoleMessageHandler prints messages in std::cout/std::cerr.
+        // - MainPythonMessageHandler prints the messages in the sys.stdout
+        // Keeping them both would result in duplicate messages in the console.
+        MessageDispatcher::rmHandler(&sofa::helper::logging::MainConsoleMessageHandler::getInstance());
         MessageDispatcher::addHandler(&MainPythonMessageHandler::getInstance());
+
         MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance());
     }, "redirect SOFA messages to Python's sys.stdout");
 
