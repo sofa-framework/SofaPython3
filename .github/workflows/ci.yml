@@ -139,7 +139,10 @@ jobs:
       - name: Pepare python environement for tests
         shell: bash
         run: |
-          ${{ steps.sofa.outputs.python_exe }} -m pip install rpyc
+          ${{ steps.sofa.outputs.python_exe }} -m pip install rpyc matplotlib
+          
+          echo "PYTHONPATH=${{ env.WORKSPACE_BUILD_PATH }}/lib/python3/site-packages" | tee -a $GITHUB_ENV
+
 
       - name: Launch test
         id: tests
