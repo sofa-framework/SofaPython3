@@ -136,74 +136,22 @@ jobs:
           name: ${{ env.ARTIFACT_NAME }}
           path: ${{ env.WORKSPACE_ARTIFACT_PATH }}
       
-      - name: Set env vars for tests
+      - name: Pepare python environement for tests
         shell: bash
         run: |
-          # Set env vars for tests
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            echo "$WORKSPACE_ARTIFACT_PATH/lib" >> $GITHUB_PATH
-            echo "$WORKSPACE_ARTIFACT_PATH/bin" >> $GITHUB_PATH
-          elif [[ "$RUNNER_OS" == "macOS" ]]; then
-            echo "SOFA_PLUGIN_PATH=$WORKSPACE_ARTIFACT_PATH/lib" | tee -a $GITHUB_ENV
-            echo "DYLD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$DYLD_LIBRARY_PATH" | tee -a $GITHUB_ENV
-          else  # Linux
-            echo "SOFA_PLUGIN_PATH=$WORKSPACE_ARTIFACT_PATH/lib" | tee -a $GITHUB_ENV
-            echo "LD_LIBRARY_PATH=$WORKSPACE_ARTIFACT_PATH/lib:$SOFA_ROOT/lib:$LD_LIBRARY_PATH" | tee -a $GITHUB_ENV
-          fi
-          echo "PYTHONPATH=$WORKSPACE_ARTIFACT_PATH/lib/python3/site-packages" | tee -a $GITHUB_ENV
-          # Add execution right on the tests
-          chmod +x $WORKSPACE_ARTIFACT_PATH/bin/*.Tests${{ steps.sofa.outputs.exe }}
-      
-      - name: Check environment for tests
-        shell: bash
-        run: |
-          echo '------ ls -la "$WORKSPACE_SRC_PATH" ------'
-          ls -la "$WORKSPACE_SRC_PATH"
-          echo '------ ls -la "$WORKSPACE_BUILD_PATH" ------'
-          ls -la "$WORKSPACE_BUILD_PATH"
-          echo '------ ls -la "$WORKSPACE_INSTALL_PATH" ------'
-          ls -la "$WORKSPACE_INSTALL_PATH"
-          echo '------ ls -la "$WORKSPACE_ARTIFACT_PATH" ------'
-          ls -la "$WORKSPACE_ARTIFACT_PATH"
-          echo '----------------------'
-          echo "SOFA_ROOT = $SOFA_ROOT"
-          echo "PYTHONPATH = $PYTHONPATH"
-          echo '----------------------'
-          echo "PATH = $PATH"
-          echo '----------------------'
-          python -c "import sys; print('sys.version = ' + str(sys.version)); print('sys.path = ' + str(sys.path))"
+          ${{ steps.sofa.outputs.python_exe }} -m pip install rpyc
 
-      - name: Run test Binding.Sofa.Tests
-        id: test-sofa
-        if: always()
-        shell: bash
-        run: |
-          cd $WORKSPACE_ARTIFACT_PATH
-          ./bin/Bindings.Sofa.Tests${{ steps.sofa.outputs.exe }}
-      
-      - name: Run test Bindings.SofaRuntime.Tests
-        id: test-sofaruntime
-        if: always()
-        shell: bash
-        run: |
-          cd $WORKSPACE_ARTIFACT_PATH
-          ./bin/Bindings.SofaRuntime.Tests${{ steps.sofa.outputs.exe }}
-      
-      - name: Run test Bindings.SofaTypes.Tests
-        id: test-sofatypes
-        if: always()
-        shell: bash
-        run: |
-          cd $WORKSPACE_ARTIFACT_PATH
-          ./bin/Bindings.SofaTypes.Tests${{ steps.sofa.outputs.exe }}
-      
-      - name: Run test Bindings.Modules.Tests
-        id: test-sofamodules
-        if: always()
-        shell: bash
-        run: |
-          cd $WORKSPACE_ARTIFACT_PATH
-          ./bin/Bindings.Modules.Tests${{ steps.sofa.outputs.exe }}
+      - name: Launch test
+        id: tests
+        uses: sofa-framework/sofa-test-action@v1.0
+        with:
+          sofa_root: ${{ github.workspace }}/sofa
+          sofa_version: ${{ steps.sofa.outputs.sofa_version }}
+          src_dir: ${{ env.WORKSPACE_SRC_PATH }}
+          build_dir: ${{ env.WORKSPACE_BUILD_PATH }}
+          python_exe: ${{ steps.sofa.outputs.python_exe }}
+          output_dir: ${{ github.workspace }}/tests-results_dir
+          nb_parallel_threads: '4'
 
       - name: Notify dashboard
         if: always() && startsWith(github.repository, 'sofa-framework') && startsWith(github.ref, 'refs/heads/master') # we are not on a fork and on master
@@ -211,10 +159,7 @@ jobs:
           DASH_AUTH: ${{ secrets.PLUGIN_DASH }}
         shell: bash
         run: |
-          test_status=$([ '${{ steps.test-sofa.outcome }}' == 'success' ] && \
-                        [ '${{ steps.test-sofaruntime.outcome }}' == 'success' ] && \
-                        [ '${{ steps.test-sofatypes.outcome }}' == 'success' ] && \
-                        [ '${{ steps.test-sofamodules.outcome }}' == 'success' ] && \
+          test_status=$([ '${{ steps.tests }}' == 'success' ] && \
                         echo 'true' || echo 'false')
 
           build_status=$([ '${{ steps.build-install.outcome }}' == 'success' ] && \
