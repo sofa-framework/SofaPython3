@@ -38,11 +38,96 @@ namespace sofapython3
 using sofa::core::objectmodel::Event;
 using sofa::core::objectmodel::BaseObject;
 
+Controller_Trampoline::Controller_Trampoline() = default;
+
+Controller_Trampoline::~Controller_Trampoline()
+{
+    // Clean up Python objects while holding the GIL
+    if (m_cacheInitialized)
+    {
+        PythonEnvironment::gil acquire {"~Controller_Trampoline"};
+        m_methodCache.clear();
+        m_pySelf = py::object();
+    }
+}
+
+void Controller_Trampoline::initializePythonCache()
+{
+    if (m_cacheInitialized)
+        return;
+
+    // Must be called with GIL held
+    m_pySelf = py::cast(this);
+
+    // Pre-cache the fallback "onEvent" method via the standard cache path
+    getCachedMethod("onEvent");
+
+    m_cacheInitialized = true;
+}
+
+py::object Controller_Trampoline::getCachedMethod(const std::string& methodName)
+{
+    // Must be called with GIL held and cache initialized
+
+    // Check if we've already looked up this method
+    auto it = m_methodCache.find(methodName);
+    if (it != m_methodCache.end())
+    {
+        return it->second;
+    }
+
+    // First time looking up this method - check if it exists
+    py::object method;
+    if (py::hasattr(m_pySelf, methodName.c_str()))
+    {
+        py::object fct = m_pySelf.attr(methodName.c_str());
+        if (PyCallable_Check(fct.ptr()))
+        {
+            method = fct;
+        }
+    }
+
+    // Cache the result (even if empty, to avoid repeated hasattr checks)
+    m_methodCache[methodName] = method;
+    return method;
+}
+
+bool Controller_Trampoline::callCachedMethod(const py::object& method, Event* event)
+{
+    // Must be called with GIL held
+    if (f_printLog.getValue())
+    {
+        std::string eventStr = py::str(PythonFactory::toPython(event));
+        msg_info() << "on" << event->getClassName() << " " << eventStr;
+    }
+
+    py::object result = method(PythonFactory::toPython(event));
+    if (result.is_none())
+        return false;
+
+    return py::cast<bool>(result);
+}
+
+void Controller_Trampoline::invalidateMethodCache(const std::string& methodName)
+{
+    if (!m_cacheInitialized)
+        return;
+
+    // Remove the entry so getCachedMethod will re-resolve it on next call
+    m_methodCache.erase(methodName);
+}
+
 std::string Controller_Trampoline::getClassName() const
 {
     PythonEnvironment::gil acquire {"getClassName"};
-    // Get the actual class name from python.
-    return py::str(py::cast(this).get_type().attr("__name__"));
+
+    if (m_pySelf)
+    {
+        return py::str(py::type::of(m_pySelf).attr("__name__"));
+    }
+
+    // Fallback for when cache isn't initialized yet
+    return py::str(py::type::of(py::cast(this)).attr("__name__"));
 }
 
 void Controller_Trampoline::draw(const sofa::core::visual::VisualParams* params)
@@ -55,6 +140,8 @@ void Controller_Trampoline::draw(const sofa::core::visual::VisualParams* params)
 void Controller_Trampoline::init()
 {
     PythonEnvironment::executePython(this, [this](){
+        // Initialize the Python object cache on first init
+        initializePythonCache();
         PYBIND11_OVERLOAD(void, Controller, init, );
     });
 }
@@ -92,25 +179,28 @@ bool Controller_Trampoline::callScriptMethod(
 
 void Controller_Trampoline::handleEvent(Event* event)
 {
-    PythonEnvironment::executePython(this, [this,event](){
-        py::object self = py::cast(this);
-        std::string name = std::string("on")+event->getClassName();
-        /// Is there a method with this name in the class ?
-        if( py::hasattr(self, name.c_str()) )
+    PythonEnvironment::executePython(this, [this, event](){
+        // Ensure cache is initialized (in case init() wasn't called or
+        // handleEvent is called before init)
+        if (!m_cacheInitialized)
         {
-            py::object fct = self.attr(name.c_str());
-            if (PyCallable_Check(fct.ptr())) {
-                bool isHandled = callScriptMethod(self, event, name);
-                if(isHandled)
-                    event->setHandled();
-                return;
-            }
+            initializePythonCache();
         }
 
-        /// Is the fallback method available.
-        bool isHandled = callScriptMethod(self, event, "onEvent");
-        if(isHandled)
-            event->setHandled();
+        // Build the event-specific method name (e.g., "onAnimateBeginEvent")
+        std::string methodName = std::string("on") + event->getClassName();
+
+        // Try the event-specific method first, then fall back to generic "onEvent"
+        py::object method = getCachedMethod(methodName);
+        if (!method)
+            method = getCachedMethod("onEvent");
+
+        if (method)
+        {
+            bool isHandled = callCachedMethod(method, event);
+            if (isHandled)
+                event->setHandled();
+        }
     });
 }
 
@@ -150,6 +240,22 @@ void moduleAddController(py::module &m) {
     f.def("draw", [](Controller& self, sofa::core::visual::VisualParams* params){
         self.draw(params);
     }, pybind11::return_value_policy::reference);
+
+    // Override __setattr__ to invalidate the method cache when an "on*" attribute is reassigned
+    f.def("__setattr__", [](py::object self, const std::string& s, py::object value) {
+        // If the attribute starts with "on" and the new value is callable, invalidate the cached method
+        if (s.rfind("on", 0) == 0 && PyCallable_Check(value.ptr()))
+        {
+            auto* trampoline = dynamic_cast<Controller_Trampoline*>(py::cast<Controller*>(self));
+            if (trampoline)
+            {
+                trampoline->invalidateMethodCache(s);
+            }
+        }
+
+        // Delegate to the base class __setattr__
+        BindingBase::__setattr__(self, s, value);
+    });
 }
 
 

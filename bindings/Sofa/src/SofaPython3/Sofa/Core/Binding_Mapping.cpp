@@ -135,7 +135,7 @@ namespace sofapython3
 
         py::dict mp = py::dict("time"_a=getContext()->getTime());
 
-        PYBIND11_OVERLOAD_PURE(void, Inherit1, applyConstrainsJT, mp,
+        PYBIND11_OVERLOAD_PURE(void, Inherit1, applyConstraintsJT, mp,
                                PythonFactory::toPython(&out), PythonFactory::toPython(&in));
     }
 

@@ -18,34 +18,40 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#pragma once
-
 #include <pybind11/pybind11.h>
-namespace py = pybind11;
-using namespace pybind11::literals;
+
+#include <SofaPython3/PythonFactory.h>
+#include <SofaPython3/Sofa/Helper/Binding_Version.h>
+
+#include <iomanip>
+#include <sofa/version.h>
 
 
-#include <sofa/type/Quat.h>
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
 
-void moduleAddQuat(py::module& m);
-
-namespace pyQuat
+namespace sofapython3
 {
-template <class T>
-std::string __str__(const sofa::type::Quat<T> &self, bool repr = false)
+
+void moduleAddVersion(py::module &m)
 {
-    std::string s;
-    if (repr)
-    {
-        s += "Quat";
-    }
-    s += "(";
-    s += std::to_string(self[0])
-            + ", " + std::to_string(self[1])
-            + ", " + std::to_string(self[2])
-            + ", " + std::to_string(self[3])
-            + ")";
-    return s;
+    m.def("GetVersion",
+        []()
+        {
+            static const std::string sofaVersion = []() {
+                std::stringstream version;
+                constexpr auto major = SOFA_VERSION / 10000;
+                constexpr auto minor = SOFA_VERSION / 100 % 100;
+                version << 'v'
+                    << std::setfill('0') << std::setw(2) << major
+                    << "."
+                    << std::setfill('0') << std::setw(2) << minor;
+                return version.str();
+            }();
+            return sofaVersion;
+        },
+        "Returns the version of SOFA as a string in the format 'vMM.mm', where MM is the major version and mm is the minor version.");
 }
 
-} // namespace pyQuat
+
+}

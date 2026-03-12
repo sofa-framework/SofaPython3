@@ -34,7 +34,7 @@ class MSELossMapping(Sofa.Core.Mapping_Vec3d_Vec1d):
     def applyJT(self, m, outDeriv, inDeriv):
         print("PYTHON() APPLY-JT", outDeriv, inDeriv)
 
-    def applyConstrainsJT(self, m, outDeriv, inDeriv):
+    def applyConstraintsJT(self, m, outDeriv, inDeriv):
         print("PYTHON() APPLY-JT for constraints, data are [⋱]", m, outDeriv, inDeriv)
         print("Constraints ", inDeriv.value)
 

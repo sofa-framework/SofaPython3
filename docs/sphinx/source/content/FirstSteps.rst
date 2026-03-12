@@ -166,8 +166,9 @@ We first propose to add a visual grid, in order to see things more clearly. To d
 
 Now, we create a new child node, in order to add the general configuration of the scene : required plugins (here SofaPython3) and other tools (like a system of axes).
 
-.. code-block:: python
-        def createScene(rootNode):
+.. code-block:: python 
+
+	def createScene(rootNode):
             import SofaRuntime
             # Make sure to load all necessary libraries
             SofaRuntime.importPlugin("Sofa.Component.Visual")
@@ -182,6 +183,7 @@ Now, we create a new child node, in order to add the general configuration of th
 Finally, we add the sphere itself, which consists of two parts : the mechanical representation and the visual representation of the sphere: 
 
 .. code-block:: python
+
         def createScene(rootNode):
             import SofaRuntime
             # Make sure to load all necessary libraries
