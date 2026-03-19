@@ -25,6 +25,9 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeEnergyVisitor.h>
 #include <sofa/core/ComponentNameHelper.h>
 
+#include <sofa/core/objectmodel/BaseComponent.h>
+using sofa::core::objectmodel::BaseComponent;
+
 #include <sofa/core/objectmodel/BaseData.h>
 using sofa::core::objectmodel::BaseData;
 
@@ -44,7 +47,7 @@ using sofa::core::ExecParams;
 using sofapython3::LinkPath;
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseComponent.h>
 #include <SofaPython3/DataHelper.h>
 
 #include <sofa/core/ObjectFactory.h>
@@ -138,7 +141,7 @@ py::object getItem(Node& self, std::list<std::string>& path)
     if (path.empty())
         return py::cast(self);
     Node* child = self.getChild(path.front());
-    BaseObject* obj = self.getObject(path.front());
+    BaseComponent* obj = self.getObject(path.front());
     BaseData* data = self.findData(path.front());
     if (child)
     {
@@ -182,25 +185,25 @@ py_shared_ptr<Node> __init_kwarged__(const std::string& name, const py::kwargs& 
 /// Method: init (beware this is not the python __init__, this is sofa's init())
 void init(Node& self) { self.init(sofa::core::execparams::defaultInstance()); }
 
-py::object addObject(Node& self, BaseObject * object)
+py::object addObject(Node& self, BaseComponent * object)
 {
     try {
         if (self.addObject(object))
             return PythonFactory::toPython(object);
     } catch (...) {
-        throw py::type_error("Trying to add an object that isn't derived from sofa::core::objectmodel::BaseObject.");
+        throw py::type_error("Trying to add an object that isn't derived from sofa::core::objectmodel::BaseComponent.");
     }
     return py::none();
 }
 
-void removeObject(Node& self, BaseObject* object)
+void removeObject(Node& self, BaseComponent* object)
 {
     self.removeObject(object);
 }
 
 py::object hasObject(Node &n, const std::string &name)
 {
-    BaseObject *object = n.getObject(name);
+    BaseComponent *object = n.getObject(name);
     if (object)
         return py::cast(true);
     return py::cast(false);
@@ -216,7 +219,7 @@ py::object getObject(Node &n, const std::string &name, const py::kwargs& kwargs)
                            << PythonEnvironment::getPythonCallingPointString() ;
     }
 
-    BaseObject *object = n.getObject(name);
+    BaseComponent *object = n.getObject(name);
     if (object)
         return PythonFactory::toPython(object);
     return py::none();
@@ -344,9 +347,9 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
 /// Implement the addObject function.
 py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& kwargs)
 {
-    if(py::isinstance<BaseObject*>(callable))
+    if(py::isinstance<BaseComponent*>(callable))
     {
-        BaseObject* obj = py::cast<BaseObject*>(callable);
+        BaseComponent* obj = py::cast<BaseComponent*>(callable);
         self->addObject(obj);
         return py::cast(obj);
     }
@@ -375,7 +378,7 @@ py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& k
     Base* base = py::cast<Base*>(c);
     if(!py::isinstance<Base*>(c))
     {
-        throw py::value_error("add: the function passed as first argument can only return a Sofa.BaseObject or Sofa.Node object");
+        throw py::value_error("add: the function passed as first argument can only return a Sofa.BaseComponent or Sofa.Node object");
     }
 
     // Set the creation point
@@ -516,7 +519,7 @@ py::object __getattr__(py::object pyself, const std::string& name)
 {
     Node* selfnode = py::cast<Node*>(pyself);
     /// Search in the object lists
-    BaseObject *object = selfnode->getObject(name);
+    BaseComponent *object = selfnode->getObject(name);
     if (object)
         return PythonFactory::toPython(object);
 

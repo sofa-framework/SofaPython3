@@ -8,8 +8,8 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataDict.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataDict_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseData.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseObject.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseObject_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseComponent.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseComponent_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseCamera.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseContext.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ContactListener.h
@@ -63,7 +63,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseData.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataDict.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DrawTool.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseObject.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseComponent.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseCamera.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseContext.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ContactListener.cpp

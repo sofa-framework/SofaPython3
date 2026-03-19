@@ -25,7 +25,7 @@ using sofa::helper::logging::Message;
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseClass.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseContext.h>
-#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseComponent.h>
 #include <SofaPython3/Sofa/Core/Binding_DataDict.h>
 #include <SofaPython3/Sofa/Core/Binding_DrawTool.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseData.h>
@@ -114,7 +114,7 @@ PYBIND11_MODULE(Core, core)
     /// more details in: https://github.com/sofa-framework/SofaPython3/pull/457
     moduleForwardAddBaseClass(core);
     moduleForwardAddBase(core);
-    moduleForwardAddBaseObject(core);
+    moduleForwardAddBaseComponent(core);
     moduleForwardAddBaseData(core);
     moduleForwardAddBaseLink(core);
     moduleForwardAddTopology(core);
@@ -138,7 +138,7 @@ PYBIND11_MODULE(Core, core)
     moduleAddDataLink(core);
     moduleAddDataVectorString(core);
     moduleAddDrawTool(core);
-    moduleAddBaseObject(core);
+    moduleAddBaseComponent(core);
     moduleAddBaseCamera(core);
     moduleAddContactListener(core);
     moduleAddContext(core);

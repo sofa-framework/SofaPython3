@@ -26,10 +26,10 @@
 namespace sofapython3
 {
 
-pybind11::object getItem(const sofa::core::objectmodel::BaseObject & self, const std::string& path);
+pybind11::object getItem(const sofa::core::objectmodel::BaseComponent & self, const std::string& path);
 
-void moduleForwardAddBaseObject(pybind11::module &m);
-void moduleAddBaseObject(pybind11::module &m);
+void moduleForwardAddBaseComponent(pybind11::module &m);
+void moduleAddBaseComponent(pybind11::module &m);
 
 } /// namespace sofapython
 
