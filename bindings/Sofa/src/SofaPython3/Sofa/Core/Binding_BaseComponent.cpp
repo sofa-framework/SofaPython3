@@ -19,8 +19,8 @@
 ******************************************************************************/
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
-#include <SofaPython3/Sofa/Core/Binding_BaseObject_doc.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseComponent.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseComponent_doc.h>
 #include <SofaPython3/Sofa/Core/Binding_Controller.h>
 #include <SofaPython3/PythonFactory.h>
 
@@ -61,11 +61,11 @@ namespace py { using namespace pybind11; }
 
 using sofa::core::objectmodel::BaseData;
 using sofa::core::objectmodel::Base;
-using sofa::core::objectmodel::BaseObject;
+using sofa::core::objectmodel::BaseComponent;
 
 namespace sofapython3
 {
-py::object getItem(const BaseObject& self, const std::string& path)
+py::object getItem(const BaseComponent& self, const std::string& path)
 {
     if (path.empty())
         return py::cast(self);
@@ -79,19 +79,19 @@ py::object getItem(const BaseObject& self, const std::string& path)
     throw py::value_error("Invalid syntax"); // should never get there
 }
 
-std::string getLinkPath(const BaseObject *self)
+std::string getLinkPath(const BaseComponent *self)
 {
     return std::string("@")+self->getPathName();
 }
 
-void computeBBox(BaseObject *self)
+void computeBBox(BaseComponent *self)
 {
     self->computeBBox(sofa::core::execparams::defaultInstance(), false);
 }
 
-py::list getSlaves(BaseObject &self)
+py::list getSlaves(BaseComponent &self)
 {
-   const BaseObject::VecSlaves& slaves = self.getSlaves();
+   const BaseComponent::VecSlaves& slaves = self.getSlaves();
    py::list slaveList;
    for (auto slave : slaves){
        slaveList.append(py::cast(slave));
@@ -99,7 +99,7 @@ py::list getSlaves(BaseObject &self)
    return slaveList;
 }
 
-py::object getContext(const BaseObject &self)
+py::object getContext(const BaseComponent &self)
 {
     const sofa::core::objectmodel::BaseContext* context =  self.getContext();
     if (context){
@@ -108,16 +108,16 @@ py::object getContext(const BaseObject &self)
     return py::none();
 }
 
-py::object getMaster(const BaseObject &self)
+py::object getMaster(const BaseComponent &self)
 {
-    const BaseObject* master = self.getMaster();
+    const BaseComponent* master = self.getMaster();
     if (master){
         return py::cast(master);
     }
     return py::none();
 }
 
-py::object getTarget(BaseObject *self)
+py::object getTarget(BaseComponent *self)
 {
     if (!self)
         return py::none();
@@ -133,7 +133,7 @@ py::object getTarget(BaseObject *self)
     return py::none() ;
 }
 
-py::object getCategories(BaseObject *self)
+py::object getCategories(BaseComponent *self)
 {
     std::vector<std::string> categories;
     const sofa::core::objectmodel::BaseClass* c=self->getClass();
@@ -142,12 +142,12 @@ py::object getCategories(BaseObject *self)
     return std::move(l);
 }
 
-std::string getAsACreateObjectParameter(BaseObject *self)
+std::string getAsACreateObjectParameter(BaseComponent *self)
 {
     return getLinkPath(self);
 }
 
-void setSrc(BaseObject &self, char *valueString, BaseObject *loader)
+void setSrc(BaseComponent &self, char *valueString, BaseComponent *loader)
 {
     self.setSrc(valueString,loader);
 }
@@ -166,7 +166,7 @@ void setSrc(BaseObject &self, char *valueString, BaseObject *loader)
 /// In the example above, node1 and node2 can be inferred as being nodes without performing any checks.
 /// object1 can be a node or an object, but cannot be a datafield nor a link
 /// value can be a node or an object (if object1 is a node), or must be a data (if object1 is an object)
-py::object __getitem__(BaseObject &self, std::string s)
+py::object __getitem__(BaseComponent &self, std::string s)
 {
     if (s[0] == '.')
         s.erase(s.begin());
@@ -189,49 +189,49 @@ py::object __getitem__(BaseObject &self, std::string s)
     return getItem(self, s);
 }
 
-auto getBaseObjectBinding(py::module& m)
+auto getBaseComponentBinding(py::module& m)
 {
-    /// Register the BaseObject binding into the pybind11 typing system
-    static py::class_<BaseObject, Base, py_shared_ptr<BaseObject>>p(m, "Object", sofapython3::doc::baseObject::Class);
+    /// Register the BaseComponent binding into the pybind11 typing system
+    static py::class_<BaseComponent, Base, py_shared_ptr<BaseComponent>>p(m, "Object", sofapython3::doc::BaseComponent::Class);
     return p;
 }
 
-void moduleForwardAddBaseObject(py::module& m)
+void moduleForwardAddBaseComponent(py::module& m)
 {
-    getBaseObjectBinding(m);
+    getBaseComponentBinding(m);
 }
 
-void moduleAddBaseObject(py::module& m)
+void moduleAddBaseComponent(py::module& m)
 {
-    auto p = getBaseObjectBinding(m);
+    auto p = getBaseComponentBinding(m);
 
-    /// Register the BaseObject binding into the downcasting subsystem
-    PythonFactory::registerType<sofa::core::objectmodel::BaseObject>(
+    /// Register the BaseComponent binding into the downcasting subsystem
+    PythonFactory::registerType<sofa::core::objectmodel::BaseComponent>(
                 [](sofa::core::objectmodel::Base* object)
     {
-        return py::cast(py_shared_ptr<sofa::core::objectmodel::BaseObject>(object->toBaseObject()));
+        return py::cast(py_shared_ptr<sofa::core::objectmodel::BaseComponent>(object->toBaseComponent()));
     });
 
-    p.def("init", &BaseObject::init, sofapython3::doc::baseObject::init);
-    p.def("reinit", &BaseObject::reinit, sofapython3::doc::baseObject::reinit);
-    p.def("getPathName", &BaseObject::getPathName, sofapython3::doc::baseObject::getPathName);
-    p.def("getLinkPath", [](const BaseObject &self){ return std::string("@") + self.getPathName(); }, sofapython3::doc::baseObject::getLink);
-    p.def("getSlaves", getSlaves, sofapython3::doc::baseObject::getSlaves);
-    p.def("getContext", getContext, sofapython3::doc::baseObject::getContext);
-    p.def("getMaster", getMaster, sofapython3::doc::baseObject::getMaster);
-    p.def("addSlave", &BaseObject::addSlave, sofapython3::doc::baseObject::addSlave);
-    p.def("storeResetState", &BaseObject::storeResetState, sofapython3::doc::baseObject::storeResetState);
-    p.def("reset", &BaseObject::reset, sofapython3::doc::baseObject::reset);
-    p.def("getTarget", getTarget, sofapython3::doc::baseObject::getTarget);
-    p.def("getCategories", getCategories, sofapython3::doc::baseObject::getCategories);
-    p.def("bwdInit", &BaseObject::bwdInit, sofapython3::doc::baseObject::bwdInit);
-    p.def("cleanup", &BaseObject::cleanup, sofapython3::doc::baseObject::cleanup);
-    p.def("computeBBox", &computeBBox, sofapython3::doc::baseObject::computeBBox);
-    p.def("getLinkPath", &getLinkPath, sofapython3::doc::baseObject::getLinkPath);
-    p.def("getAsACreateObjectParameter", getAsACreateObjectParameter, sofapython3::doc::baseObject::getAsACreateObjectParameter);
-    p.def("setSrc", setSrc, sofapython3::doc::baseObject::setSrc);
-    p.def("computeBBox", &BaseObject::computeBBox, sofapython3::doc::baseObject::computeBBox);
-    p.def("__getitem__", __getitem__, sofapython3::doc::baseObject::__getitem__);
+    p.def("init", &BaseComponent::init, sofapython3::doc::BaseComponent::init);
+    p.def("reinit", &BaseComponent::reinit, sofapython3::doc::BaseComponent::reinit);
+    p.def("getPathName", &BaseComponent::getPathName, sofapython3::doc::BaseComponent::getPathName);
+    p.def("getLinkPath", [](const BaseComponent &self){ return std::string("@") + self.getPathName(); }, sofapython3::doc::BaseComponent::getLink);
+    p.def("getSlaves", getSlaves, sofapython3::doc::BaseComponent::getSlaves);
+    p.def("getContext", getContext, sofapython3::doc::BaseComponent::getContext);
+    p.def("getMaster", getMaster, sofapython3::doc::BaseComponent::getMaster);
+    p.def("addSlave", &BaseComponent::addSlave, sofapython3::doc::BaseComponent::addSlave);
+    p.def("storeResetState", &BaseComponent::storeResetState, sofapython3::doc::BaseComponent::storeResetState);
+    p.def("reset", &BaseComponent::reset, sofapython3::doc::BaseComponent::reset);
+    p.def("getTarget", getTarget, sofapython3::doc::BaseComponent::getTarget);
+    p.def("getCategories", getCategories, sofapython3::doc::BaseComponent::getCategories);
+    p.def("bwdInit", &BaseComponent::bwdInit, sofapython3::doc::BaseComponent::bwdInit);
+    p.def("cleanup", &BaseComponent::cleanup, sofapython3::doc::BaseComponent::cleanup);
+    p.def("computeBBox", &computeBBox, sofapython3::doc::BaseComponent::computeBBox);
+    p.def("getLinkPath", &getLinkPath, sofapython3::doc::BaseComponent::getLinkPath);
+    p.def("getAsACreateObjectParameter", getAsACreateObjectParameter, sofapython3::doc::BaseComponent::getAsACreateObjectParameter);
+    p.def("setSrc", setSrc, sofapython3::doc::BaseComponent::setSrc);
+    p.def("computeBBox", &BaseComponent::computeBBox, sofapython3::doc::BaseComponent::computeBBox);
+    p.def("__getitem__", __getitem__, sofapython3::doc::BaseComponent::__getitem__);
 }
 
 }  /// namespace sofapython3
