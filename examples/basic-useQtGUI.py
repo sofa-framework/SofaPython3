@@ -37,7 +37,7 @@ def main():
 # Function called when the scene graph is being created
 def createScene(root):
 
-    root.addObject('RequiredPlugin', name='Sofa.Component.StateContainer')
+    root.addObject('RequiredPlugin', pluginName='Sofa.Component.StateContainer')
 
     # Scene must now include a AnimationLoop
     root.addObject('DefaultAnimationLoop')
