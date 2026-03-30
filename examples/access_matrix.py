@@ -27,22 +27,15 @@ def createScene(root):
 
     root.addObject('VisualStyle', displayFlags="showBehaviorModels showForceFields")
 
-    root.addObject("RequiredPlugin", pluginName=['Sofa.Component.Mass',
-                                                    'Sofa.Component.StateContainer',
-                                                    'Sofa.Component.Topology.Container.Grid',
-                                                    'Sofa.Component.Visual'
+    root.addObject("RequiredPlugin", pluginName=['Sofa.Component.Mass', 'Sofa.Component.StateContainer',
+                                                    'Sofa.Component.Topology.Container.Grid', 'Sofa.Component.Visual',
+                                                    'Sofa.Component.Constraint.Projective', 'Sofa.Component.Engine.Select',
+                                                    'Sofa.Component.LinearSolver.Direct', 'Sofa.Component.LinearSystem',
+                                                    'Sofa.Component.ODESolver.Backward','Sofa.Component.SolidMechanics.FEM.Elastic'
                                                     ])
 
     root.addObject('DefaultAnimationLoop', parallelODESolving=True)
     root.addObject('DefaultVisualManagerLoop')
-
-    plugins = root.addChild('plugins')
-    plugins.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Projective')
-    plugins.addObject('RequiredPlugin', name='Sofa.Component.Engine.Select')
-    plugins.addObject('RequiredPlugin', name='Sofa.Component.LinearSolver.Direct')
-    plugins.addObject('RequiredPlugin', name='Sofa.Component.LinearSystem')
-    plugins.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Backward')
-    plugins.addObject('RequiredPlugin', name='Sofa.Component.SolidMechanics.FEM.Elastic')
 
     node_crs = createBeam(root, 'CompressedRowSparseMatrixMat3x3d')
     node_crs.addObject('SparseLDLSolver', template="CompressedRowSparseMatrixMat3x3d")

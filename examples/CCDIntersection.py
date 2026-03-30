@@ -20,28 +20,15 @@ def createScene(root_node):
 
     plugins = root_node.addChild('plugins')
 
-    plugins.addObject('RequiredPlugin', name="MultiThreading")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.AnimationLoop")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.Collision.Detection.Algorithm")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.Collision.Detection.Intersection")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.Collision.Geometry")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.Collision.Response.Contact")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.Constraint.Lagrangian.Correction")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.Constraint.Lagrangian.Solver")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.IO.Mesh")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.LinearSolver.Direct")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.Mapping.Linear")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.Mass")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.ODESolver.Backward")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.SolidMechanics.FEM.Elastic")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.StateContainer")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.Topology.Container.Dynamic")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.Topology.Container.Grid")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.Topology.Mapping")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.Visual")
-    plugins.addObject('RequiredPlugin', name="Sofa.GL.Component.Rendering3D")
-    plugins.addObject('RequiredPlugin', name="Sofa.Component.Engine.Select")
-    plugins.addObject('RequiredPlugin', name="Sofa.GUI.Component")
+    plugins.addObject('RequiredPlugin', pluginName=["MultiThreading", "Sofa.Component.AnimationLoop",
+    "Sofa.Component.Collision.Detection.Algorithm", "Sofa.Component.Collision.Detection.Intersection",
+    "Sofa.Component.Collision.Geometry", "Sofa.Component.Collision.Response.Contact",
+    "Sofa.Component.Constraint.Lagrangian.Correction", "Sofa.Component.Constraint.Lagrangian.Solver",
+    "Sofa.Component.IO.Mesh", "Sofa.Component.LinearSolver.Direct", "Sofa.Component.Mapping.Linear",
+    "Sofa.Component.Mass", "Sofa.Component.ODESolver.Backward", "Sofa.Component.SolidMechanics.FEM.Elastic",
+    "Sofa.Component.StateContainer", "Sofa.Component.Topology.Container.Dynamic",
+    "Sofa.Component.Topology.Container.Grid", "Sofa.Component.Topology.Mapping", "Sofa.Component.Visual",
+    "Sofa.GL.Component.Rendering3D", "Sofa.Component.Engine.Select", "Sofa.GUI.Component"])
 
     root_node.addObject('VisualStyle', displayFlags="showVisual")
     root_node.addObject('ConstraintAttachButtonSetting')
