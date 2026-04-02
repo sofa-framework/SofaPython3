@@ -430,7 +430,7 @@ py::object BindingBase::getData(Base& self, const std::string& s)
 
 std::string BindingBase::getPathName(Base& self)
 {
-    return self.toBaseNode() ? self.toBaseNode()->getPathName() : self.toBaseObject()->getPathName();
+    return self.toBaseNode() ? self.toBaseNode()->getPathName() : self.toBaseComponent()->getPathName();
 }
 
 std::string BindingBase::getLinkPath(Base& self)

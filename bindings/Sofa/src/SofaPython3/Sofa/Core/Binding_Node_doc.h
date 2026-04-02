@@ -329,7 +329,7 @@ static auto removeObject =
         R"(
         Remove an object
         :param object: the object to be removed
-        :type object: BaseObject
+        :type object: BaseComponent
         )";
 
 static auto getRootPath =

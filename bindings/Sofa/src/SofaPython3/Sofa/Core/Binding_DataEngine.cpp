@@ -37,7 +37,7 @@ namespace sofapython3
 using sofa::core::objectmodel::Event;
 using sofa::core::DataEngine;
 using sofa::core::objectmodel::BaseData;
-using sofa::core::objectmodel::BaseObject;
+using sofa::core::objectmodel::BaseComponent;
 using sofa::core::objectmodel::DDGNode;
 
 std::string DataEngine_Trampoline::getClassName() const
@@ -73,7 +73,7 @@ void moduleAddDataEngine(pybind11::module &m)
 {
     py::class_<DataEngine,
             DataEngine_Trampoline,
-            BaseObject,
+            BaseComponent,
             py_shared_ptr<DataEngine>> f(m, "DataEngine",
                                          py::dynamic_attr(),
                                          sofapython3::doc::dataengine::DataEngine);

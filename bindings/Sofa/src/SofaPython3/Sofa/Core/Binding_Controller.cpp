@@ -36,7 +36,7 @@ namespace py { using namespace pybind11; }
 namespace sofapython3
 {
 using sofa::core::objectmodel::Event;
-using sofa::core::objectmodel::BaseObject;
+using sofa::core::objectmodel::BaseComponent;
 
 Controller_Trampoline::Controller_Trampoline() = default;
 
@@ -207,7 +207,7 @@ void Controller_Trampoline::handleEvent(Event* event)
 void moduleAddController(py::module &m) {
     py::class_<Controller,
             Controller_Trampoline,
-            BaseObject,
+            BaseComponent,
             py_shared_ptr<Controller>> f(m, "Controller",
                                          py::dynamic_attr(),
                                          sofapython3::doc::controller::controllerClass);

@@ -38,7 +38,7 @@
 namespace py { using namespace pybind11; }
 using sofa::core::objectmodel::BaseData;
 using sofa::core::objectmodel::Data;
-using sofa::core::objectmodel::BaseObject;
+using sofa::core::objectmodel::BaseComponent;
 using sofa::core::visual::VisualParams;
 using sofa::core::visual::DrawTool;
 

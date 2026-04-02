@@ -525,7 +525,7 @@ void checkAmbiguousCreation(BaseNode* self, const std::string& name, const std::
 
 }
 
-void checkAmbiguousCreation(BaseObject* self, const std::string& name, const std::string& type)
+void checkAmbiguousCreation(BaseComponent* self, const std::string& name, const std::string& type)
 {
     if (!self) return;
 
@@ -543,14 +543,14 @@ void checkAmbiguousCreation(BaseObject* self, const std::string& name, const std
 void checkAmbiguousCreation(Base* self, const std::string& name, const std::string& type)
 {
     checkAmbiguousCreation(dynamic_cast<BaseNode*>(self), name, type);
-    checkAmbiguousCreation(dynamic_cast<BaseObject*>(self), name, type);
+    checkAmbiguousCreation(dynamic_cast<BaseComponent*>(self), name, type);
 }
 
 void checkAmbiguousCreation(py::object& py_self, const std::string& name, const std::string& type)
 {
     Base* self = py::cast<Base*>(py_self);
     checkAmbiguousCreation(dynamic_cast<BaseNode*>(self), name, type);
-    checkAmbiguousCreation(dynamic_cast<BaseObject*>(self), name, type);
+    checkAmbiguousCreation(dynamic_cast<BaseComponent*>(self), name, type);
 
     if (py_self.attr("__dict__").contains(name))
         msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getName() << ": Component alread has a python attribute with such name in __dict__";
@@ -581,7 +581,7 @@ BaseData* addData(py::object py_self, const std::string& name, py::object value,
             data = deriveTypeFromParent(dynamic_cast<BaseNode*>(self)->getContext(),
                                         py::cast<py::str>(value));
         else
-            data = deriveTypeFromParent(dynamic_cast<BaseObject*>(self)->getContext(),
+            data = deriveTypeFromParent(dynamic_cast<BaseComponent*>(self)->getContext(),
                                         py::cast<py::str>(value));
         if (!data)
             throw py::type_error("Cannot deduce type from value");

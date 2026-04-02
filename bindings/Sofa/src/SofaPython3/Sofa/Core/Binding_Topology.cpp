@@ -22,7 +22,7 @@
 #include <SofaPython3/Sofa/Core/Binding_BaseContext.h>
 #include <SofaPython3/PythonFactory.h>
 #include <sofa/core/BaseState.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -36,7 +36,7 @@ using namespace sofa::core::topology;
 namespace sofapython3 {
 
 auto getTopologyClass(py::module& m){
-    static py::class_<Topology, BaseObject, py_shared_ptr<Topology>> c (m, "Topology", "Compatibility topology class (against BaseMeshTopology)");
+    static py::class_<Topology, BaseComponent, py_shared_ptr<Topology>> c (m, "Topology", "Compatibility topology class (against BaseMeshTopology)");
     return c;
 }
 

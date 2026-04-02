@@ -24,7 +24,7 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 
 #include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseData.h>
