@@ -21,8 +21,8 @@
 #include <sofa/core/objectmodel/BaseLink.h>
 using sofa::core::objectmodel::BaseLink;
 
-#include <sofa/core/objectmodel/BaseObject.h>
-using  sofa::core::objectmodel::BaseObject;
+#include <sofa/core/objectmodel/BaseComponent.h>
+using  sofa::core::objectmodel::BaseComponent;
 
 #include <SofaPython3/PythonFactory.h>
 

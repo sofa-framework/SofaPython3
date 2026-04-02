@@ -27,7 +27,7 @@
 #include <SofaPython3/PythonFactory.h>
 
 using sofa::component::topology::container::grid::SparseGridTopology;
-using sofa::core::objectmodel::BaseObject;
+using sofa::core::objectmodel::BaseComponent;
 
 PYBIND11_DECLARE_HOLDER_TYPE(Base, sofa::core::sptr<Base>, true)
 
@@ -36,7 +36,7 @@ namespace sofapython3 {
 namespace py { using namespace pybind11; }
 
 void moduleAddSparseGridTopology(pybind11::module& m) {
-    py::class_<SparseGridTopology, sofa::core::objectmodel::BaseObject,sofa::core::sptr<SparseGridTopology>>
+    py::class_<SparseGridTopology, sofa::core::objectmodel::BaseComponent,sofa::core::sptr<SparseGridTopology>>
     c(m, "SparseGridTopology", doc::SofaBaseTopology::sparseGridTopologyClass);
 
     // getRegularGrid ()

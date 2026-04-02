@@ -62,7 +62,7 @@ void bindLinearSolvers(py::module &m)
     const std::string typeName = CRSLinearSolver::GetClass()->className + CRSLinearSolver::GetCustomTemplateName();
 
     py::class_<CRSLinearSolver,
-               sofa::core::objectmodel::BaseObject,
+               sofa::core::objectmodel::BaseComponent,
                sofapython3::py_shared_ptr<CRSLinearSolver> > c(m, typeName.c_str(), sofapython3::doc::linearsolver::linearSolverClass);
 
     c.def("A", [](CRSLinearSolver& self) -> EigenSparseMatrix

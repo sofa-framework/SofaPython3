@@ -65,7 +65,7 @@ Vector<typename TVector::Real> getSolutionVector(sofa::component::linearsystem::
 template<class TMatrix, class TVector>
 using LinearSystemClass =
     py::class_<sofa::component::linearsystem::TypedMatrixLinearSystem<TMatrix, TVector>,
-           sofa::core::objectmodel::BaseObject,
+           sofa::core::objectmodel::BaseComponent,
            sofapython3::py_shared_ptr<sofa::component::linearsystem::TypedMatrixLinearSystem<TMatrix, TVector>> >;
 
 template<class TMatrix, class TVector>

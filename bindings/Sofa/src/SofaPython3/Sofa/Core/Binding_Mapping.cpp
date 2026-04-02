@@ -45,7 +45,7 @@ using namespace pybind11::literals;
 namespace sofapython3
 {
     using sofa::core::Mapping;
-    using sofa::core::objectmodel::BaseObject;
+    using sofa::core::objectmodel::BaseComponent;
     using sofa::core::objectmodel::ComponentState;
     using sofa::core::behavior::MechanicalState;
     using sofa::core::MechanicalParams;
@@ -143,7 +143,7 @@ namespace sofapython3
     void declareMapping(py::module &m) {
         const std::string pyclass_name = std::string("Mapping_") + In::Name()+ "_" + Out::Name();
 
-        py::class_<Mapping<In, Out>, BaseObject, Mapping_Trampoline<In, Out>,
+        py::class_<Mapping<In, Out>, BaseComponent, Mapping_Trampoline<In, Out>,
                    py_shared_ptr<Mapping<In, Out>>> f(m, pyclass_name.c_str(), py::dynamic_attr(), py::multiple_inheritance(),
                                                       sofapython3::doc::mapping::mappingClass);
 

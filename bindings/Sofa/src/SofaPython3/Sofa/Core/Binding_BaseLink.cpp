@@ -21,8 +21,8 @@
 #include <sofa/core/objectmodel/BaseLink.h>
 using sofa::core::objectmodel::BaseLink;
 
-#include <sofa/core/objectmodel/BaseObject.h>
-using  sofa::core::objectmodel::BaseObject;
+#include <sofa/core/objectmodel/BaseComponent.h>
+using  sofa::core::objectmodel::BaseComponent;
 
 #include <sofa/core/objectmodel/BaseNode.h>
 
@@ -64,7 +64,7 @@ py::object getOwnerBase(BaseLink& self)
 std::string getPathName(BaseLink& self)
 {
     auto n = self.getOwnerBase()->toBaseNode();
-    auto o = self.getOwnerBase()->toBaseObject();
+    auto o = self.getOwnerBase()->toBaseComponent();
     return (n ? n->getPathName() : o->getPathName()) + "." + self.getName();
 }
 
