@@ -9,12 +9,12 @@ class Test(unittest.TestCase):
 
         loop = root.addObject('DefaultAnimationLoop')
 
-        root.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Backward')
-        root.addObject('RequiredPlugin', name='Sofa.Component.LinearSolver.Direct')
-        root.addObject('RequiredPlugin', name='Sofa.Component.Engine.Select')
-        root.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Projective')
-        root.addObject('RequiredPlugin', name='Sofa.Component.SolidMechanics.FEM.Elastic')
-        root.addObject('RequiredPlugin', name='Sofa.Component.Mass')
+        root.addObject('RequiredPlugin', pluginName='Sofa.Component.ODESolver.Backward')
+        root.addObject('RequiredPlugin', pluginName='Sofa.Component.LinearSolver.Direct')
+        root.addObject('RequiredPlugin', pluginName='Sofa.Component.Engine.Select')
+        root.addObject('RequiredPlugin', pluginName='Sofa.Component.Constraint.Projective')
+        root.addObject('RequiredPlugin', pluginName='Sofa.Component.SolidMechanics.FEM.Elastic')
+        root.addObject('RequiredPlugin', pluginName='Sofa.Component.Mass')
 
         root.addObject('EulerImplicitSolver', rayleighStiffness="0.1", rayleighMass="0.1")
         linear_solver = root.addObject('SparseLDLSolver', name='linear_solver', template=linear_solver_template)
