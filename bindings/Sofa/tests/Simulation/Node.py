@@ -41,7 +41,7 @@ class Test(unittest.TestCase):
 
     def test_GetAttr(self):
         root = Sofa.Core.Node("rootNode")
-        root.addObject("RequiredPlugin", pluginName="Sofa.Component.StateContainer")
+        root.addObject("RequiredPlugin", pluginName="Sofa.Component.StateContainer", name="Sofa.Component.StateContainer")
         c = root.addChild("child1")
         self.assertTrue(c is not None)
         self.assertTrue(root.child1 is not None)
@@ -208,13 +208,13 @@ class Test(unittest.TestCase):
 
     def test_hasObjectWithFastPath(self):
         root = Sofa.Core.Node("root")
-        root.addObject("RequiredPlugin", pluginName="Sofa.Component.StateContainer")
+        root.addObject("RequiredPlugin", pluginName="Sofa.Component.StateContainer", name="Sofa.Component.StateContainer")
         self.assertTrue(root.hasObject("Sofa.Component.StateContainer"))
         self.assertFalse(root.hasObject("NonExistingObjectName"))
 
     def test_hasObjectWithDefaultPythonFunction(self):
         root = Sofa.Core.Node("root")
-        root.addObject("RequiredPlugin", pluginName="Sofa.Component.StateContainer")
+        root.addObject("RequiredPlugin", pluginName="Sofa.Component.StateContainer", name="Sofa.Component.StateContainer")
 
         self.assertTrue(hasattr(root, "Sofa.Component.StateContainer"))
         self.assertFalse(hasattr(root, "NonExistingObjectName"))
