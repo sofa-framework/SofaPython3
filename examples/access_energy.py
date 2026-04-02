@@ -5,28 +5,28 @@ dirname = os.path.dirname(__file__)
 def createScene(rootNode, dt=0.01, m=1, g=1, L=100, mu=0):
 
     # rootNode
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.Collision.Detection.Algorithm')
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.Collision.Detection.Intersection')
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.Collision.Geometry')
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.Collision.Response.Contact')
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.IO.Mesh')
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.LinearSolver.Iterative')
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.Mapping.Linear')
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.Mass')
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Backward')
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.SolidMechanics.Spring')
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.StateContainer')
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.Topology.Container.Constant')
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.Topology.Container.Grid')
-    rootNode.addObject('RequiredPlugin', name='Sofa.GL.Component.Rendering3D')
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.AnimationLoop')
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Lagrangian.Correction')
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.LinearSolver.Direct')
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.Mapping.NonLinear')
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.Topology.Container.Dynamic')
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Lagrangian.Solver') # Needed to Use components [GenericConstraintSolver]  
-    rootNode.addObject('RequiredPlugin', name='Sofa.Component.LinearSystem') # Needed to Use components [MatrixLinearSystem] 
-    rootNode.addObject('RequiredPlugin', name='MultiThreading') # Needed to Use components [ParallelBVHNarrowPhase,ParallelBruteForceBroadPhase]  
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.Collision.Detection.Algorithm')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.Collision.Detection.Intersection')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.Collision.Geometry')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.Collision.Response.Contact')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.IO.Mesh')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.LinearSolver.Iterative')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.Mapping.Linear')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.Mass')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.ODESolver.Backward')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.SolidMechanics.Spring')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.StateContainer')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.Topology.Container.Constant')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.Topology.Container.Grid')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.GL.Component.Rendering3D')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.AnimationLoop')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.Constraint.Lagrangian.Correction')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.LinearSolver.Direct')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.Mapping.NonLinear')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.Topology.Container.Dynamic')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.Constraint.Lagrangian.Solver') # Needed to Use components [GenericConstraintSolver]  
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.LinearSystem') # Needed to Use components [MatrixLinearSystem] 
+    rootNode.addObject('RequiredPlugin', pluginName='MultiThreading') # Needed to Use components [ParallelBVHNarrowPhase,ParallelBruteForceBroadPhase]  
 
     rootNode.addObject('FreeMotionAnimationLoop')
     rootNode.addObject('CollisionPipeline', verbose='0', depth='10', draw='0')

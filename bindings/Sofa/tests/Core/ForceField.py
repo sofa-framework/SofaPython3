@@ -42,10 +42,10 @@ def createParticle(node, node_name, use_implicit_scheme, use_iterative_solver):
 def rssffScene(use_implicit_scheme=True, use_iterative_solver=True):
     node = Sofa.Core.Node("root")
     node.addObject('DefaultAnimationLoop')
-    node.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
-    node.addObject("RequiredPlugin", name="Sofa.Component.LinearSolver")
-    node.addObject("RequiredPlugin", name="Sofa.Component.ODESolver")
-    node.addObject("RequiredPlugin", name="Sofa.Component.Mass")
+    node.addObject("RequiredPlugin", pluginName="Sofa.Component.StateContainer")
+    node.addObject("RequiredPlugin", pluginName="Sofa.Component.LinearSolver")
+    node.addObject("RequiredPlugin", pluginName="Sofa.Component.ODESolver")
+    node.addObject("RequiredPlugin", pluginName="Sofa.Component.Mass")
 
     node.gravity = [0, -10, 0]
     createParticle(node, "particle", use_implicit_scheme, use_iterative_solver)
@@ -108,14 +108,14 @@ class Test(unittest.TestCase):
 
         root.addObject('DefaultAnimationLoop')
 
-        root.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Projective')
-        root.addObject('RequiredPlugin', name='Sofa.Component.Engine.Select')
-        root.addObject('RequiredPlugin', name='Sofa.Component.LinearSolver.Direct')
-        root.addObject('RequiredPlugin', name='Sofa.Component.Mass')
-        root.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Backward')
-        root.addObject('RequiredPlugin', name='Sofa.Component.SolidMechanics.FEM.Elastic')
-        root.addObject('RequiredPlugin', name='Sofa.Component.StateContainer')
-        root.addObject('RequiredPlugin', name='Sofa.Component.Topology.Container.Grid')
+        root.addObject('RequiredPlugin', pluginName='Sofa.Component.Constraint.Projective')
+        root.addObject('RequiredPlugin', pluginName='Sofa.Component.Engine.Select')
+        root.addObject('RequiredPlugin', pluginName='Sofa.Component.LinearSolver.Direct')
+        root.addObject('RequiredPlugin', pluginName='Sofa.Component.Mass')
+        root.addObject('RequiredPlugin', pluginName='Sofa.Component.ODESolver.Backward')
+        root.addObject('RequiredPlugin', pluginName='Sofa.Component.SolidMechanics.FEM.Elastic')
+        root.addObject('RequiredPlugin', pluginName='Sofa.Component.StateContainer')
+        root.addObject('RequiredPlugin', pluginName='Sofa.Component.Topology.Container.Grid')
 
         root.addObject('EulerImplicitSolver', rayleighStiffness="0.1", rayleighMass="0.1")
         root.addObject('SparseLDLSolver', template=linear_solver_template)
