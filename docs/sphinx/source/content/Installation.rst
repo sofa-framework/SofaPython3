@@ -21,9 +21,9 @@ Get python installed
 
 First, make sure you have the same version of python installed on your computer as the one that is used in the binary version.
 
-.. tabs::
+.. tab-set::
 
-        .. tab:: Ubuntu
+        .. tab-item:: Ubuntu
 
 			Run in a terminal:
 
@@ -40,7 +40,7 @@ First, make sure you have the same version of python installed on your computer 
 				sudo apt install libopengl0
 
 
-        .. tab:: MacOS
+        .. tab-item:: MacOS
 
 			Run in a terminal:
 
@@ -63,7 +63,7 @@ First, make sure you have the same version of python installed on your computer 
 				pip3 install numpy
 
 
-        .. tab:: Windows
+        .. tab-item:: Windows
 
 		Download and install `Python 3.12 64bit <https://www.python.org/ftp/python/3.12.1/python-3.12.1-amd64.exe>`_
 
@@ -97,9 +97,9 @@ using python3
 Before running your simulations, you must make sure to define the following environment variables:
 
 
-.. tabs::
+.. tab-set::
 
-        .. tab:: Ubuntu
+        .. tab-item:: Ubuntu
 
 			Run in a terminal:
 
@@ -108,7 +108,7 @@ Before running your simulations, you must make sure to define the following envi
 				export SOFA_ROOT=/path/to/SOFA_install
 				export PYTHONPATH=/path/to/SofaPython3/lib/python3/site-packages:$PYTHONPATH
 
-        .. tab:: MacOS
+        .. tab-item:: MacOS
 
 			Run in a terminal:
 
@@ -119,7 +119,7 @@ Before running your simulations, you must make sure to define the following envi
 				export PATH="/usr/local/opt/python@3.12/bin/:$PATH"
 
 
-        .. tab:: Windows
+        .. tab-item:: Windows
 
 		    * Create a system variable **SOFA_ROOT** and set it to ``<SOFA-install-directory>``
 		    * Create a system variable **PYTHON_ROOT** and set it to ``<Python3-install-directory>``
@@ -130,25 +130,16 @@ Before running your simulations, you must make sure to define the following envi
 		After that, all you need to do is open a Console (cmd.exe) and run: ``runSofa -lSofaPython3``
 
 
+⚠️ It must be noted that depending on the plugins you use, you might have to add the *site-packages/* paths associated to these plugins to your ``PYTHONPATH``. These are usually located in */path_to_plugin/lib/python3/site-packages*.
+Here is an example considering that you use the binary install of SOFA and you want to use both SofaPython3 and ImGui plugins in Python, then you could define ``export PYTHONPATH=$SOFA_ROOT/plugins/SofaPython3/lib/python3/site-packages/:$SOFA_ROOT/plugins/SofaImGui/lib/python3/site-packages/
+``
 
-It is possible to use SOFA in any python3 interpreter.
-The following code should cover most basic SOFA elements:
-
-.. code-block:: python
-
-        # to be able to create SOFA objects you need to first load the plugins that implement them.
-        # For simplicity you can load the plugin "Sofa.Component" that will load all most
-        # common sofa objects.
-        import SofaRuntime
-        SofaRuntime.importPlugin("Sofa.Component")
-
-        # to create elements like Node or objects
-	import Sofa.Core
+To discover, how to use SOFA in any python3 interpreter, please refer to the associated `FirstSteps section <https://sofapython3.readthedocs.io/en/latest/content/FirstSteps.html#with-the-python3-interpreter>`_
 
 
 Get support
 ***********
 
-To freely get technical assistance from the community, please do not hesitate to join the `SofaPython3 GitHub forum <https://github.com/sofa-framework/sofapython3/discussions>`_ and post there any question related to SofaPython3.
+🙋 To freely get technical assistance from the community, please do not hesitate to join the `SofaPython3 GitHub forum <https://github.com/sofa-framework/sofapython3/discussions>`_ and post there any question related to SofaPython3.
 
-To quickly level up on SOFA, never hesitate to request `SOFA training sessions <https://www.sofa-framework.org/sofa-events/sofa-training-sessions/>`_.
+👨‍🏫 To quickly level up on SOFA, never hesitate to request `SOFA training sessions <https://www.sofa-framework.org/sofa-events/sofa-training-sessions/>`_.

@@ -95,15 +95,7 @@ std::ostream& operator<<(std::ostream& out, const py::buffer_info& p)
 
 std::string getPathTo(Base* b)
 {
-    BaseNode* node = dynamic_cast<BaseNode*>(b);
-    if(node)
-        return node->getPathName();
-    BaseObject* object = dynamic_cast<BaseObject*>(b);
-    if(object)
-        return object->getPathName();
-
-    assert(true && "Only Base & BaseObject are supported");
-    return "";
+    return b->getPathName();
 }
 
 const char* getFormat(const AbstractTypeInfo& nfo)
@@ -533,7 +525,7 @@ void checkAmbiguousCreation(BaseNode* self, const std::string& name, const std::
 
 }
 
-void checkAmbiguousCreation(BaseObject* self, const std::string& name, const std::string& type)
+void checkAmbiguousCreation(BaseComponent* self, const std::string& name, const std::string& type)
 {
     if (!self) return;
 
@@ -551,14 +543,14 @@ void checkAmbiguousCreation(BaseObject* self, const std::string& name, const std
 void checkAmbiguousCreation(Base* self, const std::string& name, const std::string& type)
 {
     checkAmbiguousCreation(dynamic_cast<BaseNode*>(self), name, type);
-    checkAmbiguousCreation(dynamic_cast<BaseObject*>(self), name, type);
+    checkAmbiguousCreation(dynamic_cast<BaseComponent*>(self), name, type);
 }
 
 void checkAmbiguousCreation(py::object& py_self, const std::string& name, const std::string& type)
 {
     Base* self = py::cast<Base*>(py_self);
     checkAmbiguousCreation(dynamic_cast<BaseNode*>(self), name, type);
-    checkAmbiguousCreation(dynamic_cast<BaseObject*>(self), name, type);
+    checkAmbiguousCreation(dynamic_cast<BaseComponent*>(self), name, type);
 
     if (py_self.attr("__dict__").contains(name))
         msg_warning(self) << "Ambiguous creation of " << type << " named '" << name << "' in " << self->getName() << ": Component alread has a python attribute with such name in __dict__";
@@ -589,7 +581,7 @@ BaseData* addData(py::object py_self, const std::string& name, py::object value,
             data = deriveTypeFromParent(dynamic_cast<BaseNode*>(self)->getContext(),
                                         py::cast<py::str>(value));
         else
-            data = deriveTypeFromParent(dynamic_cast<BaseObject*>(self)->getContext(),
+            data = deriveTypeFromParent(dynamic_cast<BaseComponent*>(self)->getContext(),
                                         py::cast<py::str>(value));
         if (!data)
             throw py::type_error("Cannot deduce type from value");
@@ -658,5 +650,29 @@ BaseLink* addLink(py::object py_self, const std::string& name, py::object value,
     //    self->addLink(link);
     return link;
 }
+
+
+void setDataFromKwargs(Base* obj, const pybind11::kwargs& kwargs)
+{
+    const auto typeHandleBaseData = py::detail::get_type_handle(typeid(BaseData), false);
+    const auto typeHandleLinkPath = py::detail::get_type_handle(typeid(LinkPath), false);
+
+    for (auto & kv : kwargs)
+    {
+        BaseData* d = obj->findData(py::cast<std::string>(kv.first));
+        if(d)
+        {
+            if (py::isinstance(kv.second, typeHandleBaseData))
+                d->setParent(kv.second.cast<BaseData*>());
+            else if (py::isinstance(kv.second, typeHandleLinkPath))
+                d->setParent(py::str(kv.second));
+            else if (py::isinstance<py::str>(kv.second))
+                d->read(py::str(kv.second));
+            else
+                PythonFactory::fromPython(d, py::cast<py::object>(kv.second));
+        }
+    }
+}
+
 
 }  // namespace sofapython3

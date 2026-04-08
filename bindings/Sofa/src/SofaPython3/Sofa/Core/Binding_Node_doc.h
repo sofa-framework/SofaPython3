@@ -48,7 +48,7 @@ static auto Class =
                 # Add a mechanical component to MyNode
                 n.addObject("MechanicalObject", name="dofs")
 
-                Sofa.Simulation.init(root)
+                Sofa.Simulation.initRoot(root)
                 Sofa.Simulation.print(root)
 
         The child nodes, components and parents can be accessed using generator attributes.
@@ -329,7 +329,7 @@ static auto removeObject =
         R"(
         Remove an object
         :param object: the object to be removed
-        :type object: BaseObject
+        :type object: BaseComponent
         )";
 
 static auto getRootPath =
@@ -396,6 +396,10 @@ static auto sendEvent =
         :param eventName: the name of the event
         :type pyUserData: py::object
         :type eventName: string
+        )";
+static auto computeEnergy =
+        R"(
+        Returns the tuple (kineticEnergy, potentialEnergy)
         )";
 
 }

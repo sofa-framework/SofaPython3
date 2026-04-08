@@ -9,12 +9,16 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
 include(SofaPython3Tools)
 
 # Find Python3
-if(NOT Python_FOUND)
-    find_package(Python @PythonMAJMIN@ EXACT QUIET REQUIRED COMPONENTS Interpreter Development)
+if(NOT TARGET Python::Python)
+    if(CMAKE_VERSION VERSION_LESS "3.24.0") 
+        find_package(Python @PythonMAJMIN@ EXACT QUIET REQUIRED COMPONENTS Interpreter Development)
+    else()
+        find_package(Python @PythonMAJMIN@ EXACT QUIET REQUIRED COMPONENTS Interpreter Development GLOBAL)
+    endif()
 endif()
 
 # Find pybind11
-if(NOT pybind11_FOUND)
+if(NOT TARGET pybind11)
     # Save PYTHON_* vars
     set(PYTHON_VERSION_RESET "${PYTHON_VERSION}")
     set(PYTHON_EXECUTABLE_RESET "${PYTHON_EXECUTABLE}")
@@ -40,7 +44,11 @@ if(NOT pybind11_FOUND)
         set(PYTHON_INCLUDE_DIR "${Python_INCLUDE_DIRS}" CACHE INTERNAL "" FORCE)
     endif()
 
-    find_package(pybind11 @pybind11_VERSION@ QUIET REQUIRED CONFIG)
+    if(CMAKE_VERSION VERSION_LESS "3.24.0") 
+        find_package(pybind11 @pybind11_VERSION@ QUIET REQUIRED CONFIG)
+    else()
+        find_package(pybind11 @pybind11_VERSION@ QUIET REQUIRED CONFIG GLOBAL)
+    endif()
 
     # Reset PYTHON_* vars
     set(PYTHON_VERSION "${PYTHON_VERSION_RESET}" CACHE STRING "" FORCE)

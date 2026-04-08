@@ -1,6 +1,6 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2021 INRIA, USTL, UJF, CNRS, MGH                     *
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,17 +22,9 @@
 
 #include <pybind11/pybind11.h>
 
-namespace sofa::core::objectmodel {
-class BaseObject;
+namespace sofapython3
+{
+
+void moduleAddVersion(pybind11::module &m);
+
 }
-
-namespace sofapython3 {
-
-pybind11::object getItem(const sofa::core::objectmodel::BaseObject & self, const std::string& path);
-
-void moduleForwardAddBaseObject(pybind11::module &m);
-void moduleAddBaseObject(pybind11::module &m);
-
-} /// namespace sofapython
-
-

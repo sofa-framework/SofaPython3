@@ -24,7 +24,7 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 
 #include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseData.h>
@@ -44,18 +44,6 @@ using sofa::defaulttype::AbstractTypeInfo;
 
 namespace sofapython3
 {
-
-std::string getPathName(BaseData& self)
-{
-    Base* b= self.getOwner();
-    std::string prefix = getPathTo(b);
-    return prefix+"."+self.getName();
-}
-
-std::string getLinkPath(BaseData& self)
-{
-    return "@"+getPathName(self);
-}
 
 bool hasChanged(BaseData& data)
 {
@@ -112,9 +100,13 @@ std::unique_ptr<DataContainerContext> writeableArray(BaseData* self)
     return nullptr;
 }
 
-void __setattr__(py::object self, const std::string& s, py::object value)
+py::object getValue(py::object self)
 {
-    SOFA_UNUSED(s);
+    return PythonFactory::valueToPython_ro(py::cast<BaseData*>(self));
+}
+
+void setValue(py::object self, py::object value)
+{
     BaseData* selfdata = py::cast<BaseData*>(self);
 
     if(py::isinstance<DataContainer>(value))
@@ -132,6 +124,12 @@ void __setattr__(py::object self, const std::string& s, py::object value)
     BindingBase::SetAttr(py::cast(selfdata->getOwner()),selfdata->getName(),value);
 }
 
+void __setattr__(py::object self, const std::string& s, py::object value)
+{
+    SOFA_UNUSED(s);
+    setValue(self, value);
+}
+
 py::object __getattr__(py::object self, const std::string& s)
 {
     /// If this is data.value we returns the content value of the data field converted into
@@ -139,7 +137,7 @@ py::object __getattr__(py::object self, const std::string& s)
     /// function.
     if(s == "value")
     {
-        return PythonFactory::valueToPython_ro(py::cast<BaseData*>(self));
+        return getValue(self);
     }
 
     if(s == "linkpath")
@@ -149,6 +147,8 @@ py::object __getattr__(py::object self, const std::string& s)
     /// please request for its integration.
     throw py::attribute_error("There is no attribute '"+s+"'");
 }
+
+
 
 void setParent(BaseData* self, BaseData* parent)
 {
@@ -211,13 +211,15 @@ void moduleAddBaseData(py::module& m)
     data.def("getName", [](BaseData& b){ return b.getName(); }, sofapython3::doc::baseData::getName);
     data.def("setName", [](BaseData& b, const std::string& s){ b.setName(s); }, sofapython3::doc::baseData::setName);
     data.def("getCounter", [](BaseData& self) { return self.getCounter(); }, sofapython3::doc::baseData::getCounter);
+    data.def("setValue", setValue);
+    data.def("getValue", getValue);
     data.def("getHelp", &BaseData::getHelp, sofapython3::doc::baseData::getHelp);
     data.def("unset", [](BaseData& b){ b.unset(); }, sofapython3::doc::baseData::unset);
     data.def("getOwner", &getOwner, sofapython3::doc::baseData::getOwner);
     data.def("getParent", &BaseData::getParent, sofapython3::doc::baseData::getParent);
     data.def("typeName", [](BaseData& data){ return data.getValueTypeInfo()->name(); }, sofapython3::doc::baseData::typeName);
-    data.def("getPathName", getPathName, sofapython3::doc::baseData::getPathName);
-    data.def("getLinkPath", getLinkPath, sofapython3::doc::baseData::getLinkPath);
+    data.def("getPathName", &BaseData::getPathName, sofapython3::doc::baseData::getPathName);
+    data.def("getLinkPath", &BaseData::getLinkPath, sofapython3::doc::baseData::getLinkPath);
     data.def("hasChanged", hasChanged, sofapython3::doc::baseData::hasChanged);
     data.def("isSet", isSet, sofapython3::doc::baseData::isSet);
     data.def("toList", toList, sofapython3::doc::baseData::toList);

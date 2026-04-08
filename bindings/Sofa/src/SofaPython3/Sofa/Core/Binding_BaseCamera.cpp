@@ -32,7 +32,7 @@
 #include <SofaPython3/PythonFactory.h>
 
 namespace py { using namespace pybind11; }
-using sofa::core::objectmodel::BaseObject;
+using sofa::core::objectmodel::BaseComponent;
 using sofa::component::visual::BaseCamera;
 
 namespace sofapython3 {
@@ -74,7 +74,7 @@ void moduleAddBaseCamera(py::module &m)
 {
     /// register the BaseCamera binding in the pybind11 typeing sytem
     py::class_<BaseCamera,
-               sofa::core::objectmodel::BaseObject,
+               sofa::core::objectmodel::BaseComponent,
                py_shared_ptr<BaseCamera>> c(m, "Camera", sofapython3::doc::baseCamera::baseCameraClass);
 
     /// register the BaseCamera binding in the downcasting subsystem

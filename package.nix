@@ -9,7 +9,7 @@
 
 stdenv.mkDerivation {
   pname = "sofa-python3";
-  version = "24.06";
+  version = "25.06";
 
   src = lib.fileset.toSource {
     root = ./.;

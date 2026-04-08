@@ -22,7 +22,11 @@
 #include <pybind11/numpy.h>
 
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalComputeEnergyVisitor.h>
 #include <sofa/core/ComponentNameHelper.h>
+
+#include <sofa/core/objectmodel/BaseComponent.h>
+using sofa::core::objectmodel::BaseComponent;
 
 #include <sofa/core/objectmodel/BaseData.h>
 using sofa::core::objectmodel::BaseData;
@@ -36,14 +40,14 @@ using sofa::helper::logging::Message;
 #include <sofa/helper/DiffLib.h>
 using sofa::helper::getClosestMatch;
 
-#include <sofa/simulation/graph/DAGNode.h>
+#include <sofa/simulation/Node.h>
 using sofa::core::ExecParams;
 
 #include <SofaPython3/LinkPath.h>
 using sofapython3::LinkPath;
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseComponent.h>
 #include <SofaPython3/DataHelper.h>
 
 #include <sofa/core/ObjectFactory.h>
@@ -137,7 +141,7 @@ py::object getItem(Node& self, std::list<std::string>& path)
     if (path.empty())
         return py::cast(self);
     Node* child = self.getChild(path.front());
-    BaseObject* obj = self.getObject(path.front());
+    BaseComponent* obj = self.getObject(path.front());
     BaseData* data = self.findData(path.front());
     if (child)
     {
@@ -162,38 +166,44 @@ std::string getLinkPath(Node* node){
     return ("@"+node->getPathName()).c_str();
 }
 
-py_shared_ptr<Node> __init__noname() {
-    auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>("unnamed");
-    return std::move(dag_node);
+py_shared_ptr<Node> __init_noname__() {
+    auto node = sofa::core::objectmodel::New<sofa::simulation::Node>("unnamed");
+    return std::move(node);
 }
 
-py_shared_ptr<Node> __init__(const std::string& name) {
-    auto dag_node = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>(name);
-    return std::move(dag_node);
+py_shared_ptr<Node> __init_named__(const std::string& name) {
+    auto node = sofa::core::objectmodel::New<sofa::simulation::Node>(name);
+    return std::move(node);
+}
+
+py_shared_ptr<Node> __init_kwarged__(const std::string& name, const py::kwargs& kwargs) {
+    auto node = sofa::core::objectmodel::New<sofa::simulation::Node>(name);
+    setDataFromKwargs(node.get(), kwargs);
+    return std::move(node);
 }
 
 /// Method: init (beware this is not the python __init__, this is sofa's init())
 void init(Node& self) { self.init(sofa::core::execparams::defaultInstance()); }
 
-py::object addObject(Node& self, BaseObject * object)
+py::object addObject(Node& self, BaseComponent * object)
 {
     try {
         if (self.addObject(object))
             return PythonFactory::toPython(object);
     } catch (...) {
-        throw py::type_error("Trying to add an object that isn't derived from sofa::core::objectmodel::BaseObject.");
+        throw py::type_error("Trying to add an object that isn't derived from sofa::core::objectmodel::BaseComponent.");
     }
     return py::none();
 }
 
-void removeObject(Node& self, BaseObject* object)
+void removeObject(Node& self, BaseComponent* object)
 {
     self.removeObject(object);
 }
 
 py::object hasObject(Node &n, const std::string &name)
 {
-    BaseObject *object = n.getObject(name);
+    BaseComponent *object = n.getObject(name);
     if (object)
         return py::cast(true);
     return py::cast(false);
@@ -209,7 +219,7 @@ py::object getObject(Node &n, const std::string &name, const py::kwargs& kwargs)
                            << PythonEnvironment::getPythonCallingPointString() ;
     }
 
-    BaseObject *object = n.getObject(name);
+    BaseComponent *object = n.getObject(name);
     if (object)
         return PythonFactory::toPython(object);
     return py::none();
@@ -234,9 +244,47 @@ void setFieldsFromPythonValues(Base* self, const py::kwargs& dict)
     }
 }
 
+class NumpyReprFixerRAII
+{
+public:
+    NumpyReprFixerRAII()
+    {
+        using namespace pybind11::literals;
+
+        m_numpy = py::module_::import("numpy");
+        const std::string version = py::cast<std::string>(m_numpy.attr("__version__"));
+        m_majorVersion = std::stoi(version.substr(0,1));
+        if ( m_majorVersion > 1)
+        {
+            m_setPO =  m_numpy.attr("set_printoptions");
+            m_initialState = m_numpy.attr("get_printoptions")();
+            m_setPO("legacy"_a = "1.25");
+        }
+    }
+
+    ~NumpyReprFixerRAII()
+    {
+        if ( m_majorVersion > 1)
+        {
+            m_setPO(**m_initialState);
+        }
+    }
+
+private:
+    py::module_ m_numpy;
+    int m_majorVersion;
+    py::object m_setPO;
+    py::dict m_initialState;
+
+};
+
+
 /// Implement the addObject function.
 py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs& kwargs)
 {
+    //Instantiating this object will make sure the numpy representation is fixed during the call of this function, and comes back to its previous state after
+    [[maybe_unused]] const NumpyReprFixerRAII numpyReprFixer;
+
     std::string name {};
     if (kwargs.contains("name"))
     {
@@ -291,15 +339,17 @@ py::object addObjectKwargs(Node* self, const std::string& type, const py::kwargs
         if(d)
             d->setPersistent(true);
     }
+
+
     return PythonFactory::toPython(object.get());
 }
 
 /// Implement the addObject function.
 py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& kwargs)
 {
-    if(py::isinstance<BaseObject*>(callable))
+    if(py::isinstance<BaseComponent*>(callable))
     {
-        BaseObject* obj = py::cast<BaseObject*>(callable);
+        BaseComponent* obj = py::cast<BaseComponent*>(callable);
         self->addObject(obj);
         return py::cast(obj);
     }
@@ -328,7 +378,7 @@ py::object addKwargs(Node* self, const py::object& callable, const py::kwargs& k
     Base* base = py::cast<Base*>(c);
     if(!py::isinstance<Base*>(c))
     {
-        throw py::value_error("add: the function passed as first argument can only return a Sofa.BaseObject or Sofa.Node object");
+        throw py::value_error("add: the function passed as first argument can only return a Sofa.BaseComponent or Sofa.Node object");
     }
 
     // Set the creation point
@@ -360,6 +410,9 @@ py::object createObject(Node* self, const std::string& type, const py::kwargs& k
 
 py::object addChildKwargs(Node* self, const std::string& name, const py::kwargs& kwargs)
 {
+    //Instantiating this object will make sure the numpy representation is fixed during the call of this function, and comes back to its previous state after
+    [[maybe_unused]] const NumpyReprFixerRAII numpyReprFixer;
+
     if (sofapython3::isProtectedKeyword(name))
         throw py::value_error("addChild: Cannot call addChild with name " + name + ": Protected keyword");
     BaseObjectDescription desc (name.c_str());
@@ -377,6 +430,7 @@ py::object addChildKwargs(Node* self, const std::string& name, const py::kwargs&
         if(d)
             d->setPersistent(true);
     }
+
 
     return py::cast(node);
 }
@@ -465,7 +519,7 @@ py::object __getattr__(py::object pyself, const std::string& name)
 {
     Node* selfnode = py::cast<Node*>(pyself);
     /// Search in the object lists
-    BaseObject *object = selfnode->getObject(name);
+    BaseComponent *object = selfnode->getObject(name);
     if (object)
         return PythonFactory::toPython(object);
 
@@ -606,6 +660,15 @@ void sendEvent(Node* self, py::object pyUserData, char* eventName)
     self->propagateEvent(sofa::core::execparams::defaultInstance(), &event);
 }
 
+py::object computeEnergy(Node* self)
+{
+    sofa::simulation::mechanicalvisitor::MechanicalComputeEnergyVisitor energyVisitor(sofa::core::mechanicalparams::defaultInstance());
+    energyVisitor.execute(self->getContext());
+    const SReal kineticEnergy = energyVisitor.getKineticEnergy();
+    const SReal potentialEnergy = energyVisitor.getPotentialEnergy();
+    return py::cast(std::make_tuple(kineticEnergy, potentialEnergy));
+}
+
 }
 
 void moduleAddNode(py::module &m) {
@@ -619,14 +682,15 @@ void moduleAddNode(py::module &m) {
             sofa::core::objectmodel::Context, py_shared_ptr<Node>>
             p(m, "Node", sofapython3::doc::sofa::core::Node::Class);
 
-    PythonFactory::registerType<sofa::simulation::graph::DAGNode>(
+    PythonFactory::registerType<sofa::simulation::Node>(
                 [](sofa::core::objectmodel::Base* object)
     {
         return py::cast(dynamic_cast<Node*>(object->toBaseNode()));
     });
 
-    p.def(py::init(&__init__noname), sofapython3::doc::sofa::core::Node::init);
-    p.def(py::init(&__init__), sofapython3::doc::sofa::core::Node::init1Arg, py::arg("name"));
+    p.def(py::init(&__init_noname__), sofapython3::doc::sofa::core::Node::init);
+    p.def(py::init(&__init_named__), sofapython3::doc::sofa::core::Node::init1Arg, py::arg("name"));
+    p.def(py::init(&__init_kwarged__), sofapython3::doc::sofa::core::Node::init1Arg, py::arg("name"));
     p.def("init", &init, sofapython3::doc::sofa::core::Node::initSofa );
     p.def("add", &addKwargs, sofapython3::doc::sofa::core::Node::addKwargs);
     p.def("addObject", &addObjectKwargs, sofapython3::doc::sofa::core::Node::addObjectKwargs);
@@ -660,6 +724,20 @@ void moduleAddNode(py::module &m) {
     p.def("getMechanicalState", &getMechanicalState, sofapython3::doc::sofa::core::Node::getMechanicalState);
     p.def("getMechanicalMapping", &getMechanicalMapping, sofapython3::doc::sofa::core::Node::getMechanicalMapping);
     p.def("sendEvent", &sendEvent, sofapython3::doc::sofa::core::Node::sendEvent);
+    p.def("computeEnergy", &computeEnergy, sofapython3::doc::sofa::core::Node::computeEnergy);
 
+    p.def("__enter__", [](py::object self)
+    {
+        if(pybind11::hasattr(self, "onCtxEnter"))
+            self.attr("onCtxEnter")(self);
+        return self;
+    });
+
+    p.def("__exit__",
+          [](py::object self, py::object type, py::object value, py::object traceback)
+    {
+        if(pybind11::hasattr(self, "onCtxExit"))
+            self.attr("onCtxExit")(self, type, value, traceback);
+    });
 }
 } /// namespace sofapython3

@@ -26,7 +26,7 @@
 /// Makes an alias for the pybind11 namespace to increase readability.
 namespace py { using namespace pybind11; }
 
-using sofa::core::objectmodel::BaseObject;
+using sofa::core::objectmodel::BaseComponent;
 
 namespace sofapython3 {
 

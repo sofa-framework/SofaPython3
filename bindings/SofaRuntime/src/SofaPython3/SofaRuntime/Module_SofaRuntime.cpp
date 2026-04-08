@@ -22,8 +22,7 @@
 #include <sofa/helper/system/PluginManager.h>
 namespace py = pybind11;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::graph::DAGSimulation ;
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation;
 
 #include <sofa/simpleapi/SimpleApi.h>
@@ -63,7 +62,7 @@ using sofapython3::SceneLoaderPY3;
 #include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
 using sofa::helper::logging::MessageDispatcher;
 using sofa::helper::logging::MainPerComponentLoggingMessageHandler;
-using sofa::helper::logging::MainConsoleMessageHandler;
+#include <SofaPython3/SofaRuntime/PythonMessageHandler.h>
 
 #include <sofa/core/init.h>
 #include <sofa/helper/init.h>
@@ -132,23 +131,33 @@ PYBIND11_MODULE(SofaRuntime, m) {
     {
         std::string configPluginPath = "plugin_list.conf";
         std::string defaultConfigPluginPath = "plugin_list.conf.default";
+
+        sofa::type::vector<std::string> loadedPlugins;
         if (sofa::helper::system::PluginRepository.findFile(configPluginPath, "", nullptr))
         {
             msg_info("SofaRuntime") << "Loading automatically plugin list in " << configPluginPath;
-            sofa::helper::system::PluginManager::getInstance().readFromIniFile(configPluginPath);
+            sofa::helper::system::PluginManager::getInstance().readFromIniFile(configPluginPath, loadedPlugins);
         }
         if (sofa::helper::system::PluginRepository.findFile(defaultConfigPluginPath, "", nullptr))
         {
             msg_info("SofaRuntime") << "Loading automatically plugin list in " << defaultConfigPluginPath;
-            sofa::helper::system::PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
+            sofa::helper::system::PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath, loadedPlugins);
+        }
+
+        if (sofa::core::ObjectFactory* objectFactory = sofa::core::ObjectFactory::getInstance())
+        {
+            for (const auto& pluginName : loadedPlugins)
+            {
+                objectFactory->registerObjectsFromPlugin(pluginName);
+            }
         }
     }, "automatically load plugins from configuration files");
 
     m.def("init", []() {
         MessageDispatcher::clearHandlers();
-        MessageDispatcher::addHandler(&MainConsoleMessageHandler::getInstance());
+        MessageDispatcher::addHandler(&MainPythonMessageHandler::getInstance());
         MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance());
-    });
+    }, "redirect SOFA messages to Python's sys.stdout");
 
     m.add_object("DataRepository", py::cast(&sofa::helper::system::DataRepository));
     m.add_object("PluginRepository", py::cast(&sofa::helper::system::PluginRepository));

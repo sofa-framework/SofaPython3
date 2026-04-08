@@ -1,14 +1,16 @@
 project(Bindings.Sofa.Types)
 
 set(HEADER_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BoundingBox.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_CompressedRowSparseMatrix.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BoundingBox.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_RGBAColor.h
 )
 
 set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Types.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_CompressedRowSparseMatrix.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BoundingBox.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_RGBAColor.cpp
 )
 
 sofa_find_package(Sofa.Core REQUIRED)

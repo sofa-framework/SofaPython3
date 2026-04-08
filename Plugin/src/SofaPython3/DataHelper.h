@@ -28,9 +28,10 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <SofaPython3/config.h>
+
 
 ////////////////////////// FORWARD DECLARATION ///////////////////////////
 namespace sofa {
@@ -61,7 +62,7 @@ namespace sofa {
                     if (l.getTargetBase())
                     {
                         auto bn = l.getTargetBase()->toBaseNode();
-                        auto bo = l.getTargetBase()->toBaseObject();
+                        auto bo = l.getTargetBase()->toBaseComponent();
                         out << "@" + (bn ? bn->getPathName() : bo->getPathName());
                     }
                     out << l.getTargetPath();
@@ -147,7 +148,7 @@ namespace sofa {
                     if (ptr.getTargetBase())
                     {
                         auto bn = ptr.getTargetBase()->toBaseNode();
-                        auto bo = ptr.getTargetBase()->toBaseObject();
+                        auto bo = ptr.getTargetBase()->toBaseComponent();
                         return "@" + (bn ? bn->getPathName() : bo->getPathName());
                     }
                     return ptr.getTargetPath();
@@ -180,7 +181,7 @@ using sofa::core::objectmodel::Base;
 using sofa::core::objectmodel::BaseData;
 using sofa::core::objectmodel::BaseLink;
 using sofa::core::objectmodel::BaseNode;
-using sofa::core::objectmodel::BaseObject;
+using sofa::core::objectmodel::BaseComponent;
 using sofa::defaulttype::AbstractTypeInfo;
 
 SOFAPYTHON3_API void setItem2D(pybind11::array a, pybind11::slice slice, pybind11::object o);
@@ -291,6 +292,9 @@ public:
 SOFAPYTHON3_API BaseData* addData(pybind11::object py_self, const std::string& name, pybind11::object value = pybind11::none(), pybind11::object defaultValue = pybind11::none(), const std::string& help = "", const std::string& group = "Property", std::string type = "");
 SOFAPYTHON3_API BaseLink* addLink(pybind11::object py_self, const std::string& name, pybind11::object value, const std::string& help);
 SOFAPYTHON3_API bool isProtectedKeyword(const std::string& name);
+
+
+SOFAPYTHON3_API void setDataFromKwargs(Base* obj, const pybind11::kwargs& kwargs);
 
 }  // namespace sofapython3
 

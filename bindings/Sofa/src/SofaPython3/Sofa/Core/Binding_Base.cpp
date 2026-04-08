@@ -133,7 +133,6 @@ bool BindingBase::SetLink(BaseLink* link, py::object value)
     return true;
 }
 
-
 void BindingBase::SetAttr(py::object self, const std::string& s, py::object value)
 {
     Base* self_d = py::cast<Base*>(self);
@@ -246,8 +245,12 @@ void BindingBase::SetDataFromArray(BaseData* data, const py::array& value)
                 return copyScalar<double>(data, nfo, src);
             else if(srcinfo.format=="f")
                 return copyScalar<float>(data, nfo, src);
-            else
-                throw std::runtime_error("SetAttrFromArray :: unsupported fileformat");
+           else
+           {
+                std::stringstream tmp;
+                tmp << "SetAttrFromArray :: unsupported fileformat '" <<  srcinfo.format << "'" ;
+                throw std::runtime_error(tmp.str());
+            }
         }
 
     }
@@ -427,7 +430,7 @@ py::object BindingBase::getData(Base& self, const std::string& s)
 
 std::string BindingBase::getPathName(Base& self)
 {
-    return self.toBaseNode() ? self.toBaseNode()->getPathName() : self.toBaseObject()->getPathName();
+    return self.toBaseNode() ? self.toBaseNode()->getPathName() : self.toBaseComponent()->getPathName();
 }
 
 std::string BindingBase::getLinkPath(Base& self)

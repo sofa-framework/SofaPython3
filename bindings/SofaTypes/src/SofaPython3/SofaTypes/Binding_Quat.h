@@ -28,3 +28,24 @@ using namespace pybind11::literals;
 #include <sofa/type/Quat.h>
 
 void moduleAddQuat(py::module& m);
+
+namespace pyQuat
+{
+template <class T>
+std::string __str__(const sofa::type::Quat<T> &self, bool repr = false)
+{
+    std::string s;
+    if (repr)
+    {
+        s += "Quat";
+    }
+    s += "(";
+    s += std::to_string(self[0])
+            + ", " + std::to_string(self[1])
+            + ", " + std::to_string(self[2])
+            + ", " + std::to_string(self[3])
+            + ")";
+    return s;
+}
+
+} // namespace pyQuat

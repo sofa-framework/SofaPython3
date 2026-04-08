@@ -25,8 +25,9 @@ using sofa::helper::logging::Message;
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseClass.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseContext.h>
-#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseComponent.h>
 #include <SofaPython3/Sofa/Core/Binding_DataDict.h>
+#include <SofaPython3/Sofa/Core/Binding_DrawTool.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseData.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseCamera.h>
 #include <SofaPython3/Sofa/Core/Binding_ForceField.h>
@@ -37,6 +38,7 @@ using sofa::helper::logging::Message;
 #include <SofaPython3/Sofa/Core/Binding_DataEngine.h>
 #include <SofaPython3/Sofa/Core/Binding_ObjectFactory.h>
 #include <SofaPython3/Sofa/Core/Binding_LinkPath.h>
+#include <SofaPython3/Sofa/Core/Binding_Mapping.h>
 #include <SofaPython3/Sofa/Core/Binding_Node.h>
 #include <SofaPython3/Sofa/Core/Binding_NodeIterator.h>
 #include <SofaPython3/Sofa/Core/Binding_Prefab.h>
@@ -47,11 +49,13 @@ using sofa::helper::logging::Message;
 #include <SofaPython3/Sofa/Core/Binding_BaseMeshTopology.h>
 #include <SofaPython3/Sofa/Core/Binding_Topology.h>
 #include <SofaPython3/Sofa/Core/Binding_TaskScheduler.h>
+#include <SofaPython3/Sofa/Core/Binding_VisualParams.h>
 
 #include <SofaPython3/Sofa/Core/Data/Binding_DataString.h>
 #include <SofaPython3/Sofa/Core/Data/Binding_DataLink.h>
 #include <SofaPython3/Sofa/Core/Data/Binding_DataVectorString.h>
 #include <SofaPython3/Sofa/Core/Data/Binding_DataContainer.h>
+
 
 #include <sofa/core/init.h>
 
@@ -96,7 +100,7 @@ PYBIND11_MODULE(Core, core)
                 # Add a mechanical component to MyNode
                 n.addObject("MechanicalObject", name="dofs")
 
-                Sofa.Simulation.init(root)
+                Sofa.Simulation.initRoot(root)
                 Sofa.Simulation.print(root)
 
        )doc";
@@ -110,7 +114,7 @@ PYBIND11_MODULE(Core, core)
     /// more details in: https://github.com/sofa-framework/SofaPython3/pull/457
     moduleForwardAddBaseClass(core);
     moduleForwardAddBase(core);
-    moduleForwardAddBaseObject(core);
+    moduleForwardAddBaseComponent(core);
     moduleForwardAddBaseData(core);
     moduleForwardAddBaseLink(core);
     moduleForwardAddTopology(core);
@@ -133,24 +137,27 @@ PYBIND11_MODULE(Core, core)
     moduleAddDataString(core);
     moduleAddDataLink(core);
     moduleAddDataVectorString(core);
-    moduleAddBaseObject(core);
+    moduleAddDrawTool(core);
+    moduleAddBaseComponent(core);
     moduleAddBaseCamera(core);
     moduleAddContactListener(core);
     moduleAddContext(core);
     moduleAddController(core);
     moduleAddDataEngine(core);
     moduleAddForceField(core);
-    moduleAddMass(core);
-    moduleAddObjectFactory(core);
     moduleAddLinkPath(core);
+    moduleAddMapping(core);
+    moduleAddMass(core);
     moduleAddNode(core);
     moduleAddNodeIterator(core);
+    moduleAddObjectFactory(core);
     moduleAddPrefab(core);
     moduleAddBaseLink(core);
     moduleAddTopology(core);
     moduleAddBaseMeshTopology(core);
     moduleAddPointSetTopologyModifier(core);
     moduleAddTaskScheduler(core);
+    moduleAddVisualParams(core);
 
     // called when the module is unloaded
     auto atexit = py::module_::import("atexit");

@@ -19,8 +19,8 @@
 ******************************************************************************/
 
 #include <SofaPython3/Sofa/Core/Binding_TaskScheduler.h>
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
-#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/TaskScheduler.h>
 #include <SofaPython3/Sofa/Core/Binding_TaskScheduler_doc.h>
 
 

@@ -53,8 +53,7 @@ def simple_render(rootNode):
 def createScene(root):
     # Register all the common component in the factory.
     SofaRuntime.PluginRepository.addFirstPath(os.path.join(sofa_directory, 'bin'))
-    root.addObject("RequiredPlugin", name="Sofa.Component")
-    root.addObject("RequiredPlugin", name="Sofa.GL.Component")
+    root.addObject("RequiredPlugin", pluginName=["Sofa.Component", "Sofa.GL.Component"])
 
     ### these are just some things that stay still and move around
     # so you know the animation is actually happening

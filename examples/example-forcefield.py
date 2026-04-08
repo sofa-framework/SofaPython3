@@ -22,10 +22,10 @@ class RestShapeForceField(Sofa.Core.ForceFieldVec3d):
         with out_force.writeableArray() as wa:
             wa[:] += ( (self.initpos-pos.value) * self.ks.value  )
                  
-    def addDForce(self, df, dx, params):
+    def addDForce(self, params, df, dx):
         pass
         
-    #def addKToMatrix(self, a, b):
+    #def addKToMatrix(self, params, number_of_nodes, number_of_dofs_per_node):
     #    print(" Python::addKToMatrix: ", a, " ", b)
 
 
@@ -58,15 +58,14 @@ def createScene(root):
 
 
 def main():
-    import SofaRuntime
+    import SofaImGui
     import Sofa.Gui
-    import SofaQt
 
     root=Sofa.Core.Node("root")
     createScene(root)
     Sofa.Simulation.initRoot(root)
 
-    Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
+    Sofa.Gui.GUIManager.Init("myscene", "imgui")
     Sofa.Gui.GUIManager.createGUI(root, __file__)
     Sofa.Gui.GUIManager.SetDimension(1080, 1080)
     Sofa.Gui.GUIManager.MainLoop(root)

@@ -23,7 +23,7 @@
 #include <SofaExporter/Binding_STLExporter_doc.h>
 
 #include <SofaPython3/PythonFactory.h>
-#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseComponent.h>
 #include <sofa/component/io/mesh/STLExporter.h>
 
 using  sofa::component::io::mesh::STLExporter;
@@ -41,7 +41,7 @@ void moduleAddSTLExporter(py::module &m)
         return py::cast(dynamic_cast<STLExporter*>(object));
     });
 
-    py::class_<STLExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<STLExporter>> p(m, "STLExporter", sofapython3::doc::SofaExporter::STLExporter::docstring);
+    py::class_<STLExporter, sofa::core::objectmodel::BaseComponent, py_shared_ptr<STLExporter>> p(m, "STLExporter", sofapython3::doc::SofaExporter::STLExporter::docstring);
 
     p.def("write", &STLExporter::write);
 }

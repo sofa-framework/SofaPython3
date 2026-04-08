@@ -26,7 +26,7 @@
 #include <SofaPython3/PythonFactory.h>
 
 using sofa::component::topology::container::grid::RegularGridTopology;
-using sofa::core::objectmodel::BaseObject;
+using sofa::core::objectmodel::BaseComponent;
 
 PYBIND11_DECLARE_HOLDER_TYPE(Base, sofa::core::sptr<Base>, true)
 
@@ -35,7 +35,7 @@ namespace sofapython3 {
 namespace py { using namespace pybind11; }
 
 void moduleAddRegularGridTopology(pybind11::module& m) {
-    py::class_<RegularGridTopology, sofa::core::objectmodel::BaseObject,sofa::core::sptr<RegularGridTopology>>
+    py::class_<RegularGridTopology, sofa::core::objectmodel::BaseComponent,sofa::core::sptr<RegularGridTopology>>
     c (m, "RegularGridTopology", doc::SofaBaseTopology::regularGridTopologyClass);
 
     c.def("getPoint", &RegularGridTopology::getPoint, doc::SofaBaseTopology::getPoint);
