@@ -1,17 +1,16 @@
 from stlib.materials import MaterialParameters
 from splib.core.enum_types import ConstitutiveLaw
-from stlib.core.baseParameters import Callable, Optional, dataclasses
+from stlib.core.baseParameters import Callable, Optional
 from splib.mechanics.linear_elasticity import *
 from splib.mechanics.hyperelasticity import *
 from splib.mechanics.mass import addMass
 
 
-@dataclasses.dataclass
 class DeformableBehaviorParameters(MaterialParameters):
 
     constitutiveLawType : ConstitutiveLaw = ConstitutiveLaw.ELASTIC
     elementType : ElementType = ElementType.TETRAHEDRA
-    parameters : list[float] = dataclasses.field(default_factory=lambda: [1000, 0.45])  # young modulus, poisson ratio
+    parameters : list[float] = [1000, 0.45]  # young modulus, poisson ratio
 
     def __addDeformableMaterial(node):
 

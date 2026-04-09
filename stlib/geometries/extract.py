@@ -1,5 +1,4 @@
 from stlib.geometries import GeometryParameters, InternalDataProvider, Geometry
-from stlib.core.baseParameters import dataclasses
 from splib.topology.dynamic import addDynamicTopology
 from splib.topology.loader import loadMesh
 from splib.core.enum_types import ElementType
@@ -13,17 +12,10 @@ class ExtractInternalDataProvider(InternalDataProvider):
     sourceType : ElementType
     sourceName : str
 
-    def __init__(self, destinationType : ElementType, sourceType : ElementType, sourceName : str):
-        self.destinationType = destinationType
-        self.sourceType = sourceType
-        self.sourceName = sourceName
-
-    def __post_init__(self):
+    def model_post_init(self, __context):
         if(not (self.sourceType == ElementType.TETRAHEDRA and self.destinationType == ElementType.TRIANGLES)
            and not (self.sourceType == ElementType.HEXAHEDRA and self.destinationType == ElementType.QUADS) ):
             raise ValueError("Only configuration possible are 'Tetrahedra to Triangles' and 'Hexahedra to Quads'")
-
-        InternalDataProvider.__init__(self)
 
     def generateAttribute(self, parent : Geometry):
         node = parent.addChild("ExtractedGeometry")

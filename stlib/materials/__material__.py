@@ -1,11 +1,10 @@
-from stlib.core.baseParameters import BaseParameters, Callable, Optional, dataclasses, Any
+from stlib.core.baseParameters import BaseParameters, Callable, Optional, Any
 from splib.core.utils import defaultValueType, DEFAULT_VALUE, isDefault
 from splib.core.enum_types import StateType
 
 from stlib.core.basePrefab import BasePrefab
 from splib.mechanics.mass import addMass
 
-@dataclasses.dataclass
 class MaterialParameters(BaseParameters):
     name : str = "Material"
 
@@ -14,7 +13,7 @@ class MaterialParameters(BaseParameters):
 
     stateType : StateType = StateType.VEC3
 
-    addMaterial : Optional[Callable] = lambda node : addMass(node, node.parameters.stateType, massDensity=node.parameters.massDensity, lumping=node.parameters.massLumping)
+    addMaterial : Optional[Callable] = lambda node : addMass(node, elementType=None, massDensity=node.parameters.massDensity, lumping=node.parameters.massLumping)
 
 
 # TODO : previously called Behavior

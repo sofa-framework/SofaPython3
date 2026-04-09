@@ -3,27 +3,29 @@ from stlib.collision import CollisionParameters, Collision
 from stlib.visual import VisualParameters, Visual
 from stlib.materials import Material, MaterialParameters
 from stlib.geometries import Geometry
-import dataclasses
 from typing import Callable, Optional
-from stlib.geometries import GeometryParameters
+from stlib.geometries import GeometryParameters, InternalDataProvider
 from splib.core.enum_types import StateType
 from stlib.core.basePrefab import BasePrefab
 
+from stlib.geometries.file import FileParameters
+from stlib.materials.rigid import RigidParameters
+from splib.core.enum_types import ElementType
 
-@dataclasses.dataclass
+
 class EntityParameters(BaseParameters): 
     name : str = "Entity"
 
-    stateType : StateType = StateType.VEC3
+    stateType : StateType = StateType.RIGID
 
     ### QUID 
-    addCollision : Optional[Callable] = lambda x : Collision(CollisionParameters())
-    addVisual : Optional[Callable] = lambda x : Visual(VisualParameters()) 
+    addCollision : Optional[Callable] = Collision(CollisionParameters())
+    addVisual : Optional[Callable] = Visual(VisualParameters()) 
 
-    geometry : GeometryParameters = None
-    material : MaterialParameters = None
+    geometry : GeometryParameters = GeometryParameters(elementType = ElementType.POINTS, data = InternalDataProvider(position = [[0., 0., 0.]]))
+    material : MaterialParameters = RigidParameters()
     collision : Optional[CollisionParameters] = None
-    visual : Optional[VisualParameters] = None
+    visual : Optional[VisualParameters] = VisualParameters(geometry = FileParameters(filename="mesh/cube.obj"))
     
 
 
@@ -38,20 +40,16 @@ class Entity(BasePrefab):
     parameters : EntityParameters
     
 
-    def __init__(self, parameters=EntityParameters(), **kwargs):
+    def __init__(self, parameters: EntityParameters):
         BasePrefab.__init__(self, parameters)
 
 
     def init(self):
         self.geometry = self.add(Geometry, parameters=self.parameters.geometry)
-
-        ### Check compatilibility of Material
-        if self.parameters.material.stateType != self.parameters.stateType:
-            print("WARNING: imcompatibility between templates of both the entity and the material")
-            self.parameters.material.stateType = self.parameters.stateType
+        self.checkMaterialCompatibility()
 
         self.material = self.add(Material, parameters=self.parameters.material)
-        self.material.States.position.parent = self.geometry.container.position.linkpath
+        self.material.getMechanicalState().position.parent = self.geometry.container.position.linkpath
         
         if self.parameters.collision is not None:
             self.collision = self.add(Collision, parameters=self.parameters.collision)
@@ -60,6 +58,11 @@ class Entity(BasePrefab):
         if self.parameters.visual is not None:
             self.visual = self.add(Visual, parameters=self.parameters.visual)
             self.addMapping(self.visual)
+
+    def checkMaterialCompatibility(self):
+        if self.parameters.material.stateType != self.parameters.stateType:
+            print("WARNING: imcompatibility between templates of both the entity and the material")
+            self.parameters.material.stateType = self.parameters.stateType
 
 
     def addMapping(self, destinationPrefab):
@@ -70,12 +73,12 @@ class Entity(BasePrefab):
         if( self.parameters.stateType == StateType.VEC3):
             destinationPrefab.addObject("BarycentricMapping", 
                                         output=destinationPrefab.linkpath, 
-                                        output_topology=destinationPrefab.Geometry.container.linkpath,
-                                        input=self.Material.linkpath,
-                                        input_topology=self.Geometry.container.linkpath,
+                                        output_topology=destinationPrefab.geometry.container.linkpath,
+                                        input=self.material.linkpath,
+                                        input_topology=self.geometry.container.linkpath,
                                         template=template)
         else:
             destinationPrefab.addObject("RigidMapping", 
                                          output=destinationPrefab.linkpath, 
-                                        input=self.Material.linkpath,
+                                        input=self.material.linkpath,
                                         template=template)

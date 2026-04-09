@@ -1,5 +1,5 @@
 from stlib.core.basePrefab import BasePrefab
-from stlib.core.baseParameters import BaseParameters, Optional, dataclasses
+from stlib.core.baseParameters import BaseParameters, Optional
 from stlib.geometries import Geometry, GeometryParameters
 from stlib.geometries.file import FileParameters
 from splib.core.enum_types import CollisionPrimitive
@@ -7,21 +7,21 @@ from splib.core.utils import DEFAULT_VALUE
 from splib.mechanics.collision_model import addCollisionModels
 from Sofa.Core import Object 
 
-@dataclasses.dataclass
 class CollisionParameters(BaseParameters):
     name : str = "Collision"
     
-    primitives : list[CollisionPrimitive] = dataclasses.field(default_factory = lambda :[CollisionPrimitive.TRIANGLES])
+    primitives : list[CollisionPrimitive] = [CollisionPrimitive.TRIANGLES]
 
     selfCollision : Optional[bool] = DEFAULT_VALUE
     bothSide : Optional[bool] = DEFAULT_VALUE
     group : Optional[int] = DEFAULT_VALUE
     contactDistance : Optional[float] = DEFAULT_VALUE
 
-    geometry : GeometryParameters = dataclasses.field(default_factory = lambda : GeometryParameters())
+    geometry : GeometryParameters = GeometryParameters()
 
 
 class Collision(BasePrefab):
+    
     def __init__(self, parameters: CollisionParameters):
         BasePrefab.__init__(self, parameters)
 
