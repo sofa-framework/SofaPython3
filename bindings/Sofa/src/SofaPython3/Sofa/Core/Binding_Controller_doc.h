@@ -20,11 +20,11 @@
 
 #pragma once
 
-namespace sofapython3::doc::component
+namespace sofapython3::doc::controller
 {
-static auto componentClass =
+static auto controllerClass =
         R"(
-        Overridable class for user interaction on SOFA Components
+        Overridable class for user interaction on SOFA Controllers
 
         It can catch events to trigger actions, such as onAnimateBeginEvent, onAnimateEndEvent or onPythonScriptEvent.
         A new custom controller class needs to be defined to use a controller in a script,
@@ -43,10 +43,10 @@ static auto componentClass =
 
                 import Sofa.Core
 
-                class MyComponent(Sofa.Core.Component):
+                class MyController(Sofa.Core.Controller):
                     def __init__(self, *args, **kwargs):
                          ## These are needed (and the normal way to override from a python class)
-                         Sofa.Core.Component.__init__(self, *args, **kwargs)
+                         Sofa.Core.Controller.__init__(self, *args, **kwargs)
                          print(" Python::__init__::"+str(self.name))
 
                     def onEvent(self, event):
@@ -59,7 +59,7 @@ static auto componentClass =
                          print("onAnimateBeginEvent")
 
                 def createScene(rootNode):
-                    controller = MyComponent(name="MyC")
+                    controller = MyController(name="MyC")
                     rootNode.addObject(controller)
                     return rootNode
          )";

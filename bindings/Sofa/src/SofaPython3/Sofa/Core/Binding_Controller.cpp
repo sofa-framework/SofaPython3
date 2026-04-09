@@ -18,7 +18,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include <pybind11/pybind11.h>
+#include <pybind11/cast.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/Sofa/Core/Binding_Controller.h>
 #include <SofaPython3/Sofa/Core/Binding_Component.inl>
+#include <SofaPython3/Sofa/Core/Binding_Controller_doc.h>
+
+#include <SofaPython3/PythonFactory.h>
+#include <SofaPython3/PythonEnvironment.h>
 
 SOFAPYTHON3_BIND_ATTRIBUTE_ERROR()
 
@@ -28,60 +37,59 @@ namespace py { using namespace pybind11; }
 namespace sofapython3
 {
 using sofa::core::objectmodel::Event;
-using sofa::core::objectmodel::BaseComponent;
+using sofa::core::behavior::BaseController;
 
-
-void Component_Trampoline::draw(const sofa::core::visual::VisualParams* params)
+void Controller_Trampoline::draw(const sofa::core::visual::VisualParams* params)
 {
     PythonEnvironment::executePython(this, [this, params](){
-        PYBIND11_OVERLOAD(void, Component, draw, params);
+        PYBIND11_OVERLOAD(void, Controller, draw, params);
     });
 }
 
-void Component_Trampoline::init()
+void Controller_Trampoline::init()
 {
     PythonEnvironment::executePython(this, [this](){
         // Initialize the Python object cache on first init
         initializePythonCache();
-        PYBIND11_OVERLOAD(void, Component, init, );
+        PYBIND11_OVERLOAD(void, Controller, init, );
     });
 }
 
-void Component_Trampoline::reinit()
+void Controller_Trampoline::reinit()
 {
     PythonEnvironment::executePython(this, [this](){
-        PYBIND11_OVERLOAD(void, Component, reinit, );
+        PYBIND11_OVERLOAD(void, Controller, reinit, );
     });
 }
 
 
-void Component_Trampoline::handleEvent(sofa::core::objectmodel::Event* event)
+void Controller_Trampoline::handleEvent(sofa::core::objectmodel::Event* event)
 {
     trampoline_handleEvent(event);
 }
 
-std::string Component_Trampoline::getClassName() const
+std::string Controller_Trampoline::getClassName() const
 {
     return trampoline_getClassName();
 }
 
-void moduleAddComponent(py::module &m) {
-    py::class_<Component,
-        Component_Trampoline,
-        BaseComponent,
-        py_shared_ptr<Component>> f(m, "Component",
-                                     py::dynamic_attr(),
-                                     sofapython3::doc::component::componentClass);
 
-    f.def(py::init(&Trampoline_T<Component_Trampoline>::_init_));
-    f.def("__setattr__",&Trampoline_T<Component_Trampoline>::_setattr_);
+void moduleAddController(py::module &m) {
+    py::class_<Controller,
+                Controller_Trampoline,
+                BaseComponent,
+                py_shared_ptr<Controller>> f(m, "Controller",
+                                             py::dynamic_attr(),
+                                             sofapython3::doc::controller::controllerClass);
 
-    f.def("init", &Component::init);
-    f.def("reinit", &Component::reinit);
-    f.def("draw", [](Component& self, sofa::core::visual::VisualParams* params){
+    f.def(py::init(&Trampoline_T<Controller_Trampoline>::_init_));
+    f.def("__setattr__",&Trampoline_T<Controller_Trampoline>::_setattr_);
+
+    f.def("init", &Controller::init);
+    f.def("reinit", &Controller::reinit);
+    f.def("draw", [](Controller& self, sofa::core::visual::VisualParams* params){
         self.draw(params);
-    }, pybind11::return_value_policy::reference);
-}
+    }, pybind11::return_value_policy::reference);}
 
 
 

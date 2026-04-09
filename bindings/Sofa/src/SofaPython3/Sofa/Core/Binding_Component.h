@@ -27,40 +27,27 @@
 
 namespace sofapython3 {
 
-/**
- * Empty controller shell that allows pybind11 to bind the init and reinit methods (since BaseComponent doesn't have
- * them)
- */
-class Component : public sofa::core::objectmodel::BaseComponent {
-public:
-    SOFA_CLASS(Component, sofa::core::objectmodel::BaseComponent);
-    void init() override {};
-    void reinit() override {};
-};
 
-class Component_Trampoline : public Component
+template<class T>
+class Trampoline_T
 {
 public:
-    SOFA_CLASS(Component_Trampoline, Component);
 
-    Component_Trampoline();
-    ~Component_Trampoline() override;
+    virtual ~Trampoline_T();
 
-    void init() override;
-    void reinit() override;
-    void draw(const sofa::core::visual::VisualParams* params) override;
 
-    void handleEvent(sofa::core::objectmodel::Event* event) override;
+    void trampoline_handleEvent(sofa::core::objectmodel::Event* event);
 
-    std::string getClassName() const override;
+    std::string trampoline_getClassName() const;
 
     /// Invalidates a specific entry in the method cache (called when a user reassigns an on* attribute)
     void invalidateMethodCache(const std::string& methodName);
 
-    static sofa::core::sptr<Component_Trampoline> _init_(pybind11::args& /*args*/, pybind11::kwargs& kwargs);
+    static sofa::core::sptr<T> _init_(pybind11::args& /*args*/, pybind11::kwargs& kwargs);
+
     static void _setattr_(pybind11::object self, const std::string& s, pybind11::object value);
 
-private:
+protected:
     /// Initializes the Python object cache (m_pySelf and method cache)
     void initializePythonCache();
 
@@ -85,9 +72,37 @@ private:
     bool m_cacheInitialized = false;
 };
 
-void moduleAddBase(pybind11::module &m, const std::string & name);
+
+/**
+ * Empty controller shell that allows pybind11 to bind the init and reinit methods (since BaseComponent doesn't have
+ * them)
+ */
+class Component : public sofa::core::objectmodel::BaseComponent {
+public:
+    SOFA_CLASS(Component, sofa::core::objectmodel::BaseComponent);
+    void init() override {};
+    void reinit() override {};
+};
+
+class Component_Trampoline : public Component, public Trampoline_T<Component_Trampoline>
+{
+public:
+    SOFA_CLASS(Component_Trampoline, Component);
+
+    Component_Trampoline() = default;
+    virtual ~Component_Trampoline() = default;
+
+    void init() override;
+    void reinit() override;
+    void draw(const sofa::core::visual::VisualParams* params) override;
+
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
+
+    std::string getClassName() const override;
+
+};
+
 void moduleAddComponent(pybind11::module &m);
-void moduleAddController(pybind11::module &m);
 
 } /// namespace sofapython3
 
