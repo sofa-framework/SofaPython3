@@ -57,7 +57,7 @@ void Trampoline_T<T>::initializePythonCache()
         return;
 
     // Must be called with GIL held
-    m_pySelf = py::cast(dynamic_cast<T*>(this));
+    m_pySelf = py::cast(static_cast<T*>(this));
 
     // Pre-cache the fallback "onEvent" method via the standard cache path
     getCachedMethod("onEvent");
@@ -96,7 +96,7 @@ py::object Trampoline_T<T>::getCachedMethod(const std::string& methodName)
 template<class T>
 bool Trampoline_T<T>::callCachedMethod(const py::object& method, Event* event)
 {
-    auto thisT = dynamic_cast<T*>(this);
+    auto thisT = static_cast<T*>(this);
 
     // Must be called with GIL held
     if (thisT->f_printLog.getValue())
@@ -142,7 +142,7 @@ template<class T>
 bool Trampoline_T<T>::callScriptMethod(
         const py::object& self, Event* event, const std::string & methodName)
 {
-    auto thisT = dynamic_cast<T*>(this);
+    auto thisT = static_cast<T*>(this);
 
     if(thisT->f_printLog.getValue())
     {
@@ -166,7 +166,7 @@ bool Trampoline_T<T>::callScriptMethod(
 template<class T>
 void Trampoline_T<T>::trampoline_handleEvent(Event* event)
 {
-    PythonEnvironment::executePython(dynamic_cast<T*>(this), [this, event](){
+    PythonEnvironment::executePython(static_cast<T*>(this), [this, event](){
         // Ensure cache is initialized (in case init() wasn't called or
         // handleEvent is called before init)
         if (!m_cacheInitialized)
