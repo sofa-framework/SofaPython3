@@ -57,7 +57,7 @@ void Trampoline_T<T>::initializePythonCache()
         return;
 
     // Must be called with GIL held
-    m_pySelf = py::cast(this);
+    m_pySelf = py::cast(dynamic_cast<T*>(this));
 
     // Pre-cache the fallback "onEvent" method via the standard cache path
     getCachedMethod("onEvent");
@@ -96,12 +96,14 @@ py::object Trampoline_T<T>::getCachedMethod(const std::string& methodName)
 template<class T>
 bool Trampoline_T<T>::callCachedMethod(const py::object& method, Event* event)
 {
+    auto thisT = dynamic_cast<T*>(this);
+
     // Must be called with GIL held
-    // if (f_printLog.getValue())
-    // {
-    //     std::string eventStr = py::str(PythonFactory::toPython(event));
-    //     msg_info() << "on" << event->getClassName() << " " << eventStr;
-    // }
+    if (thisT->f_printLog.getValue())
+    {
+        std::string eventStr = py::str(PythonFactory::toPython(event));
+        msg_info(thisT) << "on" << event->getClassName() << " " << eventStr;
+    }
 
     py::object result = method(PythonFactory::toPython(event));
     if (result.is_none())
@@ -140,12 +142,14 @@ template<class T>
 bool Trampoline_T<T>::callScriptMethod(
         const py::object& self, Event* event, const std::string & methodName)
 {
-    // if(f_printLog.getValue())
-    // {
-    //     std::string name = std::string("on")+event->getClassName();
-    //     std::string eventStr = py::str(PythonFactory::toPython(event));
-    //     msg_info() << name << " " << eventStr;
-    // }
+    auto thisT = dynamic_cast<T*>(this);
+
+    if(thisT->f_printLog.getValue())
+    {
+        std::string name = std::string("on")+event->getClassName();
+        std::string eventStr = py::str(PythonFactory::toPython(event));
+        msg_info(thisT) << name << " " << eventStr;
+    }
 
     if( py::hasattr(self, methodName.c_str()) )
     {
