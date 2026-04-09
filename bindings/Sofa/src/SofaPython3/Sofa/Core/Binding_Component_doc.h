@@ -43,10 +43,10 @@ static auto controllerClass =
 
                 import Sofa.Core
 
-                class MyController(Sofa.Core.Controller):
+                class MyComponent(Sofa.Core.Component):
                     def __init__(self, *args, **kwargs):
                          ## These are needed (and the normal way to override from a python class)
-                         Sofa.Core.Controller.__init__(self, *args, **kwargs)
+                         Sofa.Core.Component.__init__(self, *args, **kwargs)
                          print(" Python::__init__::"+str(self.name))
 
                     def onEvent(self, event):
@@ -59,7 +59,7 @@ static auto controllerClass =
                          print("onAnimateBeginEvent")
 
                 def createScene(rootNode):
-                    controller = MyController(name="MyC")
+                    controller = MyComponent(name="MyC")
                     rootNode.addObject(controller)
                     return rootNode
          )";

@@ -21,30 +21,30 @@
 #pragma once
 
 #include <pybind11/pybind11.h>
-#include <sofa/core/behavior/BaseController.h>
-#include <unordered_map>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <string>
+#include <unordered_map>
 
 namespace sofapython3 {
 
 /**
- * Empty controller shell that allows pybind11 to bind the init and reinit methods (since BaseController doesn't have
+ * Empty controller shell that allows pybind11 to bind the init and reinit methods (since BaseComponent doesn't have
  * them)
  */
-class Controller : public sofa::core::behavior::BaseController {
+class Component : public sofa::core::objectmodel::BaseComponent {
 public:
-    SOFA_CLASS(Controller, sofa::core::behavior::BaseController);
+    SOFA_CLASS(Component, sofa::core::objectmodel::BaseComponent);
     void init() override {};
     void reinit() override {};
 };
 
-class Controller_Trampoline : public Controller
+class Component_Trampoline : public Component
 {
 public:
-    SOFA_CLASS(Controller_Trampoline, Controller);
+    SOFA_CLASS(Component_Trampoline, Component);
 
-    Controller_Trampoline();
-    ~Controller_Trampoline() override;
+    Component_Trampoline();
+    ~Component_Trampoline() override;
 
     void init() override;
     void reinit() override;
@@ -56,6 +56,9 @@ public:
 
     /// Invalidates a specific entry in the method cache (called when a user reassigns an on* attribute)
     void invalidateMethodCache(const std::string& methodName);
+
+    static sofa::core::sptr<Component_Trampoline> _init_(pybind11::args& /*args*/, pybind11::kwargs& kwargs);
+    static void _setattr_(pybind11::object self, const std::string& s, pybind11::object value);
 
 private:
     /// Initializes the Python object cache (m_pySelf and method cache)
@@ -82,6 +85,7 @@ private:
     bool m_cacheInitialized = false;
 };
 
+void moduleAddComponent(pybind11::module &m);
 void moduleAddController(pybind11::module &m);
 
 } /// namespace sofapython3

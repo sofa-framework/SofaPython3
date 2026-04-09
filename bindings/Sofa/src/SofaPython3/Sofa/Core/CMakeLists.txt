@@ -15,8 +15,8 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ContactListener.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ContactListener_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Context.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Controller.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Controller_doc.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Component.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Component_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataEngine.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataEngine_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DrawTool.h
@@ -68,7 +68,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseContext.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_ContactListener.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Context.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Controller.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Component.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_DataEngine.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataContainer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Data/Binding_DataString.cpp

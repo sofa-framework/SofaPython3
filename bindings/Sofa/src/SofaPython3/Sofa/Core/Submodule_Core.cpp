@@ -34,7 +34,7 @@ using sofa::helper::logging::Message;
 #include <SofaPython3/Sofa/Core/Binding_Mass.h>
 #include <SofaPython3/Sofa/Core/Binding_ContactListener.h>
 #include <SofaPython3/Sofa/Core/Binding_Context.h>
-#include <SofaPython3/Sofa/Core/Binding_Controller.h>
+#include <SofaPython3/Sofa/Core/Binding_Component.h>
 #include <SofaPython3/Sofa/Core/Binding_DataEngine.h>
 #include <SofaPython3/Sofa/Core/Binding_ObjectFactory.h>
 #include <SofaPython3/Sofa/Core/Binding_LinkPath.h>
@@ -142,6 +142,7 @@ PYBIND11_MODULE(Core, core)
     moduleAddBaseCamera(core);
     moduleAddContactListener(core);
     moduleAddContext(core);
+    moduleAddComponent(core);
     moduleAddController(core);
     moduleAddDataEngine(core);
     moduleAddForceField(core);

@@ -22,8 +22,8 @@
 #include <pybind11/cast.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaPython3/Sofa/Core/Binding_Controller.h>
-#include <SofaPython3/Sofa/Core/Binding_Controller_doc.h>
+#include <SofaPython3/Sofa/Core/Binding_Component.h>
+#include <SofaPython3/Sofa/Core/Binding_Component_doc.h>
 
 #include <SofaPython3/PythonFactory.h>
 #include <SofaPython3/PythonEnvironment.h>
@@ -38,20 +38,20 @@ namespace sofapython3
 using sofa::core::objectmodel::Event;
 using sofa::core::objectmodel::BaseComponent;
 
-Controller_Trampoline::Controller_Trampoline() = default;
+Component_Trampoline::Component_Trampoline() = default;
 
-Controller_Trampoline::~Controller_Trampoline()
+Component_Trampoline::~Component_Trampoline()
 {
     // Clean up Python objects while holding the GIL
     if (m_cacheInitialized)
     {
-        PythonEnvironment::gil acquire {"~Controller_Trampoline"};
+        PythonEnvironment::gil acquire {"~Component_Trampoline"};
         m_methodCache.clear();
         m_pySelf = py::object();
     }
 }
 
-void Controller_Trampoline::initializePythonCache()
+void Component_Trampoline::initializePythonCache()
 {
     if (m_cacheInitialized)
         return;
@@ -65,7 +65,7 @@ void Controller_Trampoline::initializePythonCache()
     m_cacheInitialized = true;
 }
 
-py::object Controller_Trampoline::getCachedMethod(const std::string& methodName)
+py::object Component_Trampoline::getCachedMethod(const std::string& methodName)
 {
     // Must be called with GIL held and cache initialized
 
@@ -92,7 +92,7 @@ py::object Controller_Trampoline::getCachedMethod(const std::string& methodName)
     return method;
 }
 
-bool Controller_Trampoline::callCachedMethod(const py::object& method, Event* event)
+bool Component_Trampoline::callCachedMethod(const py::object& method, Event* event)
 {
     // Must be called with GIL held
     if (f_printLog.getValue())
@@ -108,7 +108,7 @@ bool Controller_Trampoline::callCachedMethod(const py::object& method, Event* ev
     return py::cast<bool>(result);
 }
 
-void Controller_Trampoline::invalidateMethodCache(const std::string& methodName)
+void Component_Trampoline::invalidateMethodCache(const std::string& methodName)
 {
     if (!m_cacheInitialized)
         return;
@@ -117,7 +117,7 @@ void Controller_Trampoline::invalidateMethodCache(const std::string& methodName)
     m_methodCache.erase(methodName);
 }
 
-std::string Controller_Trampoline::getClassName() const
+std::string Component_Trampoline::getClassName() const
 {
     PythonEnvironment::gil acquire {"getClassName"};
 
@@ -130,32 +130,32 @@ std::string Controller_Trampoline::getClassName() const
     return py::str(py::type::of(py::cast(this)).attr("__name__"));
 }
 
-void Controller_Trampoline::draw(const sofa::core::visual::VisualParams* params)
+void Component_Trampoline::draw(const sofa::core::visual::VisualParams* params)
 {
     PythonEnvironment::executePython(this, [this, params](){
-        PYBIND11_OVERLOAD(void, Controller, draw, params);
+        PYBIND11_OVERLOAD(void, Component, draw, params);
     });
 }
 
-void Controller_Trampoline::init()
+void Component_Trampoline::init()
 {
     PythonEnvironment::executePython(this, [this](){
         // Initialize the Python object cache on first init
         initializePythonCache();
-        PYBIND11_OVERLOAD(void, Controller, init, );
+        PYBIND11_OVERLOAD(void, Component, init, );
     });
 }
 
-void Controller_Trampoline::reinit()
+void Component_Trampoline::reinit()
 {
     PythonEnvironment::executePython(this, [this](){
-        PYBIND11_OVERLOAD(void, Controller, reinit, );
+        PYBIND11_OVERLOAD(void, Component, reinit, );
     });
 }
 
 /// If a method named "methodName" exists in the python controller,
 /// methodName is called, with the Event's dict as argument
-bool Controller_Trampoline::callScriptMethod(
+bool Component_Trampoline::callScriptMethod(
         const py::object& self, Event* event, const std::string & methodName)
 {
     if(f_printLog.getValue())
@@ -177,7 +177,7 @@ bool Controller_Trampoline::callScriptMethod(
     return false;
 }
 
-void Controller_Trampoline::handleEvent(Event* event)
+void Component_Trampoline::handleEvent(Event* event)
 {
     PythonEnvironment::executePython(this, [this, event](){
         // Ensure cache is initialized (in case init() wasn't called or
@@ -204,59 +204,87 @@ void Controller_Trampoline::handleEvent(Event* event)
     });
 }
 
-void moduleAddController(py::module &m) {
-    py::class_<Controller,
-            Controller_Trampoline,
+
+
+sofa::core::sptr<Component_Trampoline> Component_Trampoline::_init_(pybind11::args& /*args*/, pybind11::kwargs& kwargs)
+{
+    auto c = sofa::core::sptr<Component_Trampoline> (new Component_Trampoline());
+    c->f_listening.setValue(true);
+
+    for(auto kv : kwargs)
+    {
+        std::string key = py::cast<std::string>(kv.first);
+        py::object value = py::reinterpret_borrow<py::object>(kv.second);
+
+        if( key == "name")
+            c->setName(py::cast<std::string>(kv.second));
+        try {
+            BindingBase::SetAttr(*c, key, value);
+        } catch (py::attribute_error& /*e*/) {
+            /// kwargs are used to set datafields to their initial values,
+            /// but they can also be used as simple python attributes, unrelated to SOFA.
+            /// thus we catch & ignore the py::attribute_error thrown by SetAttr
+        }
+    }
+    return c;
+}
+
+void Component_Trampoline::_setattr_(pybind11::object self, const std::string& s, pybind11::object value)
+{
+    // If the attribute starts with "on" and the new value is callable, invalidate the cached method
+    if (s.rfind("on", 0) == 0 && PyCallable_Check(value.ptr()))
+    {
+        auto* trampoline = dynamic_cast<Component_Trampoline*>(py::cast<Component*>(self));
+        if (trampoline)
+        {
+            trampoline->invalidateMethodCache(s);
+        }
+    }
+
+    // Delegate to the base class __setattr__
+    BindingBase::__setattr__(self, s, value);
+}
+
+
+
+void moduleAddComponent(py::module &m) {
+    py::class_<Component,
+            Component_Trampoline,
             BaseComponent,
-            py_shared_ptr<Controller>> f(m, "Controller",
+            py_shared_ptr<Component>> f(m, "Component",
                                          py::dynamic_attr(),
                                          sofapython3::doc::controller::controllerClass);
 
-    f.def(py::init([](py::args& /*args*/, py::kwargs& kwargs)
-          {
-              auto c = sofa::core::sptr<Controller_Trampoline> (new Controller_Trampoline());
-              c->f_listening.setValue(true);
+    f.def(py::init(&Component_Trampoline::_init_));
+    f.def("__setattr__",&Component_Trampoline::_setattr_);
 
-              for(auto kv : kwargs)
-              {
-                  std::string key = py::cast<std::string>(kv.first);
-                  py::object value = py::reinterpret_borrow<py::object>(kv.second);
-
-                  if( key == "name")
-                  c->setName(py::cast<std::string>(kv.second));
-                  try {
-                      BindingBase::SetAttr(*c, key, value);
-                  } catch (py::attribute_error& /*e*/) {
-                      /// kwargs are used to set datafields to their initial values,
-                      /// but they can also be used as simple python attributes, unrelated to SOFA.
-                      /// thus we catch & ignore the py::attribute_error thrown by SetAttr
-                  }
-              }
-              return c;
-          }));
-
-    f.def("init", &Controller::init);
-    f.def("reinit", &Controller::reinit);
-    f.def("draw", [](Controller& self, sofa::core::visual::VisualParams* params){
+    f.def("init", &Component::init);
+    f.def("reinit", &Component::reinit);
+    f.def("draw", [](Component& self, sofa::core::visual::VisualParams* params){
         self.draw(params);
     }, pybind11::return_value_policy::reference);
 
-    // Override __setattr__ to invalidate the method cache when an "on*" attribute is reassigned
-    f.def("__setattr__", [](py::object self, const std::string& s, py::object value) {
-        // If the attribute starts with "on" and the new value is callable, invalidate the cached method
-        if (s.rfind("on", 0) == 0 && PyCallable_Check(value.ptr()))
-        {
-            auto* trampoline = dynamic_cast<Controller_Trampoline*>(py::cast<Controller*>(self));
-            if (trampoline)
-            {
-                trampoline->invalidateMethodCache(s);
-            }
-        }
-
-        // Delegate to the base class __setattr__
-        BindingBase::__setattr__(self, s, value);
-    });
 }
+
+void moduleAddController(py::module &m) {
+    py::class_<Component,
+            Component_Trampoline,
+            BaseComponent,
+            py_shared_ptr<Component>> f(m, "Controller",
+                                         py::dynamic_attr(),
+                                         sofapython3::doc::controller::controllerClass);
+
+    f.def(py::init(&Component_Trampoline::_init_));
+    f.def("__setattr__",&Component_Trampoline::_setattr_);
+
+    f.def("init", &Component::init);
+    f.def("reinit", &Component::reinit);
+    f.def("draw", [](Component& self, sofa::core::visual::VisualParams* params){
+        self.draw(params);
+    }, pybind11::return_value_policy::reference);
+
+}
+
 
 
 }
