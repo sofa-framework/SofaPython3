@@ -85,6 +85,7 @@ private:
     bool m_cacheInitialized = false;
 };
 
+void moduleAddBase(pybind11::module &m, const std::string & name);
 void moduleAddComponent(pybind11::module &m);
 void moduleAddController(pybind11::module &m);
 

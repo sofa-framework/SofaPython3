@@ -247,11 +247,11 @@ void Component_Trampoline::_setattr_(pybind11::object self, const std::string& s
 
 
 
-void moduleAddComponent(py::module &m) {
+void moduleAddBase(py::module &m, const std::string & name) {
     py::class_<Component,
             Component_Trampoline,
             BaseComponent,
-            py_shared_ptr<Component>> f(m, "Component",
+            py_shared_ptr<Component>> f(m, name.c_str(),
                                          py::dynamic_attr(),
                                          sofapython3::doc::controller::controllerClass);
 
@@ -267,22 +267,10 @@ void moduleAddComponent(py::module &m) {
 }
 
 void moduleAddController(py::module &m) {
-    py::class_<Component,
-            Component_Trampoline,
-            BaseComponent,
-            py_shared_ptr<Component>> f(m, "Controller",
-                                         py::dynamic_attr(),
-                                         sofapython3::doc::controller::controllerClass);
-
-    f.def(py::init(&Component_Trampoline::_init_));
-    f.def("__setattr__",&Component_Trampoline::_setattr_);
-
-    f.def("init", &Component::init);
-    f.def("reinit", &Component::reinit);
-    f.def("draw", [](Component& self, sofa::core::visual::VisualParams* params){
-        self.draw(params);
-    }, pybind11::return_value_policy::reference);
-
+    moduleAddBase(m, "Controller");
+}
+void moduleAddComponent(py::module &m) {
+    moduleAddBase(m, "Component");
 }
 
 
