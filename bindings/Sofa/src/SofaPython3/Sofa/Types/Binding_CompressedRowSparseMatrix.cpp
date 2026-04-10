@@ -58,7 +58,7 @@ void bindCompressedRowSparseMatrixConstraint(pybind11::module& m)
         return toEigen(accessor.ref());
     });
 
-    crsmc.def("add", [](sofa::Data<MatrixDeriv>& self, sofa::Index row, sofa::Index col, const MatrixDeriv::Block value)
+    crsmc.def("add", [](sofa::Data<MatrixDeriv>& self, sofa::Index row, sofa::Index col, const typename MatrixDeriv::Block value)
     {
         sofa::helper::WriteAccessor accessor(self);
         auto line = accessor->writeLine(row);
