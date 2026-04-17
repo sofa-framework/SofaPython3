@@ -45,6 +45,7 @@ public:
     SOFA_CLASS(Controller_Trampoline, Controller);
 
     Controller_Trampoline() = default;
+    virtual ~Controller_Trampoline() = default ;
 
     void init() override;
     void reinit() override;
