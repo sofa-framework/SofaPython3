@@ -121,7 +121,6 @@ namespace sofapython3
     template<class TDOFType>
     py::object ForceField_Trampoline<TDOFType>::_addKToMatrix(const MechanicalParams* mparams, int nIndices, int nDofs)
     {
-        PythonEnvironment::gil acquire;
 
         py::dict mp = py::dict("time"_a=getContext()->getTime(),
                                "mFactor"_a=mparams->mFactor(),
@@ -136,6 +135,8 @@ namespace sofapython3
     template<class TDOFType>
     void ForceField_Trampoline<TDOFType>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* dfId)
     {
+        PythonEnvironment::gil acquire;
+        
         MultiMatrixAccessor::MatrixRef mref = dfId->getMatrix(this->mstate);
         sofa::linearalgebra::BaseMatrix* mat = mref.matrix;
 
