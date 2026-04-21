@@ -30,6 +30,14 @@ namespace sofapython3
 using sofa::core::objectmodel::Event;
 using sofa::core::objectmodel::BaseComponent;
 
+// ---------------------------------------------------------------------------
+// Component_Trampoline
+// ---------------------------------------------------------------------------
+
+Component_Trampoline::Component_Trampoline()
+    : TrampolineBase(this)   // pass this as BaseComponent* — no CRTP needed
+{
+}
 
 void Component_Trampoline::draw(const sofa::core::visual::VisualParams* params)
 {
@@ -41,7 +49,6 @@ void Component_Trampoline::draw(const sofa::core::visual::VisualParams* params)
 void Component_Trampoline::init()
 {
     PythonEnvironment::executePython(this, [this](){
-        // Initialize the Python object cache on first init
         initializePythonCache();
         PYBIND11_OVERLOAD(void, Component, init, );
     });
@@ -54,7 +61,6 @@ void Component_Trampoline::reinit()
     });
 }
 
-
 void Component_Trampoline::handleEvent(sofa::core::objectmodel::Event* event)
 {
     trampoline_handleEvent(event);
@@ -65,6 +71,10 @@ std::string Component_Trampoline::getClassName() const
     return trampoline_getClassName();
 }
 
+// ---------------------------------------------------------------------------
+// Module registration
+// ---------------------------------------------------------------------------
+
 void moduleAddComponent(py::module &m) {
     py::class_<Component,
         Component_Trampoline,
@@ -73,8 +83,8 @@ void moduleAddComponent(py::module &m) {
                                      py::dynamic_attr(),
                                      sofapython3::doc::component::componentClass);
 
-    f.def(py::init(&Trampoline_T<Component_Trampoline>::_init_));
-    f.def("__setattr__",&Trampoline_T<Component_Trampoline>::_setattr_);
+    f.def(py::init(&trampoline_init<Component_Trampoline>));
+    f.def("__setattr__", &trampoline_setattr<Component_Trampoline>);
 
     f.def("init", &Component::init);
     f.def("reinit", &Component::reinit);
@@ -83,6 +93,4 @@ void moduleAddComponent(py::module &m) {
     }, pybind11::return_value_policy::reference);
 }
 
-
-
-}
+} // namespace sofapython3

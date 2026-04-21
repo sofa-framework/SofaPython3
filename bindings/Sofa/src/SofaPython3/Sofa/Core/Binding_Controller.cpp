@@ -25,7 +25,6 @@
 #include <SofaPython3/Sofa/Core/Binding_Controller.h>
 #include <SofaPython3/Sofa/Core/Binding_Component.inl>
 #include <SofaPython3/Sofa/Core/Binding_Controller_doc.h>
-
 #include <SofaPython3/PythonFactory.h>
 #include <SofaPython3/PythonEnvironment.h>
 
@@ -39,6 +38,15 @@ namespace sofapython3
 using sofa::core::objectmodel::Event;
 using sofa::core::behavior::BaseController;
 
+// ---------------------------------------------------------------------------
+// Controller_Trampoline
+// ---------------------------------------------------------------------------
+
+Controller_Trampoline::Controller_Trampoline()
+    : TrampolineBase(this)   // pass this as BaseComponent* — no CRTP needed
+{
+}
+
 void Controller_Trampoline::draw(const sofa::core::visual::VisualParams* params)
 {
     PythonEnvironment::executePython(this, [this, params](){
@@ -49,7 +57,6 @@ void Controller_Trampoline::draw(const sofa::core::visual::VisualParams* params)
 void Controller_Trampoline::init()
 {
     PythonEnvironment::executePython(this, [this](){
-        // Initialize the Python object cache on first init
         initializePythonCache();
         PYBIND11_OVERLOAD(void, Controller, init, );
     });
@@ -62,7 +69,6 @@ void Controller_Trampoline::reinit()
     });
 }
 
-
 void Controller_Trampoline::handleEvent(sofa::core::objectmodel::Event* event)
 {
     trampoline_handleEvent(event);
@@ -73,6 +79,9 @@ std::string Controller_Trampoline::getClassName() const
     return trampoline_getClassName();
 }
 
+// ---------------------------------------------------------------------------
+// Module registration
+// ---------------------------------------------------------------------------
 
 void moduleAddController(py::module &m) {
     py::class_<Controller,
@@ -82,15 +91,14 @@ void moduleAddController(py::module &m) {
                                              py::dynamic_attr(),
                                              sofapython3::doc::controller::controllerClass);
 
-    f.def(py::init(&Trampoline_T<Controller_Trampoline>::_init_));
-    f.def("__setattr__",&Trampoline_T<Controller_Trampoline>::_setattr_);
+    f.def(py::init(&trampoline_init<Controller_Trampoline>));
+    f.def("__setattr__", &trampoline_setattr<Controller_Trampoline>);
 
     f.def("init", &Controller::init);
     f.def("reinit", &Controller::reinit);
     f.def("draw", [](Controller& self, sofa::core::visual::VisualParams* params){
         self.draw(params);
-    }, pybind11::return_value_policy::reference);}
-
-
-
+    }, pybind11::return_value_policy::reference);
 }
+
+} // namespace sofapython3

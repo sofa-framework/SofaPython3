@@ -28,81 +28,63 @@
 namespace sofapython3 {
 
 
-template<class T>
-class Trampoline_T
+class TrampolineBase
 {
 public:
-
-    virtual ~Trampoline_T();
-
+    explicit TrampolineBase(sofa::core::objectmodel::BaseComponent* self);
+    virtual ~TrampolineBase();
 
     void trampoline_handleEvent(sofa::core::objectmodel::Event* event);
-
     std::string trampoline_getClassName() const;
-
-    /// Invalidates a specific entry in the method cache (called when a user reassigns an on* attribute)
     void invalidateMethodCache(const std::string& methodName);
 
-    static sofa::core::sptr<T> _init_(pybind11::args& /*args*/, pybind11::kwargs& kwargs);
-
-    static void _setattr_(pybind11::object self, const std::string& s, pybind11::object value);
-
 protected:
-    /// Initializes the Python object cache (m_pySelf and method cache)
     void initializePythonCache();
-
-    /// Returns a cached method if it exists, or an empty object if not
     pybind11::object getCachedMethod(const std::string& methodName);
-
-    /// Calls a cached Python method with the given event
     bool callCachedMethod(const pybind11::object& method, sofa::core::objectmodel::Event* event);
-
-    /// Legacy method for uncached calls (fallback)
     bool callScriptMethod(const pybind11::object& self, sofa::core::objectmodel::Event* event,
-        const std::string& methodName);
+                          const std::string& methodName);
 
-    /// Cached Python self reference (avoids repeated py::cast(this))
+    /// Raw non-owning pointer to the concrete trampoline as BaseComponent.
+    /// Safe because TrampolineBase is always embedded in the same object.
+    sofa::core::objectmodel::BaseComponent* m_componentSelf { nullptr };
+
     pybind11::object m_pySelf;
-
-    /// Cache of Python method objects, keyed by method name (including "onEvent" fallback)
-    /// Stores the method object if it exists, or an empty object if checked and not found
     std::unordered_map<std::string, pybind11::object> m_methodCache;
-
-    /// Flag indicating whether the cache has been initialized
     bool m_cacheInitialized = false;
 };
 
 
-/**
- * Empty controller shell that allows pybind11 to bind the init and reinit methods (since BaseComponent doesn't have
- * them)
- */
+template<class T>
+sofa::core::sptr<T> trampoline_init(pybind11::args& /*args*/, pybind11::kwargs& kwargs);
+
+template<class T>
+void trampoline_setattr(pybind11::object self, const std::string& s, pybind11::object value);
+
+
+
 class Component : public sofa::core::objectmodel::BaseComponent {
 public:
     SOFA_CLASS(Component, sofa::core::objectmodel::BaseComponent);
-    void init() override {};
-    void reinit() override {};
+    void init() override {}
+    void reinit() override {}
 };
 
-class Component_Trampoline : public Component, public Trampoline_T<Component_Trampoline>
+class Component_Trampoline : public Component, public TrampolineBase
 {
 public:
     SOFA_CLASS(Component_Trampoline, Component);
 
-    Component_Trampoline() = default;
-    virtual ~Component_Trampoline() = default;
+    Component_Trampoline();
+    ~Component_Trampoline() override = default;
 
     void init() override;
     void reinit() override;
     void draw(const sofa::core::visual::VisualParams* params) override;
-
     void handleEvent(sofa::core::objectmodel::Event* event) override;
-
     std::string getClassName() const override;
-
 };
 
 void moduleAddComponent(pybind11::module &m);
 
 } /// namespace sofapython3
-

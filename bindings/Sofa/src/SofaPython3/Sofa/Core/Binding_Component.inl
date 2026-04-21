@@ -19,14 +19,12 @@
 ******************************************************************************/
 #pragma once
 
-
 #include <pybind11/pybind11.h>
 #include <pybind11/cast.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_Component.h>
 #include <SofaPython3/Sofa/Core/Binding_Component_doc.h>
-
 #include <SofaPython3/PythonFactory.h>
 #include <SofaPython3/PythonEnvironment.h>
 
@@ -38,71 +36,60 @@ namespace sofapython3
 using sofa::core::objectmodel::Event;
 using sofa::core::objectmodel::BaseComponent;
 
-template<class T>
-Trampoline_T<T>::~Trampoline_T()
+
+inline TrampolineBase::TrampolineBase(BaseComponent* self)
+    : m_componentSelf(self)
 {
-    // Clean up Python objects while holding the GIL
+}
+
+inline TrampolineBase::~TrampolineBase()
+{
     if (m_cacheInitialized)
     {
-        PythonEnvironment::gil acquire {"~Component_Trampoline"};
+        PythonEnvironment::gil acquire {"~TrampolineBase"};
         m_methodCache.clear();
         m_pySelf = py::object();
     }
 }
 
-template<class T>
-void Trampoline_T<T>::initializePythonCache()
+inline void TrampolineBase::initializePythonCache()
 {
     if (m_cacheInitialized)
         return;
 
-    // Must be called with GIL held
-    m_pySelf = py::cast(static_cast<T*>(this));
+    // py::cast on the BaseComponent* will find the most-derived registered
+    // pybind11 type (e.g. the user's Python subclass), which is exactly what
+    // we want — no need for static_cast<T*>(this) anymore.
+    m_pySelf = py::cast(m_componentSelf);
 
-    // Pre-cache the fallback "onEvent" method via the standard cache path
     getCachedMethod("onEvent");
-
     m_cacheInitialized = true;
 }
 
-template<class T>
-py::object Trampoline_T<T>::getCachedMethod(const std::string& methodName)
+inline py::object TrampolineBase::getCachedMethod(const std::string& methodName)
 {
-    // Must be called with GIL held and cache initialized
-
-    // Check if we've already looked up this method
     auto it = m_methodCache.find(methodName);
     if (it != m_methodCache.end())
-    {
         return it->second;
-    }
 
-    // First time looking up this method - check if it exists
     py::object method;
     if (py::hasattr(m_pySelf, methodName.c_str()))
     {
         py::object fct = m_pySelf.attr(methodName.c_str());
         if (PyCallable_Check(fct.ptr()))
-        {
             method = fct;
-        }
     }
 
-    // Cache the result (even if empty, to avoid repeated hasattr checks)
     m_methodCache[methodName] = method;
     return method;
 }
 
-template<class T>
-bool Trampoline_T<T>::callCachedMethod(const py::object& method, Event* event)
+inline bool TrampolineBase::callCachedMethod(const py::object& method, Event* event)
 {
-    auto thisT = static_cast<T*>(this);
-
-    // Must be called with GIL held
-    if (thisT->f_printLog.getValue())
+    if (m_componentSelf->f_printLog.getValue())
     {
         std::string eventStr = py::str(PythonFactory::toPython(event));
-        msg_info(thisT) << "on" << event->getClassName() << " " << eventStr;
+        msg_info(m_componentSelf) << "on" << event->getClassName() << " " << eventStr;
     }
 
     py::object result = method(PythonFactory::toPython(event));
@@ -112,72 +99,53 @@ bool Trampoline_T<T>::callCachedMethod(const py::object& method, Event* event)
     return py::cast<bool>(result);
 }
 
-template<class T>
-void Trampoline_T<T>::invalidateMethodCache(const std::string& methodName)
+inline void TrampolineBase::invalidateMethodCache(const std::string& methodName)
 {
     if (!m_cacheInitialized)
         return;
-
-    // Remove the entry so getCachedMethod will re-resolve it on next call
     m_methodCache.erase(methodName);
 }
 
-template<class T>
-std::string Trampoline_T<T>::trampoline_getClassName() const
+inline std::string TrampolineBase::trampoline_getClassName() const
 {
     PythonEnvironment::gil acquire {"getClassName"};
 
     if (m_pySelf)
-    {
         return py::str(py::type::of(m_pySelf).attr("__name__"));
-    }
 
-    // Fallback for when cache isn't initialized yet
-    return py::str(py::type::of(py::cast(this)).attr("__name__"));
+    // Fallback before cache is initialized: cast via BaseComponent*
+    return py::str(py::type::of(py::cast(m_componentSelf)).attr("__name__"));
 }
 
-/// If a method named "methodName" exists in the python controller,
-/// methodName is called, with the Event's dict as argument
-template<class T>
-bool Trampoline_T<T>::callScriptMethod(
-        const py::object& self, Event* event, const std::string & methodName)
+inline bool TrampolineBase::callScriptMethod(
+    const py::object& self, Event* event, const std::string& methodName)
 {
-    auto thisT = static_cast<T*>(this);
-
-    if(thisT->f_printLog.getValue())
+    if (m_componentSelf->f_printLog.getValue())
     {
-        std::string name = std::string("on")+event->getClassName();
+        std::string name = std::string("on") + event->getClassName();
         std::string eventStr = py::str(PythonFactory::toPython(event));
-        msg_info(thisT) << name << " " << eventStr;
+        msg_info(m_componentSelf) << name << " " << eventStr;
     }
 
-    if( py::hasattr(self, methodName.c_str()) )
+    if (py::hasattr(self, methodName.c_str()))
     {
         py::object fct = self.attr(methodName.c_str());
         py::object result = fct(PythonFactory::toPython(event));
-        if(result.is_none())
+        if (result.is_none())
             return false;
-
         return py::cast<bool>(result);
     }
     return false;
 }
 
-template<class T>
-void Trampoline_T<T>::trampoline_handleEvent(Event* event)
+inline void TrampolineBase::trampoline_handleEvent(Event* event)
 {
-    PythonEnvironment::executePython(static_cast<T*>(this), [this, event](){
-        // Ensure cache is initialized (in case init() wasn't called or
-        // handleEvent is called before init)
+    PythonEnvironment::executePython(m_componentSelf, [this, event](){
         if (!m_cacheInitialized)
-        {
             initializePythonCache();
-        }
 
-        // Build the event-specific method name (e.g., "onAnimateBeginEvent")
         std::string methodName = std::string("on") + event->getClassName();
 
-        // Try the event-specific method first, then fall back to generic "onEvent"
         py::object method = getCachedMethod(methodName);
         if (!method)
             method = getCachedMethod("onEvent");
@@ -192,46 +160,38 @@ void Trampoline_T<T>::trampoline_handleEvent(Event* event)
 }
 
 
-
 template<class T>
-sofa::core::sptr<T>  Trampoline_T<T>::_init_(pybind11::args& /*args*/, pybind11::kwargs& kwargs)
+sofa::core::sptr<T> trampoline_init(py::args& /*args*/, py::kwargs& kwargs)
 {
-    auto c = sofa::core::sptr<T> (new T());
+    auto c = sofa::core::sptr<T>(new T());
     c->f_listening.setValue(true);
 
-    for(auto kv : kwargs)
+    for (auto kv : kwargs)
     {
         std::string key = py::cast<std::string>(kv.first);
         py::object value = py::reinterpret_borrow<py::object>(kv.second);
 
-        if( key == "name")
+        if (key == "name")
             c->setName(py::cast<std::string>(kv.second));
         try {
             BindingBase::SetAttr(*c, key, value);
         } catch (py::attribute_error& /*e*/) {
-            /// kwargs are used to set datafields to their initial values,
-            /// but they can also be used as simple python attributes, unrelated to SOFA.
-            /// thus we catch & ignore the py::attribute_error thrown by SetAttr
+            // kwargs may be plain Python attributes unrelated to SOFA — ignore
         }
     }
     return c;
 }
 
 template<class T>
-void Trampoline_T<T>::_setattr_(pybind11::object self, const std::string& s, pybind11::object value)
+void trampoline_setattr(py::object self, const std::string& s, py::object value)
 {
-    // If the attribute starts with "on" and the new value is callable, invalidate the cached method
     if (s.rfind("on", 0) == 0 && PyCallable_Check(value.ptr()))
     {
         auto* trampoline = dynamic_cast<T*>(py::cast<BaseComponent*>(self));
         if (trampoline)
-        {
             trampoline->invalidateMethodCache(s);
-        }
     }
-
-    // Delegate to the base class __setattr__
     BindingBase::__setattr__(self, s, value);
 }
 
-}
+} // namespace sofapython3
