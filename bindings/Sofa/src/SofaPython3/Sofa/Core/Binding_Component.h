@@ -32,7 +32,7 @@ class TrampolineBase
 {
 public:
     explicit TrampolineBase(sofa::core::objectmodel::BaseComponent* self);
-    virtual ~TrampolineBase();
+    ~TrampolineBase();
 
     void trampoline_handleEvent(sofa::core::objectmodel::Event* event);
     std::string trampoline_getClassName() const;
@@ -76,7 +76,6 @@ public:
     SOFA_CLASS(Component_Trampoline, Component);
 
     Component_Trampoline();
-    ~Component_Trampoline() override = default;
 
     void init() override;
     void reinit() override;
