@@ -1,4 +1,4 @@
-__all__ = ["core","entities","geometries","materials","collision","visual"]
+__all__ = ["core","entities","geometries","materials","collision","visual","prefabs"]
 
 import Sofa.Core
 from stlib.core.basePrefab import BasePrefab
@@ -47,6 +47,7 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
         params["parameters"].name = checkName(self, params["parameters"].name)
     else:
         params["name"] = checkName(self, params["name"])
+
 
     # Dispatch the creation to either addObject or addChild
     if isinstance(typeName, type) and issubclass(typeName, BasePrefab):
