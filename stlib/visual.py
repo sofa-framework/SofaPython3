@@ -3,7 +3,8 @@ from stlib.core.baseParameters import BaseParameters, Optional
 from stlib.geometries import Geometry, GeometryParameters
 from stlib.geometries.file import FileParameters
 from splib.core.utils import DEFAULT_VALUE
-from Sofa.Core import Object 
+from dynapydantic import Polymorphic
+
 
 class VisualParameters(BaseParameters):
     name : str = "Visual"
@@ -11,7 +12,7 @@ class VisualParameters(BaseParameters):
     color : Optional[list[float]] = DEFAULT_VALUE
     texture :  Optional[str] = DEFAULT_VALUE
 
-    geometry : GeometryParameters = None
+    geometry : Polymorphic[GeometryParameters] = None
 
 
 class Visual(BasePrefab):
@@ -22,7 +23,6 @@ class Visual(BasePrefab):
     def init(self):
         self.geometry = self.add(Geometry, parameters=self.parameters.geometry)
         self.addObject("OglModel", color=self.parameters.color, src=self.geometry.container.linkpath)
-
 
 
 def createScene(root):

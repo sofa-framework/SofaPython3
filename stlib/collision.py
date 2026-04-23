@@ -5,7 +5,8 @@ from stlib.geometries.file import FileParameters
 from splib.core.enum_types import CollisionPrimitive
 from splib.core.utils import DEFAULT_VALUE
 from splib.mechanics.collision_model import addCollisionModels
-from Sofa.Core import Object 
+from splib.core.utils import setRequiresCollisionPipeline
+
 
 class CollisionParameters(BaseParameters):
     name : str = "Collision"
@@ -28,6 +29,8 @@ class Collision(BasePrefab):
     def init(self):
 
         geom = self.add(Geometry, parameters = self.parameters.geometry)
+        
+        setRequiresCollisionPipeline(rootnode=self.getRoot())
         
         self.addObject("MechanicalObject", template="Vec3", position=f"@{self.parameters.geometry.name}/container.position")
         for primitive in self.parameters.primitives:

@@ -26,19 +26,15 @@ class InternalDataProvider(BaseParameters):
 
 
 class GeometryParameters(BaseParameters):
-    mytype : type = BaseParameters
     name : str = "Geometry"
 
-    # Type of the highest degree element
-    elementType : Optional[ElementType] = None
+    elementType : Optional[ElementType] = None # Type of the highest degree element
     data : Optional[InternalDataProvider] = None
 
     dynamicTopology : bool = False
 
 
 class Geometry(BasePrefab):
-    # container : Object # This should be more specialized into the right SOFA type
-    # modifier : Optional[Object]
 
     parameters : GeometryParameters
 

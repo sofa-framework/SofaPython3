@@ -9,21 +9,22 @@ from splib.core.enum_types import StateType
 from stlib.core.basePrefab import BasePrefab
 
 from stlib.geometries.file import FileParameters
-from stlib.materials.rigid import RigidParameters
+from stlib.materials.rigid import RigidMaterialParameters
 from splib.core.enum_types import ElementType
+
+from dynapydantic import Polymorphic
+import Sofa
 
 
 class EntityParameters(BaseParameters): 
     name : str = "Entity"
 
-    stateType : StateType = StateType.RIGID
-
     ### QUID 
     addCollision : Optional[Callable] = Collision(CollisionParameters())
     addVisual : Optional[Callable] = Visual(VisualParameters()) 
 
-    geometry : GeometryParameters = GeometryParameters(elementType = ElementType.POINTS, data = InternalDataProvider(position = [[0., 0., 0.]]))
-    material : MaterialParameters = RigidParameters()
+    geometry : Polymorphic[GeometryParameters] = GeometryParameters(elementType = ElementType.POINTS, data = InternalDataProvider(position = [[0., 0., 0.]]))
+    material : Polymorphic[MaterialParameters] = RigidMaterialParameters()
     collision : Optional[CollisionParameters] = None
     visual : Optional[VisualParameters] = VisualParameters(geometry = FileParameters(filename="mesh/cube.obj"))
     
@@ -46,11 +47,10 @@ class Entity(BasePrefab):
 
     def init(self):
         self.geometry = self.add(Geometry, parameters=self.parameters.geometry)
-        self.checkMaterialCompatibility()
 
         self.material = self.add(Material, parameters=self.parameters.material)
-        self.material.getMechanicalState().position.parent = self.geometry.container.position.linkpath
-        
+        self.material.getMechanicalState().topology = self.geometry.container.linkpath
+
         if self.parameters.collision is not None:
             self.collision = self.add(Collision, parameters=self.parameters.collision)
             self.addMapping(self.collision)
@@ -59,18 +59,13 @@ class Entity(BasePrefab):
             self.visual = self.add(Visual, parameters=self.parameters.visual)
             self.addMapping(self.visual)
 
-    def checkMaterialCompatibility(self):
-        if self.parameters.material.stateType != self.parameters.stateType:
-            print("WARNING: imcompatibility between templates of both the entity and the material")
-            self.parameters.material.stateType = self.parameters.stateType
-
 
     def addMapping(self, destinationPrefab):
 
-        template = f'{self.parameters.stateType},Vec3' # TODO: check that it is always true
+        template = f'{self.parameters.material.stateType},Vec3' # TODO: check that it is always true
 
         #TODO: all paths are expecting Geometry to be called Geomtry and so on. We need to robustify this by using the name parameter somehow
-        if( self.parameters.stateType == StateType.VEC3):
+        if( self.parameters.material.stateType == StateType.VEC3):
             destinationPrefab.addObject("BarycentricMapping", 
                                         output=destinationPrefab.linkpath, 
                                         output_topology=destinationPrefab.geometry.container.linkpath,

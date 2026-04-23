@@ -6,7 +6,7 @@ from splib.mechanics.hyperelasticity import *
 from splib.mechanics.mass import addMass
 
 
-class DeformableBehaviorParameters(MaterialParameters):
+class DeformableMaterialParameters(MaterialParameters):
 
     constitutiveLawType : ConstitutiveLaw = ConstitutiveLaw.ELASTIC
     elementType : ElementType = ElementType.TETRAHEDRA
@@ -27,25 +27,3 @@ class DeformableBehaviorParameters(MaterialParameters):
 
     addMaterial : Optional[Callable] = __addDeformableMaterial
 
-
-def createScene(root) :
-    from stlib.entities import Entity, EntityParameters
-    from stlib.visual import VisualParameters
-    from stlib.geometries.file import FileParameters
-
-    root.addObject('RequiredPlugin', name='Sofa.Component.Visual') # Needed to use components [VisualStyle]
-    root.addObject("VisualStyle", displayFlags=["showBehavior"])
-
-    bunnyParameters = EntityParameters()
-    bunnyParameters.geometry = FileParameters(filename="mesh/Bunny.vtk")
-    bunnyParameters.geometry.elementType = ElementType.TETRAHEDRA # TODO: this is required by extract.py. Should it be done automatically in geometry.py ?
-    bunnyParameters.material = DeformableBehaviorParameters()
-    bunnyParameters.material.constitutiveLawType = ConstitutiveLaw.ELASTIC
-    bunnyParameters.material.parameters = [1000, 0.45]
-    bunnyParameters.visual = VisualParameters()
-    # bunnyParameters.visual.geometry = ExtractParameters(sourceParameters=bunnyParameters.geometry,
-    #                                                     destinationType=ElementType.TRIANGLES)
-    bunnyParameters.visual.geometry = FileParameters(filename="mesh/Bunny.stl")
-    bunnyParameters.visual.color = [1, 1, 1, 0.5]
-    bunny = root.add(Entity, parameters=bunnyParameters)
-    # bunny.init()

@@ -5,7 +5,7 @@ from splib.core.enum_types import ElementType
 from Sofa.Core import Node
 
 class FileInternalDataProvider(InternalDataProvider):
-    filename : str = "mesh/cube.obj"
+    filename : str = "mesh/cube.obj" # This should be linked to FileParameters.filename
 
     def generateAttribute(self, parent : Geometry):    
         loadMesh(parent, self.filename)
@@ -33,6 +33,5 @@ class FileParameters(GeometryParameters):
 
     def model_post_init(self, __context):
         self.data = FileInternalDataProvider(filename=self.filename)
-
-        
+    
         
