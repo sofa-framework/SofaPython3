@@ -4,7 +4,7 @@ from splib.simulation.ode_solvers import *
 from splib.simulation.linear_solvers import *
 from splib.mechanics.linear_elasticity import *
 from splib.mechanics.mass import *
-from splib.mechanics.fix_points import *
+from splib.mechanics.attachment import *
 from splib.topology.loader import *
 from splib.core.node_wrapper import *
 

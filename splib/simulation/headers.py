@@ -67,16 +67,16 @@ def setupPenalityCollisionHeader(node,  displayFlags = "showVisualModels",backgr
     node.addObject(parallelPrefix+'BVHNarrowPhase',  name="narrowPhase", **kwargs)
 
     if(stick):
-        node.addObject('CollisionResponse',name="ContactManager", response="BarycentricStickContact",**kwargs)
+        node.addObject('CollisionResponse',name="ContactManager", response="StickContactForceField",**kwargs)
     else:
-        node.addObject('CollisionResponse',name="ContactManager", response="BarycentricPenalityContact",**kwargs)
+        node.addObject('CollisionResponse',name="ContactManager", response="PenalityContactForceField",**kwargs)
     node.addObject('LocalMinDistance' ,name="Distance", alarmDistance=alarmDistance, contactDistance=contactDistance, **kwargs)
 
     return node
 
 
 @ReusableMethod
-def setupLagrangianCollision(node,  displayFlags = "showVisualModels",backgroundColor=[1,1,1,1], parallelComputing=False, stick=False, alarmDistance=DEFAULT_VALUE, contactDistance=DEFAULT_VALUE, frictionCoef=0.0, tolerance=0.0, maxIterations=100, **kwargs):
+def setupLagrangianCollision(node,  enableCollision = True, displayFlags = "showVisualModels",backgroundColor=[1,1,1,1], parallelComputing=False, stick=False, alarmDistance=DEFAULT_VALUE, contactDistance=DEFAULT_VALUE, frictionCoef=0.0, tolerance=0.0, maxIterations=100, **kwargs):
     node.addObject('VisualStyle', displayFlags=displayFlags)
     node.addObject('BackgroundSetting', color=backgroundColor)
 
@@ -107,21 +107,24 @@ def setupLagrangianCollision(node,  displayFlags = "showVisualModels",background
     if(parallelComputing):
         parallelPrefix="Parallel"
 
-    node.addObject('CollisionPipeline', name="collisionPipeline",
-                   **kwargs)
+    if enableCollision:
+        node.addObject('CollisionPipeline', name="collisionPipeline",
+                       **kwargs)
 
-    node.addObject(parallelPrefix+'BruteForceBroadPhase', name="broadPhase",
-                   **kwargs)
+        node.addObject(parallelPrefix+'BruteForceBroadPhase', name="broadPhase",
+                       **kwargs)
 
-    node.addObject(parallelPrefix+'BVHNarrowPhase',  name="narrowPhase",
-                   **kwargs)
+        node.addObject(parallelPrefix+'BVHNarrowPhase',  name="narrowPhase",
+                       **kwargs)
 
-    if(stick):
-        node.addObject('CollisionResponse',name="ContactManager", response="StickContactConstraint", responseParams="tol="+str(tolerance),**kwargs)
-    else:
-        node.addObject('CollisionResponse',name="ContactManager", response="FrictionContactConstraint", responseParams="mu="+str(frictionCoef),**kwargs)
+        if(stick):
+            node.addObject('CollisionResponse',name="ContactManager", response="StickContactConstraint", responseParams="tol="+str(tolerance),**kwargs)
+        else:
+            node.addObject('CollisionResponse',name="ContactManager", response="FrictionContactConstraint", responseParams="mu="+str(frictionCoef),**kwargs)
 
-    node.addObject('NewProximityIntersection' ,name="Distance", alarmDistance=alarmDistance, contactDistance=contactDistance, **kwargs)
+        node.addObject('NewProximityIntersection' ,name="Distance", alarmDistance=alarmDistance, contactDistance=contactDistance, **kwargs)
+
+
     node.addObject('BlockGaussSeidelConstraintSolver',name="ConstraintSolver", tolerance=tolerance, maxIterations=maxIterations, multithreading=parallelComputing,**kwargs)
     node.addObject("ConstraintAttachButtonSetting")
 

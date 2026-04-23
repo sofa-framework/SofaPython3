@@ -2,6 +2,7 @@ __all__ = ["core","entities","geometries","materials","collision","visual", "nod
 
 import Sofa.Core
 from stlib.core.basePrefab import BasePrefab
+from stlib.node_modifiers import NodeModifier
 
 def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
     def findName(cname, names):
@@ -25,9 +26,13 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
 
     # Check if a name is provided, if not, use the one of the class
     params = kwargs.copy()
-    if isinstance(typeName, type) and issubclass(typeName, BasePrefab): #Only for prefabs
-        if len(params.keys()) > 1 or (len(params.keys()) == 1 and "parameters" not in params):
-            raise RuntimeError("Invalid argument, a prefab takes only the \"parameters\" kwargs as input")
+    if isinstance(typeName, type) :
+        if issubclass(typeName, BasePrefab): #Only for prefabs
+            if len(params.keys()) > 1 or (len(params.keys()) == 1 and "parameters" not in params):
+                raise RuntimeError("Invalid argument, a prefab takes only the \"parameters\" kwargs as input")
+        elif issubclass(typeName, NodeModifier):
+            if len(params.keys()) > 2 or (len(params.keys()) == 2 and (("parameters" not in params) or ("on" not in params ))):
+                raise RuntimeError("Invalid argument, a node modifier takes two parameters: the node modifier parameters structure as \"parameters\" kwarg and the \"on\" kwarg as a list of nodes on which to apply the modifier")
 
     elif "name" not in params : #This doesn't apply to prefab
         if isinstance(typeName, str):
@@ -43,7 +48,7 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
         else:
             raise RuntimeError("Invalid argument ", typeName)
 
-    if isinstance(typeName, type) and issubclass(typeName, BasePrefab) and len(params.keys()) == 1:
+    if isinstance(typeName, type) and ((issubclass(typeName, BasePrefab) and len(params.keys()) == 1) or (issubclass(typeName, NodeModifier) and  len(params.keys()) == 2)):
         params["parameters"].name = checkName(self, params["parameters"].name)
     else:
         params["name"] = checkName(self, params["name"])
@@ -53,6 +58,9 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
         pref = self.addChild(typeName(**params))
         pref.init()
         pref.postInit()
+    elif isinstance(typeName, type) and issubclass(typeName, NodeModifier):
+        pref = self.addObject(typeName(params["parameters"]))
+        pref.apply(self, params["on"])
     elif isinstance(typeName, Sofa.Core.Node):
         pref = self.addChild(typeName(**params))
     elif isinstance(typeName, type) and issubclass(typeName, Sofa.Core.Object):

@@ -1,1 +1,1 @@
-__all__ = ["linear_elasticity","hyperelasticity","fix_points","collision_model","mass"]
+__all__ = ["linear_elasticity","hyperelasticity","attachment","collision_model","mass"]
