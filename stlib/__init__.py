@@ -59,8 +59,11 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
         pref.init()
         pref.postInit()
     elif isinstance(typeName, type) and issubclass(typeName, NodeModifier):
-        pref = self.addObject(typeName(params["parameters"]))
-        pref.apply(self, params["on"])
+        if "Modifiers" not in self.children:
+            self.addChild("Modifiers")
+        pref = self.Modifiers.addObject(typeName(params["parameters"]))
+        touchedNodes = pref.apply(self, params["on"])
+        pref.register(self, touchedNodes)
     elif isinstance(typeName, Sofa.Core.Node):
         pref = self.addChild(typeName(**params))
     elif isinstance(typeName, type) and issubclass(typeName, Sofa.Core.Object):

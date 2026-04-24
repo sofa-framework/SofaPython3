@@ -619,6 +619,17 @@ py::object getForceField(Node *self, unsigned int index)
 }
 
 
+
+py::object getLinearSolver(Node *self, unsigned int index)
+{
+    auto* ls = self->linearSolver.get(index);
+    if (ls) {
+        return PythonFactory::toPython(sofa::core::castToBase(ls));
+    }
+    return py::none();
+}
+
+
 py::object getMechanicalState(Node *self)
 {
     sofa::core::behavior::BaseMechanicalState* state = self->mechanicalState.get();
@@ -721,6 +732,7 @@ void moduleAddNode(py::module &m) {
     p.def("getMass", &getMass, sofapython3::doc::sofa::core::Node::getMass);
     p.def("hasODESolver", &hasODESolver, sofapython3::doc::sofa::core::Node::hasODESolver);
     p.def("getForceField", &getForceField, sofapython3::doc::sofa::core::Node::getForceField);
+    p.def("getLinearSolver", &getLinearSolver, sofapython3::doc::sofa::core::Node::getLinearSolver);
     p.def("getMechanicalState", &getMechanicalState, sofapython3::doc::sofa::core::Node::getMechanicalState);
     p.def("getMechanicalMapping", &getMechanicalMapping, sofapython3::doc::sofa::core::Node::getMechanicalMapping);
     p.def("sendEvent", &sendEvent, sofapython3::doc::sofa::core::Node::sendEvent);
