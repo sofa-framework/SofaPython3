@@ -24,19 +24,21 @@ namespace sofapython3::doc::component
 {
 static auto componentClass =
         R"(
-        Overridable class for user interaction on SOFA Components
+        Overridable class for SOFA Components
 
         It can catch events to trigger actions, such as onAnimateBeginEvent, onAnimateEndEvent or onPythonScriptEvent.
-        A new custom controller class needs to be defined to use a controller in a script,
+        A new custom Components class needs to be defined to use a Components in a script,
         and that class needs to reimplement the __init__ method.
 
         :example of use:
 
-        In the following example, we redefine the controller class, and reimplement the __init__ method.
-        We also implement the onAnimateBeginEvent, that will be activted everytime an animation step ends
+        In the following example, we redefine the Components class, and reimplement the __init__ method.
+        We also implement the init and onAnimateBeginEvent methods, the last one will be activted everytime an animation step ends
         and that will simply print a message in the command line. In the createScene function, we initialize
-        the controller and add it to the rootNode.
-        If you run this with runSofa, it will simply endlessly print `onAnimateBeginEvent`
+        the Components and add it to the rootNode.
+        If you run this with runSofa, it will first print "Init component" before you start the simulation, then
+        it will simply endlessly print `onAnimateBeginEvent`
+
         when you click the Animate button.
 
             .. code-block:: python
@@ -45,18 +47,24 @@ static auto componentClass =
 
                 class MyComponent(Sofa.Core.Component):
                     def __init__(self, *args, **kwargs):
-                         ## These are needed (and the normal way to override from a python class)
-                         Sofa.Core.Component.__init__(self, *args, **kwargs)
-                         print(" Python::__init__::"+str(self.name))
+                        ## These are needed (and the normal way to override from a python class)
+                        Sofa.Core.Component.__init__(self, *args, **kwargs)
+                        print(" Python::__init__::"+str(self.name))
+
+                    def init():
+                        """This function is called at the initialization stage of the component.
+                           Right after the call to 'createScene' when the root node is initialized.
+                        """
+                        print("Init component")
 
                     def onEvent(self, event):
-                         """This function is the fallback one that is called if the XXXX event is
-                            received but there is not overriden onXXXX() method.
-                         """
-                         print("generic event handler catched ", event)
+                        """This function is the fallback one that is called if the XXXX event is
+                           received but there is not overriden onXXXX() method.
+                        """
+                        print("generic event handler catched ", event)
 
                     def onAnimateBeginEvent(self, event):
-                         print("onAnimateBeginEvent")
+                        print("onAnimateBeginEvent")
 
                 def createScene(rootNode):
                     controller = MyComponent(name="MyC")

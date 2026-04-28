@@ -28,11 +28,11 @@
 namespace sofapython3 {
 
 
-class TrampolineBase
+class BasetTrampoline
 {
 public:
-    explicit TrampolineBase(sofa::core::objectmodel::BaseComponent* self);
-    ~TrampolineBase();
+    explicit BasetTrampoline(sofa::core::objectmodel::BaseComponent* self);
+    ~BasetTrampoline();
 
     void trampoline_handleEvent(sofa::core::objectmodel::Event* event);
     std::string trampoline_getClassName() const;
@@ -46,7 +46,7 @@ protected:
                           const std::string& methodName);
 
     /// Raw non-owning pointer to the concrete trampoline as BaseComponent.
-    /// Safe because TrampolineBase is always embedded in the same object.
+    /// Safe because BasetTrampoline is always embedded in the same object.
     sofa::core::objectmodel::BaseComponent* m_componentSelf { nullptr };
 
     pybind11::object m_pySelf;
@@ -70,7 +70,7 @@ public:
     void reinit() override {}
 };
 
-class Component_Trampoline : public Component, public TrampolineBase
+class Component_Trampoline : public Component, public BasetTrampoline
 {
 public:
     SOFA_CLASS(Component_Trampoline, Component);

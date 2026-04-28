@@ -37,22 +37,22 @@ using sofa::core::objectmodel::Event;
 using sofa::core::objectmodel::BaseComponent;
 
 
-inline TrampolineBase::TrampolineBase(BaseComponent* self)
+inline BasetTrampoline::BasetTrampoline(BaseComponent* self)
     : m_componentSelf(self)
 {
 }
 
-inline TrampolineBase::~TrampolineBase()
+inline BasetTrampoline::~BasetTrampoline()
 {
     if (m_cacheInitialized)
     {
-        PythonEnvironment::gil acquire {"~TrampolineBase"};
+        PythonEnvironment::gil acquire {"~BasetTrampoline"};
         m_methodCache.clear();
         m_pySelf = py::object();
     }
 }
 
-inline void TrampolineBase::initializePythonCache()
+inline void BasetTrampoline::initializePythonCache()
 {
     if (m_cacheInitialized)
         return;
@@ -66,7 +66,7 @@ inline void TrampolineBase::initializePythonCache()
     m_cacheInitialized = true;
 }
 
-inline py::object TrampolineBase::getCachedMethod(const std::string& methodName)
+inline py::object BasetTrampoline::getCachedMethod(const std::string& methodName)
 {
     auto it = m_methodCache.find(methodName);
     if (it != m_methodCache.end())
@@ -84,7 +84,7 @@ inline py::object TrampolineBase::getCachedMethod(const std::string& methodName)
     return method;
 }
 
-inline bool TrampolineBase::callCachedMethod(const py::object& method, Event* event)
+inline bool BasetTrampoline::callCachedMethod(const py::object& method, Event* event)
 {
     if (m_componentSelf->f_printLog.getValue())
     {
@@ -99,14 +99,14 @@ inline bool TrampolineBase::callCachedMethod(const py::object& method, Event* ev
     return py::cast<bool>(result);
 }
 
-inline void TrampolineBase::invalidateMethodCache(const std::string& methodName)
+inline void BasetTrampoline::invalidateMethodCache(const std::string& methodName)
 {
     if (!m_cacheInitialized)
         return;
     m_methodCache.erase(methodName);
 }
 
-inline std::string TrampolineBase::trampoline_getClassName() const
+inline std::string BasetTrampoline::trampoline_getClassName() const
 {
     PythonEnvironment::gil acquire {"getClassName"};
 
@@ -117,7 +117,7 @@ inline std::string TrampolineBase::trampoline_getClassName() const
     return py::str(py::type::of(py::cast(m_componentSelf)).attr("__name__"));
 }
 
-inline bool TrampolineBase::callScriptMethod(
+inline bool BasetTrampoline::callScriptMethod(
     const py::object& self, Event* event, const std::string& methodName)
 {
     if (m_componentSelf->f_printLog.getValue())
@@ -138,7 +138,7 @@ inline bool TrampolineBase::callScriptMethod(
     return false;
 }
 
-inline void TrampolineBase::trampoline_handleEvent(Event* event)
+inline void BasetTrampoline::trampoline_handleEvent(Event* event)
 {
     PythonEnvironment::executePython(m_componentSelf, [this, event](){
         if (!m_cacheInitialized)

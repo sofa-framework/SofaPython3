@@ -35,7 +35,7 @@ using sofa::core::objectmodel::BaseComponent;
 // ---------------------------------------------------------------------------
 
 Component_Trampoline::Component_Trampoline()
-    : TrampolineBase(this)   // pass this as BaseComponent* — no CRTP needed
+    : BasetTrampoline(this)   // pass this as BaseComponent* — no CRTP needed
 {
 }
 

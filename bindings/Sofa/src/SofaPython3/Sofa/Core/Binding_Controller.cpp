@@ -43,7 +43,7 @@ using sofa::core::behavior::BaseController;
 // ---------------------------------------------------------------------------
 
 Controller_Trampoline::Controller_Trampoline()
-    : TrampolineBase(this)   // pass this as BaseComponent* — no CRTP needed
+    : BasetTrampoline(this)   // pass this as BaseComponent* — no CRTP needed
 {
 }
 

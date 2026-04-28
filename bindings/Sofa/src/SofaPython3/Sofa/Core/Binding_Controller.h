@@ -38,7 +38,7 @@ public:
     void reinit() override {}
 };
 
-class Controller_Trampoline : public Controller, public TrampolineBase
+class Controller_Trampoline : public Controller, public BasetTrampoline
 {
 public:
     SOFA_CLASS(Controller_Trampoline, Controller);
