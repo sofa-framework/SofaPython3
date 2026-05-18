@@ -47,6 +47,10 @@ template<> double convertThenCast<double>(const py::object& o)
 {
     return py::cast<double>( py::float_(o) );
 }
+template<> float convertThenCast<float>(const py::object& o)
+{
+    return py::cast<float>( py::float_(o) );
+}
 template<> int convertThenCast<int>(const py::object& o)
 {
     return py::cast<int>( py::int_(o) );
@@ -247,4 +251,5 @@ void moduleAddVec(py::module &m)
 {
     addVectorsFor<int>(m);
     addVectorsFor<double>(m);
+    addVectorsFor<float>(m);
 }

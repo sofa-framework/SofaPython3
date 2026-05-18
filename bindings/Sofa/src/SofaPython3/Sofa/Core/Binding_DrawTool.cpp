@@ -56,7 +56,7 @@ sofa::type::vector<sofa::type::Vec3> getPoints(const py::array_t<double>& array)
 
     double* ptr = static_cast<double*>(buf.ptr);
 
-    std::vector<sofa::type::Vec3d> points;
+    std::vector<sofa::type::Vec3> points;
     points.resize(rows);
     for (size_t i = 0; i < rows; ++i)
            for (size_t j = 0; j < 3; ++j)
@@ -235,7 +235,7 @@ void moduleAddDrawTool(py::module &m)
 
     // Draw text
     dt.def("drawText", [](DrawTool* self,
-                          const std::array<double,3>& point,
+                          const std::array<SReal,3>& point,
                           const float size,
                           const std::string& text,
                           const sofa::type::RGBAColor& color)

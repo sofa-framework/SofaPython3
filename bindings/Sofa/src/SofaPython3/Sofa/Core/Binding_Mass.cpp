@@ -86,12 +86,12 @@ void declare_mass(py::module &m) {
 
 
 void moduleAddMass(py::module &m) {
-    declare_mass<sofa::defaulttype::Vec3dTypes>(m);
-    declare_mass<sofa::defaulttype::Vec2dTypes>(m);
-    declare_mass<sofa::defaulttype::Vec1dTypes>(m);
-    declare_mass<sofa::defaulttype::Vec6dTypes>(m);
-    declare_mass<sofa::defaulttype::Rigid3dTypes>(m);
-    declare_mass<sofa::defaulttype::Rigid2dTypes>(m);
+    declare_mass<sofa::defaulttype::Vec3Types>(m);
+    declare_mass<sofa::defaulttype::Vec2Types>(m);
+    declare_mass<sofa::defaulttype::Vec1Types>(m);
+    declare_mass<sofa::defaulttype::Vec6Types>(m);
+    declare_mass<sofa::defaulttype::Rigid3Types>(m);
+    declare_mass<sofa::defaulttype::Rigid2Types>(m);
 }
 
 void moduleForwardAddBaseMass(py::module& m)
