@@ -76,7 +76,7 @@ def createScene(root):
     SParams.collision.primitives = [CollisionPrimitive.TRIANGLES]
     # # #TODO: to fix link issues for extracted geometry, it might be better to give source geometry relative link + parameters
     ## TODO: not working with static container because the init order is always wrong so that the triangle vector is always empty when initializing the container
-    SParams.collision.geometry = ExtractParameters(destinationType=ElementType.TRIANGLES, sourceParameters=SParams.geometry,dynamicTopology=True)
+    SParams.collision.geometry = ExtractParameters(destinationType=ElementType.TRIANGLES, sourceParameters=SParams.geometry)
     SParams.visual = VisualParameters()
     SParams.visual.geometry = FileParameters(filename="mesh/SofaScene/SVisu.obj")
     SParams.visual.color = [0.7, .7, 0.7, 0.8]
@@ -84,7 +84,6 @@ def createScene(root):
     S = ModelsNode.add(Entity, parameters = SParams)
 
     #TODO make the name automatically match the modifier type if none is given
-    #TODO why this doesn't add itself to the modelsnode "modified by" data ???
     root.add(NodeModifier, on = [ModelsNode], parameters = SimulationSolversParameters(name = "SimulationSolvers",
                                                                                      constantSparsity=False))
 

@@ -1,4 +1,6 @@
 import dataclasses
+
+from stlib.entities import EntityParameters, Entity
 from stlib.node_modifiers import BaseNodeModifierParameters, AffectedNodes
 from splib.core.enum_types import ConstraintType
 from splib.core.utils import DEFAULT_VALUE
@@ -68,7 +70,13 @@ class SimulationSettingsParameters(BaseNodeModifierParameters):
                 if(linearSolverPath is None):
                     raise ValueError(f"No linear solver found before {child.getLinkPath()}. Please add one to fix this.")
                 child.addObject(constraintCorrectionType, linearSolver=linearSolverPath)
-                modified += [child]
+
+                if(isinstance(node, Entity)):
+                    modified += [node]
+                else:
+                    modified += [child]
+
+                break
             else:
                 modified += SimulationSettingsParameters._addConstraintCorrectionToMechanicalNodes(child, constraintCorrectionType, linearSolverPath)
         return modified
