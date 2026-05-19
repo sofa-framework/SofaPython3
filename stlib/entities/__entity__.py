@@ -3,56 +3,69 @@ from stlib.collision import CollisionParameters, Collision
 from stlib.visual import VisualParameters, Visual
 from stlib.materials import Material, MaterialParameters
 from stlib.geometries import Geometry
-import dataclasses
 from typing import Callable, Optional
-from stlib.geometries import GeometryParameters
+from stlib.geometries import GeometryParameters, InternalDataProvider
 from splib.core.enum_types import StateType
 from stlib.core.basePrefab import BasePrefab
 
+from stlib.geometries.file import FileParameters
+from stlib.materials.rigid import RigidMaterialParameters
+from splib.core.enum_types import ElementType
 
-@dataclasses.dataclass
+from dynapydantic import Polymorphic
+import Sofa
+
+
 class EntityParameters(BaseParameters): 
+    """
+    Attributes:
+        name (str): The name of the entity.
+        addCollision (Optional[Callable]): Optional callable to add a collision component to the entity.
+        addVisual (Optional[Callable]): Optional callable to add a visual component to the entity.
+        geometry (GeometryParameters): Parameters for the geometry of the entity, with a default of a point at the origin.
+        material (MaterialParameters): Parameters for the material of the entity, with a default of a rigid material.
+        visual (Optional[VisualParameters]): Optional parameters for the visual component of the entity, with a default of a cube mesh.
+        collision (Optional[CollisionParameters]): Optional parameters for the collision component of the entity, with a default of None.
+    """
     name : str = "Entity"
 
-    stateType : StateType = StateType.VEC3
+    addCollision : Optional[Callable] = Collision(CollisionParameters())
+    addVisual : Optional[Callable] = Visual(VisualParameters()) 
 
-    ### QUID 
-    addCollision : Optional[Callable] = lambda x : Collision(CollisionParameters())
-    addVisual : Optional[Callable] = lambda x : Visual(VisualParameters()) 
-
-    geometry : GeometryParameters = None
-    material : MaterialParameters = None
+    geometry : Polymorphic[GeometryParameters] = GeometryParameters(elementType = ElementType.POINTS, data = InternalDataProvider(position = [[0., 0., 0.]]))
+    material : Polymorphic[MaterialParameters] = RigidMaterialParameters()
+    visual : Optional[VisualParameters] = VisualParameters(geometry = FileParameters(filename="mesh/cube.obj"))
     collision : Optional[CollisionParameters] = None
-    visual : Optional[VisualParameters] = None
     
 
 
 class Entity(BasePrefab): 
+    """
+    An entity is a Prefab, representing a physical object with geometry, material properties, 
+    and optional visual and collision components. It serves as a base class for more complex entities in the simulation.
+    
+    Attributes:
+        parameters (EntityParameters): The parameters defining the entity, including its name, geometry, material properties, and optional visual and collision components.
+    """
 
-    # A simulated object
+    geometry : Geometry
     material : Material
     visual : Visual
     collision : Collision
-    geometry : Geometry
     
     parameters : EntityParameters
     
 
-    def __init__(self, parameters=EntityParameters(), **kwargs):
+    def __init__(self, parameters: EntityParameters):
         BasePrefab.__init__(self, parameters)
 
 
     def init(self):
         self.geometry = self.add(Geometry, parameters=self.parameters.geometry)
 
-        ### Check compatilibility of Material
-        if self.parameters.material.stateType != self.parameters.stateType:
-            print("WARNING: imcompatibility between templates of both the entity and the material")
-            self.parameters.material.stateType = self.parameters.stateType
-
         self.material = self.add(Material, parameters=self.parameters.material)
-        self.material.States.position.parent = self.geometry.container.position.linkpath
-        
+        self.material.getMechanicalState().topology = self.geometry.container.linkpath
+
         if self.parameters.collision is not None:
             self.collision = self.add(Collision, parameters=self.parameters.collision)
             self.addMapping(self.collision)
@@ -64,18 +77,18 @@ class Entity(BasePrefab):
 
     def addMapping(self, destinationPrefab):
 
-        template = f'{self.parameters.stateType},Vec3' # TODO: check that it is always true
+        template = f'{self.parameters.material.stateType},Vec3' # TODO: check that it is always true
 
         #TODO: all paths are expecting Geometry to be called Geomtry and so on. We need to robustify this by using the name parameter somehow
-        if( self.parameters.stateType == StateType.VEC3):
+        if( self.parameters.material.stateType == StateType.VEC3):
             destinationPrefab.addObject("BarycentricMapping", 
                                         output=destinationPrefab.linkpath, 
-                                        output_topology=destinationPrefab.Geometry.container.linkpath,
-                                        input=self.Material.linkpath,
-                                        input_topology=self.Geometry.container.linkpath,
+                                        output_topology=destinationPrefab.geometry.container.linkpath,
+                                        input=self.material.linkpath,
+                                        input_topology=self.geometry.container.linkpath,
                                         template=template)
         else:
             destinationPrefab.addObject("RigidMapping", 
                                          output=destinationPrefab.linkpath, 
-                                        input=self.Material.linkpath,
+                                        input=self.material.linkpath,
                                         template=template)

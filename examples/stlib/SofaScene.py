@@ -3,7 +3,7 @@ from fontTools.afmLib import preferredAttributeOrder
 from stlib.geometries.plane import PlaneParameters
 from stlib.geometries.file import FileParameters
 from stlib.geometries.extract import ExtractParameters
-from stlib.materials.deformable import DeformableBehaviorParameters
+from stlib.materials.deformable import DeformableMaterialParameters
 from stlib.collision import Collision, CollisionParameters
 from stlib.entities import Entity, EntityParameters
 from stlib.visual import Visual, VisualParameters
@@ -66,7 +66,7 @@ def createScene(root):
 
     LogoParams = EntityParameters(name = "Logo",
                                   geometry = FileParameters(filename="mesh/SofaScene/Logo.vtk"),
-                                  material = DeformableBehaviorParameters(),
+                                  material = DeformableMaterialParameters(),
                                   collision = CollisionParameters(geometry = FileParameters(filename="mesh/SofaScene/LogoColli.sph")),
                                   visual = VisualParameters(geometry = FileParameters(filename="mesh/SofaScene/LogoVisu.obj")))
 
@@ -94,12 +94,12 @@ def createScene(root):
     SParams.name = "S"
     SParams.geometry = FileParameters(filename="mesh/SofaScene/S.vtk")
     SParams.geometry.elementType = ElementType.TETRAHEDRA
-    SParams.material = DeformableBehaviorParameters()
+    SParams.material = DeformableMaterialParameters()
     SParams.material.constitutiveLawType = ConstitutiveLaw.ELASTIC
     SParams.material.parameters = [200, 0.45]
 
     def SAddMaterial(node):
-        DeformableBehaviorParameters.addDeformableMaterial(node)
+        DeformableMaterialParameters.addDeformableMaterial(node)
         #TODO deal with that is a more smooth way in the material directly
         node.addObject("LinearSolverConstraintCorrection", name="ConstraintCorrection", linearSolver=SNode.LinearSolver.linkpath, ODESolver=SNode.ODESolver.linkpath)
 

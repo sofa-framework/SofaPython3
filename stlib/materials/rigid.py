@@ -1,13 +1,9 @@
-from stlib.core.baseParameters import BaseParameters, Optional, dataclasses
-from stlib.geometries import GeometryParameters
+from stlib.materials import MaterialParameters
+from splib.core.enum_types import StateType
 
 
+class RigidMaterialParameters(MaterialParameters):
 
-@dataclasses.dataclass
-class RigidParameters(BaseParameters):
+    stateType : StateType = StateType.RIGID
 
-    geometry : GeometryParameters
-    mass : Optional[float] = None
-
-    def toDict(self):
-        return dataclasses.asdict(self)
+    position : list[list[float]] = [[0., 0., 0., 0., 0., 0., 1.]]

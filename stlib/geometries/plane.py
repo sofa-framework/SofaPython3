@@ -1,19 +1,14 @@
 from stlib.geometries import GeometryParameters, InternalDataProvider, Geometry
-import dataclasses
 import numpy as np
 
-@dataclasses.dataclass
 class PlaneDataProvider(InternalDataProvider):
-    center : np.ndarray[float] = dataclasses.field(default_factory = lambda : np.array([0,0,0]))
-    normal : np.ndarray[float] = dataclasses.field(default_factory = lambda : np.array([0,0,1]))
-    lengthNormal : np.ndarray[float] = dataclasses.field(default_factory = lambda : np.array([1,0,0]))
+    center : np.ndarray[float] = np.array([0,0,0])
+    normal : np.ndarray[float] = np.array([0,0,1])
+    lengthNormal : np.ndarray[float] = np.array([1,0,0])
     lengthNbEdge : int = 1
     widthNbEdge : int = 1
     lengthSize : float = 1.0
     widthSize : float = 1.0
-
-    def __post_init__(self, **kwargs):
-        InternalDataProvider.__init__(self,**kwargs)
 
     def generateAttribute(self, parent : Geometry):
 
@@ -37,9 +32,22 @@ class PlaneDataProvider(InternalDataProvider):
 
 
 
-
 class PlaneParameters(GeometryParameters):
 
-    def __init__(self,  center, normal, lengthNormal, lengthNbEdge, widthNbEdge, lengthSize, widthSize, dynamicTopology = False):
-        GeometryParameters.__init__(self, data = PlaneDataProvider(center=center, normal=normal, lengthNormal=lengthNormal, lengthNbEdge=lengthNbEdge, widthNbEdge=widthNbEdge, lengthSize=lengthSize, widthSize=widthSize),
-                                    dynamicTopology = dynamicTopology)
+    center: list[float, float, float] = [0, 0, 0]
+    normal: list[float, float, float] = [0, 0, 1]
+    lengthNormal: list[float, float, float] = [1, 0, 0]
+    lengthNbEdge: int = 1
+    widthNbEdge: int = 1
+    lengthSize: float = 1.0
+    widthSize: float = 1.0
+    dynamicTopology: bool = False
+
+    def model_post_init(self, __context):
+        self.data = PlaneDataProvider(center=self.center, 
+                                      normal=self.normal, 
+                                      lengthNormal=self.lengthNormal, 
+                                      lengthNbEdge=self.lengthNbEdge, 
+                                      widthNbEdge=self.widthNbEdge, 
+                                      lengthSize=self.lengthSize, 
+                                      widthSize=self.widthSize)

@@ -1,19 +1,32 @@
 from stlib.geometries import GeometryParameters, InternalDataProvider, Geometry
-from stlib.core.baseParameters import dataclasses
 from splib.topology.loader import loadMesh
 from splib.core.enum_types import ElementType
 
 from Sofa.Core import Node
 
-@dataclasses.dataclass
-class FileInternalDataProvider(InternalDataProvider):
-    filename : str = "mesh/cube.obj"
 
-    def __post_init__(self, **kwargs):
-        InternalDataProvider.__init__(self,**kwargs)
+class FileParameters(GeometryParameters):
+
+    filename : str = "mesh/cube.obj"
+    dynamicTopology : bool = False
+    elementType : ElementType = None
+
+    translation : list[float, float, float] = [0., 0., 0.]
+    rotation : list[float, float, float] = [0., 0., 0.]
+    scale : list[float, float, float] = [1., 1., 1.]
+
+    def model_post_init(self, __context):
+        self.data = FileInternalDataProvider(fileParameters=self)
+
+class FileInternalDataProvider(InternalDataProvider):
+
+    fileParameters : FileParameters
 
     def generateAttribute(self, parent : Geometry):    
-        loadMesh(parent, self.filename)
+        loader = loadMesh(parent, self.fileParameters.filename)
+        loader.translation = self.fileParameters.translation
+        loader.rotation = self.fileParameters.rotation
+        loader.scale = self.fileParameters.scale
 
         if hasattr(parent.loader, 'position'):
             self.position = str(parent.loader.position.linkpath)
@@ -28,13 +41,4 @@ class FileInternalDataProvider(InternalDataProvider):
         if hasattr(parent.loader, 'tetrahedra'):
             self.tetrahedra = str(parent.loader.tetrahedra.linkpath)
 
-
-
-class FileParameters(GeometryParameters):
-
-    def __init__(self, filename, dynamicTopology = False, elementType : ElementType = None ):
-        GeometryParameters.__init__(self,
-                                    data = FileInternalDataProvider(filename=filename), 
-                                    dynamicTopology = dynamicTopology, 
-                                    elementType = elementType)
-        
+        return parent.loader

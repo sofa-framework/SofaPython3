@@ -1,4 +1,4 @@
-__all__ = ["core","entities","geometries","materials","collision","visual"]
+__all__ = ["core","entities","geometries","materials","collision","visual","prefabs"]
 
 import Sofa.Core
 from stlib.core.basePrefab import BasePrefab
