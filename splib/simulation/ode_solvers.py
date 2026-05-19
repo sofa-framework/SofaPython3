@@ -3,7 +3,7 @@ from splib.core.node_wrapper import ReusableMethod
 @ReusableMethod
 def addImplicitODE(node,static=False,**kwargs):
     if( not(static) ):
-        node.addObject("EulerImplicitIntegrationScheme",name="ODESolver",**kwargs)
+        node.addObject("EulerImplicitSolver",name="ODESolver",**kwargs)
     else:
         node.addObject("StaticSolver",name="ODESolver",**kwargs)
 
