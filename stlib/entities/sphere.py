@@ -14,10 +14,8 @@ class SphereParameters(EntityParameters):
     visual : Optional[VisualParameters] = VisualParameters(geometry = FileParameters(filename="mesh/sphere.obj"))
     
     def model_post_init(self, _):
-        # TODO:
-        # 1. apply size as scale in geometry, material, collision and visual 
         if self.deformable:
-            self.geometry = FileParameters(filename="mesh/sphere.vtk", elementType=ElementType.TETRAHEDRA)
+            self.geometry = FileParameters(filename="mesh/sphere.vtk", elementType=ElementType.TETRAHEDRA, scale=self.radius)
             self.material = DeformableMaterialParameters()
         return  
 

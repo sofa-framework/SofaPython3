@@ -4,11 +4,29 @@ from splib.core.enum_types import ElementType
 
 from Sofa.Core import Node
 
+
+class FileParameters(GeometryParameters):
+
+    filename : str = "mesh/cube.obj"
+    dynamicTopology : bool = False
+    elementType : ElementType = None
+
+    translation : list[float, float, float] = [0., 0., 0.]
+    rotation : list[float, float, float] = [0., 0., 0.]
+    scale : list[float, float, float] = [1., 1., 1.]
+
+    def model_post_init(self, __context):
+        self.data = FileInternalDataProvider(fileParameters=self)
+
 class FileInternalDataProvider(InternalDataProvider):
-    filename : str = "mesh/cube.obj" # This should be linked to FileParameters.filename
+
+    fileParameters : FileParameters
 
     def generateAttribute(self, parent : Geometry):    
-        loadMesh(parent, self.filename)
+        loader = loadMesh(parent, self.fileParameters.filename)
+        loader.translation = self.fileParameters.translation
+        loader.rotation = self.fileParameters.rotation
+        loader.scale = self.fileParameters.scale
 
         if hasattr(parent.loader, 'position'):
             self.position = str(parent.loader.position.linkpath)
@@ -23,15 +41,4 @@ class FileInternalDataProvider(InternalDataProvider):
         if hasattr(parent.loader, 'tetrahedra'):
             self.tetrahedra = str(parent.loader.tetrahedra.linkpath)
 
-
-
-class FileParameters(GeometryParameters):
-
-    filename : str = "mesh/cube.obj"
-    dynamicTopology : bool = False
-    elementType : ElementType = None
-
-    def model_post_init(self, __context):
-        self.data = FileInternalDataProvider(filename=self.filename)
-    
-        
+        return parent.loader
