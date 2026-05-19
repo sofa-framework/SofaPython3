@@ -32,10 +32,10 @@ def addFixation(node,type:ConstraintType,boxROIs=DEFAULT_VALUE, sphereROIs=DEFAU
 
 
 @ReusableMethod
-def attachObjects(node, type:ConstraintType, object1, object2, indices1, indices2, stiffness=DEFAULT_VALUE, damping=DEFAULT_VALUE, **kwargs):
+def attachObjects(node, type:ConstraintType, object1, object2, indices1, indices2, stiffness=DEFAULT_VALUE, damping=DEFAULT_VALUE, lengths=DEFAULT_VALUE, **kwargs):
     match type:
         case ConstraintType.WEAK:
-            node.addObject("SpringForceField", name="attachment", object1=object1, object2=object2, indices1=indices1, indices2=indices2, stiffness=stiffness, damping=damping, lengths="0", **kwargs)
+            node.addObject("SpringForceField", name="attachment", object1=object1, object2=object2, indices1=indices1, indices2=indices2, stiffness=stiffness, damping=damping, lengths=lengths, **kwargs)
             return
         case ConstraintType.PROJECTIVE:
             node.addObject("AttachProjectiveConstraint", name="attachment", object1=object1, object2=object2, indices1=indices1, indices2=indices2, **kwargs)

@@ -64,7 +64,7 @@ def createScene(root):
 
 
     ### S
-    SParams = EntityParameters("bob.yaml")
+    SParams = EntityParameters()
     SParams.name = "S"
     SParams.geometry = FileParameters(filename="mesh/SofaScene/S.vtk")
     SParams.geometry.elementType = ElementType.TETRAHEDRA
@@ -93,4 +93,7 @@ def createScene(root):
                                                                                   parallelComputing = True,
                                                                                   alarmDistance=0.3, contactDistance=0.02,
                                                                                   frictionCoef=0.5, tolerance=1.0e-4, maxIterations=20))
+
+    Logo.add(NodeModifier, on = [Logo], parameters = FixConstraintParameters(name = "FixConstraintParameters", boxROIs=[[-1, -2, -13, 3, 2, -7]]))
+    # ModelsNode.add(AttachmentConstraintParameters, on = [S, Logo], parameters = AttachmentConstraintParameters(name = "AttachmentConstraintParameters", indices1=[], indices2=[], stiffness=10, length=0.2))
 
