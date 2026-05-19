@@ -48,7 +48,6 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
     else:
         params["name"] = checkName(self, params["name"])
 
-
     # Dispatch the creation to either addObject or addChild
     if isinstance(typeName, type) and issubclass(typeName, BasePrefab):
         pref = self.addChild(typeName(**params))
