@@ -32,7 +32,7 @@ def createScene(root):
     plane1_collisionParams.name = "UP"
     plane1_collisionParams.primitives = [CollisionPrimitive.TRIANGLES]
     plane1_collisionParams.kwargs = {"TriangleCollision" : {"moving" : False, "simulated" : False}}
-    plane1_collisionParams.geometry = PlaneParameters(np.array([15,0,1]), np.array([0,0,-1]),
+    plane1_collisionParams.geometry = PlaneParameters(np.array([15,0,5]), np.array([0,0,-1]),
                                                       planes_lengthNormal, planes_lengthNbEdge, planes_widthNbEdge, planes_lengthSize, planes_widthSize)
     plane1 = root.add(Collision, parameters = plane1_collisionParams)
     # TODO being able to reuse already loaded geometry of current prefab to add any new sub prefab
@@ -88,6 +88,7 @@ def createScene(root):
                                                                                      constantSparsity=False))
 
     root.add(NodeModifier, on = [root], parameters = SimulationSettingsParameters(name = "SimulationSettings",
+                                                                                  displayFlags = ["showVisualModels", "showInteractionForceFields"],
                                                                                   enableCollisionDetection = True,
                                                                                   useLagrangian = True,
                                                                                   parallelComputing = True,
@@ -95,5 +96,6 @@ def createScene(root):
                                                                                   frictionCoef=0.5, tolerance=1.0e-4, maxIterations=20))
 
     Logo.add(NodeModifier, on = [Logo], parameters = FixConstraintParameters(name = "FixConstraintParameters", boxROIs=[[-1, -2, -13, 3, 2, -7]]))
-    # ModelsNode.add(AttachmentConstraintParameters, on = [S, Logo], parameters = AttachmentConstraintParameters(name = "AttachmentConstraintParameters", indices1=[], indices2=[], stiffness=10, length=0.2))
+    ModelsNode.add(NodeModifier, on = [S, Logo], parameters = AttachmentConstraintParameters(name = "AttachmentConstraintParameters", indices1=[26,20,119,121], indices2=[722,732,574,573], stiffness=0.5, damping=0.0,
+                                                                                             length=[((9.43-9.35)**2 + (-.44-0.48)**2 + (-6.01+6.56)**2)**(0.5) ]))
 

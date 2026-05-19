@@ -35,7 +35,7 @@ class AttachmentConstraintParameters(BaseNodeModifierParameters):
     @override
     @AffectedNodes(2)
     def modify(self, owner, node : list[Node]) -> list[Node]:
-        splib_att.attachObjects(owner,  type = self.constraintType, object1=node[0], object2=node[1],  indices1=self.indices1, indices2=self.indices2, stiffness=self.stiffness, damping=self.damping, length=self.length, **self.kwargs)
+        splib_att.attachObjects(owner,  type = self.constraintType, object1=node[0].Material.States.linkpath, object2=node[1].Material.States.linkpath,  indices1=self.indices1, indices2=self.indices2, stiffness=self.stiffness, damping=self.damping, length=self.length, **self.kwargs)
         return node + [owner]
 
 
