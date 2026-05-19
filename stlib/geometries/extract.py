@@ -47,6 +47,7 @@ class ExtractParameters(GeometryParameters):
 
         self.postInit = partial(extractGeometry, sourceParameters.elementType)
 
+
         if(not (sourceParameters.elementType == ElementType.TETRAHEDRA and destinationType == ElementType.TRIANGLES)
             and not (sourceParameters.elementType == ElementType.HEXAHEDRA and destinationType == ElementType.QUADS) ):
             raise ValueError("Only configuration possible are 'Tetrahedra to Triangles' and 'Hexahedra to Quads'")

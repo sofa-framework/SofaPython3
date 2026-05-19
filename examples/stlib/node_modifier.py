@@ -19,7 +19,7 @@ from stlib.node_modifiers.attachments import FixConstraintParameters, Attachment
 
 def createScene(root):
     root.gravity=[0,0,9.81]
-
+    root.dt=0.01
 
     ##Environement
     planes_lengthNormal = np.array([0, 1, 0])
@@ -75,7 +75,8 @@ def createScene(root):
     SParams.collision = CollisionParameters()
     SParams.collision.primitives = [CollisionPrimitive.TRIANGLES]
     # # #TODO: to fix link issues for extracted geometry, it might be better to give source geometry relative link + parameters
-    SParams.collision.geometry = ExtractParameters(destinationType=ElementType.TRIANGLES, sourceParameters=SParams.geometry )
+    ## TODO: not working with static container because the init order is always wrong so that the triangle vector is always empty when initializing the container
+    SParams.collision.geometry = ExtractParameters(destinationType=ElementType.TRIANGLES, sourceParameters=SParams.geometry,dynamicTopology=True)
     SParams.visual = VisualParameters()
     SParams.visual.geometry = FileParameters(filename="mesh/SofaScene/SVisu.obj")
     SParams.visual.color = [0.7, .7, 0.7, 0.8]
@@ -91,7 +92,7 @@ def createScene(root):
                                                                                   displayFlags = ["showVisualModels", "showInteractionForceFields"],
                                                                                   enableCollisionDetection = True,
                                                                                   useLagrangian = True,
-                                                                                  parallelComputing = True,
+                                                                                  parallelComputing = False,
                                                                                   alarmDistance=0.3, contactDistance=0.02,
                                                                                   frictionCoef=0.5, tolerance=1.0e-4, maxIterations=20))
 
