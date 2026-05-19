@@ -21,7 +21,6 @@
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseComponent.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseComponent_doc.h>
-#include <SofaPython3/Sofa/Core/Binding_Controller.h>
 #include <SofaPython3/PythonFactory.h>
 
 #include <sofa/core/ObjectFactory.h>

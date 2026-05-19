@@ -18,15 +18,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <pybind11/pybind11.h>
-#include <pybind11/cast.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <SofaPython3/Sofa/Core/Binding_Base.h>
-#include <SofaPython3/Sofa/Core/Binding_Controller.h>
 #include <SofaPython3/Sofa/Core/Binding_Component.inl>
-#include <SofaPython3/Sofa/Core/Binding_Controller_doc.h>
-#include <SofaPython3/PythonFactory.h>
-#include <SofaPython3/PythonEnvironment.h>
 
 SOFAPYTHON3_BIND_ATTRIBUTE_ERROR()
 
@@ -36,45 +28,45 @@ namespace py { using namespace pybind11; }
 namespace sofapython3
 {
 using sofa::core::objectmodel::Event;
-using sofa::core::behavior::BaseController;
+using sofa::core::objectmodel::BaseComponent;
 
 // ---------------------------------------------------------------------------
-// Controller_Trampoline
+// Component_Trampoline
 // ---------------------------------------------------------------------------
 
-Controller_Trampoline::Controller_Trampoline()
+Component_Trampoline::Component_Trampoline()
     : BasetTrampoline(this)   // pass this as BaseComponent* — no CRTP needed
 {
 }
 
-void Controller_Trampoline::draw(const sofa::core::visual::VisualParams* params)
+void Component_Trampoline::draw(const sofa::core::visual::VisualParams* params)
 {
     PythonEnvironment::executePython(this, [this, params](){
-        PYBIND11_OVERLOAD(void, Controller, draw, params);
+        PYBIND11_OVERLOAD(void, Component, draw, params);
     });
 }
 
-void Controller_Trampoline::init()
+void Component_Trampoline::init()
 {
     PythonEnvironment::executePython(this, [this](){
         initializePythonCache();
-        PYBIND11_OVERLOAD(void, Controller, init, );
+        PYBIND11_OVERLOAD(void, Component, init, );
     });
 }
 
-void Controller_Trampoline::reinit()
+void Component_Trampoline::reinit()
 {
     PythonEnvironment::executePython(this, [this](){
-        PYBIND11_OVERLOAD(void, Controller, reinit, );
+        PYBIND11_OVERLOAD(void, Component, reinit, );
     });
 }
 
-void Controller_Trampoline::handleEvent(sofa::core::objectmodel::Event* event)
+void Component_Trampoline::handleEvent(sofa::core::objectmodel::Event* event)
 {
     trampoline_handleEvent(event);
 }
 
-std::string Controller_Trampoline::getClassName() const
+std::string Component_Trampoline::getClassName() const
 {
     return trampoline_getClassName();
 }
@@ -83,20 +75,20 @@ std::string Controller_Trampoline::getClassName() const
 // Module registration
 // ---------------------------------------------------------------------------
 
-void moduleAddController(py::module &m) {
-    py::class_<Controller,
-                Controller_Trampoline,
-                BaseComponent,
-                py_shared_ptr<Controller>> f(m, "Controller",
-                                             py::dynamic_attr(),
-                                             sofapython3::doc::controller::controllerClass);
+void moduleAddComponent(py::module &m) {
+    py::class_<Component,
+        Component_Trampoline,
+        BaseComponent,
+        py_shared_ptr<Component>> f(m, "Component",
+                                     py::dynamic_attr(),
+                                     sofapython3::doc::component::componentClass);
 
-    f.def(py::init(&trampoline_init<Controller_Trampoline>));
-    f.def("__setattr__", &trampoline_setattr<Controller_Trampoline>);
+    f.def(py::init(&trampoline_init<Component_Trampoline>));
+    f.def("__setattr__", &trampoline_setattr<Component_Trampoline>);
 
-    f.def("init", &Controller::init);
-    f.def("reinit", &Controller::reinit);
-    f.def("draw", [](Controller& self, sofa::core::visual::VisualParams* params){
+    f.def("init", &Component::init);
+    f.def("reinit", &Component::reinit);
+    f.def("draw", [](Component& self, sofa::core::visual::VisualParams* params){
         self.draw(params);
     }, pybind11::return_value_policy::reference);
 }
