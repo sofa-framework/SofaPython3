@@ -42,7 +42,7 @@ class BaseNodeModifierParameters(object):
 
 
 #TODO use Component when available
-class NodeModifier(Sofa.Core.Controller):
+class NodeModifier(Sofa.Core.Component):
 
     parameters : BaseNodeModifierParameters
 
