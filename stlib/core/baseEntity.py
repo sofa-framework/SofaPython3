@@ -1,11 +1,11 @@
-import Sofa.Core
-from baseParameters import BaseParameters
+import Sofa
+from stlib.core.baseParameters import BaseParameters
 
-class BaseEntity(Sofa.Core.Prefab):
+class BaseEntity(Sofa.Prefab):
 
     parameters : BaseParameters
 
     def __init__(self):
-        Sofa.Core.Prefab.__init__(self)
+        Sofa.Prefab.__init__(self)
 
         

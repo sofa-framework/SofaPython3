@@ -17,26 +17,41 @@ import Sofa
 
 
 class EntityParameters(BaseParameters): 
+    """
+    Attributes:
+        name (str): The name of the entity.
+        addCollision (Optional[Callable]): Optional callable to add a collision component to the entity.
+        addVisual (Optional[Callable]): Optional callable to add a visual component to the entity.
+        geometry (GeometryParameters): Parameters for the geometry of the entity, with a default of a point at the origin.
+        material (MaterialParameters): Parameters for the material of the entity, with a default of a rigid material.
+        visual (Optional[VisualParameters]): Optional parameters for the visual component of the entity, with a default of a cube mesh.
+        collision (Optional[CollisionParameters]): Optional parameters for the collision component of the entity, with a default of None.
+    """
     name : str = "Entity"
 
-    ### QUID 
     addCollision : Optional[Callable] = Collision(CollisionParameters())
     addVisual : Optional[Callable] = Visual(VisualParameters()) 
 
     geometry : Polymorphic[GeometryParameters] = GeometryParameters(elementType = ElementType.POINTS, data = InternalDataProvider(position = [[0., 0., 0.]]))
     material : Polymorphic[MaterialParameters] = RigidMaterialParameters()
-    collision : Optional[CollisionParameters] = None
     visual : Optional[VisualParameters] = VisualParameters(geometry = FileParameters(filename="mesh/cube.obj"))
+    collision : Optional[CollisionParameters] = None
     
 
 
 class Entity(BasePrefab): 
+    """
+    An entity is a Prefab, representing a physical object with geometry, material properties, 
+    and optional visual and collision components. It serves as a base class for more complex entities in the simulation.
+    
+    Attributes:
+        parameters (EntityParameters): The parameters defining the entity, including its name, geometry, material properties, and optional visual and collision components.
+    """
 
-    # A simulated object
+    geometry : Geometry
     material : Material
     visual : Visual
     collision : Collision
-    geometry : Geometry
     
     parameters : EntityParameters
     

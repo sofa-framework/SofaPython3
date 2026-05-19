@@ -17,6 +17,8 @@ class VisualParameters(BaseParameters):
 
 class Visual(BasePrefab):
 
+    parameters: VisualParameters
+
     def __init__(self, parameters: VisualParameters):
         BasePrefab.__init__(self, parameters)
 
