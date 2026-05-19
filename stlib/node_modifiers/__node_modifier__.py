@@ -47,7 +47,7 @@ class NodeModifier(Sofa.Core.Component):
     parameters : BaseNodeModifierParameters
 
     def __init__(self, parameters : BaseNodeModifierParameters):
-        Sofa.Core.Controller.__init__(self, **(parameters.toDict()))
+        Sofa.Core.Component.__init__(self, **(parameters.toDict()))
         self.parameters = parameters
 
     def register( self, owner, nodes : list[Node]) :
