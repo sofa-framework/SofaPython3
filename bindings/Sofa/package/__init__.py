@@ -161,7 +161,10 @@ if sofa_root and sys.platform == 'win32':
             os.environ['PATH'] = sofapython3_bin_path + os.pathsep + os.environ.get('PATH', '')
 
 print("---------------------------------------")
-sys.stdout.flush()
+if sys.stdout is not None:
+    sys.stdout.flush()
+if sys.stderr is not None:
+    sys.stderr.flush() 
 
 import Sofa.constants
 import Sofa.Helper
