@@ -50,12 +50,12 @@ namespace sofapython3
     using sofa::core::behavior::MechanicalState;
     using sofa::core::MechanicalParams;
     using sofa::core::behavior::MultiMatrixAccessor;
-    using sofa::defaulttype::Vec3dTypes;
-    using sofa::defaulttype::Vec2dTypes;
-    using sofa::defaulttype::Vec1dTypes;
-    using sofa::defaulttype::Vec6dTypes;
-    using sofa::defaulttype::Rigid3dTypes;
-    using sofa::defaulttype::Rigid2dTypes;
+    using sofa::defaulttype::Vec3Types;
+    using sofa::defaulttype::Vec2Types;
+    using sofa::defaulttype::Vec1Types;
+    using sofa::defaulttype::Vec6Types;
+    using sofa::defaulttype::Rigid3Types;
+    using sofa::defaulttype::Rigid2Types;
 
     template<class In, class Out>
     Mapping_Trampoline<In, Out>::Mapping_Trampoline() = default;
@@ -174,29 +174,29 @@ namespace sofapython3
     }
 
     void moduleAddMapping(py::module &m) {
-        declareMapping<Vec1dTypes, Vec1dTypes>(m);
-        declareMapping<Vec1dTypes, Vec2dTypes>(m);
-        declareMapping<Vec1dTypes, Vec3dTypes>(m);
+        declareMapping<Vec1Types, Vec1Types>(m);
+        declareMapping<Vec1Types, Vec2Types>(m);
+        declareMapping<Vec1Types, Vec3Types>(m);
 
-        declareMapping<Vec2dTypes, Vec2dTypes>(m);
-        declareMapping<Vec2dTypes, Vec1dTypes>(m);
+        declareMapping<Vec2Types, Vec2Types>(m);
+        declareMapping<Vec2Types, Vec1Types>(m);
 
-        declareMapping<Vec3dTypes, Vec3dTypes>(m);
-        declareMapping<Vec3dTypes, Vec2dTypes>(m);
-        declareMapping<Vec3dTypes, Vec1dTypes>(m);
+        declareMapping<Vec3Types, Vec3Types>(m);
+        declareMapping<Vec3Types, Vec2Types>(m);
+        declareMapping<Vec3Types, Vec1Types>(m);
 
-        declareMapping<Vec6dTypes, Vec6dTypes>(m);
-        declareMapping<Vec6dTypes, Vec3dTypes>(m);
-        declareMapping<Vec6dTypes, Vec1dTypes>(m);
+        declareMapping<Vec6Types, Vec6Types>(m);
+        declareMapping<Vec6Types, Vec3Types>(m);
+        declareMapping<Vec6Types, Vec1Types>(m);
 
-        declareMapping<Rigid2dTypes, Vec2dTypes>(m);
-        declareMapping<Rigid2dTypes, Rigid2dTypes>(m);
+        declareMapping<Rigid2Types, Vec2Types>(m);
+        declareMapping<Rigid2Types, Rigid2Types>(m);
 
-        declareMapping<Rigid3dTypes, Vec6dTypes>(m);
-        declareMapping<Rigid3dTypes, Vec3dTypes>(m);
-        declareMapping<Rigid3dTypes, Vec1dTypes>(m);
-        declareMapping<Rigid3dTypes, Rigid3dTypes>(m);
-        declareMapping<Vec3dTypes, Rigid3dTypes>(m);
+        declareMapping<Rigid3Types, Vec6Types>(m);
+        declareMapping<Rigid3Types, Vec3Types>(m);
+        declareMapping<Rigid3Types, Vec1Types>(m);
+        declareMapping<Rigid3Types, Rigid3Types>(m);
+        declareMapping<Vec3Types, Rigid3Types>(m);
     }
 
 }  // namespace sofapython3

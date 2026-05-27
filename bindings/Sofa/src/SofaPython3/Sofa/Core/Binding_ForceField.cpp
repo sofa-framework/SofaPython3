@@ -49,12 +49,12 @@ namespace sofapython3
     using sofa::core::MechanicalParams;
     using sofa::core::behavior::MultiMatrixAccessor;
     using sofa::core::behavior::ForceField;
-    using sofa::defaulttype::Vec3dTypes;
-    using sofa::defaulttype::Vec2dTypes;
-    using sofa::defaulttype::Vec1dTypes;
-    using sofa::defaulttype::Vec6dTypes;
-    using sofa::defaulttype::Rigid3dTypes;
-    using sofa::defaulttype::Rigid2dTypes;
+    using sofa::defaulttype::Vec3Types;
+    using sofa::defaulttype::Vec2Types;
+    using sofa::defaulttype::Vec1Types;
+    using sofa::defaulttype::Vec6Types;
+    using sofa::defaulttype::Rigid3Types;
+    using sofa::defaulttype::Rigid2Types;
 
     template<class TDOFType>
     ForceField_Trampoline<TDOFType>::ForceField_Trampoline() = default;
@@ -254,12 +254,12 @@ namespace sofapython3
 
 
 void moduleAddForceField(py::module &m) {
-    declare_forcefield<Vec3dTypes>(m);
-    declare_forcefield<Vec2dTypes>(m);
-    declare_forcefield<Vec1dTypes>(m);
-    declare_forcefield<Vec6dTypes>(m);
-    declare_forcefield<Rigid3dTypes>(m);
-    declare_forcefield<Rigid2dTypes>(m);
+    declare_forcefield<Vec3Types>(m);
+    declare_forcefield<Vec2Types>(m);
+    declare_forcefield<Vec1Types>(m);
+    declare_forcefield<Vec6Types>(m);
+    declare_forcefield<Rigid3Types>(m);
+    declare_forcefield<Rigid2Types>(m);
 }
 
 }  // namespace sofapython3
