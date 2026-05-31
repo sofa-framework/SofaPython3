@@ -14,7 +14,9 @@ class BasePrefab(Sofa.Core.Node):
 
     def init(self):
         raise NotImplemented("To be overridden by child class")
-        
+
+    def postInit(self):
+        pass
     
     def localToGlobalCoordinates(pointCloudInput, pointCloudOutput):
         raise NotImplemented("Send an email to Damien, he will help you. Guaranteed :)")

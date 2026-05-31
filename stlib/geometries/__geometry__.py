@@ -1,5 +1,5 @@
 from stlib.core.basePrefab import BasePrefab
-from stlib.core.baseParameters import BaseParameters, Optional, dataclasses, Any
+from stlib.core.baseParameters import BaseParameters, Optional, dataclasses, Any, Callable
 from splib.topology.dynamic import addDynamicTopology
 from splib.topology.static import addStaticTopology
 from splib.core.enum_types import ElementType
@@ -34,6 +34,9 @@ class GeometryParameters(BaseParameters):
     data : Optional[InternalDataProvider] = None
 
     dynamicTopology : bool = False
+
+    def postInit(self, node):
+        pass
 
     def Data(self):
         return InternalDataProvider()
@@ -80,3 +83,7 @@ class Geometry(BasePrefab):
                                 "tetrahedra": self.parameters.data.tetrahedra,
                                 "hexahedra": self.parameters.data.hexahedra
                               })
+
+
+    def postInit(self):
+        self.parameters.postInit(self)

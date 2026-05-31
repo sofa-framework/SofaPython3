@@ -52,6 +52,7 @@ def __genericAdd(self : Sofa.Core.Node, typeName, **kwargs):
     if isinstance(typeName, type) and issubclass(typeName, BasePrefab):
         pref = self.addChild(typeName(**params))
         pref.init()
+        pref.postInit()
     elif isinstance(typeName, Sofa.Core.Node):
         pref = self.addChild(typeName(**params))
     elif isinstance(typeName, type) and issubclass(typeName, Sofa.Core.Object):
