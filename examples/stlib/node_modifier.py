@@ -84,18 +84,17 @@ def createScene(root):
     S = ModelsNode.add(Entity, parameters = SParams)
 
     #TODO make the name automatically match the modifier type if none is given
-    root.add(NodeModifier, on = [ModelsNode], parameters = SimulationSolversParameters(name = "SimulationSolvers",
-                                                                                     constantSparsity=False))
+    root.add(NodeModifier, on = [ModelsNode], parameters = SimulationSolversParameters(constantSparsity=False))
 
-    root.add(NodeModifier, on = [root], parameters = SimulationSettingsParameters(name = "SimulationSettings",
-                                                                                  displayFlags = ["showVisualModels", "showInteractionForceFields"],
+    root.add(NodeModifier, on = [root], parameters = SimulationSettingsParameters(displayFlags = ["showVisualModels", "showInteractionForceFields"],
                                                                                   enableCollisionDetection = True,
                                                                                   useLagrangian = True,
                                                                                   parallelComputing = False,
                                                                                   alarmDistance=0.3, contactDistance=0.02,
                                                                                   frictionCoef=0.5, tolerance=1.0e-4, maxIterations=20))
 
-    Logo.add(NodeModifier, on = [Logo], parameters = FixConstraintParameters(name = "FixConstraintParameters", boxROIs=[[-1, -2, -13, 3, 2, -7]]))
+    Logo.add(NodeModifier, on = [Logo], parameters = FixConstraintParameters( boxROIs=[[-1, -2, -13, 3, 2, -7]]))
+    Logo.add(NodeModifier, on = [Logo], parameters = FixConstraintParameters( boxROIs=[[-100, -2, -13, -300, 2, -7]]))
     ModelsNode.add(NodeModifier, on = [S, Logo], parameters = AttachmentConstraintParameters(name = "AttachmentConstraintParameters", indices1=[26,20,119,121], indices2=[722,732,574,573], stiffness=0.5, damping=0.0,
                                                                                              length=[((9.43-9.35)**2 + (-.44-0.48)**2 + (-6.01+6.56)**2)**(0.5) ]))
 

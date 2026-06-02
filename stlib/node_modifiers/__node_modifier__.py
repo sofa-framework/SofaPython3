@@ -26,8 +26,17 @@ def AffectedNodes(nbOfNodes):
 
 @dataclasses.dataclass
 class BaseNodeModifierParameters(object):
-    name : str = "NodeModifier"
+    name : str = None
     kwargs : dict = dataclasses.field(default_factory=dict)
+
+    def __post_init__(self):
+        #Give parameter type name as default name
+        if self.name is None:
+            self.name = type(self).__name__
+            pId = self.name.find("Parameters")
+            if pId > 0:
+                self.name = self.name[0:pId]
+
 
     @AffectedNodes(0)
     def modify(self, owner, node : list[Node]) -> list[Node] :
@@ -49,6 +58,7 @@ class NodeModifier(Sofa.Core.Component):
     def __init__(self, parameters : BaseNodeModifierParameters):
         Sofa.Core.Component.__init__(self, **(parameters.toDict()))
         self.parameters = parameters
+
 
     def register( self, owner, nodes : list[Node]) :
         if len(nodes) == 0:
