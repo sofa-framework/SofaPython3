@@ -7,8 +7,11 @@ from splib.core.utils import DEFAULT_VALUE
 from Sofa.Core import Node
 from typing import override
 
-import splib
-
+from splib.simulation.ode_solvers import addImplicitODE
+from splib.simulation.linear_solvers import addLinearSolver
+from  splib.simulation.headers import setupLagrangianCollision
+from  splib.simulation.headers import setupPenalityCollisionHeader
+from  splib.simulation.headers import setupDefaultHeader
 
 @dataclasses.dataclass
 class SimulationSolversParameters(BaseNodeModifierParameters):
@@ -24,15 +27,16 @@ class SimulationSolversParameters(BaseNodeModifierParameters):
     @override
     @AffectedNodes(1)
     def modify(self, owner, node : list[Node]) -> list[Node]:
-        splib.simulation.ode_solvers.addImplicitODE(node[0], static=self.staticODE, **self.kwargs)
-        splib.simulation.linear_solvers.addLinearSolver(node[0], iterative=self.iterative,
-                                                                 iterations=self.iterations,
-                                                                 tolerance=self.tolerance,
-                                                                 threshold=self.threshold,
-                                                                 template=self.template,
-                                                                 constantSparsity=self.constantSparsity,
-                                                                 parallelInverseProduct= self.parallelInverseProduct,
-                                                                 **self.kwargs)
+        addImplicitODE(node[0], static=self.staticODE, **self.kwargs)
+        addLinearSolver(node[0],
+                        iterative=self.iterative,
+                        iterations=self.iterations,
+                        tolerance=self.tolerance,
+                        threshold=self.threshold,
+                        template=self.template,
+                        constantSparsity=self.constantSparsity,
+                        parallelInverseProduct= self.parallelInverseProduct,
+                        **self.kwargs)
         return [owner]
 
 
@@ -41,7 +45,7 @@ class SimulationSolversParameters(BaseNodeModifierParameters):
 class SimulationSettingsParameters(BaseNodeModifierParameters):
     enableCollisionDetection : bool = False
     useLagrangian : bool = False
-    displayFlags : list[str] = dataclasses.field(default_factory=lambda: ["showVisualModels"])
+    displayFlags : list[str] = dataclasses.field(default_factory=lambda: ["showBehavior"])
     backgroundColor : list[float] = dataclasses.field(default_factory=lambda:  [0.8,0.8,0.8,1])
 
     #Collision detection specific
@@ -85,18 +89,18 @@ class SimulationSettingsParameters(BaseNodeModifierParameters):
     @AffectedNodes(1)
     def modify(self, owner, node : list[Node]) -> list[Node]:
         if(self.useLagrangian):
-            splib.simulation.headers.setupLagrangianCollision(node[0],
-                                                              enableCollision=self.enableCollisionDetection,
-                                                              displayFlags = self.displayFlags,
-                                                              backgroundColor = self.backgroundColor,
-                                                              parallelComputing = self.parallelComputing,
-                                                              alarmDistance=self.alarmDistance,
-                                                              contactDistance=self.contactDistance,
-                                                              frictionCoef=self.frictionCoef,
-                                                              tolerance=self.tolerance,
-                                                              maxIterations=self.maxIterations,
-                                                              stick = self.stick,
-                                                              **self.kwargs)
+            setupLagrangianCollision(node[0],
+                                     enableCollision=self.enableCollisionDetection,
+                                     displayFlags = self.displayFlags,
+                                     backgroundColor = self.backgroundColor,
+                                     parallelComputing = self.parallelComputing,
+                                     alarmDistance=self.alarmDistance,
+                                     contactDistance=self.contactDistance,
+                                     frictionCoef=self.frictionCoef,
+                                     tolerance=self.tolerance,
+                                     maxIterations=self.maxIterations,
+                                     stick = self.stick,
+                                     **self.kwargs)
 
 
             nodeLinearSolver = node[0].getLinearSolver(0)
@@ -109,20 +113,20 @@ class SimulationSettingsParameters(BaseNodeModifierParameters):
             return [owner] + touchedNodes
 
         elif self.enableCollisionDetection:
-            splib.simulation.headers.setupPenalityCollisionHeader(node[0],
-                                                                  displayFlags = self.displayFlags,
-                                                                  backgroundColor = self.backgroundColor,
-                                                                  parallelComputing = self.parallelComputing,
-                                                                  alarmDistance=self.alarmDistance,
-                                                                  contactDistance=self.contactDistance,
-                                                                  stick = self.stick,
-                                                                  **self.kwargs)
+            setupPenalityCollisionHeader(node[0],
+                                         displayFlags = self.displayFlags,
+                                         backgroundColor = self.backgroundColor,
+                                         parallelComputing = self.parallelComputing,
+                                         alarmDistance=self.alarmDistance,
+                                         contactDistance=self.contactDistance,
+                                         stick = self.stick,
+                                         **self.kwargs)
             return [owner]
 
         else:
-            splib.simulation.headers.setupDefaultHeader(node[0],
-                                                        displayFlags = self.displayFlags,
-                                                        backgroundColor = self.backgroundColor,
-                                                        parallelComputing = self.parallelComputing,
-                                                        **self.kwargs)
+            setupDefaultHeader(node[0],
+                               displayFlags = self.displayFlags,
+                               backgroundColor = self.backgroundColor,
+                               parallelComputing = self.parallelComputing,
+                               **self.kwargs)
             return [owner]
