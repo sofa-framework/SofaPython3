@@ -52,10 +52,10 @@ class SimulationSettingsParameters(BaseNodeModifierParameters):
     parallelComputing : bool = True
     alarmDistance : float = DEFAULT_VALUE
     contactDistance : float = DEFAULT_VALUE
+    frictionCoef : float = DEFAULT_VALUE
     stick : bool = False
 
     #Lagrangian specific
-    frictionCoef : float = DEFAULT_VALUE
     tolerance : float = DEFAULT_VALUE
     maxIterations : int = DEFAULT_VALUE
 

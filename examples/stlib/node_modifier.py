@@ -22,18 +22,17 @@ def createScene(root):
     root.dt=0.01
 
     ##Environement
-    planes_lengthNormal = np.array([0, 1, 0])
-    planes_lengthNbEdge = 1
-    planes_widthNbEdge = 2
-    planes_lengthSize = 30
-    planes_widthSize = 70
-
     plane1_collisionParams = CollisionParameters()
     plane1_collisionParams.name = "UP"
     plane1_collisionParams.primitives = [CollisionPrimitive.TRIANGLES]
     plane1_collisionParams.kwargs = {"TriangleCollision" : {"moving" : False, "simulated" : False}}
-    plane1_collisionParams.geometry = PlaneParameters(np.array([15,0,5]), np.array([0,0,-1]),
-                                                      planes_lengthNormal, planes_lengthNbEdge, planes_widthNbEdge, planes_lengthSize, planes_widthSize)
+    plane1_collisionParams.geometry = PlaneParameters(center=np.array([15,0,5]), 
+                                                                                                      normal=np.array([0,0,-1]), 
+                                                                                                      lengthNormal=np.array([0, 1, 0]),
+                                                                                                      lengthNbEdge=1, 
+                                                                                                      widthNbEdge=2, 
+                                                                                                      lengthSize=30, 
+                                                                                                      widthSize=70)
     plane1 = root.add(Collision, parameters = plane1_collisionParams)
     # TODO being able to reuse already loaded geometry of current prefab to add any new sub prefab
     # We need to enable to directly pass a link to an already existing prefab in place of a prefab parameter object
