@@ -6,7 +6,7 @@ from stlib.collision import Collision, CollisionParameters
 from stlib.entities import Entity, EntityParameters
 from stlib.visual import Visual, VisualParameters
 from splib.core.enum_types import CollisionPrimitive, ElementType, ConstitutiveLaw
-from splib.simulation.headers import setupLagrangianCollision, setupDefaultHeader
+from splib.simulation.headers import setupLagrangianHeader, setupDefaultHeader
 from splib.simulation.ode_solvers import addImplicitODE
 from splib.simulation.linear_solvers import addLinearSolver
 import dataclasses
@@ -18,7 +18,7 @@ def createScene(root):
     ##Solvers
     # setupDefaultHeader(root, displayFlags = "showVisualModels",backgroundColor=[0.8, 0.8, 0.8, 1],
     #                          parallelComputing = True)
-    setupLagrangianCollision(root, displayFlags = "showVisualModels",backgroundColor=[0.8, 0.8, 0.8, 1],
+    setupLagrangianHeader(root, displayFlags = "showVisualModels",backgroundColor=[0.8, 0.8, 0.8, 1],
                                  parallelComputing = True,alarmDistance=0.3, contactDistance=0.02,
                                  frictionCoef=0.5, tolerance=1.0e-4, maxIterations=20)
     ##Environement

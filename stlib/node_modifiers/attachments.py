@@ -1,5 +1,5 @@
 import dataclasses
-import splib.mechanics.attachment as splib_att
+import splib.mechanics.attachment as attachment
 from stlib.node_modifiers import BaseNodeModifierParameters, AffectedNodes
 from splib.core.enum_types import ConstraintType
 from splib.core.utils import DEFAULT_VALUE
@@ -18,7 +18,7 @@ class FixConstraintParameters(BaseNodeModifierParameters):
     @override
     @AffectedNodes(1)
     def modify(self, owner, nodes : list[Node]) -> list[Node]:
-        splib_att.addFixation(nodes[0].Material, type = self.constraintType, boxROIs = self.boxROIs, sphereROIs=self.sphereROIs, indices=self.indices, fixAll=self.fixAll)
+        attachment.addFixation(nodes[0].Material, type = self.constraintType, boxROIs = self.boxROIs, sphereROIs=self.sphereROIs, indices=self.indices, fixAll=self.fixAll)
         return nodes
 
 
@@ -35,7 +35,7 @@ class AttachmentConstraintParameters(BaseNodeModifierParameters):
     @override
     @AffectedNodes(2)
     def modify(self, owner, node : list[Node]) -> list[Node]:
-        splib_att.attachObjects(owner,  type = self.constraintType, object1=node[0].Material.States.linkpath, object2=node[1].Material.States.linkpath,  indices1=self.indices1, indices2=self.indices2, stiffness=self.stiffness, damping=self.damping, length=self.length, **self.kwargs)
+        attachment.attachObjects(owner,  type = self.constraintType, object1=node[0].Material.States.linkpath, object2=node[1].Material.States.linkpath,  indices1=self.indices1, indices2=self.indices2, stiffness=self.stiffness, damping=self.damping, length=self.length, **self.kwargs)
         return node + [owner]
 
 

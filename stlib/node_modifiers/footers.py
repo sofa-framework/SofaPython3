@@ -1,5 +1,7 @@
 import dataclasses
 
+from scipy.sparse import construct
+
 from stlib.entities import EntityParameters, Entity
 from stlib.node_modifiers import BaseNodeModifierParameters, AffectedNodes
 from splib.core.enum_types import ConstraintType
@@ -9,8 +11,8 @@ from typing import override
 
 from splib.simulation.ode_solvers import addImplicitODE
 from splib.simulation.linear_solvers import addLinearSolver
-from  splib.simulation.headers import setupLagrangianCollision
-from  splib.simulation.headers import setupPenalityCollisionHeader
+from  splib.simulation.headers import setupLagrangianHeader
+from  splib.simulation.headers import setupPenalityHeader
 from  splib.simulation.headers import setupDefaultHeader
 
 @dataclasses.dataclass
@@ -45,6 +47,7 @@ class SimulationSolversParameters(BaseNodeModifierParameters):
 class SimulationSettingsParameters(BaseNodeModifierParameters):
     enableCollisionDetection : bool = False
     useLagrangian : bool = False
+    constraintSolverType : str = "GenericConstraintCorrection"
     displayFlags : list[str] = dataclasses.field(default_factory=lambda: ["showBehavior"])
     backgroundColor : list[float] = dataclasses.field(default_factory=lambda:  [0.8,0.8,0.8,1])
 
@@ -85,11 +88,28 @@ class SimulationSettingsParameters(BaseNodeModifierParameters):
                 modified += SimulationSettingsParameters._addConstraintCorrectionToMechanicalNodes(child, constraintCorrectionType, linearSolverPath)
         return modified
 
+    @staticmethod
+    def _addGenericConstraintCorrection(node):
+        #TODO This only adds LinearSolvers to nodes that have mass of forcefield. Might be weak if we have mapped mass or forcefield. It might be better to rethink this
+        modified = []
+        for child in node.children:
+            nodeLinearSolver = child.getLinearSolver(0)
+            if nodeLinearSolver is not None :
+                child.addObject("GenericConstraintCorrection")
+                if(isinstance(node, Entity)):
+                    modified += [node]
+                else:
+                    modified += [child]
+            else :
+                modified += SimulationSettingsParameters._addGenericConstraintCorrection(child)
+
+        return modified
+
     @override
     @AffectedNodes(1)
     def modify(self, owner, node : list[Node]) -> list[Node]:
         if(self.useLagrangian):
-            setupLagrangianCollision(node[0],
+            setupLagrangianHeader(node[0],
                                      enableCollision=self.enableCollisionDetection,
                                      displayFlags = self.displayFlags,
                                      backgroundColor = self.backgroundColor,
@@ -102,18 +122,26 @@ class SimulationSettingsParameters(BaseNodeModifierParameters):
                                      stick = self.stick,
                                      **self.kwargs)
 
+            if self.constraintSolverType == "GenericConstraintCorrection":
+                nodeLinearSolver = node[0].getLinearSolver(0)
+                if nodeLinearSolver is not None :
+                    touchedNodes = [node[0]]
+                    node[0].addObject("GenericConstraintCorrection")
+                else:
+                    touchedNodes = SimulationSettingsParameters._addGenericConstraintCorrection(node[0])
 
-            nodeLinearSolver = node[0].getLinearSolver(0)
-            if nodeLinearSolver is not None :
-                linearSolverPath = nodeLinearSolver.getLinkPath()
             else:
-                linearSolverPath = None
+                nodeLinearSolver = node[0].getLinearSolver(0)
+                if nodeLinearSolver is not None :
+                    linearSolverPath = nodeLinearSolver.getLinkPath()
+                else:
+                    linearSolverPath = None
 
-            touchedNodes = SimulationSettingsParameters._addConstraintCorrectionToMechanicalNodes(node[0], "LinearSolverConstraintCorrection", linearSolverPath = linearSolverPath)
+                touchedNodes = SimulationSettingsParameters._addConstraintCorrectionToMechanicalNodes(node[0], self.constraintSolverType , linearSolverPath = linearSolverPath)
             return [owner] + touchedNodes
 
         elif self.enableCollisionDetection:
-            setupPenalityCollisionHeader(node[0],
+            setupPenalityHeader(node[0],
                                          displayFlags = self.displayFlags,
                                          backgroundColor = self.backgroundColor,
                                          parallelComputing = self.parallelComputing,

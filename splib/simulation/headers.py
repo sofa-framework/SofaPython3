@@ -37,7 +37,7 @@ def setupDefaultHeader(node, displayFlags = "showVisualModels", backgroundColor=
 
 
 @ReusableMethod
-def setupPenalityCollisionHeader(node,  displayFlags = "showVisualModels",backgroundColor=[1,1,1,1], stick=False, parallelComputing=False, alarmDistance=DEFAULT_VALUE, contactDistance=DEFAULT_VALUE, **kwargs):
+def setupPenalityHeader(node,  displayFlags = "showVisualModels",backgroundColor=[1,1,1,1], stick=False, parallelComputing=False, alarmDistance=DEFAULT_VALUE, contactDistance=DEFAULT_VALUE, **kwargs):
     node.addObject('VisualStyle', displayFlags=displayFlags)
     node.addObject('BackgroundSetting', color=backgroundColor)
 
@@ -76,7 +76,7 @@ def setupPenalityCollisionHeader(node,  displayFlags = "showVisualModels",backgr
 
 
 @ReusableMethod
-def setupLagrangianCollision(node,  enableCollision = True, displayFlags = "showVisualModels",backgroundColor=[1,1,1,1], parallelComputing=False, stick=False, alarmDistance=DEFAULT_VALUE, contactDistance=DEFAULT_VALUE, frictionCoef=0.0, tolerance=0.0, maxIterations=100, **kwargs):
+def setupLagrangianHeader(node,  enableCollision = True, displayFlags = "showVisualModels",backgroundColor=[1,1,1,1], parallelComputing=False, stick=False, alarmDistance=DEFAULT_VALUE, contactDistance=DEFAULT_VALUE, frictionCoef=0.0, tolerance=0.0, maxIterations=100, **kwargs):
     node.addObject('VisualStyle', displayFlags=displayFlags)
     node.addObject('BackgroundSetting', color=backgroundColor)
 

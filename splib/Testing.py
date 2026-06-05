@@ -16,7 +16,7 @@ def createScene(rootNode):
     rootNode.dt = 0.03
     rootNode.gravity = [0,-9.81,0]
 
-    setupLagrangianCollision(rootNode,requiredPlugins={"pluginName":['Sofa.Component.Constraint.Projective',
+    setupLagrangianHeader(rootNode,requiredPlugins={"pluginName":['Sofa.Component.Constraint.Projective',
                                                                'Sofa.Component.Engine.Select',
                                                                'Sofa.Component.LinearSolver.Direct',
                                                                'Sofa.Component.Mass',

@@ -2,7 +2,7 @@ from stlib.materials.rigid import Rigid
 from stlib.materials.deformable import Deformable
 from stlib.geometries.cube import CubeParameters
 from stlib.geometries.file import FileParameters
-from splib.simulation.headers import setupLagrangianCollision
+from splib.simulation.headers import setupLagrangianHeader
 from splib.simulation.linear_solvers import addLinearSolver
 from splib.simulation.ode_solvers import addImplicitODE
 
@@ -15,7 +15,7 @@ def addSolvers(root):
 def createScene(root):
     root.gravity = [0, 0, -9.81]
 
-    setupLagrangianCollision(root)
+    setupLagrangianHeader(root)
     addSolvers(root)
 
     rigidParams = Rigid.getParameters()

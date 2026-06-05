@@ -6,7 +6,7 @@ from stlib.collision import Collision, CollisionParameters
 from stlib.entities import Entity, EntityParameters
 from stlib.visual import Visual, VisualParameters
 from splib.core.enum_types import CollisionPrimitive, ElementType, ConstitutiveLaw
-from splib.simulation.headers import setupLagrangianCollision, setupDefaultHeader
+from splib.simulation.headers import setupLagrangianHeader, setupDefaultHeader
 from splib.simulation.ode_solvers import addImplicitODE
 from splib.simulation.linear_solvers import addLinearSolver
 import dataclasses
