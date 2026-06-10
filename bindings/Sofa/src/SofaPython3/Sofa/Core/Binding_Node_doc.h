@@ -378,9 +378,9 @@ static auto getMechanicalState =
         Get the mechanical state of the node.
         )";
 
-static auto hasODESolver =
+static auto hasIntergationScheme =
         R"(
-        Return true if the node includes an ODE Solver
+        Return true if the node includes an integration scheme
         )";
 
 static auto getMechanicalMapping =
