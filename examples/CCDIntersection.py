@@ -25,7 +25,7 @@ def createScene(root_node):
     "Sofa.Component.Collision.Geometry", "Sofa.Component.Collision.Response.Contact",
     "Sofa.Component.Constraint.Lagrangian.Correction", "Sofa.Component.Constraint.Lagrangian.Solver",
     "Sofa.Component.IO.Mesh", "Sofa.Component.LinearSolver.Direct", "Sofa.Component.Mapping.Linear",
-    "Sofa.Component.Mass", "Sofa.Component.ODESolver.Backward", "Sofa.Component.SolidMechanics.FEM.Elastic",
+    "Sofa.Component.Mass", "Sofa.Component.IntegrationSchemes.Backward", "Sofa.Component.SolidMechanics.FEM.Elastic",
     "Sofa.Component.StateContainer", "Sofa.Component.Topology.Container.Dynamic",
     "Sofa.Component.Topology.Container.Grid", "Sofa.Component.Topology.Mapping", "Sofa.Component.Visual",
     "Sofa.GL.Component.Rendering3D", "Sofa.Component.Engine.Select", "Sofa.GUI.Component"])

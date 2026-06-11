@@ -27,7 +27,7 @@ if __name__ == "__main__":
     root.addObject("RequiredPlugin", pluginName='Sofa.Component.LinearSolver.Iterative')
     root.addObject("RequiredPlugin", pluginName='Sofa.Component.Mapping.Linear')
     root.addObject("RequiredPlugin", pluginName='Sofa.Component.Mass')
-    root.addObject("RequiredPlugin", pluginName='Sofa.Component.ODESolver.Backward')
+    root.addObject("RequiredPlugin", pluginName='Sofa.Component.IntegrationSchemes.Backward')
     root.addObject("RequiredPlugin", pluginName='Sofa.Component.SolidMechanics.FEM.Elastic')
     root.addObject("RequiredPlugin", pluginName='Sofa.Component.StateContainer')
     root.addObject("RequiredPlugin", pluginName='Sofa.Component.Topology.Container.Dynamic')

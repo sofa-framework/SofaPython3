@@ -33,7 +33,7 @@ def createScene(root):
                                                  'Sofa.Component.LinearSolver.Ordering',
                                                  'Sofa.Component.LinearSystem',
                                                  'Sofa.Component.Mass',
-                                                 'Sofa.Component.ODESolver.Backward',
+                                                 'Sofa.Component.IntegrationSchemes.Backward',
                                                  'Sofa.Component.SolidMechanics.FEM.Elastic',
                                                  'Sofa.Component.StateContainer',
                                                  'Sofa.Component.Topology.Container.Grid',

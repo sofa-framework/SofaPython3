@@ -44,7 +44,7 @@ def rssffScene(use_implicit_scheme=True, use_iterative_solver=True):
     node.addObject('DefaultAnimationLoop')
     node.addObject("RequiredPlugin", pluginName="Sofa.Component.StateContainer")
     node.addObject("RequiredPlugin", pluginName="Sofa.Component.LinearSolver")
-    node.addObject("RequiredPlugin", pluginName="Sofa.Component.ODESolver")
+    node.addObject("RequiredPlugin", pluginName="Sofa.Component.IntegrationScheme")
     node.addObject("RequiredPlugin", pluginName="Sofa.Component.Mass")
 
     node.gravity = [0, -10, 0]
@@ -112,7 +112,7 @@ class Test(unittest.TestCase):
         root.addObject('RequiredPlugin', pluginName='Sofa.Component.Engine.Select')
         root.addObject('RequiredPlugin', pluginName='Sofa.Component.LinearSolver.Direct')
         root.addObject('RequiredPlugin', pluginName='Sofa.Component.Mass')
-        root.addObject('RequiredPlugin', pluginName='Sofa.Component.ODESolver.Backward')
+        root.addObject('RequiredPlugin', pluginName='Sofa.Component.IntegrationSchemes.Backward')
         root.addObject('RequiredPlugin', pluginName='Sofa.Component.SolidMechanics.FEM.Elastic')
         root.addObject('RequiredPlugin', pluginName='Sofa.Component.StateContainer')
         root.addObject('RequiredPlugin', pluginName='Sofa.Component.Topology.Container.Grid')

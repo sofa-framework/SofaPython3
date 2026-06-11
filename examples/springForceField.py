@@ -11,7 +11,7 @@ def createScene(root):
     'Sofa.Component.Mapping.NonLinear',
     'Sofa.Component.Mass',
     'Sofa.Component.MechanicalLoad',
-    'Sofa.Component.ODESolver.Backward',
+    'Sofa.Component.IntegrationSchemes.Backward',
     'Sofa.Component.SolidMechanics.Spring',
     'Sofa.Component.StateContainer',
     'Sofa.GL.Component.Rendering3D'

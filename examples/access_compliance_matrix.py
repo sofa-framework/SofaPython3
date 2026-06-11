@@ -16,7 +16,7 @@ def createScene(root):
                                                  "Sofa.Component.LinearSolver.Direct",
                                                  "Sofa.Component.Mapping.MappedMatrix",
                                                  "Sofa.Component.Mass",
-                                                 "Sofa.Component.ODESolver.Backward",
+                                                 "Sofa.Component.IntegrationSchemes.Backward",
                                                  "Sofa.Component.Topology.Container.Dynamic",
                                                  "Sofa.Component.Mapping.NonLinear",
                                                  "Sofa.Component.StateContainer"

@@ -48,7 +48,7 @@ def createScene(root):
         'Sofa.Component.Engine.Select',
         'Sofa.Component.LinearSolver.Iterative',
         'Sofa.Component.MechanicalLoad',
-        'Sofa.Component.ODESolver.Backward',
+        'Sofa.Component.IntegrationSchemes.Backward',
         'Sofa.Component.SolidMechanics.FEM.Elastic',
         'Sofa.Component.StateContainer',
         'Sofa.Component.Topology.Container.Dynamic',

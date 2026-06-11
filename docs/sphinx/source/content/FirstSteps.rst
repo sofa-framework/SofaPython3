@@ -242,7 +242,7 @@ We add properties to the sphere. First, we add a mass, then an object called 'Un
 
 .. code-block:: python
 
-        SofaRuntime.importPlugin("Sofa.Component.ODESolver.Backward")
+        SofaRuntime.importPlugin("Sofa.Component.IntegrationSchemes.Backward")
         SofaRuntime.importPlugin("Sofa.Component.LinearSolver.Iterative")
         SofaRuntime.importPlugin("Sofa.Component.Mass")
         SofaRuntime.importPlugin("Sofa.Component.Constraint.Lagrangian.Correction")
@@ -425,7 +425,7 @@ Here is the entire code of the scene :
             confignode.addObject('RequiredPlugin', name="Sofa.Component.LinearSolver.Iterative", printLog=False)
             confignode.addObject('RequiredPlugin', name="Sofa.Component.Mapping.NonLinear", printLog=False)
             confignode.addObject('RequiredPlugin', name="Sofa.Component.Mass", printLog=False)
-            confignode.addObject('RequiredPlugin', name="Sofa.Component.ODESolver.Backward", printLog=False)
+            confignode.addObject('RequiredPlugin', name="Sofa.Component.IntegrationSchemes.Backward", printLog=False)
             confignode.addObject('RequiredPlugin', name="Sofa.Component.StateContainer", printLog=False)
             confignode.addObject('RequiredPlugin', name="Sofa.Component.Topology.Container.Constant", printLog=False)
             confignode.addObject('RequiredPlugin', name="Sofa.Component.Visual", printLog=False)
