@@ -56,7 +56,7 @@ def createScene(root):
     root.addObject('MeshOBJLoader', name="load_liver_surface", filename="mesh/liver-smooth.obj")
 
     liver = root.addChild('Liver')
-    liver.addObject('EulerImplicitSolver', name="cg_odesolver", rayleighStiffness=0.1, rayleighMass=0.1)
+    liver.addObject('EulerImplicitIntegrationScheme', name="cg_odesolver", rayleighStiffness=0.1, rayleighMass=0.1)
     liver.addObject('SparseLDLSolver', name="linear_solver", template="CompressedRowSparseMatrixMat3x3d")
     liver.addObject('MeshGmshLoader', name="loader_liver_volume", filename="mesh/liver.msh")
     liver.addObject('TetrahedronSetTopologyContainer', name="topo", src="@loader_liver_volume")
@@ -85,7 +85,7 @@ def createScene(root):
 
 
     particle = root.addChild('Particle')
-    particle.addObject('EulerImplicitSolver')
+    particle.addObject('EulerImplicitIntegrationScheme')
     particle.addObject('CGLinearSolver', threshold=1e-09, tolerance=1e-09, iterations=200)
     # Particle MechanicalObject where the constraint/contact forces will be stored in the (x,y,z) coordinate system
     particleMO = particle.addObject('MechanicalObject', showObject=True, position=[-2, 10, 0, 0, 0, 0, 1], name=f'particle_DoFs', template='Rigid3d')

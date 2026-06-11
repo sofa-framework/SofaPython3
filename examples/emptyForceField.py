@@ -47,7 +47,7 @@ def createScene(root):
 
     node1 = root.addChild("Node1")
 
-    node1.addObject('EulerImplicitSolver')
+    node1.addObject('EulerImplicitIntegrationScheme')
     node1.addObject('CGLinearSolver', iterations="100", tolerance="10-3", threshold="10-3")
     node1.addObject('MechanicalObject', template="Vec3d")
 

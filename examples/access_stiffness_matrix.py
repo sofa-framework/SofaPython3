@@ -28,7 +28,7 @@ def createScene(root):
     root.addObject('DefaultAnimationLoop')
     root.addObject('DefaultVisualManagerLoop')
 
-    root.addObject('EulerImplicitSolver', rayleighStiffness="0.1", rayleighMass="0.1")
+    root.addObject('EulerImplicitIntegrationScheme', rayleighStiffness="0.1", rayleighMass="0.1")
     root.addObject('SparseLDLSolver', template="CompressedRowSparseMatrixd")
 
     root.addObject('MechanicalObject', name="DoFs")

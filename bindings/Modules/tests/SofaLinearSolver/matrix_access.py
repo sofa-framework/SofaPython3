@@ -16,7 +16,7 @@ class Test(unittest.TestCase):
         root.addObject('RequiredPlugin', pluginName='Sofa.Component.SolidMechanics.FEM.Elastic')
         root.addObject('RequiredPlugin', pluginName='Sofa.Component.Mass')
 
-        root.addObject('EulerImplicitSolver', rayleighStiffness="0.1", rayleighMass="0.1")
+        root.addObject('EulerImplicitIntegrationScheme', rayleighStiffness="0.1", rayleighMass="0.1")
         linear_solver = root.addObject('SparseLDLSolver', name='linear_solver', template=linear_solver_template)
 
         root.addObject('MechanicalObject', name="DoFs")

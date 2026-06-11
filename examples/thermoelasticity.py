@@ -45,7 +45,7 @@ def createScene(root):
 
 
     meca = tetraTopo.addChild("Mechanics")
-    meca.addObject("EulerImplicitSolver", name="Euler Impl IntegrationScheme")
+    meca.addObject("EulerImplicitIntegrationScheme", name="Euler Impl IntegrationScheme")
     meca.addObject("SparseLDLSolver", name="LDL LinearSolver", template="CompressedRowSparseMatrixMat3x3d")
     meca.addObject("TetrahedronSetTopologyContainer", name="tetContainer", src=tetrahedraContainer.linkpath)
     meca.addObject("TetrahedronSetGeometryAlgorithms", name="tetGeometry", template="Vec3d")
@@ -59,7 +59,7 @@ def createScene(root):
 
 
     thermo = tetraTopo.addChild("Thermodynamics")
-    thermo.addObject("EulerImplicitSolver", name="Euler Impl IntegrationScheme", firstOrder=True)
+    thermo.addObject("EulerImplicitIntegrationScheme", name="Euler Impl IntegrationScheme", firstOrder=True)
     thermo.addObject("CGLinearSolver", name="Conjugate Gradient", iterations="1000", tolerance=1.0e-10, threshold=1.0e-30)
     thermo.addObject("TetrahedronSetTopologyContainer", name="tetContainer", src="@../tetContainer")
     thermo.addObject("TetrahedronSetGeometryAlgorithms", name="tetGeometry", template="Vec3d")

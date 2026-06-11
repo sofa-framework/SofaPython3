@@ -301,7 +301,7 @@ We add properties to the sphere. First, we add a mass, then an object called 'Un
 
 	# Creating the falling sphere object
 	sphere = rootNode.addChild("sphere")
-	sphere.addObject('EulerImplicitSolver', name='odesolver')
+	sphere.addObject('EulerImplicitIntegrationScheme', name='odesolver')
 	sphere.addObject('CGLinearSolver', name='Solver', iterations=25, tolerance=1e-05, threshold=1e-05)
 	sphere.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0., 0., 0.], rotation2=[0., 0., 0.], showObjectScale=50)
 	sphere.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
@@ -486,7 +486,7 @@ Here is the entire code of the scene :
 
 
             sphere = rootNode.addChild("sphere")
-            sphere.addObject('EulerImplicitSolver', name='odesolver')
+            sphere.addObject('EulerImplicitIntegrationScheme', name='odesolver')
             sphere.addObject('CGLinearSolver', name='Solver', iterations=25, tolerance=1e-05, threshold=1e-05)
             sphere.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0., 0., 0.], rotation2=[0., 0., 0.], showObjectScale=50)
             sphere.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])

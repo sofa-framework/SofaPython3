@@ -71,7 +71,7 @@ def createScene(root):
         m.addObject( IdentityMapping(name="CPPObject", input=c, output=sm ) )
         
         root.addChild("Simulation")
-        root.Simulation.addObject("EulerImplicitSolver")
+        root.Simulation.addObject("EulerImplicitIntegrationScheme")
         root.Simulation.addObject("CGLinearSolver", tolerance=1e-12, threshold=1e-12, iterations=25)
         root.Simulation.addChild(root.Modelling)
 

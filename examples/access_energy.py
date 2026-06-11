@@ -46,7 +46,7 @@ def createScene(rootNode, dt=0.01, m=1, g=1, L=100, mu=0):
     # rootNode/Box
     Box = rootNode.addChild('Box')
 
-    Box.addObject('EulerImplicitSolver', name='EulerImplicitScheme')
+    Box.addObject('EulerImplicitIntegrationScheme', name='EulerImplicitScheme')
     Box.addObject('SparseLDLSolver', name='linearSolver', template='CompressedRowSparseMatrixd', linearSystem='@system')
     Box.addObject('MatrixLinearSystem', template='CompressedRowSparseMatrixd', name='system')
 

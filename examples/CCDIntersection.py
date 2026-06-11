@@ -45,7 +45,7 @@ def createScene(root_node):
     #Liver mecha
     Liver = root_node.addChild('Liver')
 
-    Liver.addObject('EulerImplicitSolver')
+    Liver.addObject('EulerImplicitIntegrationScheme')
     Liver.addObject('SparseLDLSolver', name="ldl", template="CompressedRowSparseMatrixMat3x3", parallelInverseProduct=True)
     Liver.addObject('MeshGmshLoader', name="meshLoader", filename="mesh/liver.msh", scale3d=[0.2, 0.2, 0.2], rotation=[0, 180, -45], translation=[15.2, -0.15, 0.14])
     Liver.addObject('TetrahedronSetTopologyContainer', name="Container", src='@meshLoader')
@@ -89,7 +89,7 @@ def createScene(root_node):
     #Plate mecha
     PlateMecha = root_node.addChild('PlateMecha')
 
-    PlateMecha.addObject('EulerImplicitSolver')
+    PlateMecha.addObject('EulerImplicitIntegrationScheme')
     PlateMecha.addObject('SparseLDLSolver', name="ldl", template="CompressedRowSparseMatrixMat3x3", parallelInverseProduct=True)
     PlateMecha.addObject('TetrahedronSetTopologyContainer', name="Container", position="@../BeamDomainFromGridTopology/HexaTop.position", tetrahedra="@../BeamDomainFromGridTopology/TetraTopology/Container.tetrahedra")
     PlateMecha.addObject('TetrahedronSetTopologyModifier', name="Modifier")

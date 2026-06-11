@@ -92,7 +92,7 @@ def createScene(rootNode):
         sphere.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
         sphere.addObject('UncoupledConstraintCorrection')
 
-        sphere.addObject('EulerImplicitSolver', name='odesolver')
+        sphere.addObject('EulerImplicitIntegrationScheme', name='odesolver')
         sphere.addObject('CGLinearSolver', name='Solver', iterations=25, tolerance=1e-5, threshold=1e-5)
 
         collision = sphere.addChild('collision')

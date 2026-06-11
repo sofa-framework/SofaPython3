@@ -129,12 +129,12 @@ def createScene(root, method="implicit-matrix-assembly", n_particles=1_000, use_
     physics = root.addChild("Physics")
 
     if method.lower() == "explicit":  # Requires the implementation of 'addForce'
-        physics.addObject("EulerExplicitSolver", name="eulerExplicit")
+        physics.addObject("EulerExplicitIntegrationScheme", name="eulerExplicit")
     elif method.lower() == "implicit-matrix-free":  # Requires the implementation of 'addForce' and 'addDForce'
-        physics.addObject("EulerImplicitSolver", name="eulerImplicit")
+        physics.addObject("EulerImplicitIntegrationScheme", name="eulerImplicit")
         physics.addObject("CGLinearSolver", template="GraphScattered", name="solver", iterations=50, tolerance=1e-5, threshold=1e-5)
     elif method == "implicit-matrix-assembly":  # Requires the implementation of 'addForce', 'addDForce' and 'addKToMatrix'
-        physics.addObject("EulerImplicitSolver", name="eulerImplicit")
+        physics.addObject("EulerImplicitIntegrationScheme", name="eulerImplicit")
         physics.addObject("SparseLDLSolver", name="solver", template="CompressedRowSparseMatrixd")
 
     position = np.random.uniform(-1, 1, (n_particles, 3))

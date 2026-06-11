@@ -7,7 +7,7 @@ from scipy import sparse
 
 def createBeam(root, matrix_type):
     node = root.addChild(matrix_type)
-    node.addObject('EulerImplicitSolver', rayleighStiffness="0.1", rayleighMass="0.1")
+    node.addObject('EulerImplicitIntegrationScheme', rayleighStiffness="0.1", rayleighMass="0.1")
     linear_system = node.addObject('MatrixLinearSystem', template=matrix_type)
 
     node.addObject('MechanicalObject', name="DoFs")
