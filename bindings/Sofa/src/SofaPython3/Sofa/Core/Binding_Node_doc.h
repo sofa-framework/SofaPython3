@@ -373,6 +373,13 @@ static auto getForceField =
         :type index: unsigned int.
         )";
 
+static auto getLinearSolver =
+        R"(
+        Get the linear solver of a node, given an index.
+        :param index: index of the linear solver
+        :type index: unsigned int.
+        )";
+
 static auto getMechanicalState =
         R"(
         Get the mechanical state of the node.

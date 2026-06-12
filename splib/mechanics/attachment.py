@@ -28,3 +28,21 @@ def addFixation(node,type:ConstraintType,boxROIs=DEFAULT_VALUE, sphereROIs=DEFAU
         case _:
             print('Contraint type is either ConstraintType.PROJECTIVE, ConstraintType.WEAK or ConstraintType.LAGRANGIAN')
             return
+
+
+
+@ReusableMethod
+def attachObjects(node, type:ConstraintType, object1, object2, indices1, indices2, stiffness=DEFAULT_VALUE, damping=DEFAULT_VALUE, lengths=DEFAULT_VALUE, **kwargs):
+    match type:
+        case ConstraintType.WEAK:
+            node.addObject("SpringForceField", name="attachment", object1=object1, object2=object2, indices1=indices1, indices2=indices2, stiffness=stiffness, damping=damping, lengths=lengths, **kwargs)
+            return
+        case ConstraintType.PROJECTIVE:
+            node.addObject("AttachProjectiveConstraint", name="attachment", object1=object1, object2=object2, indices1=indices1, indices2=indices2, **kwargs)
+            return
+        case ConstraintType.LAGRANGIAN:
+            node.addObject("BilateralLagrangianConstraint", name="attachment", object1=object1, object2=object2, first_point=indices1, second_point=indices2, **kwargs)
+            return
+        case _:
+            print('Contraint type is either ConstraintType.PROJECTIVE, ConstraintType.WEAK or ConstraintType.LAGRANGIAN')
+            return

@@ -4,7 +4,7 @@ from splib.simulation.ode_solvers import *
 from splib.simulation.linear_solvers import *
 from splib.mechanics.linear_elasticity import *
 from splib.mechanics.mass import *
-from splib.mechanics.fix_points import *
+from splib.mechanics.attachment import *
 from splib.topology.loader import *
 from splib.core.node_wrapper import *
 
@@ -16,7 +16,7 @@ def createScene(rootNode):
     rootNode.dt = 0.03
     rootNode.gravity = [0,-9.81,0]
 
-    setupLagrangianCollision(rootNode,requiredPlugins={"pluginName":['Sofa.Component.Constraint.Projective',
+    setupLagrangianHeader(rootNode,requiredPlugins={"pluginName":['Sofa.Component.Constraint.Projective',
                                                                'Sofa.Component.Engine.Select',
                                                                'Sofa.Component.LinearSolver.Direct',
                                                                'Sofa.Component.Mass',

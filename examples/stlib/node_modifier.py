@@ -13,27 +13,26 @@ import dataclasses
 import numpy as np
 
 
+from stlib.node_modifiers import NodeModifier
+from stlib.node_modifiers.footers import SimulationSolversParameters, SimulationSettingsParameters
+from stlib.node_modifiers.attachments import FixConstraintParameters, AttachmentConstraintParameters
+
 def createScene(root):
     root.gravity=[0,0,9.81]
-    ##Solvers
-    # setupDefaultHeader(root, displayFlags = "showVisualModels",backgroundColor=[0.8, 0.8, 0.8, 1],
-    #                          parallelComputing = True)
-    setupLagrangianHeader(root, displayFlags = "showVisualModels",backgroundColor=[0.8, 0.8, 0.8, 1],
-                                 parallelComputing = True,alarmDistance=0.3, contactDistance=0.02,
-                                 frictionCoef=0.5, tolerance=1.0e-4, maxIterations=20)
-    ##Environement
-    planes_lengthNormal = np.array([0, 1, 0])
-    planes_lengthNbEdge = 1
-    planes_widthNbEdge = 2
-    planes_lengthSize = 30
-    planes_widthSize = 70
+    root.dt=0.01
 
+    ##Environement
     plane1_collisionParams = CollisionParameters()
     plane1_collisionParams.name = "UP"
     plane1_collisionParams.primitives = [CollisionPrimitive.TRIANGLES]
     plane1_collisionParams.kwargs = {"TriangleCollision" : {"moving" : False, "simulated" : False}}
-    plane1_collisionParams.geometry = PlaneParameters(np.array([15,0,1]), np.array([0,0,-1]),
-                                                      planes_lengthNormal, planes_lengthNbEdge, planes_widthNbEdge, planes_lengthSize, planes_widthSize)
+    plane1_collisionParams.geometry = PlaneParameters(center=np.array([15,0,5]), 
+                                                                                                      normal=np.array([0,0,-1]), 
+                                                                                                      lengthNormal=np.array([0, 1, 0]),
+                                                                                                      lengthNbEdge=1, 
+                                                                                                      widthNbEdge=2, 
+                                                                                                      lengthSize=30, 
+                                                                                                      widthSize=70)
     plane1 = root.add(Collision, parameters = plane1_collisionParams)
     # TODO being able to reuse already loaded geometry of current prefab to add any new sub prefab
     # We need to enable to directly pass a link to an already existing prefab in place of a prefab parameter object
@@ -41,28 +40,10 @@ def createScene(root):
     plane1_visu.addObject("OglModel", name="VisualModel", src="@../Geometry/container")
 
 
-    plane2_collisionParams = CollisionParameters()
-    plane2_collisionParams.name = "DOWN"
-    plane2_collisionParams.primitives = [CollisionPrimitive.TRIANGLES]
-    plane2_collisionParams.kwargs = {"TriangleCollision" : {"moving" : False, "simulated" : False}}
-    plane2_collisionParams.geometry = PlaneParameters(np.array([15,0,-20]), np.array([0,0,1]),
-                                                      planes_lengthNormal, planes_lengthNbEdge, planes_widthNbEdge, planes_lengthSize, planes_widthSize)
-    plane2 = root.add(Collision, parameters = plane2_collisionParams)
-    plane2_visu = plane2.addChild("Visu")
-    plane2_visu.addObject("OglModel", name="VisualModel", src="@../Geometry/container")
-
-
-    ## Real models
-    # VolumetricObjects = root.addChild("VolumetricObjects")
-    # addImplicitODE(VolumetricObjects)
-    # addLinearSolver(VolumetricObjects, constantSparsity=False, )
-
     ### Logo
-    LogoNode = root.addChild("LogoNode")
-    addImplicitODE(LogoNode)
-    addLinearSolver(LogoNode, constantSparsity=False, )
+    ModelsNode = root.addChild("ModelsNode")
 
-    LogoParams = EntityParameters(name = "Logo",
+    LogoParams = EntityParameters(name = "Logo1",
                                   geometry = FileParameters(filename="mesh/SofaScene/Logo.vtk"),
                                   material = DeformableBehaviorParameters(),
                                   collision = CollisionParameters(geometry = FileParameters(filename="mesh/SofaScene/LogoColli.sph")),
@@ -77,43 +58,42 @@ def createScene(root):
     LogoParams.collision.kwargs = {"SphereCollision" : {"radius" : "@Geometry/loader.listRadius"}}
     LogoParams.visual.color = [0.7, .35, 0, 0.8]
 
-    Logo = LogoNode.add(Entity, parameters = LogoParams)
+    Logo = ModelsNode.add(Entity, parameters = LogoParams)
 
-    Logo.material.addObject("ConstantForceField", name="ConstantForceUpwards", totalForce=[0, 0, -5.0])
-    Logo.material.addObject("LinearSolverConstraintCorrection", name="ConstraintCorrection", linearSolver=LogoNode.LinearSolver.linkpath, ODESolver=LogoNode.ODESolver.linkpath)
 
 
     ### S
-    SNode = root.addChild("SNode")
-    addImplicitODE(SNode)
-    addLinearSolver(SNode, constantSparsity=False, )
-
-    SParams = EntityParameters("bob.yaml")
+    SParams = EntityParameters()
     SParams.name = "S"
     SParams.geometry = FileParameters(filename="mesh/SofaScene/S.vtk")
     SParams.geometry.elementType = ElementType.TETRAHEDRA
     SParams.material = DeformableBehaviorParameters()
     SParams.material.constitutiveLawType = ConstitutiveLaw.ELASTIC
     SParams.material.parameters = [200, 0.45]
-
-    def SAddMaterial(node):
-        DeformableBehaviorParameters.addMaterial(node)
-        #TODO deal with that is a more smooth way in the material directly
-        node.addObject("LinearSolverConstraintCorrection", name="ConstraintCorrection", linearSolver=SNode.LinearSolver.linkpath, ODESolver=SNode.ODESolver.linkpath)
-
-    SParams.material.addMaterial = SAddMaterial
     SParams.material.massDensity = 0.011021
     SParams.collision = CollisionParameters()
     SParams.collision.primitives = [CollisionPrimitive.TRIANGLES]
     # # #TODO: to fix link issues for extracted geometry, it might be better to give source geometry relative link + parameters
-    SParams.collision.geometry = ExtractParameters(destinationType=ElementType.TRIANGLES, sourceParameters=SParams.geometry )
+    ## TODO: not working with static container because the init order is always wrong so that the triangle vector is always empty when initializing the container
+    SParams.collision.geometry = ExtractParameters(destinationType=ElementType.TRIANGLES, sourceParameters=SParams.geometry)
     SParams.visual = VisualParameters()
     SParams.visual.geometry = FileParameters(filename="mesh/SofaScene/SVisu.obj")
     SParams.visual.color = [0.7, .7, 0.7, 0.8]
 
-    S = SNode.add(Entity, parameters = SParams)
+    S = ModelsNode.add(Entity, parameters = SParams)
 
+    #TODO make the name automatically match the modifier type if none is given
+    root.add(NodeModifier, on = [ModelsNode], parameters = SimulationSolversParameters(constantSparsity=False))
 
-    SDensity = 0.011021
-    ODensity = SDensity
-    ADensity = 0.00693695
+    root.add(NodeModifier, on = [root], parameters = SimulationSettingsParameters(displayFlags = ["showVisualModels", "showInteractionForceFields"],
+                                                                                  enableCollisionDetection = True,
+                                                                                  useLagrangian = True,
+                                                                                  parallelComputing = False,
+                                                                                  alarmDistance=0.3, contactDistance=0.02,
+                                                                                  frictionCoef=0.5, tolerance=1.0e-4, maxIterations=20))
+
+    Logo.add(NodeModifier, on = [Logo], parameters = FixConstraintParameters( boxROIs=[[-1, -2, -13, 3, 2, -7]]))
+    Logo.add(NodeModifier, on = [Logo], parameters = FixConstraintParameters( boxROIs=[[-100, -2, -13, -300, 2, -7]]))
+    ModelsNode.add(NodeModifier, on = [S, Logo], parameters = AttachmentConstraintParameters(name = "AttachmentConstraintParameters", indices1=[26,20,119,121], indices2=[722,732,574,573], stiffness=0.5, damping=0.0,
+                                                                                             length=[((9.43-9.35)**2 + (-.44-0.48)**2 + (-6.01+6.56)**2)**(0.5) ]))
+

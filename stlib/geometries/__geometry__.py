@@ -1,5 +1,5 @@
 from stlib.core.basePrefab import BasePrefab
-from stlib.core.baseParameters import BaseParameters, Optional, dataclasses, Any, Callable
+from stlib.core.baseParameters import BaseParameters, Optional, dataclasses, Any
 from splib.topology.dynamic import addDynamicTopology
 from splib.topology.static import addStaticTopology
 from splib.core.enum_types import ElementType
