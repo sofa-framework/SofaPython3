@@ -160,6 +160,25 @@ if sofa_root and sys.platform == 'win32':
         if sofapython3_file_test and sofapython3_bin_path:
             os.environ['PATH'] = sofapython3_bin_path + os.pathsep + os.environ.get('PATH', '')
 
+# Set the Current Working Directory of the process with the path of the scene file.
+# (to be consistent with the original runSofa)
+def get_entry_script():
+    # Try the main module's __file__ first (works for -m and normal scripts)
+    import __main__
+    if hasattr(__main__, '__file__'):
+        return os.path.abspath(__main__.__file__)
+
+    # Fallback to sys.argv[0] if available
+    if sys.argv[0]:
+        return os.path.abspath(sys.argv[0])
+
+    # Interactive shell or unknown context
+    return None
+
+entry_point = get_entry_script()
+if entry_point:
+    os.chdir(os.path.abspath(os.path.dirname(entry_point)))
+
 print("---------------------------------------")
 if sys.stdout is not None:
     sys.stdout.flush()
