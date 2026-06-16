@@ -50,7 +50,7 @@ Controller_Trampoline::Controller_Trampoline()
 void Controller_Trampoline::draw(const sofa::core::visual::VisualParams* params)
 {
     PythonEnvironment::executePython(this, [this, params](){
-        PYBIND11_OVERLOAD(void, Controller, draw, params);
+        PYBIND11_OVERRIDE(void, Controller, draw, params);
     });
 }
 
@@ -58,14 +58,14 @@ void Controller_Trampoline::init()
 {
     PythonEnvironment::executePython(this, [this](){
         initializePythonCache();
-        PYBIND11_OVERLOAD(void, Controller, init, );
+        PYBIND11_OVERRIDE(void, Controller, init, );
     });
 }
 
 void Controller_Trampoline::reinit()
 {
     PythonEnvironment::executePython(this, [this](){
-        PYBIND11_OVERLOAD(void, Controller, reinit, );
+        PYBIND11_OVERRIDE(void, Controller, reinit, );
     });
 }
 
