@@ -51,7 +51,7 @@ std::string DataEngine_Trampoline::getClassName() const
 void DataEngine_Trampoline::init()
 {
     PythonEnvironment::executePython(this, [this](){
-        PYBIND11_OVERLOAD(void, DataEngine, init, );
+        PYBIND11_OVERRIDE(void, DataEngine, init, );
     });
 }
 
