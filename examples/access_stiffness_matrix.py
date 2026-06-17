@@ -18,7 +18,7 @@ def createScene(root):
     'Sofa.Component.Engine.Select',
     'Sofa.Component.LinearSolver.Direct',
     'Sofa.Component.Mass',
-    'Sofa.Component.IntegrationSchemes.Backward',
+    'Sofa.Component.IntegrationScheme.Backward',
     'Sofa.Component.SolidMechanics.FEM.Elastic',
     'Sofa.Component.StateContainer',
     'Sofa.Component.Topology.Container.Grid',

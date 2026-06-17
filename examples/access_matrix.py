@@ -31,7 +31,7 @@ def createScene(root):
                                                     'Sofa.Component.Topology.Container.Grid', 'Sofa.Component.Visual',
                                                     'Sofa.Component.Constraint.Projective', 'Sofa.Component.Engine.Select',
                                                     'Sofa.Component.LinearSolver.Direct', 'Sofa.Component.LinearSystem',
-                                                    'Sofa.Component.IntegrationSchemes.Backward','Sofa.Component.SolidMechanics.FEM.Elastic'
+                                                    'Sofa.Component.IntegrationScheme.Backward','Sofa.Component.SolidMechanics.FEM.Elastic'
                                                     ])
 
     root.addObject('DefaultAnimationLoop', parallelODESolving=True)

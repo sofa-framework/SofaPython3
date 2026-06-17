@@ -13,7 +13,7 @@ def createScene(rootNode, dt=0.01, m=1, g=1, L=100, mu=0):
     rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.LinearSolver.Iterative')
     rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.Mapping.Linear')
     rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.Mass')
-    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.IntegrationSchemes.Backward')
+    rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.IntegrationScheme.Backward')
     rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.SolidMechanics.Spring')
     rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.StateContainer')
     rootNode.addObject('RequiredPlugin', pluginName='Sofa.Component.Topology.Container.Constant')

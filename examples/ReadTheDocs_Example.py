@@ -26,7 +26,7 @@ def createScene(rootNode):
         'Sofa.Component.LinearSolver.Iterative',
         'Sofa.Component.Mapping.NonLinear',
         'Sofa.Component.Mass',
-        'Sofa.Component.IntegrationSchemes.Backward',
+        'Sofa.Component.IntegrationScheme.Backward',
         'Sofa.Component.StateContainer',
         'Sofa.Component.Topology.Container.Constant',
         'Sofa.Component.Visual',

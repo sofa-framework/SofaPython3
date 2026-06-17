@@ -40,7 +40,7 @@ def createScene(root):
     root.bbox = [[-1, -1, -1],[1,1,1]]
 
     root.addObject("RequiredPlugin", pluginName=["Sofa.Component.LinearSolver.Iterative",
-                                                 "Sofa.Component.IntegrationSchemes.Backward",
+                                                 "Sofa.Component.IntegrationScheme.Backward",
                                                  "Sofa.Component.StateContainer"
                                                  ])
     root.addObject('DefaultAnimationLoop')

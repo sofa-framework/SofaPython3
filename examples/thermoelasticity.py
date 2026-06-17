@@ -27,7 +27,7 @@ def createScene(root):
     root.addObject('DefaultAnimationLoop')
     root.addObject('DefaultVisualManagerLoop')
     root.addObject('RequiredPlugin', pluginName=['Sofa.Component.Constraint.Projective', 'Sofa.Component.Diffusion', 'Sofa.Component.Engine.Select',
-                                                 'Sofa.Component.LinearSolver.Direct', 'Sofa.Component.LinearSolver.Iterative', 'Sofa.Component.Mass', 'Sofa.Component.IntegrationSchemes.Backward', 'Sofa.Component.SolidMechanics.FEM.Elastic',
+                                                 'Sofa.Component.LinearSolver.Direct', 'Sofa.Component.LinearSolver.Iterative', 'Sofa.Component.Mass', 'Sofa.Component.IntegrationScheme.Backward', 'Sofa.Component.SolidMechanics.FEM.Elastic',
                                                  'Sofa.Component.Topology.Container.Dynamic', 'Sofa.Component.Topology.Container.Grid', 'Sofa.Component.Topology.Mapping', 'Sofa.Component.Visual', 'Sofa.GL.Component.Engine', 'Sofa.GL.Component.Rendering2D',
                                                  'Sofa.GL.Component.Rendering3D', 'Sofa.Component.StateContainer', 'Sofa.Component.Mapping.Linear'])
     root.addObject('VisualStyle', displayFlags="hideCollisionModels showVisualModels hideForceFields showBehaviorModels")

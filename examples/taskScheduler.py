@@ -11,7 +11,7 @@ def createScene(root):
         "Sofa.Component.Engine.Select",
         "Sofa.Component.LinearSolver.Iterative",
         "Sofa.Component.Mass",
-        "Sofa.Component.IntegrationSchemes.Backward",
+        "Sofa.Component.IntegrationScheme.Backward",
         "Sofa.Component.StateContainer",
         "Sofa.Component.Topology.Container.Grid",
         "Sofa.Component.Visual",

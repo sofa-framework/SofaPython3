@@ -17,7 +17,7 @@ class Test(unittest.TestCase):
                                                      "Sofa.Component.Mapping.NonLinear",
                                                      "Sofa.Component.Mapping.MappedMatrix",
                                                      "Sofa.Component.Mass",
-                                                     "Sofa.Component.IntegrationSchemes.Backward",
+                                                     "Sofa.Component.IntegrationScheme.Backward",
                                                      "Sofa.Component.Topology.Container.Dynamic"])
 
         root.addObject("FreeMotionAnimationLoop", solveVelocityConstraintFirst=True)

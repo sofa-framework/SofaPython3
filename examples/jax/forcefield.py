@@ -113,8 +113,8 @@ def createScene(root, method="implicit-matrix-assembly", n_particles=1_000, use_
         "RequiredPlugin",
         pluginName=[
             'Sofa.Component.Visual',
-            'Sofa.Component.IntegrationSchemes.Forward',
-            'Sofa.Component.IntegrationSchemes.Backward',
+            'Sofa.Component.IntegrationScheme.Forward',
+            'Sofa.Component.IntegrationScheme.Backward',
             'Sofa.Component.LinearSolver.Iterative',
             'Sofa.Component.LinearSolver.Direct',
             'Sofa.Component.StateContainer',

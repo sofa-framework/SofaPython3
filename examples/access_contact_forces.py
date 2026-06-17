@@ -34,7 +34,7 @@ def createScene(root):
     'Sofa.Component.Collision.Detection.Intersection', 'Sofa.Component.Collision.Geometry',
     'Sofa.Component.Collision.Response.Contact', 'Sofa.Component.Constraint.Projective',
     'Sofa.Component.IO.Mesh','Sofa.Component.LinearSolver.Iterative',
-    'Sofa.Component.Mapping.Linear', 'Sofa.Component.Mass', 'Sofa.Component.IntegrationSchemes.Backward',
+    'Sofa.Component.Mapping.Linear', 'Sofa.Component.Mass', 'Sofa.Component.IntegrationScheme.Backward',
     'Sofa.Component.SolidMechanics.FEM.Elastic','Sofa.Component.StateContainer',
     'Sofa.Component.Topology.Container.Dynamic','Sofa.Component.Visual',
     'Sofa.GL.Component.Rendering3D','Sofa.Component.Constraint.Lagrangian.Correction',

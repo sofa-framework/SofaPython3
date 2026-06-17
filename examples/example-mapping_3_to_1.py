@@ -43,7 +43,7 @@ class MSELossMapping(Sofa.Core.Mapping_Vec3d_Vec1d):
 
 def createScene(root):
         root.addObject("RequiredPlugin", pluginName=["Sofa.GL.Component",
-                                                     "Sofa.Component.IntegrationSchemes.Backward",
+                                                     "Sofa.Component.IntegrationScheme.Backward",
                                                      "Sofa.Component.LinearSolver.Direct",
                                                      "Sofa.Component.LinearSolver.Iterative",
                                                      "Sofa.Component.Mass",

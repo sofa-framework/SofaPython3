@@ -462,7 +462,7 @@ Here is the entire code of the scene :
             confignode.addObject('RequiredPlugin', name="Sofa.Component.LinearSolver.Iterative", printLog=False)
             confignode.addObject('RequiredPlugin', name="Sofa.Component.Mapping.NonLinear", printLog=False)
             confignode.addObject('RequiredPlugin', name="Sofa.Component.Mass", printLog=False)
-            confignode.addObject('RequiredPlugin', name="Sofa.Component.IntegrationSchemes.Backward", printLog=False)
+            confignode.addObject('RequiredPlugin', name="Sofa.Component.IntegrationScheme.Backward", printLog=False)
             confignode.addObject('RequiredPlugin', name="Sofa.Component.StateContainer", printLog=False)
             confignode.addObject('RequiredPlugin', name="Sofa.Component.Topology.Container.Constant", printLog=False)
             confignode.addObject('RequiredPlugin', name="Sofa.Component.Visual", printLog=False)
