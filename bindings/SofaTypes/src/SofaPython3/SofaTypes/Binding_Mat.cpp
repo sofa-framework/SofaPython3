@@ -49,6 +49,7 @@ template <sofa::Size S> static void bindSquaredMat(py::class_<Mat<S, S, double>>
     p.def("transpose", (void (MatClass::*)()) & MatClass::transpose);
     p.def("inverted", [](MatClass &mat){ return mat.inverted(); });
     p.def("invert", [](MatClass &dest, MatClass &from){ return dest.invert(from); });
+    p.def("trace", [](const MatClass& mat){ return sofa::type::trace(mat); });
 }
 
 template <sofa::Size R, sofa::Size C>
@@ -150,8 +151,14 @@ static void addMat(py::module & /*m*/, py::class_<Mat<R, C, double>> &p) {
     p.def(py::self * double());
     p.def(double() * py::self);
     p.def(py::self / double());
-    p.def(py::self *= double());
-    p.def(py::self /= double());
+    p.def("__imul__", [](MatClass& self, double value) -> MatClass& {
+            self *= value;
+            return self;
+        }, py::return_value_policy::reference_internal);
+    p.def("__itruediv__", [](MatClass& self, double value) -> MatClass& {
+        self /= value;
+        return self;
+    }, py::return_value_policy::reference_internal);
 
     p.def(py::self += py::self);
     p.def(py::self -= py::self);
@@ -161,6 +168,16 @@ static void addMat(py::module & /*m*/, py::class_<Mat<R, C, double>> &p) {
 
     p.def("__str__", [](MatClass &self) { return pyMat::__str__(self); });
     p.def("__repr__", [](MatClass &self) { return pyMat::__str__(self, true); });
+}
+
+template <sofa::Size R_1, sofa::Size C_1, sofa::Size R_2, sofa::Size C_2>
+static void addMatProduct(py::module & /*m*/, py::class_<Mat<R_1, C_1, double>> &p)
+{
+    using LHS = Mat<R_1, C_1, double>;
+    using RHS = Mat<R_2, C_2, double>;
+    p.def("__mul__", [](const LHS &self, const RHS &m) {
+        return self * m;
+    });
 }
 
 // Generic bindings for Matrices
@@ -205,6 +222,8 @@ template <> struct MATRIX<1, 1> {
                   return std::unique_ptr<MatClass>(mat);
               }));
         ::addMat(m, p);
+
+        addMatProduct<1,1, 1,1>(m, p);
     }
 };
 
@@ -234,6 +253,8 @@ template <> struct MATRIX<2, 2> {
                   return std::unique_ptr<MatClass>(mat);
               }));
         ::addMat(m, p);
+
+        addMatProduct<2,2, 2,2>(m, p);
     }
 };
 
@@ -263,6 +284,8 @@ template <> struct MATRIX<3, 3> {
                   return std::unique_ptr<MatClass>(mat);
               }));
         ::addMat(m, p);
+
+        addMatProduct<3,3, 3,3>(m, p);
     }
 };
 
@@ -292,6 +315,8 @@ template <> struct MATRIX<4, 4> {
                   return std::unique_ptr<MatClass>(mat);
               }));
         ::addMat(m, p);
+
+        addMatProduct<4,4, 4,4>(m, p);
     }
 };
 

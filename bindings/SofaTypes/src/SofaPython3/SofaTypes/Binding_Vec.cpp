@@ -87,11 +87,11 @@ void setFromPartialSequence(const VecClass& s, py::list t)
     for(unsigned int i=0;i<N;i++) { t[i] = s[i]; }
 }
 
-template <sofa::Size N, class T>
-py::class_<Vec<N,T>> addVec(py::module &m)
+template <sofa::Size N, class T, template<sofa::Size, class> class V = sofa::type::Vec>
+py::class_<V<N,T>> addVec(py::module &m)
 {
-    typedef Vec<N, T> VecClass;
-    py::class_<Vec<N, T>> p(m, sofa::defaulttype::DataTypeInfo< Vec<N, T> >::name().c_str());
+    typedef V<N, T> VecClass;
+    py::class_<V<N, T>> p(m, sofa::defaulttype::DataTypeInfo< V<N, T> >::name().c_str());
 
     p.def(py::init<>());                 // empty ctor
     p.def(py::init<const VecClass &>()); // copy ctor
@@ -230,26 +230,30 @@ T addCross(T p)
     return p;
 }
 
-template<class T>
+template<class T, template<sofa::Size, class> class V = sofa::type::Vec>
 void addVectorsFor(py::module& m)
 {
-    addVec<1, T>(m);
-    addCross( addVec<2, T>(m) );
-    addCross( addVec<3, T>(m) );
-    addVec<4, T>(m);
-    addVec<5, T>(m);
-    addVec<6, T>(m);
-    addVec<7, T>(m);
-    addVec<8, T>(m);
-    addVec<9, T>(m);
-    addVec<10, T>(m);
-    addVec<11, T>(m);
-    addVec<12, T>(m);
+    addVec<1, T, V>(m);
+    addCross( addVec<2, T, V>(m) );
+    addCross( addVec<3, T, V>(m) );
+    addVec<4, T, V>(m);
+    addVec<5, T, V>(m);
+    addVec<6, T, V>(m);
+    addVec<7, T, V>(m);
+    addVec<8, T, V>(m);
+    addVec<9, T, V>(m);
+    addVec<10, T, V>(m);
+    addVec<11, T, V>(m);
+    addVec<12, T, V>(m);
 }
 
 void moduleAddVec(py::module &m)
 {
-    addVectorsFor<int>(m);
-    addVectorsFor<double>(m);
-    addVectorsFor<float>(m);
+    addVectorsFor<int, sofa::type::Vec>(m);
+    addVectorsFor<double, sofa::type::Vec>(m);
+    addVectorsFor<float, sofa::type::Vec>(m);
+
+    addVectorsFor<int, sofa::type::VecNoInit>(m);
+    addVectorsFor<double, sofa::type::VecNoInit>(m);
+    addVectorsFor<float, sofa::type::VecNoInit>(m);
 }

@@ -1,6 +1,7 @@
 import math
 import unittest
 
+import Sofa
 import SofaTypes
 from SofaTypes import Vec1d, Vec2d, Vec3d, Vec4d, Vec4i
 
