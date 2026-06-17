@@ -71,7 +71,7 @@ PYBIND11_MODULE(Simulation, simulation)
     {
         auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
         auto res = pluginManager.loadPlugin("SceneChecking");
-        if(res == sofa::helper::system::PluginManager::PluginLoadStatus::SUCCESS)
+        if(res == sofa::helper::system::PluginManager::PluginLoadStatus::SUCCESS || res == PluginLoadStatus::ALREADY_LOADED)
         {
             sofa::simulation::SceneCheckerVisitor sceneCheckerVisitor;
 
