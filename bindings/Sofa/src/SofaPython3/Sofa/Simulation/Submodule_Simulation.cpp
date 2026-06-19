@@ -52,22 +52,9 @@ namespace py = pybind11;
 namespace sofapython3
 {
 
-PYBIND11_MODULE(Simulation, simulation)
+void initRoot(Node* n, bool enableSceneChecking = true)
 {
-    // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
-    sofa::core::init();
-    sofa::simulation::core::init();
-    sofa::simulation::graph::init();
-
-    simulation.doc() =sofapython3::doc::simulation::Class;
-
-    moduleAddSceneCheck(simulation);
-    moduleAddSceneCheckMainRegistry(simulation);
-
-    simulation.def("print", [](Node* n){ sofa::simulation::node::print(n); }, sofapython3::doc::simulation::print);
-    simulation.def("animate", [](Node* n, SReal dt=0.0){ sofa::simulation::node::animate(n, dt); },sofapython3::doc::simulation::animate);
-    simulation.def("init", [](Node* n){ sofa::simulation::node::init(n); }, sofapython3::doc::simulation::init);
-    simulation.def("initRoot", [](Node* n)
+    if (enableSceneChecking)
     {
         auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
         auto res = pluginManager.loadPlugin("SceneChecking");
@@ -86,8 +73,28 @@ PYBIND11_MODULE(Simulation, simulation)
         {
             msg_warning("Could not load SceneChecking, no scene check will be performed.");
         }
-        sofa::simulation::node::initRoot(n);
-    }, sofapython3::doc::simulation::initRoot);
+    }
+    sofa::simulation::node::initRoot(n);
+}
+
+PYBIND11_MODULE(Simulation, simulation)
+{
+    // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
+    sofa::core::init();
+    sofa::simulation::core::init();
+    sofa::simulation::graph::init();
+
+    simulation.doc() =sofapython3::doc::simulation::Class;
+
+    moduleAddSceneCheck(simulation);
+    moduleAddSceneCheckMainRegistry(simulation);
+
+    simulation.def("print", [](Node* n){ sofa::simulation::node::print(n); }, sofapython3::doc::simulation::print);
+    simulation.def("animate", [](Node* n, SReal dt=0.0){ sofa::simulation::node::animate(n, dt); },sofapython3::doc::simulation::animate);
+    simulation.def("init", [](Node* n){ sofa::simulation::node::init(n); }, sofapython3::doc::simulation::init);
+    simulation.def("initRoot", [](Node* n) {initRoot( n, true );}, sofapython3::doc::simulation::initRoot);
+    simulation.def("initRoot", [](Node* n, bool enableSceneChecking) {initRoot( n, enableSceneChecking );}, sofapython3::doc::simulation::initRoot);
+
     simulation.def("initVisual", [](Node* n){ n->getVisualLoop()->initStep(sofa::core::visual::VisualParams::defaultInstance()); }, sofapython3::doc::simulation::initVisual);
     simulation.def("reset", [](Node* n){ sofa::simulation::node::reset(n); }, sofapython3::doc::simulation::reset);
   
