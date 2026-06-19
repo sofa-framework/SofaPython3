@@ -32,7 +32,7 @@ class RestShapeForceField(Sofa.Core.ForceFieldVec3d):
 def createScene(root):
 
         root.addObject("RequiredPlugin", pluginName=["Sofa.GL.Component",
-                                                     "Sofa.Component.ODESolver.Backward",
+                                                     "Sofa.Component.IntegrationScheme.Backward",
                                                      "Sofa.Component.LinearSolver.Direct",
                                                      "Sofa.Component.LinearSolver.Iterative",
                                                      "Sofa.Component.Mass",
@@ -42,7 +42,7 @@ def createScene(root):
 
         root.addObject("LineAxis")
         root.addObject("DefaultAnimationLoop", name="loop")
-        root.addObject("EulerImplicitSolver")
+        root.addObject("EulerImplicitIntegrationScheme")
         root.addObject("CGLinearSolver", tolerance=1e-12, threshold=1e-12, iterations=25)
 
         o = root.addChild("Object")

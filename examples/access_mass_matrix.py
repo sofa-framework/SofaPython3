@@ -33,7 +33,7 @@ def createScene(root):
                                                  'Sofa.Component.LinearSolver.Ordering',
                                                  'Sofa.Component.LinearSystem',
                                                  'Sofa.Component.Mass',
-                                                 'Sofa.Component.ODESolver.Backward',
+                                                 'Sofa.Component.IntegrationScheme.Backward',
                                                  'Sofa.Component.SolidMechanics.FEM.Elastic',
                                                  'Sofa.Component.StateContainer',
                                                  'Sofa.Component.Topology.Container.Grid',
@@ -43,7 +43,7 @@ def createScene(root):
     root.addObject('DefaultAnimationLoop')
     root.addObject('DefaultVisualManagerLoop')
 
-    root.addObject('EulerImplicitSolver', rayleighStiffness="0.1", rayleighMass="0.1")
+    root.addObject('EulerImplicitIntegrationScheme', rayleighStiffness="0.1", rayleighMass="0.1")
 
     matrices = root.addChild('matrices')
     # in this Node, two linear systems are declared:

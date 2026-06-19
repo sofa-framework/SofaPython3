@@ -16,7 +16,7 @@ def createScene(root):
                                                  "Sofa.Component.LinearSolver.Direct",
                                                  "Sofa.Component.Mapping.MappedMatrix",
                                                  "Sofa.Component.Mass",
-                                                 "Sofa.Component.ODESolver.Backward",
+                                                 "Sofa.Component.IntegrationScheme.Backward",
                                                  "Sofa.Component.Topology.Container.Dynamic",
                                                  "Sofa.Component.Mapping.NonLinear",
                                                  "Sofa.Component.StateContainer"
@@ -26,7 +26,7 @@ def createScene(root):
     constraint_solver = root.addObject("BlockGaussSeidelConstraintSolver", tolerance=1e-9, maxIterations=1000)
     root.addObject("StringMeshCreator", name="loader", resolution="20")
 
-    root.addObject("EulerImplicitSolver")
+    root.addObject("EulerImplicitIntegrationScheme")
     root.addObject("EigenSimplicialLLT", template='CompressedRowSparseMatrixMat3x3d')
     root.addObject("GenericConstraintCorrection")
 
