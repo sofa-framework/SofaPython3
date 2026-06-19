@@ -92,7 +92,7 @@ namespace sofapython3
                                "isImplicit"_a=mparams->implicit(),
                                "energy"_a=mparams->energy());
 
-        PYBIND11_OVERLOAD_PURE(void, Inherit1, apply, mp,
+        PYBIND11_OVERRIDE_PURE(void, Inherit1, apply, mp,
                                PythonFactory::toPython(&out), PythonFactory::toPython(&in));
     }
 
@@ -108,7 +108,7 @@ namespace sofapython3
                                "isImplicit"_a=mparams->implicit(),
                                "energy"_a=mparams->energy());
 
-        PYBIND11_OVERLOAD_PURE(void, Inherit1, applyJ, mp,
+        PYBIND11_OVERRIDE_PURE(void, Inherit1, applyJ, mp,
                                PythonFactory::toPython(&out), PythonFactory::toPython(&in));
     }
 
@@ -123,7 +123,7 @@ namespace sofapython3
                                "isImplicit"_a=mparams->implicit(),
                                "energy"_a=mparams->energy());
 
-        PYBIND11_OVERLOAD_PURE(void, Inherit1, applyJT, mp,
+        PYBIND11_OVERRIDE_PURE(void, Inherit1, applyJT, mp,
                                PythonFactory::toPython(&out), PythonFactory::toPython(&in));
     }
 
@@ -135,7 +135,7 @@ namespace sofapython3
 
         py::dict mp = py::dict("time"_a=getContext()->getTime());
 
-        PYBIND11_OVERLOAD_PURE(void, Inherit1, applyConstraintsJT, mp,
+        PYBIND11_OVERRIDE_PURE(void, Inherit1, applyConstraintsJT, mp,
                                PythonFactory::toPython(&out), PythonFactory::toPython(&in));
     }
 
