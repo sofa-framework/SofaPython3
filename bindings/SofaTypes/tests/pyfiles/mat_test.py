@@ -4,6 +4,8 @@ import unittest
 import Sofa
 from SofaTypes import Mat1x1, Mat2x2, Mat3x3, Vec2d
 
+import numpy as np
+
 class TestMaterialMatrix(unittest.TestCase):
 
     def test_Constructors(self):
@@ -62,3 +64,23 @@ class TestMaterialMatrix(unittest.TestCase):
         m_test /= 2.0
         expected_inplace_div = Mat2x2([[0.5, 1.0], [1.5, 2.0]])
         self.assertEqual(m_test, expected_inplace_div)
+
+    def test_to_numpy(self):
+        m1 = Mat2x2([[1.0, 2.0], [3.0, 4.0]])
+        n1 = np.array(m1, copy = False) #n1 is a view on m1
+        n1[0, 0] = 9.0
+        self.assertEqual(m1[0][0], 9.0)
+
+        m2 = Mat2x2([[5.0, 6.0], [7.0, 8.0]])
+        n2 = np.array(m2, copy = False)
+
+        prod = n1 @ n2
+        expected_prod = np.array([[59.0, 70.0], [43.0, 50.0]])
+        np.testing.assert_array_equal(prod, expected_prod)
+
+        m3_prod = Mat2x2(prod)
+
+        self.assertEqual(m3_prod[0][0], prod[0,0])
+        self.assertEqual(m3_prod[0][1], prod[0,1])
+        self.assertEqual(m3_prod[1][0], prod[1,0])
+        self.assertEqual(m3_prod[1][1], prod[1,1])
