@@ -18,24 +18,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#pragma once
+
 #include <pybind11/pybind11.h>
-#include <SofaPython3/SofaDeformable/Binding_LinearSpring.h>
-#include <SofaPython3/SofaDeformable/Binding_SpringForceField.h>
-#include <SofaPython3/SofaDeformable/Binding_LameParameters.h>
-
-
-namespace py { using namespace pybind11; }
 
 namespace sofapython3
 {
 
-PYBIND11_MODULE(SofaDeformable, m)
-{
-    m.doc() = "Implements linear springs between objects";
-
-    moduleAddLinearSpring(m);
-    moduleAddSpringForceField(m);
-    moduleAddLameParameters(m);
-}
+void moduleAddLameParameters(pybind11::module& m);
 
 } // namespace sofapython3
