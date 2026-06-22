@@ -4,6 +4,8 @@ project(SofaPython3 VERSION 24.12.99)
 
 find_package(Sofa.Config REQUIRED)
 
+include(CMake/environment.cmake)
+
 # Detect if SofaPython3 is a subproject of another project (eg. when compiled within Sofa)
 if (NOT "${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
     set(SP3_COMPILED_AS_SUBPROJECT 1)
@@ -49,24 +51,6 @@ sofa_find_package(Sofa.GUI.Common QUIET)
 CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAGUI "Bind the SOFA gui component." ON "Sofa.GUI.Common_FOUND" OFF)
 
 
-# BUILD OPTIONS
-if (NOT SP3_COMPILED_AS_SUBPROJECT)
-    if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-        set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
-    endif()
-    set(ARCHIVE_OUTPUT_DIRECTORY lib)
-    set(RUNTIME_OUTPUT_DIRECTORY bin)
-
-    if(WIN32)
-        set(LIBRARY_OUTPUT_DIRECTORY ${RUNTIME_OUTPUT_DIRECTORY})
-    else()
-        set(LIBRARY_OUTPUT_DIRECTORY ${ARCHIVE_OUTPUT_DIRECTORY})
-    endif()
-
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY})
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY})
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTORY})
-endif()
 
 if(MSVC)
     # With C++17 (/std:c++17), to get MSVC to behave, you need /permissive-
@@ -210,15 +194,15 @@ sofa_create_package(
     RELOCATABLE "plugins"
     )
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SofaPython3Tools.cmake" "${CMAKE_BINARY_DIR}/lib/cmake/SofaPython3Tools.cmake" COPYONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SofaPython3Tools.cmake" "${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/cmake/SofaPython3Tools.cmake" COPYONLY)
 install(FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SofaPython3Tools.cmake"
-    DESTINATION lib/cmake/SofaPython3
+    DESTINATION ${ARCHIVE_OUTPUT_DIRECTORY}/cmake/SofaPython3
     COMPONENT headers
 )
 
 if (SP3_LINK_TO_USER_SITE AND SP3_PYTHON_PACKAGES_LINK_DIRECTORY)
-    set(SP3_SITE_PACKAGES_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}")
+    set(SP3_SITE_PACKAGES_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}")
 
     file(GLOB directories RELATIVE "${SP3_SITE_PACKAGES_OUTPUT_DIRECTORY}" "${SP3_SITE_PACKAGES_OUTPUT_DIRECTORY}/*")
     
@@ -226,11 +210,11 @@ if (SP3_LINK_TO_USER_SITE AND SP3_PYTHON_PACKAGES_LINK_DIRECTORY)
     install(DIRECTORY DESTINATION ${SP3_PYTHON_PACKAGES_LINK_DIRECTORY})
     foreach(directory ${directories})
         if(SP3_COMPILED_AS_SOFA_SUBPROJECT)
-            set(LINK_SOURCE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/plugins/SofaPython3/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
+            set(LINK_SOURCE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/plugins/SofaPython3/${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
         else()
-            set(LINK_SOURCE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
+            set(LINK_SOURCE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
         endif()
-        if(IS_DIRECTORY ${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
+        if(IS_DIRECTORY ${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY}/${SP3_PYTHON_PACKAGES_DIRECTORY}/${directory})
             if(WIN32)
                 install(CODE "\
                 execute_process( \
