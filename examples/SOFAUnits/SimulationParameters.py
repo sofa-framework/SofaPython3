@@ -46,9 +46,6 @@ class BaseParameterSet():
                 
 
 class SOFAParameters(BaseParameterSet):
-    def __init__(self, time = s, position = m, mass = kg ):
-        BaseParameterSet.__init__(self, time, position, mass)
-        self.time = time
-        self.position = position
-        self.mass = mass
+    def __init__(self, time = s, length = m, mass = kg ):
+        BaseParameterSet.__init__(self, time, length, mass)
         
