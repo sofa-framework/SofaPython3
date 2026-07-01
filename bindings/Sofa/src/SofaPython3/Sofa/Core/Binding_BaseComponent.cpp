@@ -124,7 +124,7 @@ py::object getTarget(BaseComponent *self)
     sofa::core::objectmodel::BaseObjectDescription arg;
     arg.setAttribute("type", self->getClassName());
     arg.setAttribute("template", self->getTemplateName());
-    if (auto component = sofa::core::MainComponentFactory::getInstance()->findComponent(&arg))
+    if (auto component = sofa::core::MainComponentFactory::getInstance()->findComponent(self->getContext(), &arg))
     {
         return py::cast(component->componentModule);
     }
