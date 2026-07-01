@@ -157,17 +157,23 @@ class ScaledUnit(Unit):
 
 ### Primary units
 neutralUnit = NeutralUnit()
-m = PrimaryUnit("m")
-s = PrimaryUnit("s")
-kg = PrimaryUnit("kg")
+s = PrimaryUnit("s")        # time
+m = PrimaryUnit("m")        # length
+kg = PrimaryUnit("kg")      # mass
+A = PrimaryUnit("A")        # electric current
+K = PrimaryUnit("K")        # temperature
+mol = PrimaryUnit("mol")    # amount of substance
+cd = PrimaryUnit("cd")      # luminous intensity
 
 
-### Derived units
+### (some) Derived units
 v = m/s
 a = v/s
 N = kg*a
 Pa = N/(m**2)
 tho = m*N
+j = kg*m**2/s**2
+W = j/s
 
 
 ## Scaled primary units
@@ -206,6 +212,20 @@ dPa = ScaledUnit(Pa, 1e-1)
 kPa = ScaledUnit(Pa, 1e3)
 MPa = ScaledUnit(Pa, 1e6)
 GPa = ScaledUnit(Pa, 1e9)
+
+mj = ScaledUnit(j, 1e-3)
+cj = ScaledUnit(j, 1e-2)
+dj = ScaledUnit(j, 1e-1)
+kj = ScaledUnit(j, 1e3)
+Mj = ScaledUnit(j, 1e6)
+Gj = ScaledUnit(j, 1e9)
+
+mW = ScaledUnit(W, 1e-3)
+cW = ScaledUnit(W, 1e-2)
+dW = ScaledUnit(W, 1e-1)
+kW = ScaledUnit(W, 1e3)
+MW = ScaledUnit(W, 1e6)
+GW = ScaledUnit(W, 1e9)
 
 
 
