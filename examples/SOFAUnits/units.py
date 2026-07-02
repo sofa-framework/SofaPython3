@@ -15,7 +15,8 @@ class Unit():
             first = False
             num_s += key
             if self_key["num"][key] != 1:
-                num_s+=f"^{self_key["num"][key]}"
+                exposant = self_key["num"][key]
+                num_s+=f"^{exposant}"
             
         if len(num_s) != 2:
             num_s += " ) "
@@ -31,7 +32,8 @@ class Unit():
             first = False
             denum_s += key
             if self_key["denum"][key] != 1:
-                denum_s+=f"^{self_key["denum"][key]}"
+                exposant = self_key["denum"][key]
+                denum_s+=f"^{exposant}"
             
         if len(num_s) != 4:
             denum_s += " )"
@@ -167,13 +169,13 @@ cd = PrimaryUnit("cd")      # luminous intensity
 
 
 ### (some) Derived units
-v = m/s
-a = v/s
-N = kg*a
-Pa = N/(m**2)
-tho = m*N
-j = kg*m**2/s**2
-W = j/s
+v = m/s                     # velocity
+a = v/s                     # acceleration
+N = kg*a                    # force (Newton)
+Pa = N/(m**2)               # pressure (Pascal)
+tho = m*N                   # torque 
+J = kg*m**2/s**2            # energy (Joule)
+W = J/s                     # power (Watt)
 
 
 ## Scaled primary units
@@ -213,12 +215,12 @@ kPa = ScaledUnit(Pa, 1e3)
 MPa = ScaledUnit(Pa, 1e6)
 GPa = ScaledUnit(Pa, 1e9)
 
-mj = ScaledUnit(j, 1e-3)
-cj = ScaledUnit(j, 1e-2)
-dj = ScaledUnit(j, 1e-1)
-kj = ScaledUnit(j, 1e3)
-Mj = ScaledUnit(j, 1e6)
-Gj = ScaledUnit(j, 1e9)
+mJ = ScaledUnit(J, 1e-3)
+cJ = ScaledUnit(J, 1e-2)
+dJ = ScaledUnit(J, 1e-1)
+kJ = ScaledUnit(J, 1e3)
+MJ = ScaledUnit(J, 1e6)
+GJ = ScaledUnit(J, 1e9)
 
 mW = ScaledUnit(W, 1e-3)
 cW = ScaledUnit(W, 1e-2)
