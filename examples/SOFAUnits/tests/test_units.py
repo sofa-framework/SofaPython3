@@ -10,7 +10,7 @@ import pytest
 
 from units import (
     Unit, NeutralUnit, PrimaryUnit, DerivedUnit, ScaledUnit,
-    neutralUnit, m, s, kg,
+    DimensionLess, m, s, kg,
     v, a, N, Pa, tho,
     nm, mm, cm, km,
     ms, µs,
@@ -47,14 +47,14 @@ class TestPrimaryUnit:
 
 class TestNeutralUnit:
     def test_neutral_unit_has_no_num_or_denum(self):
-        assert neutralUnit.numerator == []
-        assert neutralUnit.denumerator == []
+        assert DimensionLess.numerator == []
+        assert DimensionLess.denumerator == []
 
     def test_neutral_unit_ratio_is_one(self):
-        assert neutralUnit.ratio == 1.0
+        assert DimensionLess.ratio == 1.0
 
     def test_multiplying_by_neutral_unit_is_identity(self):
-        result = neutralUnit * m
+        result = DimensionLess * m
         assert result.ratio == 1.0
         assert [u.abrev for u in result.numerator] == ["m"]
         assert result.denumerator == []
@@ -212,12 +212,12 @@ class TestEquality:
 
 class TestPrintReduced:
     def test_print_reduced_newton(self, capsys):
-        N.printReduced()
+        print(N)
         captured = capsys.readouterr()
         assert captured.out.strip() == "1.0 * ( kg * m ) / ( s^2 )"
 
     def test_print_reduced_pascal(self, capsys):
-        Pa.printReduced()
+        print(Pa)
         captured = capsys.readouterr()
         assert captured.out.strip() == "1.0 * ( kg ) / ( s^2 * m )"
 

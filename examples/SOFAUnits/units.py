@@ -5,7 +5,78 @@ class Unit():
     denumerator : list
     ratio : float
 
-    def printReduced(self):
+
+    def getKey(self):
+        key = {"num" : {}, "denum" : {}}
+        for unit in self.numerator:
+            if unit.abrev in key["num"]:
+                key["num"][unit.abrev] += 1
+            else:
+                key["num"][unit.abrev] = 1
+        for unit in self.denumerator:
+            if unit.abrev in key["denum"]:
+                key["denum"][unit.abrev] += 1
+            else:
+                key["denum"][unit.abrev] = 1
+        return key
+    
+    def __eq__ (self, other):
+        if not isinstance(other, Unit):
+            raise TypeError
+
+        if int(math.log10(self.ratio)) != int(math.log10(other.ratio)) :
+            return False
+        
+        s_key = self.getKey()
+        o_key = other.getKey()
+
+        isEq = True
+
+        for dicName in ["num", "denum"]:
+            for key in s_key[dicName]:
+                isEq = isEq and (key in o_key[dicName]) and (s_key[dicName][key] == o_key[dicName][key] )
+
+        return isEq 
+
+
+    def __mul__(self, other):
+        if isinstance(other, Unit):
+            return DerivedUnit(numerator=self.numerator + other.numerator, denumerator= self.denumerator + other.denumerator, ratio = self.ratio * other.ratio)
+        else:
+            return DimensionnedValue(other,self )
+        
+
+    def __rmul__(self, other ):
+        return self.__mul__(other)
+    
+    def __pow__(self, other : int):
+        if not isinstance(other, int):
+            raise ValueError
+
+        targetNum = []
+        targetDenum = []
+        targetRatio = 1.0
+
+        for i in range(abs(other)):
+            targetNum += self.numerator
+            targetDenum += self.denumerator
+            targetRatio *= self.ratio
+        
+        if other < 0 :
+            return DerivedUnit(numerator=targetDenum, denumerator= targetNum, ratio = 1.0/targetRatio)
+        elif other > 0 :
+            return DerivedUnit(numerator=targetNum, denumerator= targetDenum, ratio = targetRatio)
+        else:
+            return NeutralUnit
+
+    def __truediv__(self, other ):
+        if not isinstance(other, Unit):
+            raise TypeError
+        
+        return DerivedUnit(numerator=self.numerator + other.denumerator, denumerator= self.denumerator + other.numerator, ratio = self.ratio / other.ratio)
+
+    def toString(self, addRatio : bool = True):
+        
         self_key = self.getKey()
         num_s = "( "
         first = True
@@ -35,81 +106,30 @@ class Unit():
                 exposant = self_key["denum"][key]
                 denum_s+=f"^{exposant}"
             
+
         if len(num_s) != 4:
             denum_s += " )"
         else:
             denum_s = ""
 
 
-        print(f"{self.ratio} * " + num_s + denum_s)
-
-    def getKey(self):
-        key = {"num" : {}, "denum" : {}}
-        for unit in self.numerator:
-            if unit.abrev in key["num"]:
-                key["num"][unit.abrev] += 1
-            else:
-                key["num"][unit.abrev] = 1
-        for unit in self.denumerator:
-            if unit.abrev in key["denum"]:
-                key["denum"][unit.abrev] += 1
-            else:
-                key["denum"][unit.abrev] = 1
-        return key
-    
-    def __eq__ (self, other):
-        if int(math.log10(self.ratio)) != int(math.log10(other.ratio)) :
-            return False
-        
-        s_key = self.getKey()
-        o_key = other.getKey()
-
-        isEq = True
-
-        for dicName in ["num", "denum"]:
-            for key in s_key[dicName]:
-                isEq = isEq and (key in o_key[dicName]) and (s_key[dicName][key] == o_key[dicName][key] )
-
-        return isEq 
-
-
-    def __mul__(self, other):
-        return DerivedUnit(numerator=self.numerator + other.numerator, denumerator= self.denumerator + other.denumerator, ratio = self.ratio * other.ratio)
-
-    def __rmul__(self, other ):
-        return self.__mul__(other)
-    
-    def __pow__(self, other : int):
-        if not isinstance(other, int):
-            raise ValueError
-
-        targetNum = []
-        targetDenum = []
-        targetRatio = 1.0
-
-        for i in range(abs(other)):
-            targetNum += self.numerator
-            targetDenum += self.denumerator
-            targetRatio *= self.ratio
-        
-        if other < 0 :
-            return DerivedUnit(numerator=targetDenum, denumerator= targetNum, ratio = 1.0/targetRatio)
-        elif other > 0 :
-            return DerivedUnit(numerator=targetNum, denumerator= targetDenum, ratio = targetRatio)
+        if addRatio:
+            return f"{self.ratio} * " + num_s + denum_s
         else:
-            return NeutralUnit
-
-    def __truediv__(self, other ):
-            return DerivedUnit(numerator=self.numerator + other.denumerator, denumerator= self.denumerator + other.numerator, ratio = self.ratio / other.ratio)
+            return num_s + denum_s
 
 
-
+    def __str__(self):
+        return self.toString()
 
 class NeutralUnit(Unit):
     def __init__(self):
         self.numerator = []
         self.denumerator = []
         self.ratio = 1.0
+        
+    def __str__(self):
+        return "1"
     
 
 class PrimaryUnit(Unit):
@@ -156,9 +176,63 @@ class ScaledUnit(Unit):
         self.ratio = ratio
 
 
+class DimensionnedValue():
+
+    value : float 
+    unit : Unit
+
+    def __init__(self, value : float, unit : Unit):
+        self.value = value
+        self.unit = unit
+
+    def __eq__ (self, other):
+        if not isinstance(other, DimensionnedValue):
+            raise TypeError("Dimensionned values can only be compared to other dimensionned values")
+        
+        no_ratio_s_unit = self.unit
+        no_ratio_s_unit.ratio = 1.0
+        no_ratio_o_unit = other
+        no_ratio_o_unit.ratio = 1.0
+
+        if not no_ratio_s_unit == no_ratio_o_unit:
+            raise TypeError("Only values that share the same units can be compared")
+
+        return self.value * self.unit.ration == other.value * other.unit.ratio
+
+
+    def __mul__(self, other):
+        if isinstance(other, DimensionnedValue):
+            return DimensionnedValue(self.value * other.value,self.unit * other.unit)
+        elif isinstance(other, Unit) :
+            return DimensionnedValue(self.value ,self.unit * other )
+        else :
+            return DimensionnedValue(self.value * other.value,self.unit )
+
+    def __rmul__(self, other ):
+        return self.__mul__(other)
+    
+    def __pow__(self, other : int):
+        if not isinstance(other, int):
+            raise ValueError
+
+        return DimensionnedValue(self.value ** other , self.unit**other )
+
+    def __truediv__(self, other ):
+        if isinstance(other, DimensionnedValue):
+            return DimensionnedValue(self.value / other.value,self.unit / other.unit)
+        elif isinstance(other, Unit) :
+            return DimensionnedValue(self.value ,self.unit / other )
+        else:
+            return DimensionnedValue(self.value / other.value,self.unit )
+        
+    def __str__(self):
+        return f"{self.value * self.unit.ratio} * " + self.unit.toString(False)
+        
+
+
 
 ### Primary units
-neutralUnit = NeutralUnit()
+DimensionLess = NeutralUnit()
 s = PrimaryUnit("s")        # time
 m = PrimaryUnit("m")        # length
 kg = PrimaryUnit("kg")      # mass

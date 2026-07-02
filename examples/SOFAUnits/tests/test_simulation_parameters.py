@@ -22,7 +22,7 @@ class TestBaseParameterSetConstruction:
         assert bp.units["kg"] is kg
 
     def test_keyword_primary_units_are_registered(self):
-        bp = BaseParameterSet(time=s, position=mm, mass=kg)
+        bp = BaseParameterSet(time=s, length=mm, mass=kg)
         assert set(bp.units.keys()) == {"s", "m", "kg"}
         assert bp.units["m"] is mm
 
@@ -88,18 +88,18 @@ class TestConvert:
 class TestSOFAParameters:
     def test_defaults_are_s_m_kg(self):
         sp = SOFAParameters()
-        assert sp.time is s
-        assert sp.position is m
-        assert sp.mass is kg
+        assert sp.units['s'] is s
+        assert sp.units['m'] is m
+        assert sp.units['kg'] is kg
         assert set(sp.units.keys()) == {"s", "m", "kg"}
 
     def test_custom_units_are_stored_as_attributes(self):
-        sp = SOFAParameters(time=s, position=mm, mass=kg)
-        assert sp.position is mm
+        sp = SOFAParameters(time=s, length=mm, mass=kg)
+        assert sp.units['m']  is mm
         assert set(sp.units.keys()) == {"s", "m", "kg"}
 
     def test_convert_uses_configured_units(self):
-        sp = SOFAParameters(time=s, position=mm, mass=kg)
+        sp = SOFAParameters(time=s, length=mm, mass=kg)
         assert sp.convert(10, N) == pytest.approx(10000.0)
         assert sp.convert(10, kPa) == pytest.approx(10.0)
 

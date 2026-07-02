@@ -28,6 +28,7 @@ def main():
 def createScene(root):
     SceneUnit = SOFAParameters(s, mm, g)
 
+
     root.gravity=[0, SceneUnit(-9.81, N/kg), 0]
     root.dt=0.02
 
@@ -41,7 +42,7 @@ def createScene(root):
     'Sofa.Component.Mapping.Linear',
     'Sofa.Component.Mass',
     'Sofa.Component.IntegrationScheme.Backward',
-    'Sofa.Component.SolidMechanics.FEM.Elastic',
+    'Sofa.Component.SolidMechanics.FEM.Elastic',    
     'Sofa.Component.StateContainer',
     'Sofa.Component.Topology.Container.Dynamic',
     'Sofa.Component.Visual',
@@ -66,8 +67,19 @@ def createScene(root):
     liver.addObject('TetrahedronSetTopologyContainer', name="topo", src="@meshLoader")
     liver.addObject('MechanicalObject', name="dofs", src="@meshLoader")
     liver.addObject('TetrahedronSetGeometryAlgorithms', template="Vec3d", name="GeomAlgo")
-    liver.addObject('DiagonalMass', name="Mass", massDensity=SceneUnit(1.0,g/(cm**3)))
-    liver.addObject('TetrahedralCorotationalFEMForceField', template="Vec3d", name="FEM", method="large", poissonRatio="0.3", youngModulus=SceneUnit(3,kPa), computeGlobalMatrix="0")
+
+    #You can create values that have a dimension by multiplying a float/int by a unit
+    liver.addObject('TetrahedralCorotationalFEMForceField', template="Vec3d", name="FEM", method="large", poissonRatio="0.3", youngModulus=SceneUnit(3 * kPa), computeGlobalMatrix="0")
+    
+
+    #Multiplications between 'DimenssionedUnit' is supported and will affect the final unit
+    liverVolume = 1.5 * dm**3 # 1L
+    liverMass = 1.5 * kg
+    liverDensity = liverMass/liverVolume 
+    #You can print the value, the unit will show
+    print(f"Liver density is {liverDensity}")
+    liver.addObject('DiagonalMass', name="Mass", massDensity=SceneUnit(liverDensity))
+
     liver.addObject('FixedProjectiveConstraint', name="FixedConstraint", indices="3 39 64")
 
     visu = liver.addChild('Visu')

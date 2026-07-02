@@ -8,22 +8,24 @@ class BaseParameterSet():
     def __init__(self, *args, **kwargs):
         self.units = {}
         for arg in args:
-            if isinstance(arg, Unit):
-                if len(arg.numerator) == 1 and len(arg.denumerator) == 0:
-                    self.units[arg.numerator[0].abrev] = arg
-                else:
-                    raise TypeError("Only primary unit (with an optionnal ratio) can be defined by the user.")
+            self.setPrimaryUnit(arg)
         for arg in kwargs:
-            if isinstance(kwargs[arg], Unit):
-                if len(kwargs[arg].numerator) == 1 and len(kwargs[arg].denumerator) == 0:
-                    self.units[kwargs[arg].numerator[0].abrev] = kwargs[arg]
+            self.setPrimaryUnit(kwargs[arg])
+    
+    def setPrimaryUnit(self, unit):
+        if isinstance(unit, Unit):
+                if len(unit.numerator) == 1 and len(unit.denumerator) == 0:
+                    if unit.numerator[0].abrev not in self.units:
+                        self.units[unit.numerator[0].abrev] = unit
+                    else:
+                        raise ValueError("Only one primary unit of each type can be defined")
                 else:
                     raise TypeError("Only primary unit (with an optionnal ratio) can be defined by the user.")
-    
+
     def convert(self, value : float, unit: DerivedUnit):
         u_key = unit.getKey()
 
-        reconstructedUnit = neutralUnit
+        reconstructedUnit = DimensionLess
         for nkey in u_key["num"]:
             try:
                 for _ in range(u_key["num"][nkey]):
@@ -40,8 +42,17 @@ class BaseParameterSet():
 
         return unit.ratio / reconstructedUnit.ratio * value
     
-    def __call__(self, value : float, unit: DerivedUnit):
-        return self.convert(value=value, unit= unit)
+
+    def __call__(self, *args):
+        if len(args) == 1:
+            return self.convert(value=args[0].value, unit= args[0].unit)
+        elif len(args) == 2:
+            return self.convert(value=args[0], unit= args[1])
+        else:
+            raise ValueError("This method requires either a DimensionnedValue as input or a float and a Unit.")
+    
+    
+    
     
                 
 
@@ -49,3 +60,4 @@ class SOFAParameters(BaseParameterSet):
     def __init__(self, time = s, length = m, mass = kg ):
         BaseParameterSet.__init__(self, time, length, mass)
         
+
