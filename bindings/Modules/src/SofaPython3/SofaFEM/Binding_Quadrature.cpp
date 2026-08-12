@@ -24,7 +24,9 @@
 #include <sofa/config.h>
 #include <sofa/fem/FiniteElement[all].h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/type/Mat.h>
 
+#include <array>
 #include <string>
 
 // Bindings for sofa::fem::FiniteElement's reference-element functions.
@@ -34,6 +36,31 @@
 namespace sofapython3
 {
 namespace py = pybind11;
+
+using RealArray = py::array_t<SReal, py::array::c_style | py::array::forcecast>;
+
+// FiniteElement class dispatch: (element name, ambient dimension)
+template <class ElementType, class DataTypes>
+struct ElementTag { using FiniteElement = sofa::fem::FiniteElement<ElementType, DataTypes>; };
+
+template <class Function>
+static py::tuple withElement(const std::string& element, py::ssize_t dim, Function&& f)
+{
+    using namespace sofa::defaulttype;
+    namespace geo = sofa::geometry;
+
+    if (element == "Edge"        && dim == 1) return f(ElementTag<geo::Edge,        Vec1Types>{});
+    if (element == "Edge"        && dim == 2) return f(ElementTag<geo::Edge,        Vec2Types>{});
+    if (element == "Edge"        && dim == 3) return f(ElementTag<geo::Edge,        Vec3Types>{});
+    if (element == "Triangle"    && dim == 2) return f(ElementTag<geo::Triangle,    Vec2Types>{});
+    if (element == "Triangle"    && dim == 3) return f(ElementTag<geo::Triangle,    Vec3Types>{});
+    if (element == "Quad"        && dim == 2) return f(ElementTag<geo::Quad,        Vec2Types>{});
+    if (element == "Quad"        && dim == 3) return f(ElementTag<geo::Quad,        Vec3Types>{});
+    if (element == "Tetrahedron" && dim == 3) return f(ElementTag<geo::Tetrahedron, Vec3Types>{});
+    if (element == "Hexahedron"  && dim == 3) return f(ElementTag<geo::Hexahedron,  Vec3Types>{});
+
+    throw py::value_error("SofaFEM: unsupported element '" + element + "' for dimension " + std::to_string(dim));
+}
 
 // Reference-space quadrature points' data for one FiniteElement specialization:
 //  - weights
@@ -76,28 +103,85 @@ static py::tuple quadratureDataFor(sofa::Size degree)
     return py::make_tuple(weights, shapeFunctions, shapeFunctionGrads);
 }
 
-// Dispatch from element-type name to FiniteElement. The DataTypes is in practice a placeholder.
-static py::tuple quadratureData(const std::string& element, sofa::Size degree)
+static py::tuple quadratureData(const std::string& element, py::ssize_t dim, sofa::Size degree)
 {
-    using sofa::fem::FiniteElement;
-    using sofa::defaulttype::Vec3Types;
-    namespace geo = sofa::geometry;
+    return withElement(element, dim, [&](auto tag)
+    {
+        return quadratureDataFor<typename decltype(tag)::FiniteElement>(degree);
+    });
+}
 
-    if (element == "Edge")        return quadratureDataFor<FiniteElement<geo::Edge,        Vec3Types>>(degree);
-    if (element == "Triangle")    return quadratureDataFor<FiniteElement<geo::Triangle,    Vec3Types>>(degree);
-    if (element == "Quad")        return quadratureDataFor<FiniteElement<geo::Quad,        Vec3Types>>(degree);
-    if (element == "Tetrahedron") return quadratureDataFor<FiniteElement<geo::Tetrahedron, Vec3Types>>(degree);
-    if (element == "Hexahedron")  return quadratureDataFor<FiniteElement<geo::Hexahedron,  Vec3Types>>(degree);
+// Physical-space shape function gradients dN_a/dx and the integration measure per quadrature point
+//  - physical space gradients dN_a/dxi
+//  - measures
+template <class FE>
+static py::tuple elementMappingFor(const RealArray& nodeCoordinatesArray, const RealArray& referenceGradientsArray)
+{
+    using Real = typename FE::Real;
+    using Coord = typename FE::Coord;
+    using Helper = typename FE::Helper;
+    constexpr py::ssize_t nbNodes = FE::NumberOfNodesInElement;
+    constexpr py::ssize_t spatialDim = FE::spatial_dimensions;
+    constexpr py::ssize_t topoDim = FE::TopologicalDimension;
 
-    throw py::value_error("SofaFEM: unsupported element type '" + element + "'");
+    const auto nodeCoordinates = nodeCoordinatesArray.unchecked<2>();     // (nbNodes, spatialDim)
+    const auto referenceGrads = referenceGradientsArray.unchecked<3>();   // (Q, nbNodes, topoDim)
+    const py::ssize_t Q = referenceGrads.shape(0);
+
+    std::array<Coord, FE::NumberOfNodesInElement> elementNodes;
+    for (auto a = 0; a < nbNodes; ++a)
+        for (auto d = 0; d < spatialDim; ++d)
+            elementNodes[a][d] = nodeCoordinates(a, d);
+
+    py::array_t<Real> physicalGradients({Q, nbNodes, spatialDim});
+    py::array_t<Real> measures({Q});
+    auto gradientsView = physicalGradients.template mutable_unchecked<3>();
+    auto measuresView = measures.template mutable_unchecked<1>();
+
+    for (py::ssize_t q = 0; q < Q; ++q)
+    {
+        sofa::type::Mat<FE::NumberOfNodesInElement, FE::TopologicalDimension, Real> referenceGradient;
+        for (auto a = 0; a < nbNodes; ++a)
+            for (auto j = 0; j < topoDim; ++j)
+                referenceGradient[a][j] = referenceGrads(q, a, j);
+
+        const auto jacobian = Helper::jacobianFromReferenceToPhysical(elementNodes, referenceGradient);
+        measuresView(q) = sofa::type::absGeneralizedDeterminant(jacobian);   // |det J|, or sqrt(det(J^T J)) if embedded
+        const auto inverseJacobian = sofa::type::inverse(jacobian);          // inverse, or left pseudo-inverse if embedded
+
+        for (auto a = 0; a < nbNodes; ++a)
+        {
+            const auto physicalGradient = inverseJacobian.transposed() * referenceGradient[a];   // dN_a/dx
+            for (auto d = 0; d < spatialDim; ++d)
+                gradientsView(q, a, d) = physicalGradient[d];
+        }
+    }
+    return py::make_tuple(physicalGradients, measures);
+}
+
+static py::tuple elementMapping(const std::string& element, RealArray nodeCoordinates, RealArray referenceGradients)
+{
+    if (nodeCoordinates.ndim() != 2)
+        throw py::value_error("element_mapping: node_coordinates must be a 2D array (nodes_per_element, spatial_dimension)");
+
+    return withElement(element, nodeCoordinates.shape(1), [&](auto tag)
+    {
+        return elementMappingFor<typename decltype(tag)::FiniteElement>(nodeCoordinates, referenceGradients);
+    });
 }
 
 void moduleAddQuadrature(py::module& m)
 {
     m.def("quadrature_data", &quadratureData,
-          py::arg("element"), py::arg("degree"),
+          py::arg("element"), py::arg("dim"), py::arg("degree"),
           "Reference-space quadrature data for the element at the given degree: "
           "returns (quadrature weights, shape functions, shape function gradients).");
+
+    m.def("element_mapping", &elementMapping,
+          py::arg("element"), py::arg("node_coordinates"), py::arg("reference_gradients"),
+          "Reference->physical mapping for one element (reuses SOFA's jacobianFromReferenceToPhysical, "
+          "inverse and absGeneralizedDeterminant): returns (physical shape-function gradients dN_a/dx, "
+          "integration measures) per quadrature point; handles square and embedded (rectangular Jacobian) elements.");
 }
 
 } // namespace sofapython3
