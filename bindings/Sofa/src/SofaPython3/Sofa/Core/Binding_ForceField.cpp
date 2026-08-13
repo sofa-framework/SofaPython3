@@ -246,6 +246,11 @@ namespace sofapython3
                                 matrix.colsValue.data());
         }, sofapython3::doc::forceField::assembleKMatrix);
 
+        f.def("getPotentialEnergy", [](ForceField<TDOFType>& self) -> SReal
+        {
+            return self.getPotentialEnergy(MechanicalParams::defaultInstance());
+        }, sofapython3::doc::forceField::getPotentialEnergy);
+
         PythonFactory::registerType<ForceField<TDOFType>>([](sofa::core::objectmodel::Base* object)
         {
             return py::cast(dynamic_cast<ForceField<TDOFType>*>(object));
