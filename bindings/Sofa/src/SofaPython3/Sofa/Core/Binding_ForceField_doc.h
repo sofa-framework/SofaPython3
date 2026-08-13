@@ -41,4 +41,11 @@ stiffness_matrix = self.force_field.assembleKMatrix()
 Returns:
     A scipy.sparse.csr_matrix object representing the stiffness matrix of the force field
 )";
+
+static constexpr const char* getPotentialEnergy = R"(
+Potential energy of the force field, evaluated at its current positions.
+
+Returns:
+    The potential energy of the force field, as a float
+)";
 }
