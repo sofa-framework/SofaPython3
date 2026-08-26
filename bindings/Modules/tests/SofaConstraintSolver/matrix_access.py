@@ -17,14 +17,14 @@ class Test(unittest.TestCase):
                                                      "Sofa.Component.Mapping.NonLinear",
                                                      "Sofa.Component.Mapping.MappedMatrix",
                                                      "Sofa.Component.Mass",
-                                                     "Sofa.Component.ODESolver.Backward",
+                                                     "Sofa.Component.IntegrationScheme.Backward",
                                                      "Sofa.Component.Topology.Container.Dynamic"])
 
         root.addObject("FreeMotionAnimationLoop", solveVelocityConstraintFirst=True)
         root.addObject("BlockGaussSeidelConstraintSolver", name="constraint_solver", tolerance=1e-9, maxIterations=1000)
         root.addObject("StringMeshCreator", name="loader", resolution="20")
 
-        root.addObject("EulerImplicitSolver")
+        root.addObject("EulerImplicitIntegrationScheme")
         root.addObject("EigenSimplicialLLT")
         root.addObject("GenericConstraintCorrection")
 

@@ -54,7 +54,7 @@ with ExempleMessageHandler() as msg_handler:
             'Sofa.Component.Engine.Select',
             'Sofa.Component.LinearSolver.Direct',
             'Sofa.Component.Mass',
-            'Sofa.Component.ODESolver.Backward',
+            'Sofa.Component.IntegrationScheme.Backward',
             'Sofa.Component.SolidMechanics.FEM.Elastic',
             'Sofa.Component.StateContainer',
             'Sofa.Component.Topology.Container.Grid',
@@ -66,7 +66,7 @@ with ExempleMessageHandler() as msg_handler:
         root.addObject('DefaultAnimationLoop')
         root.addObject('DefaultVisualManagerLoop')
 
-        root.addObject('EulerImplicitSolver', rayleighStiffness=0.1, rayleighMass=0.1, printLog=False)
+        root.addObject('EulerImplicitIntegrationScheme', rayleighStiffness=0.1, rayleighMass=0.1, printLog=False)
         root.addObject('SparseLDLSolver', template="CompressedRowSparseMatrixd")
 
         root.addObject('MechanicalObject', name="DoFs")

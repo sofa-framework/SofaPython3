@@ -16,7 +16,7 @@ class Test(unittest.TestCase):
         root.addObject('DefaultAnimationLoop')
 
         root.addObject('RequiredPlugin', pluginName='Sofa.Component.StateContainer')
-        root.addObject('RequiredPlugin', pluginName='Sofa.Component.ODESolver.Backward')
+        root.addObject('RequiredPlugin', pluginName='Sofa.Component.IntegrationScheme.Backward')
         root.addObject('RequiredPlugin', pluginName='Sofa.Component.LinearSolver.Direct')
         root.addObject('RequiredPlugin', pluginName='Sofa.Component.Engine.Select')
         root.addObject('RequiredPlugin', pluginName='Sofa.Component.Constraint.Projective')
@@ -24,7 +24,7 @@ class Test(unittest.TestCase):
         root.addObject('RequiredPlugin', pluginName='Sofa.Component.Mass')
         root.addObject('RequiredPlugin', pluginName='Sofa.Component.Topology.Container.Grid')
 
-        root.addObject('EulerImplicitSolver', rayleighStiffness="0.1", rayleighMass="0.1")
+        root.addObject('EulerImplicitIntegrationScheme', rayleighStiffness="0.1", rayleighMass="0.1")
         root.addObject('SparseLDLSolver', template=linear_solver_template)
 
         root.addObject('MechanicalObject', name="DoFs")

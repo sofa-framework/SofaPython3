@@ -27,7 +27,7 @@ def createScene(root):
     root.addObject('DefaultAnimationLoop')
     root.addObject('DefaultVisualManagerLoop')
     root.addObject('RequiredPlugin', pluginName=['Sofa.Component.Constraint.Projective', 'Sofa.Component.Diffusion', 'Sofa.Component.Engine.Select',
-                                                 'Sofa.Component.LinearSolver.Direct', 'Sofa.Component.LinearSolver.Iterative', 'Sofa.Component.Mass', 'Sofa.Component.ODESolver.Backward', 'Sofa.Component.SolidMechanics.FEM.Elastic',
+                                                 'Sofa.Component.LinearSolver.Direct', 'Sofa.Component.LinearSolver.Iterative', 'Sofa.Component.Mass', 'Sofa.Component.IntegrationScheme.Backward', 'Sofa.Component.SolidMechanics.FEM.Elastic',
                                                  'Sofa.Component.Topology.Container.Dynamic', 'Sofa.Component.Topology.Container.Grid', 'Sofa.Component.Topology.Mapping', 'Sofa.Component.Visual', 'Sofa.GL.Component.Engine', 'Sofa.GL.Component.Rendering2D',
                                                  'Sofa.GL.Component.Rendering3D', 'Sofa.Component.StateContainer', 'Sofa.Component.Mapping.Linear'])
     root.addObject('VisualStyle', displayFlags="hideCollisionModels showVisualModels hideForceFields showBehaviorModels")
@@ -45,7 +45,7 @@ def createScene(root):
 
 
     meca = tetraTopo.addChild("Mechanics")
-    meca.addObject("EulerImplicitSolver", name="Euler Impl IntegrationScheme")
+    meca.addObject("EulerImplicitIntegrationScheme", name="Euler Impl IntegrationScheme")
     meca.addObject("SparseLDLSolver", name="LDL LinearSolver", template="CompressedRowSparseMatrixMat3x3d")
     meca.addObject("TetrahedronSetTopologyContainer", name="tetContainer", src=tetrahedraContainer.linkpath)
     meca.addObject("TetrahedronSetGeometryAlgorithms", name="tetGeometry", template="Vec3d")
@@ -59,7 +59,7 @@ def createScene(root):
 
 
     thermo = tetraTopo.addChild("Thermodynamics")
-    thermo.addObject("EulerImplicitSolver", name="Euler Impl IntegrationScheme", firstOrder=True)
+    thermo.addObject("EulerImplicitIntegrationScheme", name="Euler Impl IntegrationScheme", firstOrder=True)
     thermo.addObject("CGLinearSolver", name="Conjugate Gradient", iterations="1000", tolerance=1.0e-10, threshold=1.0e-30)
     thermo.addObject("TetrahedronSetTopologyContainer", name="tetContainer", src="@../tetContainer")
     thermo.addObject("TetrahedronSetGeometryAlgorithms", name="tetGeometry", template="Vec3d")

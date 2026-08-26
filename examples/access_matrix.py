@@ -7,7 +7,7 @@ from scipy import sparse
 
 def createBeam(root, matrix_type):
     node = root.addChild(matrix_type)
-    node.addObject('EulerImplicitSolver', rayleighStiffness="0.1", rayleighMass="0.1")
+    node.addObject('EulerImplicitIntegrationScheme', rayleighStiffness="0.1", rayleighMass="0.1")
     linear_system = node.addObject('MatrixLinearSystem', template=matrix_type)
 
     node.addObject('MechanicalObject', name="DoFs")
@@ -31,7 +31,7 @@ def createScene(root):
                                                     'Sofa.Component.Topology.Container.Grid', 'Sofa.Component.Visual',
                                                     'Sofa.Component.Constraint.Projective', 'Sofa.Component.Engine.Select',
                                                     'Sofa.Component.LinearSolver.Direct', 'Sofa.Component.LinearSystem',
-                                                    'Sofa.Component.ODESolver.Backward','Sofa.Component.SolidMechanics.FEM.Elastic'
+                                                    'Sofa.Component.IntegrationScheme.Backward','Sofa.Component.SolidMechanics.FEM.Elastic'
                                                     ])
 
     root.addObject('DefaultAnimationLoop', parallelODESolving=True)

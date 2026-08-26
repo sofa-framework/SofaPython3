@@ -12,7 +12,7 @@ def createScene(root_node):
         "Sofa.Component.LinearSolver.Direct",
         "Sofa.Component.Mapping.Linear",
         "Sofa.Component.Mass",
-        "Sofa.Component.ODESolver.Backward",
+        "Sofa.Component.IntegrationScheme.Backward",
         "Sofa.Component.SolidMechanics.FEM.HyperElastic",
         "Sofa.Component.StateContainer",
         "Sofa.Component.Topology.Container.Dynamic",
@@ -28,7 +28,7 @@ def createScene(root_node):
     root_node.gravity = scene_unit([0, -9.81, 0], N / kg)
     root_node.dt = scene_unit(0.01, s)
 
-    root_node.addObject('EulerImplicitSolver', name="backwardEuler", rayleighStiffness=0.1, rayleighMass=0.1)
+    root_node.addObject('EulerImplicitIntegrationScheme', name="backwardEuler", rayleighStiffness=0.1, rayleighMass=0.1)
     root_node.addObject('SparseLDLSolver', template="CompressedRowSparseMatrixMat3x3d")
     root_node.addObject('RegularGridTopology', name="grid", min=[-5, -5, 0], max=[5, 5, 40], n=[5, 5, 20])
     root_node.addObject('MechanicalObject', template="Vec3", name="state")
