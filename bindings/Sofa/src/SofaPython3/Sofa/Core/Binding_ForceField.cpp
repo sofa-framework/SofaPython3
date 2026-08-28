@@ -84,7 +84,7 @@ namespace sofapython3
         if(!mstate.get())
             throw py::type_error("Missing mechanical state.");
 
-        PYBIND11_OVERLOAD(void, ForceField<TDOFType>, init,);
+        PYBIND11_OVERRIDE(void, ForceField<TDOFType>, init,);
     }
 
     template<class TDOFType>
@@ -99,7 +99,7 @@ namespace sofapython3
                                "kFactor"_a=mparams->kFactor(),
                                "isImplicit"_a=mparams->implicit(),
                                "energy"_a=mparams->energy());
-        PYBIND11_OVERLOAD_PURE(void, ForceField<TDOFType>, addForce, mp, PythonFactory::toPython(&f), PythonFactory::toPython(&x), PythonFactory::toPython(&v));
+        PYBIND11_OVERRIDE_PURE(void, ForceField<TDOFType>, addForce, mp, PythonFactory::toPython(&f), PythonFactory::toPython(&x), PythonFactory::toPython(&v));
     }
 
     template<class TDOFType>
@@ -114,7 +114,7 @@ namespace sofapython3
                                "kFactor"_a=mparams->kFactor(),
                                "isImplicit"_a=mparams->implicit()
                                );
-        PYBIND11_OVERLOAD_PURE(void, ForceField<TDOFType>, addDForce, mp, PythonFactory::toPython(&df), PythonFactory::toPython(&dx));
+        PYBIND11_OVERRIDE_PURE(void, ForceField<TDOFType>, addDForce, mp, PythonFactory::toPython(&df), PythonFactory::toPython(&dx));
     }
 
 
@@ -129,7 +129,7 @@ namespace sofapython3
                                "isImplicit"_a=mparams->implicit()
                 );
 
-        PYBIND11_OVERLOAD_PURE(py::object, ForceField<TDOFType>, addKToMatrix, mp, nIndices, nDofs);
+        PYBIND11_OVERRIDE_PURE(py::object, ForceField<TDOFType>, addKToMatrix, mp, nIndices, nDofs);
     }
 
     template<class TDOFType>
