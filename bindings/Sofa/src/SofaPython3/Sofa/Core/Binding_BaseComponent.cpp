@@ -120,15 +120,15 @@ py::object getTarget(BaseComponent *self)
 {
     if (!self)
         return py::none();
-    sofa::core::ObjectFactory::ClassEntry entry = sofa::core::ObjectFactory::getInstance()->getEntry(self->getClassName());
-    if (!entry.creatorMap.empty())
+
+    sofa::core::objectmodel::BaseObjectDescription arg;
+    arg.setAttribute("type", self->getClassName());
+    arg.setAttribute("template", self->getTemplateName());
+    if (auto component = sofa::core::MainComponentFactory::getInstance()->findComponent(self->getContext(), &arg))
     {
-        sofa::core::ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(self->getTemplateName());
-        if (it != entry.creatorMap.end() && *it->second->getTarget())
-        {
-            return py::cast(it->second->getTarget()) ;
-        }
+        return py::cast(component->componentModule);
     }
+
     return py::none() ;
 }
 

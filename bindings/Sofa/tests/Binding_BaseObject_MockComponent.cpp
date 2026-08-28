@@ -19,7 +19,7 @@
 ******************************************************************************/
 
 #include "Binding_BaseObject_MockComponent.h"
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/ComponentFactory.h>
 
 
 Binding_BaseObject_MockComponent::Binding_BaseObject_MockComponent():
@@ -56,7 +56,13 @@ void Binding_BaseObject_MockComponent::reinit(){
     d_test.setValue("reinit");
 }
 
+bool registerComponent()
+{
+    sofa::core::MainComponentFactory::getInstance()->registerComponent(
+    sofa::core::CreateComponent<Binding_BaseObject_MockComponent>("Binding_BaseObject_MockComponent")
+        .withModule("SofaPython3")
+        .withDescription("This component is used to test several functions of Binding_BaseObject"));
+    return true;
+}
 
-
-static int Binding_BaseObject_MockComponentClass = sofa::core::RegisterObject("This component is used to test several functions of Binding_BaseObject")
-        .add< Binding_BaseObject_MockComponent >();
+bool b = registerComponent();

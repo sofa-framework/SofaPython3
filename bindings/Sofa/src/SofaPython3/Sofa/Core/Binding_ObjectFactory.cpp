@@ -33,7 +33,7 @@ namespace sofapython3 {
 
 std::string __repr__(const ObjectFactory::ClassEntry & entry) {
     std::ostringstream s;
-    s << "<" << entry.className << " at " << std::hex << &entry << ">";
+    s << entry;
     return s.str();
 }
 
