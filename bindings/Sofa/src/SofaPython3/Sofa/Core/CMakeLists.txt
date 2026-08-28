@@ -54,6 +54,7 @@ set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseCamera_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Topology.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseMeshTopology.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Snapshot.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_TaskScheduler.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_TaskScheduler_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_VisualParams.h
@@ -91,6 +92,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseLink.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Topology.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_BaseMeshTopology.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_Snapshot.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_TaskScheduler.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_VisualParams.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Submodule_Core.cpp
