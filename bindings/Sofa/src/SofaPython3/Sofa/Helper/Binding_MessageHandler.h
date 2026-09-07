@@ -32,14 +32,14 @@ namespace sofapython3 {
 
 class PyMessageHandler: public sofa::helper::logging::MessageHandler {
 public:
-    void process(sofa::helper::logging::Message& m) override {SOFA_UNUSED(m);}
+    void doProcess(sofa::helper::logging::Message& m) override {SOFA_UNUSED(m);}
     std::string getName() const override {return "PyMessageHandler";}
 };
 
 class MessageHandler_Trampoline : public PyMessageHandler
 {
 public:
-    void process(sofa::helper::logging::Message& m) override ;
+    void doProcess(sofa::helper::logging::Message& m) override ;
     std::string getName() const override;
 };
 

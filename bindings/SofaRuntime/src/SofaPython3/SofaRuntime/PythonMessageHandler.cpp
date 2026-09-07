@@ -72,7 +72,7 @@ const std::string& getPrefixText(sofa::helper::logging::Message::Type type)
 
 namespace py { using namespace pybind11; }
 
-void PythonMessageHandler::process(sofa::helper::logging::Message &m)
+void PythonMessageHandler::doProcess(sofa::helper::logging::Message &m)
 {
     if (!m.sender().empty())
     {

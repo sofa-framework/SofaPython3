@@ -30,7 +30,7 @@ class PythonMessageHandler : public sofa::helper::logging::MessageHandler
 {
 public:
     PythonMessageHandler() = default;
-    void process(sofa::helper::logging::Message& m) override ;
+    void doProcess(sofa::helper::logging::Message& m) override ;
     std::string getName() const override { return "PythonMessageHandler"; }
 };
 
