@@ -13,7 +13,7 @@ class EmptyDataEngine(Sofa.Core.DataEngine):
     def init(self):
         pass
 
-    def update():
+    def update(self):
         # Function called anytime an output is accessed while the component
         # is dirty (input has changed)
         msg_info('Not implemented yet')
