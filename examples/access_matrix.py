@@ -25,14 +25,15 @@ def createBeam(root, matrix_type):
 # Function called when the scene graph is being created
 def createScene(root):
 
-    root.addObject('VisualStyle', displayFlags="showBehaviorModels showForceFields")
-
     root.addObject("RequiredPlugin", pluginName=['Sofa.Component.Mass', 'Sofa.Component.StateContainer',
                                                     'Sofa.Component.Topology.Container.Grid', 'Sofa.Component.Visual',
                                                     'Sofa.Component.Constraint.Projective', 'Sofa.Component.Engine.Select',
-                                                    'Sofa.Component.LinearSolver.Direct', 'Sofa.Component.LinearSystem',
+                                                    'Sofa.Component.LinearSolver.Direct', 'Sofa.Component.LinearSolver.Iterative',
+                                                    'Sofa.Component.LinearSystem',
                                                     'Sofa.Component.ODESolver.Backward','Sofa.Component.SolidMechanics.FEM.Elastic'
                                                     ])
+
+    root.addObject('VisualStyle', displayFlags="showBehaviorModels showForceFields")
 
     root.addObject('DefaultAnimationLoop', parallelODESolving=True)
     root.addObject('DefaultVisualManagerLoop')
