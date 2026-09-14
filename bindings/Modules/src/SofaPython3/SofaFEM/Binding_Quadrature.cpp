@@ -27,6 +27,7 @@
 #include <sofa/type/Mat.h>
 
 #include <array>
+#include <span>
 #include <string>
 #include <vector>
 
@@ -76,7 +77,15 @@ static py::tuple quadratureDataFor(sofa::Size degree)
     constexpr py::ssize_t nbNodes = FE::NumberOfNodesInElement;
     constexpr py::ssize_t topoDim = FE::TopologicalDimension;
 
-    const auto rule = FE::quadratureRule(degree);
+    std::span<const typename FE::QuadraturePointAndWeight> rule;
+    try
+    {
+        rule = FE::quadratureRule(degree);
+    }
+    catch (const std::exception& error)
+    {
+        throw py::value_error(error.what());
+    }
     const py::ssize_t Q = static_cast<py::ssize_t>(rule.size());
 
     using Real = typename FE::Real;
