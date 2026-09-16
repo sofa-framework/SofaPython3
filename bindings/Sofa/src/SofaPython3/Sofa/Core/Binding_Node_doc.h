@@ -378,7 +378,7 @@ static auto getMechanicalState =
         Get the mechanical state of the node.
         )";
 
-static auto hasIntergationScheme =
+static auto hasIntegrationScheme =
         R"(
         Return true if the node includes an integration scheme
         )";
