@@ -27,14 +27,14 @@ set(SOURCE_FILES
 )
 
 find_package(pybind11 CONFIG REQUIRED)
-sofa_find_package(Sofa.Simulation.Graph REQUIRED)
+sofa_find_package(Sofa.Simulation.Common REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAPYTHON3")
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Graph)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Common)
 target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::module pybind11::embed)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME SofaPython3)

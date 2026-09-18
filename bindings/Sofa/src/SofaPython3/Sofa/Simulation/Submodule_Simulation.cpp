@@ -42,7 +42,6 @@ using sofa::simulation::Simulation;
 #include <sofa/core/init.h>
 #include <sofa/simulation/init.h>
 #include <sofa/simulation/common/init.h>
-#include <sofa/simulation/graph/init.h>
 #include <sofa/simulation/SceneCheckerVisitor.h>
 #include <sofa/simulation/SceneCheckMainRegistry.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -82,7 +81,6 @@ PYBIND11_MODULE(Simulation, simulation)
     // These are needed to force the dynamic loading of module dependencies (found in CMakeLists.txt)
     sofa::core::init();
     sofa::simulation::core::init();
-    sofa::simulation::graph::init();
 
     simulation.doc() =sofapython3::doc::simulation::Class;
 
@@ -135,7 +133,6 @@ PYBIND11_MODULE(Simulation, simulation)
 
         sofa::simulation::core::cleanup();
         sofa::simulation::common::cleanup();
-        sofa::simulation::graph::cleanup();
 
         msg_info("SofaPython3.Simulation") << "Sofa.Simulation unload()";
     }));

@@ -86,7 +86,7 @@ bool SceneLoaderPY3::syntaxForAddingRequiredPlugin(const std::string& pluginName
 
 sofa::simulation::Node::SPtr SceneLoaderPY3::doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs)
 {
-    if (sofa::simulation::Simulation* simulation = sofa::simulation::getSimulation())
+    if (sofa::simulation::Simulation* simulation = sofa::simulation::MainSimulation::getSimulation())
     {
         sofa::simulation::Node::SPtr root = simulation->createNewNode("root");
         loadSceneWithArguments(filename.c_str(), sceneArgs, root);
