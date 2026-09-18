@@ -45,6 +45,8 @@ using sofa::core::objectmodel::Event;
 
 #include <sofa/defaulttype/DataTypeInfo.h>
 
+#include <pybind11/eigen.h>
+
 SOFAPYTHON3_BIND_ATTRIBUTE_ERROR()
 
 /// Makes an alias for the pybind11 namespace to increase readability.
@@ -195,6 +197,10 @@ py::object PythonFactory::valueToPython_ro(sofa::core::objectmodel::BaseData* da
                     ninfo.strides, ninfo.ptr, capsule);
         a.attr("flags").attr("writeable") = false;
         return std::move(a);
+    }
+    if(auto p = dynamic_cast<sofa::core::objectmodel::Data<Eigen::MatrixXf>*>(data)){
+        const auto matrice = p->getValue();
+        return py::cast(matrice);
     }
 
     /// If this is not the case we return the converted datas (copy)
