@@ -40,6 +40,9 @@ class DrawingExamples(Sofa.Core.Controller):
 def createScene(root):
     root.dt = 0.01
     root.bbox = [[-1,-1,-1],[1,1,1]]
+    root.addObject("RequiredPlugin", pluginName=['Sofa.Component.IO.Mesh',
+                                                 'Sofa.Component.StateContainer'])
+
     root.addObject('DefaultVisualManagerLoop')
     root.addObject('DefaultAnimationLoop')
 

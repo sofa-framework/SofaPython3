@@ -679,7 +679,7 @@ void moduleAddNode(py::module &m) {
             py_shared_ptr<sofa::core::objectmodel::BaseNode>>(m, "BaseNode", "Base class for simulation node");
 
     py::class_<Node, sofa::core::objectmodel::BaseNode,
-            sofa::core::objectmodel::Context, py_shared_ptr<Node>>
+            sofa::core::objectmodel::BaseContext, py_shared_ptr<Node>>
             p(m, "Node", sofapython3::doc::sofa::core::Node::Class);
 
     PythonFactory::registerType<sofa::simulation::Node>(

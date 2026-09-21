@@ -53,7 +53,6 @@ using sofapython3::SceneLoaderPY3;
 #include <sofa/helper/BackTrace.h>
 
 #include <sofa/simulation/common/init.h>
-#include <sofa/simulation/graph/init.h>
 
 #include "Timer/Submodule_Timer.h"
 

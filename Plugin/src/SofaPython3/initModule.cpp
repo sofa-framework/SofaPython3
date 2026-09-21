@@ -29,7 +29,6 @@ using sofapython3::PythonEnvironment;
 #include <sofa/defaulttype/init.h>
 #include <sofa/simulation/init.h>
 #include <sofa/helper/init.h>
-#include <sofa/simulation/graph/init.h>
 
 extern "C" {
 
@@ -50,7 +49,6 @@ void initExternalModule()
         sofa::defaulttype::init();
         sofa::core::init();
         sofa::simulation::core::init();
-        sofa::simulation::graph::init();
 
         PythonEnvironment::Init();
         first = false;

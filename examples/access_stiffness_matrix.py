@@ -12,8 +12,6 @@ showImage = True
 # Function called when the scene graph is being created
 def createScene(root):
 
-    root.addObject('VisualStyle', displayFlags="showBehaviorModels showForceFields")
-
     root.addObject("RequiredPlugin", pluginName=['Sofa.Component.Constraint.Projective',
     'Sofa.Component.Engine.Select',
     'Sofa.Component.LinearSolver.Direct',
@@ -24,6 +22,8 @@ def createScene(root):
     'Sofa.Component.Topology.Container.Grid',
     'Sofa.Component.Visual'
     ])
+
+    root.addObject('VisualStyle', displayFlags="showBehaviorModels showForceFields")
 
     root.addObject('DefaultAnimationLoop')
     root.addObject('DefaultVisualManagerLoop')
