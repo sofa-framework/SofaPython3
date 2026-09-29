@@ -25,10 +25,10 @@ jobs:
     steps:
       - name: Setup SOFA and environment
         id: sofa
-        uses: sofa-framework/sofa-setup-action@v5
+        uses: sofa-framework/sofa-setup-action@test_artifact_download
         with:
           sofa_root: ${{ github.workspace }}/sofa
-          sofa_version: ${{ matrix.sofa_branch }}
+          sofa_version: test_nightly
           sofa_scope: 'standard'
           sofa_with_sofapython3: 'false'
           python_version: '${{ matrix.python_version }}'
