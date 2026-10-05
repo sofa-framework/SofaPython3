@@ -21,6 +21,7 @@
 #include "Binding_Mat.h"
 #include <functional>
 #include <pybind11/operators.h>
+#include <pybind11/eigen.h>
 
 #define BINDING_MAT_MAKE_NAME(R, C)                                            \
     std::string(std::string("Mat") + std::to_string(R) + "x" + std::to_string(C))
@@ -59,6 +60,31 @@ static void addMat(py::module & /*m*/, py::class_<Mat<R, C, double>> &p) {
     typedef typename MatClass::Line Row;
     p.def(py::init());
     p.def(py::init<const MatClass &>());
+    p.def(py::init([](py::buffer b) {
+
+        /* Request a buffer descriptor from Python */
+        py::buffer_info info = b.request();
+
+        /* Some basic validation checks ... */
+        if (!info.item_type_is_equivalent_to<double>())
+        throw std::runtime_error(
+            "Incompatible format: expected a double array!");
+
+        if (info.ndim != 2)
+            throw std::runtime_error("Incompatible buffer dimension!");
+
+        return Mat<R, C, double>(static_cast<double*>(info.ptr));
+    }));
+    p.def_buffer([](Mat<R, C, double>& self) -> py::buffer_info {
+            return py::buffer_info(
+                self.elems.data(),      // pointer
+                sizeof(double), // itemsize
+                py::format_descriptor<double>::format(), // format
+                2,                                       // ndim
+                {static_cast<py::ssize_t>(R), static_cast<py::ssize_t>(C)},                                  // shape
+                {sizeof(double) * static_cast<py::ssize_t>(C), sizeof(double)} // strides (row-major)
+            );
+        });
     p.def_property_readonly("rows", &MatClass::getNbLines);
     p.def_property_readonly("cols", &MatClass::getNbCols);
     p.def("clear", &MatClass::clear);
@@ -184,7 +210,7 @@ static void addMatProduct(py::module & /*m*/, py::class_<Mat<R_1, C_1, double>> 
 template <sofa::Size R, sofa::Size C> struct MATRIX {
     static void addMat(py::module &m) {
         typedef Mat<R, C, double> MatClass;
-        py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(R, C).c_str());
+        py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(R, C).c_str(), py::buffer_protocol());
         ::addMat(m, p);
     }
 };
@@ -203,7 +229,7 @@ template <> struct MATRIX<1, 1> {
         //    typedef typename MatClass::Line Row;
         //    typedef typename MatClass::Col Col;
 
-        py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(1, 1).c_str());
+        py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(1, 1).c_str(), py::buffer_protocol());
         p.def(py::init([](py::list l) {
                   MatClass *mat = new MatClass(sofa::type::NOINIT);
                   if (py::isinstance<py::list>(l[0])) // 2D array
@@ -233,7 +259,7 @@ template <> struct MATRIX<2, 2> {
         typedef typename MatClass::Line Row;
         //    typedef typename MatClass::Col Col;
 
-        py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(2, 2).c_str());
+        py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(2, 2).c_str(), py::buffer_protocol());
         p.def(py::init<Row, Row>());
         p.def(py::init([](py::list l) {
                   MatClass *mat = new MatClass(sofa::type::NOINIT);
@@ -264,7 +290,7 @@ template <> struct MATRIX<3, 3> {
         typedef typename MatClass::Line Row;
         //    typedef typename MatClass::Col Col;
 
-        py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(3, 3).c_str());
+        py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(3, 3).c_str(), py::buffer_protocol());
         p.def(py::init<Row, Row, Row>());
         p.def(py::init([](py::list l) {
                   MatClass *mat = new MatClass(sofa::type::NOINIT);
@@ -295,7 +321,7 @@ template <> struct MATRIX<4, 4> {
         typedef typename MatClass::Line Row;
         //    typedef typename MatClass::Col Col;
 
-        py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(4, 4).c_str());
+        py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(4, 4).c_str(), py::buffer_protocol());
         p.def(py::init<Row, Row, Row, Row>());
         p.def(py::init([](py::list l) {
                   MatClass *mat = new MatClass(sofa::type::NOINIT);
@@ -326,7 +352,7 @@ template <> struct MATRIX<3, 4> {
         typedef typename MatClass::Line Row;
         //    typedef typename MatClass::Col Col;
 
-        py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(3, 4).c_str());
+        py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(3, 4).c_str(), py::buffer_protocol());
         p.def(py::init<Row, Row, Row>());
         p.def(py::init([](py::list l) {
                   MatClass *mat = new MatClass(sofa::type::NOINIT);
