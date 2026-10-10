@@ -41,7 +41,7 @@ class IdentityMapping(Sofa.Core.Mapping_Vec3d_Vec3d):
 
 def createScene(root):
         root.addObject("RequiredPlugin", pluginName=["Sofa.GL.Component",
-                                                     "Sofa.Component.ODESolver.Backward",
+                                                     "Sofa.Component.IntegrationScheme.Backward",
                                                      "Sofa.Component.LinearSolver.Direct",
                                                      "Sofa.Component.LinearSolver.Iterative",
                                                      "Sofa.Component.Mass",
@@ -71,7 +71,7 @@ def createScene(root):
         m.addObject( IdentityMapping(name="CPPObject", input=c, output=sm ) )
         
         root.addChild("Simulation")
-        root.Simulation.addObject("EulerImplicitSolver")
+        root.Simulation.addObject("EulerImplicitIntegrationScheme")
         root.Simulation.addObject("CGLinearSolver", tolerance=1e-12, threshold=1e-12, iterations=25)
         root.Simulation.addChild(root.Modelling)
 

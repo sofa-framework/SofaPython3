@@ -286,7 +286,7 @@ def create_beam_simulation(root_node, node_name, is_rigidified):
         by a master rigid body.
     """
     with root_node.addChild(node_name) as simulation:
-        simulation.addObject('EulerImplicitSolver', name="odesolver", rayleighStiffness=0.1, rayleighMass=0.1)
+        simulation.addObject('EulerImplicitIntegrationScheme', name="odesolver", rayleighStiffness=0.1, rayleighMass=0.1)
         simulation.addObject('SparseLDLSolver', template="CompressedRowSparseMatrix")
 
         with simulation.addChild("beam") as beam:
@@ -338,7 +338,7 @@ def createScene(root_node):
             Sofa.Component.Mapping.Linear
             Sofa.Component.Mapping.NonLinear
             Sofa.Component.Mass
-            Sofa.Component.ODESolver.Backward
+            Sofa.Component.IntegrationScheme.Backward
             Sofa.Component.SolidMechanics.FEM.Elastic
             Sofa.Component.StateContainer
             Sofa.Component.Topology.Container.Grid

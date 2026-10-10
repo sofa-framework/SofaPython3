@@ -44,7 +44,7 @@ def createScene(root):
     'Sofa.Component.LinearSolver.Iterative',
     'Sofa.Component.Mapping.Linear',
     'Sofa.Component.Mass',
-    'Sofa.Component.ODESolver.Backward',
+    'Sofa.Component.IntegrationScheme.Backward',
     'Sofa.Component.SolidMechanics.FEM.Elastic',    
     'Sofa.Component.StateContainer',
     'Sofa.Component.Topology.Container.Dynamic',
@@ -60,7 +60,7 @@ def createScene(root):
     root.addObject('MeshOBJLoader', name="surface_mesh_loader", filename="mesh/liver-smooth.obj")
 
     liver = root.addChild('Liver')
-    liver.addObject('EulerImplicitSolver', name="integration_scheme")
+    liver.addObject('EulerImplicitIntegrationScheme', name="integration_scheme")
     liver.addObject('CGLinearSolver', name="iterative_linear_solver", iterations= 25, tolerance= scene_unit(1e-9, m**2) , threshold= scene_unit(1e-9, m**2) )
     liver.addObject('MeshGmshLoader', name="volume_mesh_loader", filename="mesh/liver.msh")
     liver.addObject('TetrahedronSetTopologyContainer', name="topo", src="@volume_mesh_loader")

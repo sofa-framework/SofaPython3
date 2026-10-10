@@ -147,9 +147,11 @@ class DerivedUnit(Unit):
 class ScaledUnit(Unit):
 
     def __init__(self, unit : Unit, ratio : float):
-        self.numerator = unit.numerator
-        self.denumerator = unit.denumerator
+        self.numerator = tuple(unit.numerator)
+        self.denumerator = tuple(unit.denumerator)
         self.ratio = ratio
+        if hasattr(unit, "ratio"):
+             self.ratio *= unit.ratio
 
 
 class DimensionnedValue():

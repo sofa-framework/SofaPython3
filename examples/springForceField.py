@@ -11,7 +11,7 @@ def createScene(root):
     'Sofa.Component.Mapping.NonLinear',
     'Sofa.Component.Mass',
     'Sofa.Component.MechanicalLoad',
-    'Sofa.Component.ODESolver.Backward',
+    'Sofa.Component.IntegrationScheme.Backward',
     'Sofa.Component.SolidMechanics.Spring',
     'Sofa.Component.StateContainer',
     'Sofa.GL.Component.Rendering3D'
@@ -23,7 +23,7 @@ def createScene(root):
     surface_node = root.addChild('Surface')
     surface_loader = surface_node.addObject('MeshOBJLoader', name='surface_loader', filename='mesh/ball.obj')
 
-    root.addObject('EulerImplicitSolver', name='ODE', rayleighStiffness=0.1, rayleighMass=0.1)
+    root.addObject('EulerImplicitIntegrationScheme', name='ODE', rayleighStiffness=0.1, rayleighMass=0.1)
     root.addObject('CGLinearSolver', name='linear solver', iterations=25, tolerance=1e-08, threshold=1e-08)
 
     ball_0 = add_ball(root, 'ball_0', (-2, 0, 0), surface_loader)

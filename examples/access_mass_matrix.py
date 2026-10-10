@@ -25,25 +25,25 @@ def create_beam(node, id, offset):
 # Function called when the scene graph is being created
 def createScene(root):
 
-    root.addObject('VisualStyle', displayFlags="showBehaviorModels showForceFields")
-
     root.addObject("RequiredPlugin", pluginName=['Sofa.Component.Constraint.Projective',
                                                  'Sofa.Component.Engine.Select',
                                                  'Sofa.Component.LinearSolver.Direct',
                                                  'Sofa.Component.LinearSolver.Ordering',
                                                  'Sofa.Component.LinearSystem',
                                                  'Sofa.Component.Mass',
-                                                 'Sofa.Component.ODESolver.Backward',
+                                                 'Sofa.Component.IntegrationScheme.Backward',
                                                  'Sofa.Component.SolidMechanics.FEM.Elastic',
                                                  'Sofa.Component.StateContainer',
                                                  'Sofa.Component.Topology.Container.Grid',
                                                  'Sofa.Component.Visual'
                                                  ])
 
+    root.addObject('VisualStyle', displayFlags="showBehaviorModels showForceFields")
+
     root.addObject('DefaultAnimationLoop')
     root.addObject('DefaultVisualManagerLoop')
 
-    root.addObject('EulerImplicitSolver', rayleighStiffness="0.1", rayleighMass="0.1")
+    root.addObject('EulerImplicitIntegrationScheme', rayleighStiffness="0.1", rayleighMass="0.1")
 
     matrices = root.addChild('matrices')
     # in this Node, two linear systems are declared:

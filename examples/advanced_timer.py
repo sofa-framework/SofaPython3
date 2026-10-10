@@ -28,10 +28,10 @@ class TimerController(Sofa.Core.Controller):
         step_time = records['solve']['Mechanical (meca)']['total_time']
         print(f"Step took {step_time:.2f} ms")
 
-        nb_iterations = records['solve']['Mechanical (meca)']['StaticSolver::Solve']['nb_iterations']
+        nb_iterations = records['solve']['Mechanical (meca)']['StaticEquilibriumIntegrationScheme::Integrate']['nb_iterations']
         for i in range(int(nb_iterations)):
-            total_time = records['solve']['Mechanical (meca)']['StaticSolver::Solve']['NewtonStep'][i]['total_time']
-            CG_iterations = records['solve']['Mechanical (meca)']['StaticSolver::Solve']['NewtonStep'][i]['MBKSolve']['CG iterations']
+            total_time = records['solve']['Mechanical (meca)']['StaticEquilibriumIntegrationScheme::Integrate']['NewtonStep'][i]['total_time']
+            CG_iterations = records['solve']['Mechanical (meca)']['StaticEquilibriumIntegrationScheme::Integrate']['NewtonStep'][i]['MBKSolve']['CG iterations']
             print(f"  Newton iteration #{i} took {total_time:.2f} ms using {int(CG_iterations)} CG iterations")
 
         if not self.use_sofa_profiler_timer:
@@ -48,7 +48,7 @@ def createScene(root):
         'Sofa.Component.Engine.Select',
         'Sofa.Component.LinearSolver.Iterative',
         'Sofa.Component.MechanicalLoad',
-        'Sofa.Component.ODESolver.Backward',
+        'Sofa.Component.IntegrationScheme.Backward',
         'Sofa.Component.SolidMechanics.FEM.Elastic',
         'Sofa.Component.StateContainer',
         'Sofa.Component.Topology.Container.Dynamic',
@@ -70,9 +70,8 @@ def createScene(root):
 
     # Create our mechanical node
     with root.addChild("meca") as meca:
-        meca.addObject("NewtonRaphsonSolver", name="newtonSolver_springs", maxNbIterationsNewton=5,
-                       maxNbIterationsLineSearch=1, warnWhenLineSearchFails=False, printLog=False)
-        meca.addObject("StaticSolver", newtonSolver="@newtonSolver_springs")
+        meca.addObject("StaticEquilibriumIntegrationScheme",  maxNbIterationsNewton=5,
+                       maxNbIterationsLineSearch=1, alwaysAdvanceNewton=True)
         meca.addObject("CGLinearSolver", iterations=25, tolerance=1e-5, threshold=1e-5)
 
         meca.addObject('MechanicalObject', name='mo', position='@../grid.position')

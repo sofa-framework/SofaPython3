@@ -64,7 +64,7 @@ def createScene(root):
     root.addObject("MeshOBJLoader", name="meshLoaderFine",
                    filename="mesh/liver-smooth.obj")
 
-    root.addObject("EulerImplicitSolver")
+    root.addObject("EulerImplicitIntegrationScheme")
     root.addObject("CGLinearSolver", iterations="200",
                    tolerance="1e-09", threshold="1e-09")
 

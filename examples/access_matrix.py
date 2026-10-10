@@ -7,7 +7,7 @@ from scipy import sparse
 
 def createBeam(root, matrix_type):
     node = root.addChild(matrix_type)
-    node.addObject('EulerImplicitSolver', rayleighStiffness="0.1", rayleighMass="0.1")
+    node.addObject('EulerImplicitIntegrationScheme', rayleighStiffness="0.1", rayleighMass="0.1")
     linear_system = node.addObject('MatrixLinearSystem', template=matrix_type)
 
     node.addObject('MechanicalObject', name="DoFs")
@@ -25,14 +25,15 @@ def createBeam(root, matrix_type):
 # Function called when the scene graph is being created
 def createScene(root):
 
-    root.addObject('VisualStyle', displayFlags="showBehaviorModels showForceFields")
-
     root.addObject("RequiredPlugin", pluginName=['Sofa.Component.Mass', 'Sofa.Component.StateContainer',
                                                     'Sofa.Component.Topology.Container.Grid', 'Sofa.Component.Visual',
                                                     'Sofa.Component.Constraint.Projective', 'Sofa.Component.Engine.Select',
-                                                    'Sofa.Component.LinearSolver.Direct', 'Sofa.Component.LinearSystem',
-                                                    'Sofa.Component.ODESolver.Backward','Sofa.Component.SolidMechanics.FEM.Elastic'
+                                                    'Sofa.Component.LinearSolver.Direct', 'Sofa.Component.LinearSolver.Iterative', 'Sofa.Component.LinearSystem',
+                                                    'Sofa.Component.IntegrationScheme.Backward','Sofa.Component.SolidMechanics.FEM.Elastic'
+
                                                     ])
+
+    root.addObject('VisualStyle', displayFlags="showBehaviorModels showForceFields")
 
     root.addObject('DefaultAnimationLoop', parallelODESolving=True)
     root.addObject('DefaultVisualManagerLoop')
