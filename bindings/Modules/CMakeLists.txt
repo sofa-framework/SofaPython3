@@ -6,6 +6,7 @@ set(MODULEBINDINGS_MODULE_LIST
     SofaLinearSolver
     SofaLinearSystem
     SofaConstraintSolver
+    SofaFEM
 )
 
 sofa_find_package(Sofa.GL QUIET)
