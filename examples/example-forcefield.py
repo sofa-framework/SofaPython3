@@ -14,19 +14,24 @@ class RestShapeForceField(Sofa.Core.ForceFieldVec3d):
     def init(self):
         mstate = self.getContext().mechanical
         self.initpos = mstate.position.array().copy()
-        self.k = np.zeros((1,1))
-        self.f = []
-        self.d = 0.5
 
     def addForce(self, m, out_force, pos, vel):
         with out_force.writeableArray() as wa:
             wa[:] += ( (self.initpos-pos.value) * self.ks.value  )
-                 
+
     def addDForce(self, params, df, dx):
-        pass
-        
-    #def addKToMatrix(self, params, number_of_nodes, number_of_dofs_per_node):
-    #    print(" Python::addKToMatrix: ", a, " ", b)
+        kFactor = params['kFactor']
+        with df.writeableArray() as dfwa:
+            dfwa[:] -= dx.value * self.kd.value * kFactor
+
+    def addKToMatrix(self, params, number_of_nodes, number_of_dofs_per_node):
+        K = []
+        kFactor = params['kFactor']
+        for n in range(0, number_of_nodes):
+            for d in range(0, number_of_dofs_per_node):
+                K.append([number_of_dofs_per_node * n + d, number_of_dofs_per_node * n + d, -kFactor * self.kd.value])
+        return np.asarray(K)
+
 
 
 def createScene(root):
@@ -42,17 +47,24 @@ def createScene(root):
 
         root.addObject("LineAxis")
         root.addObject("DefaultAnimationLoop", name="loop")
-        root.addObject("EulerImplicitIntegrationScheme")
-        root.addObject("CGLinearSolver", tolerance=1e-12, threshold=1e-12, iterations=25)
 
-        o = root.addChild("Object")
-        c = o.addObject("MechanicalObject", name="mechanical", position=[0.0,0.0,0.0, 1.0,0.0,0.0])
-        c.showObject = True
-        c.showColor = [1.0,0.0,0.0,1.0]
-        c.drawMode = 1
+        def add_spring_simulation(node, start_position, color):
+            node.addObject("EulerImplicitIntegrationScheme", rayleighStiffness=0.1, rayleighMass=0.1)
 
-        o.addObject("UniformMass", name="mass", totalMass=[0.1])
-        o.addObject( RestShapeForceField(name="CPPObject", ks=2.0, kd=0.1))
+            o = node.addChild("Object")
+            c = o.addObject("MechanicalObject", name="mechanical", position=[start_position + 0.0,0.0,0.0, start_position + 1.0,0.0,0.0], showColor=color)
+            c.showObject = True
+            c.drawMode = 1
+
+            o.addObject("UniformMass", name="mass", totalMass=[0.1])
+            o.addObject( RestShapeForceField(name="spring", ks=2.0, kd=0.1))
+
+        with root.addChild("Direct") as direct:
+            add_spring_simulation(direct, 0.0, [0,1,0,1])
+            direct.addObject("SparseLDLSolver", template="CompressedRowSparseMatrixd")
+        with root.addChild("Iterative") as iterative:
+            add_spring_simulation(iterative, 0.2, [1,0,0,1])
+            iterative.addObject("CGLinearSolver", tolerance=1e-12, threshold=1e-12, iterations=25)
 
         return root
 
