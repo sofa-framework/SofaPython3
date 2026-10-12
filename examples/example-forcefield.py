@@ -17,7 +17,7 @@ class RestShapeForceField(Sofa.Core.ForceFieldVec3d):
 
     def addForce(self, m, out_force, pos, vel):
         with out_force.writeableArray() as wa:
-            wa[:] += ( (self.initpos-pos.value) * self.ks.value  )
+            wa[:] += ( (self.initpos-pos.value) * self.ks.value )
 
     def addDForce(self, params, df, dx):
         kFactor = params['kFactor']
@@ -32,6 +32,12 @@ class RestShapeForceField(Sofa.Core.ForceFieldVec3d):
                 K.append([number_of_dofs_per_node * n + d, number_of_dofs_per_node * n + d, -kFactor * self.ks.value])
         return np.asarray(K)
 
+    def buildStiffnessMatrix(self, number_of_nodes, number_of_dofs_per_node):
+        K = []
+        for n in range(0, number_of_nodes):
+            for d in range(0, number_of_dofs_per_node):
+                K.append([number_of_dofs_per_node * n + d, number_of_dofs_per_node * n + d, -self.ks.value])
+        return np.asarray(K)
 
 
 def createScene(root):
