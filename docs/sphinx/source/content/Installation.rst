@@ -21,9 +21,9 @@ Get python installed
 
 First, make sure you have the same version of python installed on your computer as the one that is used in the binary version.
 
-.. tabs::
+.. tab-set::
 
-        .. tab:: Ubuntu
+        .. tab-item:: Ubuntu
 
 			Run in a terminal:
 
@@ -40,7 +40,7 @@ First, make sure you have the same version of python installed on your computer 
 				sudo apt install libopengl0
 
 
-        .. tab:: MacOS
+        .. tab-item:: MacOS
 
 			Run in a terminal:
 
@@ -63,7 +63,7 @@ First, make sure you have the same version of python installed on your computer 
 				pip3 install numpy
 
 
-        .. tab:: Windows
+        .. tab-item:: Windows
 
 		Download and install `Python 3.12 64bit <https://www.python.org/ftp/python/3.12.1/python-3.12.1-amd64.exe>`_
 
@@ -97,9 +97,9 @@ using python3
 Before running your simulations, you must make sure to define the following environment variables:
 
 
-.. tabs::
+.. tab-set::
 
-        .. tab:: Ubuntu
+        .. tab-item:: Ubuntu
 
 			Run in a terminal:
 
@@ -108,7 +108,7 @@ Before running your simulations, you must make sure to define the following envi
 				export SOFA_ROOT=/path/to/SOFA_install
 				export PYTHONPATH=/path/to/SofaPython3/lib/python3/site-packages:$PYTHONPATH
 
-        .. tab:: MacOS
+        .. tab-item:: MacOS
 
 			Run in a terminal:
 
@@ -119,7 +119,7 @@ Before running your simulations, you must make sure to define the following envi
 				export PATH="/usr/local/opt/python@3.12/bin/:$PATH"
 
 
-        .. tab:: Windows
+        .. tab-item:: Windows
 
 		    * Create a system variable **SOFA_ROOT** and set it to ``<SOFA-install-directory>``
 		    * Create a system variable **PYTHON_ROOT** and set it to ``<Python3-install-directory>``

@@ -5,9 +5,9 @@ import numpy as np
 
 
 def create_scene(root):
-    root.addObject("RequiredPlugin", name="Sofa.Component.Topology.Container.Grid")
-    root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
-    root.addObject("RequiredPlugin", name="Sofa.Component.SolidMechanics.Spring")
+    root.addObject("RequiredPlugin", pluginName="Sofa.Component.Topology.Container.Grid")
+    root.addObject("RequiredPlugin", pluginName="Sofa.Component.StateContainer")
+    root.addObject("RequiredPlugin", pluginName="Sofa.Component.SolidMechanics.Spring")
 
     # Create a simple plane having 3x3 nodes and a size of 3x3 on the yz plane centered on (-0.5,0,0).
     root.addChild('plane_1')
@@ -38,7 +38,7 @@ class Test(unittest.TestCase):
     def setUp(self) -> None:
         self.root = Sofa.Core.Node()
         create_scene(self.root)
-        Sofa.Simulation.init(self.root)
+        Sofa.Simulation.initRoot(self.root)
 
     def tearDown(self) -> None:
         Sofa.Simulation.unload(self.root)

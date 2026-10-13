@@ -26,7 +26,7 @@ def createScene(rootNode):
         'Sofa.Component.LinearSolver.Iterative',
         'Sofa.Component.Mapping.NonLinear',
         'Sofa.Component.Mass',
-        'Sofa.Component.ODESolver.Backward',
+        'Sofa.Component.IntegrationScheme.Backward',
         'Sofa.Component.StateContainer',
         'Sofa.Component.Topology.Container.Constant',
         'Sofa.Component.Visual',
@@ -47,7 +47,7 @@ def createScene(rootNode):
 
         rootNode.addObject('CollisionPipeline')
         rootNode.addObject('FreeMotionAnimationLoop')
-        rootNode.addObject('ProjectedGaussSeidelConstraintSolver', tolerance="1e-6", maxIterations="1000")
+        rootNode.addObject('BlockGaussSeidelConstraintSolver', tolerance="1e-6", maxIterations="1000")
         rootNode.addObject('BruteForceBroadPhase', name="BroadPhase")
         rootNode.addObject('BVHNarrowPhase', name="NarrowPhase")
         rootNode.addObject('RuleBasedContactManager', responseParams="mu="+str(0.0), name='Response', response='FrictionContactConstraint')
@@ -92,7 +92,7 @@ def createScene(rootNode):
         sphere.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
         sphere.addObject('UncoupledConstraintCorrection')
 
-        sphere.addObject('EulerImplicitSolver', name='odesolver')
+        sphere.addObject('EulerImplicitIntegrationScheme', name='odesolver')
         sphere.addObject('CGLinearSolver', name='Solver', iterations=25, tolerance=1e-5, threshold=1e-5)
 
         collision = sphere.addChild('collision')

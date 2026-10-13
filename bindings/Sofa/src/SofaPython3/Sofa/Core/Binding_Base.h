@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include <SofaPython3/config.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <sofa/core/objectmodel/Base.h>
@@ -36,7 +37,7 @@ PYBIND11_DECLARE_HOLDER_TYPE(T, sofapython3::py_shared_ptr<T>, true)
 
 namespace sofapython3 {
 
-class BindingBase
+class SOFAPYTHON3_API BindingBase
 {
 public:
     static void SetAttr(sofa::core::objectmodel::Base& self, const std::string& s, pybind11::object value);

@@ -1,12 +1,14 @@
 project(Bindings.Modules.SofaDeformable)
 
 set(SOURCE_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/Module_SofaDeformable.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LameParameters.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinearSpring.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_SpringForceField.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Module_SofaDeformable.cpp
 )
 
 set(HEADER_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LameParameters.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinearSpring.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinearSpring_doc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_SpringForceField.h
@@ -18,6 +20,7 @@ if (NOT TARGET SofaPython3::Plugin)
 endif()
 
 sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
 
 SP3_add_python_module(
     TARGET       ${PROJECT_NAME}
@@ -26,6 +29,6 @@ SP3_add_python_module(
     DESTINATION  Sofa
     SOURCES      ${SOURCE_FILES}
     HEADERS      ${HEADER_FILES}
-    DEPENDS      Sofa.Component.SolidMechanics.Spring SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
+    DEPENDS      Sofa.Component.SolidMechanics.Spring Sofa.Component.SolidMechanics.FEM.Elastic SofaPython3::Plugin SofaPython3::Bindings.Sofa.Core
 
 )

@@ -6,9 +6,9 @@ import Sofa
 
 def create_scene(rootName="root"):
     root = Sofa.Core.Node(rootName)
-    root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
-    root.addObject("RequiredPlugin", name="Sofa.Component.SolidMechanics.Spring")
-    root.addObject("RequiredPlugin", name="Sofa.Component.Mapping.Linear")
+    root.addObject("RequiredPlugin", pluginName="Sofa.Component.StateContainer")
+    root.addObject("RequiredPlugin", pluginName="Sofa.Component.SolidMechanics.Spring")
+    root.addObject("RequiredPlugin", pluginName="Sofa.Component.Mapping.Linear")
     return root
 
 class Test(unittest.TestCase):

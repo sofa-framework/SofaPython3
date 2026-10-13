@@ -33,7 +33,7 @@
 #include <SofaPython3/PythonFactory.h>
 
 namespace py { using namespace pybind11; }
-using sofa::core::objectmodel::BaseObject;
+using sofa::core::objectmodel::BaseComponent;
 using sofa::component::collision::response::contact::ContactListener;
 
 namespace sofapython3
@@ -92,7 +92,7 @@ void moduleAddContactListener(pybind11::module &m)
 {
     /// register the ContactListener binding in the pybind11 typing sytem
     pybind11::class_<ContactListener,
-               sofa::core::objectmodel::BaseObject,
+               sofa::core::objectmodel::BaseComponent,
                py_shared_ptr<ContactListener>> c(m, "ContactListener", sofapython3::doc::contactListener::contactListenerClass);
 
     c.def("getNumberOfContacts", &ContactListener::getNumberOfContacts);

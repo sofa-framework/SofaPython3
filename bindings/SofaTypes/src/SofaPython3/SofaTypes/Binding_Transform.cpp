@@ -17,14 +17,52 @@
 *******************************************************************************
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <SofaPython3/SofaTypes/Binding_Transform.h>
+#include <sofa/defaulttype/typeinfo/DataTypeInfo.h>
+#include <SofaPython3/SofaTypes/Binding_Vec.h>
+#include <SofaPython3/SofaTypes/Binding_Quat.h>
 
-#pragma once
+namespace pyTransform
+{
+template<class TReal>
+std::string __str__(const sofa::type::Transform<TReal>& self, bool repr)
+{
+    std::string s;
+    if (repr)
+    {
+        s += "Transform" + sofa::defaulttype::DataTypeInfo<TReal>::name();
+    }
+    s += "(";
+    s += pyVec::__str__(self.getOrigin(), repr);
+    s += std::string(", ");
+    s += pyQuat::__str__(self.getOrientation(), repr);
+    s += ")";
+    return s;
+}
+}
 
-#include <pybind11/pybind11.h>
+namespace sofapython3::SofaTypes
+{
 
-namespace sofapython3 {
+template<class TReal>
+void addTransform(py::module& m)
+{
+    const auto className = "Transform" + sofa::defaulttype::DataTypeInfo<TReal>::name();
+    py::class_<sofa::type::Transform<TReal>> p(m, className.c_str());
 
-void moduleAddContext(pybind11::module &m);
+    p.def("__str__", [](sofa::type::Transform<TReal>& self)
+        {
+            return pyTransform::__str__(self, false);
+        });
+    p.def("__repr__", [](sofa::type::Transform<TReal>& self)
+        {
+            return pyTransform::__str__(self, false);
+        });
+}
 
-} // namespace sofapython3
+void moduleAddTransform(py::module& m)
+{
+    addTransform<SReal>(m);
+}
 
+}

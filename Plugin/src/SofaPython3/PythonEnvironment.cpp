@@ -206,7 +206,7 @@ void PythonEnvironment::Init()
 
     // Workaround: try to import scipy from the main thread this prevents a deadlock when importing
     // scipy from a worker thread when we use the SofaScene asynchronous loading
-    executePython([]{ PyRun_SimpleString("try:\n\tfrom scipy import misc, optimize\nexcept:\n\tpass\n");});
+    executePython([]{ PyRun_SimpleString("try:\n\tfrom scipy import optimize\nexcept:\n\tpass\n");});
 
     // If the script directory is not available (e.g. if the interpreter is invoked interactively
     // or if the script is read from standard input), path[0] is the empty string,
@@ -606,8 +606,9 @@ void PythonEnvironment::setArguments(const std::string& filename, const std::vec
     PySys_SetArgvEx( data->size(), data->getDataBuffer(), 0);
 }
 
-void PythonEnvironment::SceneLoaderListerner::rightBeforeLoadingScene()
+void PythonEnvironment::SceneLoaderListerner::rightBeforeLoadingScene(SceneLoader* sceneLoader)
 {
+    SOFA_UNUSED(sceneLoader);
     // unload python modules to force importing their eventual modifications
     executePython([]{ PyRun_SimpleString("SofaRuntime.unloadModules()");});
 }

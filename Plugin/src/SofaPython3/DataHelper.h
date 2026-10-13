@@ -28,7 +28,7 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <SofaPython3/config.h>
 
@@ -62,7 +62,7 @@ namespace sofa {
                     if (l.getTargetBase())
                     {
                         auto bn = l.getTargetBase()->toBaseNode();
-                        auto bo = l.getTargetBase()->toBaseObject();
+                        auto bo = l.getTargetBase()->toBaseComponent();
                         out << "@" + (bn ? bn->getPathName() : bo->getPathName());
                     }
                     out << l.getTargetPath();
@@ -148,7 +148,7 @@ namespace sofa {
                     if (ptr.getTargetBase())
                     {
                         auto bn = ptr.getTargetBase()->toBaseNode();
-                        auto bo = ptr.getTargetBase()->toBaseObject();
+                        auto bo = ptr.getTargetBase()->toBaseComponent();
                         return "@" + (bn ? bn->getPathName() : bo->getPathName());
                     }
                     return ptr.getTargetPath();
@@ -181,7 +181,7 @@ using sofa::core::objectmodel::Base;
 using sofa::core::objectmodel::BaseData;
 using sofa::core::objectmodel::BaseLink;
 using sofa::core::objectmodel::BaseNode;
-using sofa::core::objectmodel::BaseObject;
+using sofa::core::objectmodel::BaseComponent;
 using sofa::defaulttype::AbstractTypeInfo;
 
 SOFAPYTHON3_API void setItem2D(pybind11::array a, pybind11::slice slice, pybind11::object o);

@@ -18,9 +18,9 @@ Prerequisites
 The compilation of SofaPython3 requires the installation of some dependencies. The following table lists all of those
 prerequisites.
 
-.. tabs::
+.. tab-set::
 
-    .. tab:: Ubuntu
+    .. tab-item:: Ubuntu
 
         .. list-table::
             :widths: 15 10 30 45
@@ -45,7 +45,7 @@ prerequisites.
               -
 
 
-    .. tab:: MacOS
+    .. tab-item:: MacOS
 
         .. list-table::
             :widths: 15 10 30 45
@@ -70,7 +70,7 @@ prerequisites.
               -
 
 
-    .. tab:: Windows
+    .. tab-item:: Windows
 
         .. list-table::
             :widths: 15 10 30 45

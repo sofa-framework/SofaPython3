@@ -39,7 +39,7 @@ namespace sofapython3
 {
     using sofa::core::objectmodel::Event;
 
-    void MessageHandler_Trampoline::process(Message& m)
+    void MessageHandler_Trampoline::doProcess(Message& m)
     {
         PythonEnvironment::gil acquire {"MessageHandler"};
         py::object self = py::cast(this);
@@ -83,6 +83,11 @@ namespace sofapython3
         }
     }
 
+    std::string MessageHandler_Trampoline::getName() const
+    {
+        PythonEnvironment::gil acquire {"MessageHandler::getName"};
+        return py::str(py::cast(this).get_type().attr("__name__"));
+    }
 
     void moduleAddMessageHandler(py::module &m) {
         py::class_<PyMessageHandler, MessageHandler_Trampoline> f(m, "MessageHandler", py::dynamic_attr(), "Manages and processes messages");

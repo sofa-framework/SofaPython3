@@ -51,7 +51,7 @@ void bindSpringForcefield(py::module& m) {
                             DataType::Name();
 
     py::class_<SpringForceField,
-            sofa::core::objectmodel::BaseObject,
+            sofa::core::objectmodel::BaseComponent,
             py_shared_ptr<SpringForceField>> s (m, type_name.c_str(), sofapython3::doc::SofaDeformable::SpringForceFieldClass);
 
     // remove all springs and optionally reserve memory for #reserve springs in the vector of springs

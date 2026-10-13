@@ -29,7 +29,7 @@ functionDict = {
 
 class KeyPressedController(Sofa.Core.Controller):
     """ This controller monitors key movements.
-	Press ctrl and a key to test it!
+    Press CTRL + SHIFT + a key to test it!
     """
     def __init__(self, *args, **kwargs):
         Sofa.Core.Controller.__init__(self, *args, **kwargs)

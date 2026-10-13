@@ -45,17 +45,17 @@ using namespace pybind11::literals;
 namespace sofapython3
 {
     using sofa::core::Mapping;
-    using sofa::core::objectmodel::BaseObject;
+    using sofa::core::objectmodel::BaseComponent;
     using sofa::core::objectmodel::ComponentState;
     using sofa::core::behavior::MechanicalState;
     using sofa::core::MechanicalParams;
     using sofa::core::behavior::MultiMatrixAccessor;
-    using sofa::defaulttype::Vec3dTypes;
-    using sofa::defaulttype::Vec2dTypes;
-    using sofa::defaulttype::Vec1dTypes;
-    using sofa::defaulttype::Vec6dTypes;
-    using sofa::defaulttype::Rigid3dTypes;
-    using sofa::defaulttype::Rigid2dTypes;
+    using sofa::defaulttype::Vec3Types;
+    using sofa::defaulttype::Vec2Types;
+    using sofa::defaulttype::Vec1Types;
+    using sofa::defaulttype::Vec6Types;
+    using sofa::defaulttype::Rigid3Types;
+    using sofa::defaulttype::Rigid2Types;
 
     template<class In, class Out>
     Mapping_Trampoline<In, Out>::Mapping_Trampoline() = default;
@@ -135,7 +135,7 @@ namespace sofapython3
 
         py::dict mp = py::dict("time"_a=getContext()->getTime());
 
-        PYBIND11_OVERLOAD_PURE(void, Inherit1, applyConstrainsJT, mp,
+        PYBIND11_OVERLOAD_PURE(void, Inherit1, applyConstraintsJT, mp,
                                PythonFactory::toPython(&out), PythonFactory::toPython(&in));
     }
 
@@ -143,7 +143,7 @@ namespace sofapython3
     void declareMapping(py::module &m) {
         const std::string pyclass_name = std::string("Mapping_") + In::Name()+ "_" + Out::Name();
 
-        py::class_<Mapping<In, Out>, BaseObject, Mapping_Trampoline<In, Out>,
+        py::class_<Mapping<In, Out>, BaseComponent, Mapping_Trampoline<In, Out>,
                    py_shared_ptr<Mapping<In, Out>>> f(m, pyclass_name.c_str(), py::dynamic_attr(), py::multiple_inheritance(),
                                                       sofapython3::doc::mapping::mappingClass);
 
@@ -174,9 +174,29 @@ namespace sofapython3
     }
 
     void moduleAddMapping(py::module &m) {
-        declareMapping<Rigid3dTypes, Vec3dTypes>(m);
-        declareMapping<Vec3dTypes, Vec3dTypes>(m);
-        declareMapping<Vec3dTypes, Vec1dTypes>(m);
+        declareMapping<Vec1Types, Vec1Types>(m);
+        declareMapping<Vec1Types, Vec2Types>(m);
+        declareMapping<Vec1Types, Vec3Types>(m);
+
+        declareMapping<Vec2Types, Vec2Types>(m);
+        declareMapping<Vec2Types, Vec1Types>(m);
+
+        declareMapping<Vec3Types, Vec3Types>(m);
+        declareMapping<Vec3Types, Vec2Types>(m);
+        declareMapping<Vec3Types, Vec1Types>(m);
+
+        declareMapping<Vec6Types, Vec6Types>(m);
+        declareMapping<Vec6Types, Vec3Types>(m);
+        declareMapping<Vec6Types, Vec1Types>(m);
+
+        declareMapping<Rigid2Types, Vec2Types>(m);
+        declareMapping<Rigid2Types, Rigid2Types>(m);
+
+        declareMapping<Rigid3Types, Vec6Types>(m);
+        declareMapping<Rigid3Types, Vec3Types>(m);
+        declareMapping<Rigid3Types, Vec1Types>(m);
+        declareMapping<Rigid3Types, Rigid3Types>(m);
+        declareMapping<Vec3Types, Rigid3Types>(m);
     }
 
 }  // namespace sofapython3

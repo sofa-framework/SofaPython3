@@ -25,8 +25,8 @@ using sofa::defaulttype::AbstractTypeInfo;
 #include <sofa/core/objectmodel/BaseData.h>
 using sofa::core::objectmodel::BaseData;
 
-#include <sofa/core/objectmodel/BaseObject.h>
-using  sofa::core::objectmodel::BaseObject;
+#include <sofa/core/objectmodel/BaseComponent.h>
+using  sofa::core::objectmodel::BaseComponent;
 
 #include <sofa/core/objectmodel/BaseNode.h>
 using  sofa::core::objectmodel::BaseNode;

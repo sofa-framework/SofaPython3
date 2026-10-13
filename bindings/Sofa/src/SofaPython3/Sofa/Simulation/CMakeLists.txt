@@ -18,7 +18,7 @@ if (NOT TARGET SofaPython3::Plugin)
     sofa_find_package(SofaPython3 REQUIRED COMPONENTS Plugin)
 endif()
 
-sofa_find_package(Sofa.Simulation.Graph REQUIRED)
+sofa_find_package(Sofa.Simulation.Common REQUIRED)
 
 SP3_add_python_module(
         TARGET       ${PROJECT_NAME}
@@ -27,5 +27,5 @@ SP3_add_python_module(
         DESTINATION  Sofa
         SOURCES      ${SOURCE_FILES}
         HEADERS      ${HEADER_FILES}
-        DEPENDS      Sofa.Simulation.Graph SofaPython3::Plugin
+        DEPENDS      Sofa.Simulation.Common SofaPython3::Plugin
 )

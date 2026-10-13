@@ -13,7 +13,7 @@ Example:
     n.addChild("Node2")
     n.addObject("MechanicalObject", name="dofs")
 
-    Sofa.Simulation.init(n)
+    Sofa.Simulation.initRoot(n)
     Sofa.Simulation.print(n)
 
 """
@@ -161,7 +161,10 @@ if sofa_root and sys.platform == 'win32':
             os.environ['PATH'] = sofapython3_bin_path + os.pathsep + os.environ.get('PATH', '')
 
 print("---------------------------------------")
-sys.stdout.flush()
+if sys.stdout is not None:
+    sys.stdout.flush()
+if sys.stderr is not None:
+    sys.stderr.flush() 
 
 import Sofa.constants
 import Sofa.Helper
@@ -195,6 +198,11 @@ def unloadModules():
     for name in toremove:
         del(sys.modules[name]) # unload it
 
+def GetVersion():
+    """Returns the version of SOFA as a string in the format 'vMM.mm', where MM is the major version and mm is the
+       minor version.
+    """
+    return Sofa.Helper.GetVersion()
 
 def formatStackForSofa(o):
     """ format the stack trace provided as a parameter into a string like that:

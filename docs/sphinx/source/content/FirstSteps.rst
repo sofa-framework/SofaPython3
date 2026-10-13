@@ -166,8 +166,9 @@ We first propose to add a visual grid, in order to see things more clearly. To d
 
 Now, we create a new child node, in order to add the general configuration of the scene : required plugins (here SofaPython3) and other tools (like a system of axes).
 
-.. code-block:: python
-        def createScene(rootNode):
+.. code-block:: python 
+
+	def createScene(rootNode):
             import SofaRuntime
             # Make sure to load all necessary libraries
             SofaRuntime.importPlugin("Sofa.Component.Visual")
@@ -182,6 +183,7 @@ Now, we create a new child node, in order to add the general configuration of th
 Finally, we add the sphere itself, which consists of two parts : the mechanical representation and the visual representation of the sphere: 
 
 .. code-block:: python
+
         def createScene(rootNode):
             import SofaRuntime
             # Make sure to load all necessary libraries
@@ -240,14 +242,14 @@ We add properties to the sphere. First, we add a mass, then an object called 'Un
 
 .. code-block:: python
 
-        SofaRuntime.importPlugin("Sofa.Component.ODESolver.Backward")
+        SofaRuntime.importPlugin("Sofa.Component.IntegrationScheme.Backward")
         SofaRuntime.importPlugin("Sofa.Component.LinearSolver.Iterative")
         SofaRuntime.importPlugin("Sofa.Component.Mass")
         SofaRuntime.importPlugin("Sofa.Component.Constraint.Lagrangian.Correction")
         
 	# Creating the falling sphere object
 	sphere = rootNode.addChild("sphere")
-	sphere.addObject('EulerImplicitSolver', name='odesolver')
+	sphere.addObject('EulerImplicitIntegrationScheme', name='odesolver')
 	sphere.addObject('CGLinearSolver', name='Solver', iterations=25, tolerance=1e-05, threshold=1e-05)
 	sphere.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0., 0., 0.], rotation2=[0., 0., 0.], showObjectScale=50)
 	sphere.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])
@@ -312,7 +314,7 @@ We first add a collision model for the scene in general, that is stating how a c
 	# Collision pipeline
 	rootNode.addObject('CollisionPipeline')
 	rootNode.addObject('FreeMotionAnimationLoop')
-	rootNode.addObject('ProjectedGaussSeidelConstraintSolver', tolerance="1e-6", maxIterations="1000")
+	rootNode.addObject('BlockGaussSeidelConstraintSolver', tolerance="1e-6", maxIterations="1000")
 	rootNode.addObject('BruteForceBroadPhase')
 	rootNode.addObject('BVHNarrowPhase')
 	rootNode.addObject('RuleBasedContactManager', responseParams="mu="+str(0.0), name='Response', response='FrictionContactConstraint')
@@ -423,7 +425,7 @@ Here is the entire code of the scene :
             confignode.addObject('RequiredPlugin', name="Sofa.Component.LinearSolver.Iterative", printLog=False)
             confignode.addObject('RequiredPlugin', name="Sofa.Component.Mapping.NonLinear", printLog=False)
             confignode.addObject('RequiredPlugin', name="Sofa.Component.Mass", printLog=False)
-            confignode.addObject('RequiredPlugin', name="Sofa.Component.ODESolver.Backward", printLog=False)
+            confignode.addObject('RequiredPlugin', name="Sofa.Component.IntegrationScheme.Backward", printLog=False)
             confignode.addObject('RequiredPlugin', name="Sofa.Component.StateContainer", printLog=False)
             confignode.addObject('RequiredPlugin', name="Sofa.Component.Topology.Container.Constant", printLog=False)
             confignode.addObject('RequiredPlugin', name="Sofa.Component.Visual", printLog=False)
@@ -435,7 +437,7 @@ Here is the entire code of the scene :
             # Collision pipeline
             rootNode.addObject('CollisionPipeline')
             rootNode.addObject('FreeMotionAnimationLoop')
-            rootNode.addObject('ProjectedGaussSeidelConstraintSolver', tolerance="1e-6", maxIterations="1000")
+            rootNode.addObject('BlockGaussSeidelConstraintSolver', tolerance="1e-6", maxIterations="1000")
             rootNode.addObject('BruteForceBroadPhase')
             rootNode.addObject('BVHNarrowPhase')
             rootNode.addObject('RuleBasedContactManager', responseParams="mu="+str(0.0), name='Response', response='FrictionContactConstraint')
@@ -448,7 +450,7 @@ Here is the entire code of the scene :
 
 
             sphere = rootNode.addChild("sphere")
-            sphere.addObject('EulerImplicitSolver', name='odesolver')
+            sphere.addObject('EulerImplicitIntegrationScheme', name='odesolver')
             sphere.addObject('CGLinearSolver', name='Solver', iterations=25, tolerance=1e-05, threshold=1e-05)
             sphere.addObject('MechanicalObject', name="mstate", template="Rigid3", translation2=[0., 0., 0.], rotation2=[0., 0., 0.], showObjectScale=50)
             sphere.addObject('UniformMass', name="mass", vertexMass=[totalMass, volume, inertiaMatrix[:]])

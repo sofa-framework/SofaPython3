@@ -37,7 +37,7 @@ static auto Class =
              SofaRuntime.importPlugin("SofaComponentAll")
 
              n = Sofa.Core.Node("MyNode")
-             Sofa.Simulation.init(n)
+             Sofa.Simulation.initRoot(n)
              Sofa.Simulation.print(n)
         )";
 static auto print =

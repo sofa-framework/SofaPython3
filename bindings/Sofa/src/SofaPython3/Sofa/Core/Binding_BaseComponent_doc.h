@@ -20,7 +20,7 @@
 
 #pragma once
 
-namespace sofapython3::doc::baseObject
+namespace sofapython3::doc::BaseComponent
 {
 static auto Class =
         R"(
@@ -61,41 +61,41 @@ static auto reinit =
         )";
 static auto getPathName =
         R"(
-        Return the full path name of this baseObject
+        Return the full path name of this BaseComponent
         :rtype: string
         )";
 
 static auto getLink =
         R"(
-        Return the link of the baseObject
-        :param self: the baseObject itself
-        :type self: baseObject
+        Return the link of the BaseComponent
+        :param self: the BaseComponent itself
+        :type self: BaseComponent
         :rtype: string
         )";
 
 static auto getSlaves =
         R"(
-        Return the slaves of the baseObject.
+        Return the slaves of the BaseComponent.
         :rtype: list
         )";
 
 static auto getContext =
         R"(
-        Return the conext of the baseObject.
+        Return the conext of the BaseComponent.
         :rtype: BaseContext
         )";
 
 static auto getMaster =
         R"(
-        Return the master of the baseObject.
-        :rtype: BaseObject
+        Return the master of the BaseComponent.
+        :rtype: BaseComponent
         )";
 
 static auto addSlave =
         R"(
-        Add a slave to the master BaseObject.
+        Add a slave to the master BaseComponent.
         :param slave: the slave to be added.
-        :type slave: BaseObject
+        :type slave: BaseComponent
         )";
 
 static auto storeResetState =
@@ -111,13 +111,13 @@ static auto reset =
 
 static auto getName =
         R"(
-        Accessor to the baseObject name.
+        Accessor to the BaseComponent name.
         :rtype: string
         )";
 
 static auto getTarget =
         R"(
-        Return the target (plugin) that contains the current baseObject.
+        Return the target (plugin) that contains the current BaseComponent.
         :rtype: string
         )";
 
@@ -151,13 +151,13 @@ static auto computeBBox =
 
 static auto getLinkPath =
         R"(
-        Return the full path name of this baseObject with an extra prefix '@'
+        Return the full path name of this BaseComponent with an extra prefix '@'
         :rtype: string
         )";
 
 static auto getAsACreateObjectParameter =
         R"(
-        Return the full path name of this baseObject with an extra prefix '@'
+        Return the full path name of this BaseComponent with an extra prefix '@'
         :rtype: string
         )";
 

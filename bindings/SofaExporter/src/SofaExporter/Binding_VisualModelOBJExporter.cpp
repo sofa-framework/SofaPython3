@@ -23,7 +23,7 @@
 #include <SofaExporter/Binding_VisualModelOBJExporter_doc.h>
 
 #include <SofaPython3/PythonFactory.h>
-#include <SofaPython3/Sofa/Core/Binding_BaseObject.h>
+#include <SofaPython3/Sofa/Core/Binding_BaseComponent.h>
 #include <sofa/component/io/mesh/VisualModelOBJExporter.h>
 
 using  sofa::component::io::mesh::VisualModelOBJExporter;
@@ -39,7 +39,7 @@ void moduleAddVisualModelOBJExporter(py::module &m)
         return py::cast(dynamic_cast<VisualModelOBJExporter*>(object));
     });
 
-    py::class_<VisualModelOBJExporter, sofa::core::objectmodel::BaseObject, py_shared_ptr<VisualModelOBJExporter>> p(m, "VisualModelOBJExporter", sofapython3::doc::SofaExporter::VisualModelOBJExporter::docstring);
+    py::class_<VisualModelOBJExporter, sofa::core::objectmodel::BaseComponent, py_shared_ptr<VisualModelOBJExporter>> p(m, "VisualModelOBJExporter", sofapython3::doc::SofaExporter::VisualModelOBJExporter::docstring);
 
     p.def("write", &VisualModelOBJExporter::write);
 }

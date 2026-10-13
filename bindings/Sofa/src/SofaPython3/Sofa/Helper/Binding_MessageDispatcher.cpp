@@ -1,6 +1,6 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2021 INRIA, USTL, UJF, CNRS, MGH                     *
+*                              SofaPython3 plugin                             *
+*                  (c) 2021 CNRS, University of Lille, INRIA                  *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -17,22 +17,29 @@
 *******************************************************************************
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <SofaPython3/Sofa/Helper/Binding_MessageDispatcher.h>
+#include <sofa/helper/logging/MessageDispatcher.h>
 
-#pragma once
+namespace py { using namespace pybind11; }
 
-#include <pybind11/pybind11.h>
+void sofapython3::moduleAddMessageDispatcher(pybind11::module &m)
+{
+    py::module messageDispatcherModule = m.def_submodule("MessageDispatcher");
 
-namespace sofa::core::objectmodel {
-class BaseObject;
+    messageDispatcherModule.doc() = R"doc(
+        MessageDispatcher
+        -----------------------
+
+        Configuration of the message dispatcher.
+    )doc";
+
+    messageDispatcherModule.def("clearHandlers",
+        [](){
+            sofa::helper::logging::MessageDispatcher::clearHandlers();
+        }, "Removes all registered message handlers.");
+
+    messageDispatcherModule.def("numHandlers",
+        [](){
+            return sofa::helper::logging::MessageDispatcher::getHandlers().size();
+        }, "Returns the number of registered message handlers.");
 }
-
-namespace sofapython3 {
-
-pybind11::object getItem(const sofa::core::objectmodel::BaseObject & self, const std::string& path);
-
-void moduleForwardAddBaseObject(pybind11::module &m);
-void moduleAddBaseObject(pybind11::module &m);
-
-} /// namespace sofapython
-
-

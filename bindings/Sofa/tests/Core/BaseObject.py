@@ -5,8 +5,8 @@ import Sofa
 
 def create_scene(rootName="root"):
     root = Sofa.Core.Node(rootName)
-    root.addObject("RequiredPlugin", name="Sofa.Component.StateContainer")
-    root.addObject("RequiredPlugin", name="Sofa.Component.Topology.Container.Constant")
+    root.addObject("RequiredPlugin", pluginName="Sofa.Component.StateContainer")
+    root.addObject("RequiredPlugin", pluginName="Sofa.Component.Topology.Container.Constant")
     return root
 
 class Test(unittest.TestCase):

@@ -28,7 +28,6 @@ namespace py { using namespace pybind11; }
 
 void moduleAddSceneCheck(pybind11::module &m)
 {
-    // create a python binding for the C++ class LinearSpring from SofaDeformable
     py::class_<sofa::simulation::SceneCheck, std::shared_ptr<sofa::simulation::SceneCheck>> s
     (m, "SceneCheck", sofapython3::doc::simulation::SceneCheckClass);
 

@@ -32,7 +32,7 @@ class IdentityMapping(Sofa.Core.Mapping_Vec3d_Vec3d):
     def applyJT(self, m, outDeriv, inDeriv):
         print("PYTHON(🐍) APPLY-JT", outDeriv, inDeriv)
 
-    def applyConstrainsJT(self, m, outDeriv, inDeriv):
+    def applyConstraintsJT(self, m, outDeriv, inDeriv):
         print("PYTHON(🐍) APPLY-JT for constraints, data are [⋱]", m, outDeriv, inDeriv)
         print("Constraints ", inDeriv.value)
 
@@ -41,7 +41,7 @@ class IdentityMapping(Sofa.Core.Mapping_Vec3d_Vec3d):
 
 def createScene(root):
         root.addObject("RequiredPlugin", pluginName=["Sofa.GL.Component",
-                                                     "Sofa.Component.ODESolver.Backward",
+                                                     "Sofa.Component.IntegrationScheme.Backward",
                                                      "Sofa.Component.LinearSolver.Direct",
                                                      "Sofa.Component.LinearSolver.Iterative",
                                                      "Sofa.Component.Mass",
@@ -71,7 +71,7 @@ def createScene(root):
         m.addObject( IdentityMapping(name="CPPObject", input=c, output=sm ) )
         
         root.addChild("Simulation")
-        root.Simulation.addObject("EulerImplicitSolver")
+        root.Simulation.addObject("EulerImplicitIntegrationScheme")
         root.Simulation.addObject("CGLinearSolver", tolerance=1e-12, threshold=1e-12, iterations=25)
         root.Simulation.addChild(root.Modelling)
 
@@ -81,13 +81,13 @@ def createScene(root):
 def main():
     import SofaRuntime
     import Sofa.Gui
-    import SofaQt
+    import SofaImGui
 
     root=Sofa.Core.Node("root")
     createScene(root)
     Sofa.Simulation.initRoot(root)
 
-    Sofa.Gui.GUIManager.Init("myscene", "qglviewer")
+    Sofa.Gui.GUIManager.Init("myscene", "imgui")
     Sofa.Gui.GUIManager.createGUI(root, __file__)
     Sofa.Gui.GUIManager.SetDimension(1080, 1080)
     Sofa.Gui.GUIManager.MainLoop(root)

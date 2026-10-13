@@ -77,7 +77,7 @@ class Test(unittest.TestCase):
 
             self.assertTrue( hasattr(controller, "iterations") )
 
-            Sofa.Simulation.init(node)
+            Sofa.Simulation.initRoot(node)
             for i in range(10):
                 Sofa.Simulation.animate(node, 0.01)
 

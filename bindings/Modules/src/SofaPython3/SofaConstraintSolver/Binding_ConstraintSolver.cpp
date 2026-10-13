@@ -39,7 +39,7 @@ void moduleAddConstraintSolver(py::module &m)
 {
     const auto typeName = ConstraintSolverImpl::GetClass()->className;
     py::class_<ConstraintSolverImpl,
-               sofa::core::objectmodel::BaseObject,
+               sofa::core::objectmodel::BaseComponent,
                sofapython3::py_shared_ptr<ConstraintSolverImpl> > c(m, typeName.c_str(), sofapython3::doc::constraintsolver::constraintSolverClass);
 
     c.def("W", [](ConstraintSolverImpl& self) -> EigenMatrixMap

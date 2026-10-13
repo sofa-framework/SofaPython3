@@ -32,7 +32,7 @@ example:
 linear_system = root.addObject('MatrixLinearSystem', template='CompressedRowSparseMatrixd')
 )";
 
-static auto linearSystem_A =
+static auto linearSystem_CRS_A =
 R"(
 Returns the global system matrix as a scipy sparse matrix
 
@@ -40,6 +40,36 @@ example:
 ------------
 linear_system = root.addObject('MatrixLinearSystem', template='CompressedRowSparseMatrixd')
 matrix = linear_system.A()
+)";
+
+static auto linearSystem_CRS_get_system_matrix =
+R"(
+Returns the global system matrix as a scipy sparse matrix
+
+example:
+------------
+linear_system = root.addObject('MatrixLinearSystem', template='CompressedRowSparseMatrixd')
+matrix = linear_system.get_system_matrix()
+)";
+
+static auto linearSystem_FullMatrix_A =
+R"(
+Returns the global system matrix as a numpy array matrix
+
+example:
+------------
+linear_system = root.addObject('MatrixLinearSystem', template='FullMatrix')
+matrix = linear_system.A()
+)";
+
+static auto linearSystem_FullMatrix_get_system_matrix =
+R"(
+Returns the global system matrix as a numpy array matrix
+
+example:
+------------
+linear_system = root.addObject('MatrixLinearSystem', template='FullMatrix')
+matrix = linear_system.get_system_matrix()
 )";
 
 static auto linearSystem_b =

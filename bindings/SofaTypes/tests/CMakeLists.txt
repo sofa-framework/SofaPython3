@@ -6,6 +6,7 @@ set(SOURCE_FILES
 
 set(PYTHON_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/pyfiles/vector_test.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/pyfiles/mat_test.py
 )
 
 find_package(Sofa.Testing REQUIRED)

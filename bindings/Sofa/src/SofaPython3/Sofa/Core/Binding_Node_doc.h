@@ -48,7 +48,7 @@ static auto Class =
                 # Add a mechanical component to MyNode
                 n.addObject("MechanicalObject", name="dofs")
 
-                Sofa.Simulation.init(root)
+                Sofa.Simulation.initRoot(root)
                 Sofa.Simulation.print(root)
 
         The child nodes, components and parents can be accessed using generator attributes.
@@ -329,7 +329,7 @@ static auto removeObject =
         R"(
         Remove an object
         :param object: the object to be removed
-        :type object: BaseObject
+        :type object: BaseComponent
         )";
 
 static auto getRootPath =
@@ -378,9 +378,9 @@ static auto getMechanicalState =
         Get the mechanical state of the node.
         )";
 
-static auto hasODESolver =
+static auto hasIntegrationScheme =
         R"(
-        Return true if the node includes an ODE Solver
+        Return true if the node includes an integration scheme
         )";
 
 static auto getMechanicalMapping =

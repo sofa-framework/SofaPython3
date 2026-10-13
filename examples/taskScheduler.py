@@ -11,7 +11,7 @@ def createScene(root):
         "Sofa.Component.Engine.Select",
         "Sofa.Component.LinearSolver.Iterative",
         "Sofa.Component.Mass",
-        "Sofa.Component.ODESolver.Backward",
+        "Sofa.Component.IntegrationScheme.Backward",
         "Sofa.Component.StateContainer",
         "Sofa.Component.Topology.Container.Grid",
         "Sofa.Component.Visual",
@@ -19,7 +19,7 @@ def createScene(root):
     ])
     root.addObject('VisualStyle', displayFlags="showForceFields")
     root.addObject('DefaultAnimationLoop')
-    root.addObject('EulerImplicitSolver', rayleighStiffness=0.1, rayleighMass=0.1)
+    root.addObject('EulerImplicitIntegrationScheme', rayleighStiffness=0.1, rayleighMass=0.1)
     root.addObject('CGLinearSolver', iterations=25, tolerance=1.0e-9, threshold=1.0e-9)
     root.addObject('MechanicalObject', template="Vec3")
     root.addObject('UniformMass', vertexMass=1)

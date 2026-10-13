@@ -38,8 +38,8 @@ using constants from Sofa.constants.Key
 
 
         class KeyPressedController(Sofa.Core.Controller):
-            #This controller monitors key movements.
-            #    Press ctrl and a key to test it!
+            #  This controller monitors key movements.
+            #  Press CTRL + SHIFT + a key to test it!
 
             def __init__(self, *args, **kwargs):
                 Sofa.Core.Controller.__init__(self, *args, **kwargs)

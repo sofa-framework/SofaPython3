@@ -22,17 +22,17 @@ class RestShapeForceField(Sofa.Core.ForceFieldVec3d):
         with out_force.writeableArray() as wa:
             wa[:] += ( (self.initpos-pos.value) * self.ks.value  )
                  
-    def addDForce(self, df, dx, params):
+    def addDForce(self, params, df, dx):
         pass
         
-    #def addKToMatrix(self, a, b):
+    #def addKToMatrix(self, params, number_of_nodes, number_of_dofs_per_node):
     #    print(" Python::addKToMatrix: ", a, " ", b)
 
 
 def createScene(root):
 
         root.addObject("RequiredPlugin", pluginName=["Sofa.GL.Component",
-                                                     "Sofa.Component.ODESolver.Backward",
+                                                     "Sofa.Component.IntegrationScheme.Backward",
                                                      "Sofa.Component.LinearSolver.Direct",
                                                      "Sofa.Component.LinearSolver.Iterative",
                                                      "Sofa.Component.Mass",
@@ -42,7 +42,7 @@ def createScene(root):
 
         root.addObject("LineAxis")
         root.addObject("DefaultAnimationLoop", name="loop")
-        root.addObject("EulerImplicitSolver")
+        root.addObject("EulerImplicitIntegrationScheme")
         root.addObject("CGLinearSolver", tolerance=1e-12, threshold=1e-12, iterations=25)
 
         o = root.addChild("Object")

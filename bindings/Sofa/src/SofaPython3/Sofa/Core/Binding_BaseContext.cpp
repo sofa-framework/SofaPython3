@@ -22,7 +22,7 @@
 #include <SofaPython3/Sofa/Core/Binding_BaseContext.h>
 #include <SofaPython3/PythonFactory.h>
 #include <sofa/core/BaseState.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
