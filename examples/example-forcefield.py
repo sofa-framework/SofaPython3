@@ -22,14 +22,14 @@ class RestShapeForceField(Sofa.Core.ForceFieldVec3d):
     def addDForce(self, params, df, dx):
         kFactor = params['kFactor']
         with df.writeableArray() as dfwa:
-            dfwa[:] -= dx.value * self.kd.value * kFactor
+            dfwa[:] -= dx.value * self.ks.value * kFactor
 
     def addKToMatrix(self, params, number_of_nodes, number_of_dofs_per_node):
         K = []
         kFactor = params['kFactor']
         for n in range(0, number_of_nodes):
             for d in range(0, number_of_dofs_per_node):
-                K.append([number_of_dofs_per_node * n + d, number_of_dofs_per_node * n + d, -kFactor * self.kd.value])
+                K.append([number_of_dofs_per_node * n + d, number_of_dofs_per_node * n + d, -kFactor * self.ks.value])
         return np.asarray(K)
 
 
