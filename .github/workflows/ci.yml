@@ -18,9 +18,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, macos-14, windows-2022]
+        os: [ubuntu-24.04, macos-15, windows-latest]
         sofa_branch: [master]
-        python_version: ['3.10']
+        python_version: ['3.12']
 
     steps:
       - name: Setup SOFA and environment
@@ -31,7 +31,7 @@ jobs:
           sofa_version: ${{ matrix.sofa_branch }}
           sofa_scope: 'standard'
           sofa_with_sofapython3: 'false'
-          python_version: '${{ matrix.python_version }}'
+          python_version: ['3.12']
       
       - name: Checkout source code
         uses: actions/checkout@v2
