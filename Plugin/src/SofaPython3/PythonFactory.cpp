@@ -19,6 +19,8 @@
 ******************************************************************************/
 
 #include <functional>
+#include <tuple>
+#include <utility>
 #include <SofaPython3/PythonFactory.h>
 #include <SofaPython3/DataHelper.h>
 
@@ -44,6 +46,11 @@ using sofa::core::objectmodel::Event;
 #include <sofa/core/topology/Topology.h>
 
 #include <sofa/defaulttype/DataTypeInfo.h>
+
+/// Declares the Data<Eigen::...> read()/getValueString() specializations.
+/// This include is required before instantiating Data<Eigen::...> (see the
+/// note in this header).
+#include <sofa/core/data/Data[Eigen].h>
 
 #include <pybind11/eigen.h>
 
@@ -183,6 +190,92 @@ py::object PythonFactory::toPython(sofa::core::objectmodel::BaseData* data)
     return py::cast(data);
 }
 
+namespace
+{
+/// Conversion helpers for the Eigen matrix types supported by
+/// sofa/core/data/Data[Eigen].h. A single dispatch table, built once at
+/// first use, maps the AbstractTypeInfo singleton of each matrix type to its
+/// conversion functions, so that no per-type if(dynamic_cast<>) chain is
+/// needed.
+
+/// Exposes the matrix as a read-only numpy view on its storage (no copy).
+/// The strides follow the Eigen storage order (column-major by default),
+/// like pybind11's own zero-copy Eigen conversion.
+template<typename MatrixType>
+py::object eigenMatrixToPython(BaseData* data)
+{
+    auto* d = static_cast<sofa::core::objectmodel::Data<MatrixType>*>(data);
+    const MatrixType& m = d->getValue();
+    using Scalar = typename MatrixType::Scalar;
+
+    /// Keep the owner of the data alive as long as the view exists.
+    auto capsule = py::capsule(new Base::SPtr(d->getOwner()),
+                               [](void* p){ delete static_cast<Base::SPtr*>(p); });
+
+    const void* ptr = (m.size() != 0) ? static_cast<const void*>(m.data()) : nullptr;
+    py::array a(py::dtype::of<Scalar>(),
+                { py::ssize_t(m.rows()), py::ssize_t(m.cols()) },
+                { py::ssize_t(sizeof(Scalar) * m.rowStride()),
+                  py::ssize_t(sizeof(Scalar) * m.colStride()) },
+                ptr, capsule);
+    a.attr("flags").attr("writeable") = false;
+    return a;
+}
+
+/// Sets the matrix from a numpy array or a (nested) sequence. pybind11's
+/// Eigen caster converts the scalar type and resizes dynamic matrices;
+/// fixed-size matrices require a matching shape.
+template<typename MatrixType>
+void eigenMatrixFromPython(BaseData* data, const py::object& o)
+{
+    auto* d = static_cast<sofa::core::objectmodel::Data<MatrixType>*>(data);
+    try
+    {
+        d->setValue(py::cast<MatrixType>(o));
+    }
+    catch(const py::cast_error& e)
+    {
+        std::stringstream s;
+        s << "Trying to set the value of the data " << d->getName()
+          << " from an incompatible python object (" << e.what() << ")";
+        throw std::runtime_error(s.str());
+    }
+}
+
+struct EigenMatrixCasters
+{
+    py::object (*toPython)(BaseData*);
+    void (*fromPython)(BaseData*, const py::object&);
+};
+
+/// The closed list of matrix types supported by sofa/core/data/Data[Eigen].h.
+/// Supporting an additional matrix type only requires adding it here.
+using EigenMatrixTypes = std::tuple<
+    Eigen::MatrixXf, Eigen::MatrixXd, Eigen::MatrixXi,
+    Eigen::Matrix2f, Eigen::Matrix2d,
+    Eigen::Matrix3f, Eigen::Matrix3d,
+    Eigen::Matrix4f, Eigen::Matrix4d>;
+
+template<typename Tuple, std::size_t... I>
+std::map<const AbstractTypeInfo*, EigenMatrixCasters>
+makeEigenMatrixCasters(std::index_sequence<I...>)
+{
+    return { { sofa::defaulttype::VirtualTypeInfo<std::tuple_element_t<I, Tuple>>::get(),
+               { &eigenMatrixToPython<std::tuple_element_t<I, Tuple>>,
+                 &eigenMatrixFromPython<std::tuple_element_t<I, Tuple>> } }... };
+}
+
+std::map<const AbstractTypeInfo*, EigenMatrixCasters>& eigenMatrixCasters()
+{
+    static auto table =
+        makeEigenMatrixCasters<EigenMatrixTypes>(
+            std::make_index_sequence<
+                std::tuple_size_v<EigenMatrixTypes>
+                >{});
+    return table;
+}
+} // anonymous namespace
+
 py::object PythonFactory::valueToPython_ro(sofa::core::objectmodel::BaseData* data)
 {
     const AbstractTypeInfo& nfo{ *(data->getValueTypeInfo()) };
@@ -198,9 +291,22 @@ py::object PythonFactory::valueToPython_ro(sofa::core::objectmodel::BaseData* da
         a.attr("flags").attr("writeable") = false;
         return std::move(a);
     }
-    if(auto p = dynamic_cast<sofa::core::objectmodel::Data<Eigen::MatrixXf>*>(data)){
-        const auto matrice = p->getValue();
-        return py::cast(matrice);
+
+    /// Eigen matrices (see sofa/core/data/Data[Eigen].h) are exposed as
+    /// read-only numpy views on the matrix storage (no copy).
+    if(const auto it = eigenMatrixCasters().find(data->getValueTypeInfo());
+       it == eigenMatrixCasters().end())
+    {
+        /// If there is no caster registered for this AbstractTypeInfo we search if we are in the case
+        /// of a duplicated AbstractTypeInfo. If we find one we add it to the caster map.
+        for(auto& [k,v] : eigenMatrixCasters()){
+            if( *(k->type_info()) == *(nfo.type_info()) ){
+                eigenMatrixCasters()[&nfo] = v;
+                return v.toPython(data);
+            }
+        }
+    }else{
+        return it->second.toPython(data);
     }
 
     /// If this is not the case we return the converted datas (copy)
@@ -300,6 +406,19 @@ void PythonFactory::fromPython(BaseData* d, const py::object& o)
     // If no we fill it with direct access.
     if(!nfo.Container())
     {
+        /// Eigen matrices (see sofa/core/data/Data[Eigen].h) can be set from a
+        /// numpy array or a (nested) sequence. Other python objects (e.g. strings)
+        /// still go through the read() fallback below.
+        if(const auto it = eigenMatrixCasters().find(d->getValueTypeInfo());
+           it != eigenMatrixCasters().end())
+        {
+            if(py::isinstance<py::array>(o) || py::isinstance<py::list>(o) || py::isinstance<py::tuple>(o))
+            {
+                it->second.fromPython(d, o);
+                return;
+            }
+        }
+
         scoped_writeonly_access guard(d);
         if(nfo.Integer()) {
             nfo.setIntegerValue(guard.ptr, 0, py::cast<int>(o));
