@@ -23,19 +23,31 @@
 
 
 Binding_BaseObject_MockComponent::Binding_BaseObject_MockComponent():
-d_test(initData(&d_test, std::string(""), "test", "This data should have the value of the last called method in the test."))
+d_test(initData(&d_test, std::string(""), "test", "This data should have the value of the last called method in the test.")),
+d_matrixXf(initData(&d_matrixXf, "matrixXf", "Dynamic 2x2 float Eigen matrix.")),
+d_matrixXd(initData(&d_matrixXd, "matrixXd", "Dynamic 2x3 double Eigen matrix.")),
+d_matrix3d(initData(&d_matrix3d, "matrix3d", "Fixed-size 3x3 double Eigen matrix.")),
+d_matrixXi(initData(&d_matrixXi, "matrixXi", "Dynamic 2x2 int Eigen matrix."))
 {
+    d_matrixXf.setValue(Eigen::MatrixXf::Constant(2, 2, 1.0f));
+    d_matrixXd.setValue(Eigen::MatrixXd::Constant(2, 3, 2.0));
+    d_matrix3d.setValue(Eigen::Matrix3d::Identity());
+    d_matrixXi.setValue(Eigen::MatrixXi::Constant(2, 2, 7));
 }
+
 Binding_BaseObject_MockComponent::~Binding_BaseObject_MockComponent()
 {
 
 }
+
 void Binding_BaseObject_MockComponent::bwdInit(){
     d_test.setValue("bwdInit");
 }
+
 void Binding_BaseObject_MockComponent::cleanup(){
     d_test.setValue("cleanup");
 }
+
 void Binding_BaseObject_MockComponent::computeBBox(const sofa::core::ExecParams* /* params */, bool /*onlyVisible*/){
     d_test.setValue("computeBBox");
 }
@@ -55,8 +67,6 @@ void Binding_BaseObject_MockComponent::init(){
 void Binding_BaseObject_MockComponent::reinit(){
     d_test.setValue("reinit");
 }
-
-
 
 static int Binding_BaseObject_MockComponentClass = sofa::core::RegisterObject("This component is used to test several functions of Binding_BaseObject")
         .add< Binding_BaseObject_MockComponent >();
