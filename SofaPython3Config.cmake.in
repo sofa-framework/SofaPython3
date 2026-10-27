@@ -45,9 +45,9 @@ if(NOT TARGET pybind11)
     endif()
 
     if(CMAKE_VERSION VERSION_LESS "3.24.0") 
-        find_package(pybind11 @pybind11_VERSION@ QUIET REQUIRED CONFIG)
+        find_package(pybind11 @pybind11_VERSION_MAJOR@.@pybind11_VERSION_MINOR@ QUIET REQUIRED CONFIG)
     else()
-        find_package(pybind11 @pybind11_VERSION@ QUIET REQUIRED CONFIG GLOBAL)
+        find_package(pybind11 @pybind11_VERSION_MAJOR@.@pybind11_VERSION_MINOR@ QUIET REQUIRED CONFIG GLOBAL)
     endif()
 
     # Reset PYTHON_* vars
