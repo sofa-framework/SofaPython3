@@ -137,6 +137,13 @@ static py::tuple elementMappingFor(const RealArray& nodeCoordinatesArray, const 
     constexpr py::ssize_t spatialDim = FE::spatial_dimensions;
     constexpr py::ssize_t topoDim = FE::TopologicalDimension;
 
+    if (nodeCoordinatesArray.shape(0) != nbNodes)
+        throw py::value_error("element_mapping: node_coordinates must have one row per element node");
+    if (referenceGradientsArray.ndim() != 3
+        || referenceGradientsArray.shape(1) != nbNodes
+        || referenceGradientsArray.shape(2) != topoDim)
+        throw py::value_error("element_mapping: reference_gradients must have shape (Q, nodes_per_element, topological_dimension)");
+
     const auto nodeCoordinates = nodeCoordinatesArray.unchecked<2>();     // (nbNodes, spatialDim)
     const auto referenceGrads = referenceGradientsArray.unchecked<3>();   // (Q, nbNodes, topoDim)
     const py::ssize_t Q = referenceGrads.shape(0);
@@ -198,6 +205,11 @@ static py::tuple elementMappingBatchFor(const RealArray& nodeCoordinatesArray,
     constexpr py::ssize_t nbNodes = FE::NumberOfNodesInElement;
     constexpr py::ssize_t spatialDim = FE::spatial_dimensions;
     constexpr py::ssize_t topoDim = FE::TopologicalDimension;
+
+    if (referenceGradientsArray.ndim() != 3
+        || referenceGradientsArray.shape(1) != nbNodes
+        || referenceGradientsArray.shape(2) != topoDim)
+        throw py::value_error("element_mapping_batch: reference_gradients must have shape (Q, nodes_per_element, topological_dimension)");
 
     const auto nodeCoordinates = nodeCoordinatesArray.unchecked<2>();     // (nbMeshNodes, spatialDim)
     const auto nodeIndices = nodeIndicesArray.unchecked<2>();             // (nbElements, nbNodes)
