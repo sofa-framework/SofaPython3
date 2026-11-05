@@ -38,18 +38,14 @@ def pybind11_stub(module_name: str):
     parser = stub_parser_from_args(args)
     printer = Printer(invalid_expr_as_ellipses=not args.print_invalid_expressions_as_is)
 
-    out_dir, sub_dir = to_output_and_subdir(
-        output_dir=args.output_dir,
-        module_name=args.module_name,
-        root_suffix=args.root_suffix,
-    )
 
     run(
         parser,
         printer,
         args.module_name,
-        out_dir,
-        sub_dir=sub_dir,
+        output_dir=args.output_dir,
+        module_names=[args.module_name],
+        root_suffix=args.root_suffix,
         dry_run=args.dry_run,
         writer=Writer(stub_ext=args.stub_extension),
     )
