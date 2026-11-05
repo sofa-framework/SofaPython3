@@ -64,7 +64,7 @@ void moduleAddQuat(py::module &m) {
   p.def("buildRotationMatrix", [](Quat &self, Matrix4 &m) {
     double tmp[4][4] = {{0}};
     self.buildRotationMatrix(tmp);
-    m = Matrix4(Vec4d(tmp[0]), Vec4d(tmp[1]), Vec4d(tmp[2]), Vec4d(tmp[3]));
+    m = Matrix4(Vec4d(0,0,0,0), Vec4d(0,0,0,0), Vec4d(0,0,0,0), Vec4d(0,0,0,0));
   });
   p.def("axisToQuat", &Quat::axisToQuat, "a"_a, "phi"_a);
   p.def("quatToAxis", &Quat::quatToAxis, "a"_a, "phi"_a);
