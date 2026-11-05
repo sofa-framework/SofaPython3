@@ -42,7 +42,6 @@ def pybind11_stub(module_name: str):
     run(
         parser,
         printer,
-        args.module_name,
         output_dir=args.output_dir,
         module_names=[args.module_name],
         root_suffix=args.root_suffix,
