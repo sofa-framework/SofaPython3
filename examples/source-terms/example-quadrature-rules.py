@@ -90,7 +90,7 @@ def createScene(root):
         "Sofa.Component.Engine.Select",
         "Sofa.Component.LinearSolver.Direct",
         "Sofa.Component.MechanicalLoad",
-        "Sofa.Component.ODESolver.Backward",
+        "Sofa.Component.IntegrationScheme.Backward",
         "Sofa.Component.SolidMechanics.FEM.Elastic",
         "Sofa.Component.StateContainer",
         "Sofa.Component.Topology.Container.Dynamic",
@@ -138,8 +138,7 @@ def createScene(root):
     def addQuadratureDegreeNode(name, quadrature_degree, showColor, edgeColor):
         # Starts at rest, loaded by the manufactured body force, integrated with the given quadrature degree.
         with quadratureDegrees.addChild(name) as node:
-            node.addObject("NewtonRaphsonSolver", name="newton", maxNbIterationsNewton="1", absoluteResidualStoppingThreshold="1e-8")
-            node.addObject("StaticSolver", newtonSolver="@newton")
+            node.addObject("StaticEquilibriumIntegrationScheme", maxNbIterationsNewton="1", residualThreshold="1e-16")
             node.addObject("SparseLDLSolver", name="linear_solver", template="CompressedRowSparseMatrixd")
 
             node.addObject("MechanicalObject", name="dofs", template="Vec2", src="@../grid", showObject="true", drawMode="1", showObjectScale="0.005", showColor=showColor)
