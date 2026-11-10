@@ -7,6 +7,7 @@ Contributors:
 """
 import re
 import sys, os
+import keyword
 import pprint
 import argparse
 
@@ -39,9 +40,9 @@ def sofa_to_python_typename(name, short=False):
          "LinkPath" : "LinkPath"
          }
 
-    SofaArray = "TypeHints.SofaArray"
+    SofaArray = "SofaArray"
     if short:
-        SofaArray = "TypeHints.SofaArray"
+        SofaArray = "SofaArray"
 
     if name in t:
         return t[name]
@@ -75,31 +76,40 @@ def sofa_datafields_to_constructor_arguments_list(data_fields, object_name, has_
     #                 'type': 'bool'},
     required_data_fields = []
     optional_data_fields = []
+    argument_names = {"self", "template"}
 
     for data_field in data_fields:
         name = data_field["name"]
-        if name in reserved:
+        if name in reserved or keyword.iskeyword(name):
             print(f"Warning: {object_name} contains a the data field named '{name}' which is also a python keyword")
-            continue
-
-        if " " in name:
-            print(f"Warning: this is an invalid arguments name: '{name}'")
             continue
 
         if len(name) == 0:
             print("Warning: empty data field empty name")
             continue
 
+        if not name.isidentifier():
+            print(f"Warning: this is an invalid arguments name: '{name}'")
+            continue
+
+        if name in argument_names:
+            print(f"Warning: {object_name} contains several data fields named '{name}'")
+            continue
+        argument_names.add(name)
+
         if data_field["isRequired"]:
             required_data_fields.append(data_field)
         else:
             optional_data_fields.append(data_field)
 
-    result_params = ""
+    # The arguments are keyword-only (as SOFA objects are created with keyword arguments): this allows the arguments
+    # without default value to follow the optional template argument.
+    params = []
     if has_template:
-        result_params = "template: Optional[str] = None, "
-    result_params += ",".join([data["name"]+": "+sofa_to_python_typename(data["type"]) for data in required_data_fields])
-    result_params += ",".join([data["name"]+": Optional["+sofa_to_python_typename(data["type"])+"] = None" for data in optional_data_fields])
+        params.append("template: Optional[str] = None")
+    params += [data["name"]+": "+sofa_to_python_typename(data["type"]) for data in required_data_fields]
+    params += [data["name"]+": Optional["+sofa_to_python_typename(data["type"])+"] = None" for data in optional_data_fields]
+    result_params = ", ".join(["*"] + params) if params else ""
 
     ordered_fields = sorted(data_fields, key=lambda x: x["name"])
 
@@ -125,9 +135,14 @@ def sofa_datafields_to_doc(data_fields):
     return p
 
 def clean_sofa_text(t):
+    t = t.replace("\\", "\\\\")
     t = t.replace("\n","")
     t = t.replace("'", "")
     return t
+
+def escape_docstring(t):
+    """Makes a text usable in a triple-quoted string"""
+    return t.replace("\\", "\\\\").replace('"', '\\"')
 
 def sofa_datafields_to_typehints(data_fields, mode="Sofa"):
     p = ""
@@ -139,11 +154,11 @@ def sofa_datafields_to_typehints(data_fields, mode="Sofa"):
         if len(name) == 0:
             continue
 
-        if " " in name:
+        if not name.isidentifier():
             continue
 
-        if name in reserved:
-            p += "    " + name + ": " + help + " (NB: use the kwargs syntax as name is a reserved word in python)\n\n"
+        if name in reserved or keyword.iskeyword(name):
+            p += "    # " + name + ": " + help + " (NB: use the kwargs syntax as name is a reserved word in python)\n\n"
         else:
             p += f"    {name}: Data[{type}] \n    '{help}'\n\n"
             p2 += f"        {name}: Optional[{type} | LinkPath] = None \n        '{help}'\n\n"
@@ -192,6 +207,8 @@ def wrapper_code(class_name, description, data_list, properties_doc,
                  constructor_params_typehints,
                  constructor_params_docs):
     properties_doc = ""
+    description = escape_docstring(description)
+    constructor_params_docs = escape_docstring(constructor_params_docs)
     return f"""    
 class {class_name}(Object):
     \"\"\"{description}\"\"\"
