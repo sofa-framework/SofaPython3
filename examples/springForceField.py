@@ -1,6 +1,6 @@
 import Sofa
 import SofaRuntime
-from Sofa import SofaDeformable
+import Sofa.Component.SolidMechanics.Spring
 
 
 def createScene(root):

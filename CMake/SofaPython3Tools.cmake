@@ -219,12 +219,15 @@ function(SP3_add_python_module)
 
     if (APPLE)
         # In MacOS, the target dependency name is RPATH/site-packages/PackageName, so we need to add
-        # an RPATH to the directory that contains "site-packages"
+        # an RPATH to the directory that contains "site-packages" (e.g. "../.." for site-packages/Sofa/Core.so,
+        # "../../../.." for site-packages/Sofa/Component/SolidMechanics/Spring.so)
+        file(RELATIVE_PATH from_target_to_python_root "${TARGET_LIBRARY_OUTPUT_DIRECTORY}" "${CMAKE_BINARY_DIR}/lib/${SP3_PYTHON_PACKAGES_DIRECTORY}/..")
+        file(TO_CMAKE_PATH "${from_target_to_python_root}" from_target_to_python_root)
         list(APPEND TARGET_DEPENDENCIES_RPATH
-            "$ORIGIN/../.."
-            "$$ORIGIN/../.."
-            "@loader_path/../.."
-            "@executable_path/../.."
+            "$ORIGIN/${from_target_to_python_root}"
+            "$$ORIGIN/${from_target_to_python_root}"
+            "@loader_path/${from_target_to_python_root}"
+            "@executable_path/${from_target_to_python_root}"
             )
     endif()
 
@@ -303,7 +306,7 @@ function(SP3_add_python_module)
 
     if (APPLE)
         set_target_properties(
-            ${PROJECT_NAME}
+            ${A_TARGET}
             PROPERTIES
             INSTALL_NAME_DIR "@rpath/${SP3_PYTHON_PACKAGES_DIRECTORY}/${DESTINATION}"
         )

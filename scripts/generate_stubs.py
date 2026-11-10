@@ -17,7 +17,7 @@ def main(site_package_dir,modules_name,use_pybind11 = False):
 
     #Generate stubs for components using the factory
     target_name="Sofa.Component"
-    generate_component_stubs(work_dir,target_name)
+    generate_component_stubs(work_dir, target_name, use_pybind11)
 
 
 

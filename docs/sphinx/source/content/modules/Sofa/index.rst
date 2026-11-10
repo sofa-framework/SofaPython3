@@ -50,7 +50,12 @@ Sofa
 .. autosummary::
    :template: autosummary/sub-modules.rst
 
-   SofaBaseTopology
-   SofaConstraintSolver
-   SofaDeformable
-   SofaGL   
+   Component.Constraint.Lagrangian.Solver
+   Component.IO.Mesh
+   Component.LinearSolver.Iterative
+   Component.LinearSystem
+   Component.SolidMechanics.FEM.Elastic
+   Component.SolidMechanics.Spring
+   Component.Topology.Container.Grid
+   FEM
+   GL

@@ -300,8 +300,56 @@ def load_component_list(target_name):
 
     return selected_entries
 
-def create_sofa_stubs(code_model, target_path):
+def find_bound_modules(target_name):
+    """Returns the compiled python binding modules found in the package target_name.
+
+    The bindings of a SOFA module (eg. Sofa.Component.SolidMechanics.Spring) are compiled into an extension
+    module with the same name (eg. Sofa/Component/SolidMechanics/Spring.<ext>).
+
+    Returns a dict {module name: set of the names it defines}.
+    """
+    import importlib
+    import importlib.machinery
+
+    root_package, _, sub_package = target_name.partition(".")
+    package = importlib.import_module(root_package)
+
+    bound_modules = {}
+    for package_dir in package.__path__:
+        search_dir = os.path.join(package_dir, *sub_package.split(".")) if sub_package else package_dir
+        for dirpath, _, filenames in os.walk(search_dir):
+            for filename in filenames:
+                suffix = next((s for s in importlib.machinery.EXTENSION_SUFFIXES if filename.endswith(s)), None)
+                if suffix is None:
+                    continue
+                relative_path = os.path.relpath(os.path.join(dirpath, filename[:-len(suffix)]), package_dir)
+                module_name = ".".join([root_package] + relative_path.split(os.sep))
+                try:
+                    bound_modules[module_name] = set(dir(importlib.import_module(module_name)))
+                except ImportError as e:
+                    print(f"Warning: cannot import the binding module '{module_name}': {e}")
+                    bound_modules[module_name] = set()
+    return bound_modules
+
+def bound_module_stub_header(module_name):
+    return f"""
+# Type hints for the components of {module_name} that have no dedicated python binding
+from Sofa.Core import Object, LinkPath
+from Sofa.Component.TypeHints import Data, Optional, SofaArray
+"""
+
+def create_sofa_stubs(code_model, target_path, bound_modules=None):
+    """Writes in target_path a python stub for each component of the code model.
+
+    Components of a SOFA module with no python binding get a stub module per component in a package named after
+    the SOFA module (eg. Sofa/Component/Mass/UniformMass.py).
+    When the SOFA module has a compiled python binding (see find_bound_modules), such a package would shadow it.
+    The stubs of its components without binding are then gathered in a .pyi file next to the binding
+    (eg. Sofa/Component/SolidMechanics/Spring.pyi), to be merged with the stubs of the binding itself.
+    """
     blacklist = ["RequiredPlugin"]
+    bound_modules = bound_modules or {}
+    bound_module_stubs = {}
 
     template_nodes = dict()
     not_created_objects = list()
@@ -343,6 +391,13 @@ def create_sofa_stubs(code_model, target_path):
                                 class_typehint, params_typehint, 
                                 arguments_list, constructor_params_doc)
 
+        if target in bound_modules:
+            if class_name in bound_modules[target]:
+                print(f"Skipping {object_name}: already bound in {target}")
+            else:
+                bound_module_stubs.setdefault(target, []).append(code)
+            continue
+
         pathname = target_path + target.replace(".","/") + "/"
         full_component_name = target + "." + class_name
 
@@ -358,7 +413,15 @@ def create_sofa_stubs(code_model, target_path):
         if full_component_name in code_model:
             raise Exception("Already existing entry")
 
-    # In every directory, scan the object that are in and generates an init.py file 
+    for module_name, codes in bound_module_stubs.items():
+        pathname = target_path + module_name.replace(".", "/") + ".pyi"
+        os.makedirs(os.path.dirname(pathname), exist_ok=True)
+        with open(pathname, "wt") as outfile:
+            outfile.write(bound_module_stub_header(module_name))
+            for code in codes:
+                outfile.write(code)
+
+    # In every directory, scan the object that are in and generates an init.py file
     make_all_init_files(target_path)
     return code_model
 
@@ -376,5 +439,5 @@ if __name__ == "__main__":
     print(f"Generating SOFA's components python interfaces for {target_name}")
 
     components = load_component_list(target_name)
-    create_sofa_stubs(components, output_directory)
+    create_sofa_stubs(components, output_directory, find_bound_modules(target_name))
     

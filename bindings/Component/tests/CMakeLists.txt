@@ -1,0 +1,57 @@
+project(Bindings.Component.Tests)
+
+set(SOURCE_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+)
+
+# Python test directories, one per bound SOFA module (same layout as the bindings)
+set(TEST_DIRECTORIES
+    Constraint/Lagrangian/Solver
+    LinearSolver/Iterative
+    SolidMechanics/Spring
+)
+
+set(PYTHON_FILES)
+foreach(test_dir ${TEST_DIRECTORIES})
+    file(GLOB test_dir_files "${CMAKE_CURRENT_SOURCE_DIR}/${test_dir}/*.py")
+    list(APPEND PYTHON_FILES ${test_dir_files})
+endforeach()
+
+find_package(Sofa.Testing REQUIRED)
+
+enable_testing()
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${PYTHON_FILES})
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaPython3Testing)
+target_compile_definitions(${PROJECT_NAME} PRIVATE "PYTHON_TESTFILES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\"")
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "Bindings/Tests")
+
+# This will set rpaths relative to all SOFA core AND relocatable dependencies
+sofa_auto_set_target_rpath(
+    TARGETS ${PROJECT_NAME}
+    RELOCATABLE "plugins"
+)
+
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
+
+get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+foreach(test_dir ${TEST_DIRECTORIES})
+    string(REPLACE "/" "." binding_target "Bindings.Component.${test_dir}")
+    if (NOT TARGET ${binding_target})
+        continue()
+    endif()
+    if (_isMultiConfig) # MSVC
+        foreach(config_type ${CMAKE_CONFIGURATION_TYPES})
+            SP3_configure_directory(${CMAKE_CURRENT_SOURCE_DIR}/${test_dir} ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/${config_type}/${PROJECT_NAME}.d/${test_dir})
+            install(DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/${config_type}/${PROJECT_NAME}.d/${test_dir}/ DESTINATION ${RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.d/${test_dir})
+        endforeach()
+    else()
+        SP3_configure_directory(${CMAKE_CURRENT_SOURCE_DIR}/${test_dir} ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.d/${test_dir})
+        install(DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.d/${test_dir}/ DESTINATION ${RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.d/${test_dir})
+    endif()
+endforeach()
+
+install(
+        TARGETS ${PROJECT_NAME}
+        EXPORT BindingsTargets
+        RUNTIME DESTINATION ${RUNTIME_OUTPUT_DIRECTORY}
+)

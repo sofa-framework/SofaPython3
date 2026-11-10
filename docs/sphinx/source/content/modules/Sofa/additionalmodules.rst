@@ -6,7 +6,12 @@ Additional modules
    :template: autosummary/sub-modules.rst
    :recursive:
 
-   Sofa.SofaBaseTopology
-   Sofa.SofaConstraintSolver
-   Sofa.SofaDeformable
-   Sofa.SofaGL   
+   Sofa.Component.Constraint.Lagrangian.Solver
+   Sofa.Component.IO.Mesh
+   Sofa.Component.LinearSolver.Iterative
+   Sofa.Component.LinearSystem
+   Sofa.Component.SolidMechanics.FEM.Elastic
+   Sofa.Component.SolidMechanics.Spring
+   Sofa.Component.Topology.Container.Grid
+   Sofa.FEM
+   Sofa.GL

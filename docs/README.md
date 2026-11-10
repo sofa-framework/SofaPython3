@@ -40,7 +40,11 @@ Go inside the `SofaPython3/docs` directory and run
 ```shell
 pybind11-stubgen -o sphinx-stubs --no-setup-py --ignore-invalid=signature --root-module-suffix="" SofaRuntime
 pybind11-stubgen -o sphinx-stubs --no-setup-py --ignore-invalid=signature --root-module-suffix="" Sofa
-pybind11-stubgen -o sphinx-stubs --no-setup-py --ignore-invalid=signature --root-module-suffix="" SofaExporter
+for module in Sofa.FEM Sofa.GL Sofa.Component.IO.Mesh Sofa.Component.Topology.Container.Grid Sofa.Component.LinearSystem \
+              Sofa.Component.LinearSolver.Iterative Sofa.Component.Constraint.Lagrangian.Solver \
+              Sofa.Component.SolidMechanics.Spring Sofa.Component.SolidMechanics.FEM.Elastic; do
+    pybind11-stubgen -o sphinx-stubs --no-setup-py --ignore-invalid=signature --root-module-suffix="" $module
+done
 pybind11-stubgen -o sphinx-stubs --no-setup-py --ignore-invalid=signature --root-module-suffix="" SofaTypes
 pybind11-stubgen -o sphinx-stubs --no-setup-py --ignore-invalid=signature --root-module-suffix="" splib
 ```
