@@ -49,7 +49,7 @@ void moduleAddLinearSpring(pybind11::module& m) {
                    py::arg("index2"),
                    py::arg("springStiffness") = 100,
                    py::arg("dampingFactor") = 5,
-                   py::arg("restLength"),
+                   py::arg("restLength") = 0,
                    py::arg("elongationOnly") = false,
                    py::arg("enabled") = true,
                    sofapython3::doc::solidmechanics::spring::LinearSpringInit);
