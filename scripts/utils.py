@@ -78,6 +78,46 @@ class noOverrideFilter:
                 returnList.append(obj)
         return returnList
 
+# pybind11-stubgen can write imports (e.g. 'import Sofa.Core') before 'from __future__ import annotations',
+# which is a SyntaxError: move the __future__ imports right after the module docstring.
+def fix_future_imports(stub_path):
+    import io
+    import tokenize
+
+    with open(stub_path, encoding="utf-8") as f:
+        source = f.read()
+    lines = source.splitlines(keepends=True)
+
+    # index of the first line after the module docstring (0 if there is none)
+    insert_at = 0
+    try:
+        for token in tokenize.generate_tokens(io.StringIO(source).readline):
+            if token.type in (tokenize.ENCODING, tokenize.NL, tokenize.NEWLINE, tokenize.COMMENT):
+                continue
+            if token.type == tokenize.STRING:
+                insert_at = token.end[0]
+            break
+    except (tokenize.TokenError, SyntaxError):
+        return
+
+    future_lines = [i for i, line in enumerate(lines)
+                    if i >= insert_at and line.startswith("from __future__ import")]
+    if not future_lines:
+        return
+
+    future = [line if line.endswith("\n") else line + "\n" for i, line in enumerate(lines) if i in future_lines]
+    others = [line for i, line in enumerate(lines) if i not in future_lines]
+    fixed = "".join(others[:insert_at] + future + others[insert_at:])
+    if fixed != source:
+        with open(stub_path, "w", encoding="utf-8") as f:
+            f.write(fixed)
+
+def fix_stubs_in_directory(directory):
+    for root, _, files in os.walk(directory):
+        for file in files:
+            if file.endswith(".pyi"):
+                fix_future_imports(os.path.join(root, file))
+
 #Generate stubs using either pybind11-stubgen or mypy version of stubgen
 def generate_module_stubs(module_name, work_dir, usePybind11_stubgen = False):
     print(f"Generating stubgen for {module_name} in {work_dir}")
@@ -91,6 +131,8 @@ def generate_module_stubs(module_name, work_dir, usePybind11_stubgen = False):
         #Use mypy stubgen
         options = parse_options(["-v","-p",module_name,"--include-docstrings","--no-analysis", "--ignore-errors"])
         generate_stubs(options)
+
+    fix_stubs_in_directory("out")
 
     module_path = os.path.join(*module_name.split("."))
     module_out_dir = os.path.join("out", module_path)
