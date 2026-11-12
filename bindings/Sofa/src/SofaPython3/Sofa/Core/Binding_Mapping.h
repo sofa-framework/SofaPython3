@@ -50,7 +50,11 @@ public:
     std::string getClassName() const override;
 
     void apply( const MechanicalParams* mparams, OutDataVecCoord& out, const InDataVecCoord& in) override;
-    void applyJ( const MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in) override;
+    void doApplyJacobianVectorProduct(
+        const MechanicalParams* mparams,
+        OutDataVecDeriv& tangentOut,
+        const InDataVecDeriv& tangentIn,
+        const InDataVecCoord& positionIn) override;
     void applyJT( const MechanicalParams* mparams, InDataVecDeriv& out, const OutDataVecDeriv& in) override;
     void applyJT( const ConstraintParams* mparams, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in) override;
 

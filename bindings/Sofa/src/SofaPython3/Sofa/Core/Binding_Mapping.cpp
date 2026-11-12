@@ -96,8 +96,13 @@ namespace sofapython3
                                PythonFactory::toPython(&out), PythonFactory::toPython(&in));
     }
 
-    template<class In, class Out>
-    void Mapping_Trampoline<In, Out>::applyJ( const MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in){
+    template <class In, class Out>
+    void Mapping_Trampoline<In, Out>::doApplyJacobianVectorProduct(
+        const MechanicalParams *mparams, OutDataVecDeriv &tangentOut,
+        const InDataVecDeriv &tangentIn, const InDataVecCoord &positionIn) {
+
+        SOFA_UNUSED(positionIn);
+
         PythonEnvironment::gil acquire;
 
         // pass bFactor, kFactor, energy
@@ -109,7 +114,7 @@ namespace sofapython3
                                "energy"_a=mparams->energy());
 
         PYBIND11_OVERLOAD_PURE(void, Inherit1, applyJ, mp,
-                               PythonFactory::toPython(&out), PythonFactory::toPython(&in));
+                               PythonFactory::toPython(&tangentOut), PythonFactory::toPython(&tangentIn));
     }
 
     template<class In, class Out>
