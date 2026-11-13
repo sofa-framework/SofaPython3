@@ -66,6 +66,8 @@ const std::string& getPrefixText(sofa::helper::logging::Message::Type type)
     case sofa::helper::logging::Message::TypeCount:
         return nothing;
     }
+
+    return nothing;
 }
 
 }
