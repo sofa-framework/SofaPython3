@@ -27,8 +27,8 @@
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/PythonFactory.h>
 
-#include <algorithm>
 #include <string>
+#include <vector>
 
 namespace sofapython3
 {
@@ -43,16 +43,29 @@ void bindCorotationalFEMForceField(py::module& m, const std::string& elementName
     py::class_<ForceField, sofa::core::behavior::ForceField<DataTypes>, py_shared_ptr<ForceField>> f(
         m, pyclassName.c_str(), py::multiple_inheritance());
 
-    f.def("getElementRotations", [](const ForceField& self)
+    f.def("getElementRotations", [pyclassName](py::object pySelf)
     {
+        if (!py::isinstance<ForceField>(pySelf))
+            throw py::type_error("getElementRotations: argument is not a " + pyclassName);
+        const auto& self = pySelf.cast<const ForceField&>();
+
         constexpr py::ssize_t dim = DataTypes::spatial_dimensions;
         const auto& rotations = self.getElementRotations();
-        py::array_t<SReal> result({static_cast<py::ssize_t>(rotations.size()), dim, dim});
-        SReal* out = result.mutable_data();
-        for (const auto& rotation : rotations)
-            out = std::copy_n(rotation.ptr(), dim * dim, out);
-        return result;
-    }, "Rotation of every element, as last computed: shape (nb_elements, spatial_dimension, spatial_dimension).");
+        const py::ssize_t nbElements = static_cast<py::ssize_t>(rotations.size());
+        const std::vector<py::ssize_t> shape { nbElements, dim, dim };
+
+        constexpr py::ssize_t bytesToNextValue = sizeof(SReal);
+        constexpr py::ssize_t bytesToNextRow = dim * bytesToNextValue;
+        constexpr py::ssize_t bytesToNextMatrix = dim * bytesToNextRow;
+        const std::vector<py::ssize_t> strides { bytesToNextMatrix, bytesToNextRow, bytesToNextValue };
+
+        const SReal* ptrToStart = rotations.empty() ? nullptr : rotations.front().ptr();
+
+        py::array_t<SReal> rotations_view(shape, strides, ptrToStart, pySelf);
+        rotations_view.attr("flags").attr("writeable") = false; // due to getElementRotations constness
+        return rotations_view;
+    }, "Read-only view on the rotation of every element, as last computed: shape (nb_elements, spatial_dimension, spatial_dimension). "
+       "Topological changes invalidate the view.");
 
     PythonFactory::registerType<ForceField>([](sofa::core::objectmodel::Base* object)
     {
