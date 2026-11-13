@@ -3,21 +3,15 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-set(SP3_WITH_SOFAEXPORTER @SP3_WITH_SOFAEXPORTER@)
-
 find_package(Sofa.Config QUIET REQUIRED)
 
 sofa_find_package(SofaPython3 QUIET REQUIRED COMPONENTS
-    Bindings.Modules
+    Bindings.Component
     Bindings.Sofa
     Bindings.SofaGui
     Bindings.SofaRuntime
     Bindings.SofaTypes
     )
-if(SP3_WITH_SOFAEXPORTER)
-    sofa_find_package(SofaPython3 QUIET REQUIRED COMPONENTS Bindings.SofaExporter)
-endif()
-
 # If we are importing this config file and the target is not yet there this is indicating that
 # target is an imported one. So we include it
 if(NOT TARGET @PROJECT_NAME@)

@@ -1,5 +1,5 @@
 import Sofa
-import Sofa.SofaDeformable
+import Sofa.Component.SolidMechanics.FEM.Elastic
 
 from Sofa.Units.Definitions import s, m, cm, N, g, kg, MPa
 from Sofa.Units.UnitSystem import MechanicalUnitSystem
@@ -44,7 +44,7 @@ def createScene(root_node):
 
         young_modulus = scene_unit(0.5, MPa)
         poisson_ratio = 0.45
-        lame_parameters = Sofa.SofaDeformable.toLameParameters3D(young_modulus, poisson_ratio)
+        lame_parameters = Sofa.Component.SolidMechanics.FEM.Elastic.toLameParameters3D(young_modulus, poisson_ratio)
         tetra.addObject('TetrahedronHyperelasticityFEMForceField', name="FEM", topology="@Tetra_topo",
                         ParameterSet=lame_parameters, materialName="StVenantKirchhoff")
 

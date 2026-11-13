@@ -21,6 +21,15 @@ sofa_find_package(Sofa.SimpleApi QUIET REQUIRED)
 # Required by Bindings.Sofa.Simulation
 sofa_find_package(Sofa.Simulation.Graph QUIET REQUIRED)
 
+# Optional framework modules bound by Bindings.Sofa.FEM and Bindings.Sofa.GL
+set(SP3_BINDINGS_SOFA_MODULES "@SOFABINDINGS_MODULE_LIST@")
+if("FEM" IN_LIST SP3_BINDINGS_SOFA_MODULES)
+    sofa_find_package(Sofa.FEM QUIET REQUIRED)
+endif()
+if("GL" IN_LIST SP3_BINDINGS_SOFA_MODULES)
+    sofa_find_package(Sofa.GL QUIET REQUIRED)
+endif()
+
 # If we are importing this config file and the target is not yet there this is indicating that
 # target is an imported one. So we include it
 if(NOT TARGET @PROJECT_NAME@)
