@@ -114,6 +114,21 @@ PYBIND11_MODULE(SofaRuntime, m) {
         return simpleapi::importPlugin(name);
     }, "import a sofa plugin into the current environment");
 
+    m.def("findPlugin", [](const std::string& name)
+    {
+        auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
+        return pluginManager.findPlugin(name);
+    }, py::arg("name"),
+    "Search the plugin repository for the library of the plugin with the given name, without loading it.\n"
+    "Returns the path to the plugin library if found, an empty string otherwise.");
+
+    m.def("isPluginLoaded", [](const std::string& name)
+    {
+        auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
+        return pluginManager.pluginIsLoaded(name);
+    }, py::arg("name"),
+    "Returns True if the plugin with the given name (or path) is already loaded, False otherwise.");
+
     m.def("unload_plugin", [](const std::string& name)
     {
         auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
