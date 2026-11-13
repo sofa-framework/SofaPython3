@@ -2,6 +2,7 @@ project(Bindings.Modules.SofaDeformable)
 
 set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_CauchyStress.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_CorotationalFEMForceField.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LameParameters.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinearSpring.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_SpringForceField.cpp
@@ -10,6 +11,7 @@ set(SOURCE_FILES
 
 set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_CauchyStress.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Binding_CorotationalFEMForceField.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LameParameters.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinearSpring.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Binding_LinearSpring_doc.h
