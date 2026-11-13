@@ -48,6 +48,11 @@ CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAEXPORTER "Bind the SOFA exporter component."
 sofa_find_package(Sofa.GUI.Common QUIET)
 CMAKE_DEPENDENT_OPTION(SP3_WITH_SOFAGUI "Bind the SOFA gui component." ON "Sofa.GUI.Common_FOUND" OFF)
 
+option(SP3_ENABLE_LINK_TIME_OPTIMIZATION "Enable link-time optimization of the python modules (ignored in Debug and RelWithDebInfo builds)." OFF)
+string(TOUPPER "${CMAKE_BUILD_TYPE}" SP3_BUILD_TYPE_UPPER)
+if(SP3_ENABLE_LINK_TIME_OPTIMIZATION AND SP3_BUILD_TYPE_UPPER MATCHES "^(DEBUG|RELWITHDEBINFO)$")
+    message(WARNING "SP3_ENABLE_LINK_TIME_OPTIMIZATION is ON but has no effect: pybind11 does not enable link-time optimization in ${CMAKE_BUILD_TYPE} builds.")
+endif()
 
 # BUILD OPTIONS
 if (NOT SP3_COMPILED_AS_SUBPROJECT)
