@@ -212,7 +212,7 @@ void moduleAddDrawTool(py::module &m)
         sofa::type::Vec3 csize {size[0],size[1],size[2]};
         for(unsigned int i=0;i<cpoints.size();i++)
         {
-            self->drawFrame(cpoints[i], corientations[i], csize);
+            self->drawFrame(cpoints[i], corientations[i], sofa::type::Vec3f(size[0],size[1],size[2]));
         }
     }, sofapython3::doc::drawtool::drawFrames);
     dt.def("drawFrames", [](DrawTool* self, BaseData* dpositions, std::array<double, 3>& size ){
@@ -226,7 +226,7 @@ void moduleAddDrawTool(py::module &m)
         for(auto& position : positions->getValue())
         {
             self->drawFrame(Rigid3Types::getCPos(position),
-                            Rigid3Types::getCRot(position), csize);
+                            Rigid3Types::getCRot(position), sofa::type::Vec3f(size[0],size[1],size[2]));
         }
     });
 
