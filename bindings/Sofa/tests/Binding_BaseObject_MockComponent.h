@@ -21,6 +21,7 @@
 #pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/data/Data[Eigen].h>
 
 
 
@@ -30,6 +31,12 @@ class Binding_BaseObject_MockComponent : public sofa::core::objectmodel::BaseObj
 public:
 SOFA_CLASS(Binding_BaseObject_MockComponent, sofa::core::objectmodel::BaseObject);
         sofa::core::objectmodel::Data <std::string> d_test;
+
+        /// Eigen matrices used to test the python bindings (see Core/EigenData.py)
+        sofa::core::objectmodel::Data<Eigen::MatrixXf> d_matrixXf;
+        sofa::core::objectmodel::Data<Eigen::MatrixXd> d_matrixXd;
+        sofa::core::objectmodel::Data<Eigen::Matrix3d> d_matrix3d;
+        sofa::core::objectmodel::Data<Eigen::MatrixXi> d_matrixXi;
 
         Binding_BaseObject_MockComponent ();
         virtual ~Binding_BaseObject_MockComponent () override;
