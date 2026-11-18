@@ -77,6 +77,9 @@ using sofa::simulation::SaveSnapshotVisitor;
 #include <sofa/simulation/LoadSnapshotVisitor.h>
 using sofa::simulation::LoadSnapshotVisitor;
 
+#include <sofa/simulation/SnapshotManager.h>
+using sofa::simulation::SnapshotManager;
+
 #include <queue>
 #include <sofa/core/objectmodel/Link.h>
 
@@ -681,6 +684,26 @@ void executeLoadSnapshotVisitor(Node* self, Snapshot& snapshot)
     self->execute(visitor);
 }
 
+void executeMemorySave(Node* self, BaseComponent& object)
+{
+    auto* manager = dynamic_cast<SnapshotManager*>(&object);
+
+    if (manager)
+        manager->memorySave();
+    else
+        throw py::type_error("Expected a SnapshotManager");
+}
+
+void executeMemoryLoad(BaseComponent& object)
+{
+    auto* manager = dynamic_cast<SnapshotManager*>(&object);
+
+    if (manager)
+        manager->memoryLoad();
+    else
+        throw py::type_error("Expected a SnapshotManager");
+}
+
 py::object computeEnergy(Node* self)
 {
     sofa::simulation::mechanicalvisitor::MechanicalComputeEnergyVisitor energyVisitor(sofa::core::mechanicalparams::defaultInstance());
@@ -748,6 +771,8 @@ void moduleAddNode(py::module &m) {
     p.def("computeEnergy", &computeEnergy, sofapython3::doc::sofa::core::Node::computeEnergy);
     p.def("executeSaveSnapshotVisitor", &executeSaveSnapshotVisitor);
     p.def("executeLoadSnapshotVisitor", &executeLoadSnapshotVisitor);
+    p.def("executeMemorySave", &executeMemorySave);
+    p.def("executeMemoryLoad", &executeMemoryLoad);
 
     p.def("__enter__", [](py::object self)
     {
