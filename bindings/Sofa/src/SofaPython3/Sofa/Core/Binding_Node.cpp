@@ -69,17 +69,13 @@ using sofapython3::PythonEnvironment;
 
 using sofa::core::objectmodel::BaseObjectDescription;
 
-#include <sofa/core/objectmodel/Snapshot.h>
-using sofa::core::objectmodel::Snapshot;
+#include <SofaPython3/Sofa/Core/Binding_Snapshot.h>
 
 #include <sofa/simulation/SaveSnapshotVisitor.h>
 using sofa::simulation::SaveSnapshotVisitor;
 
 #include <sofa/simulation/LoadSnapshotVisitor.h>
 using sofa::simulation::LoadSnapshotVisitor;
-
-#include <SofaPython3/Sofa/Core/Binding_Snapshot.h>
-using sofapython3::Snapshot_Python;
 
 #include <queue>
 #include <sofa/core/objectmodel/Link.h>
@@ -673,18 +669,15 @@ void sendEvent(Node* self, py::object pyUserData, char* eventName)
     self->propagateEvent(sofa::core::execparams::defaultInstance(), &event);
 }
 
-void executeSaveSnapshotVisitor(Node* self, Snapshot_Python& snapshot)
+void executeSaveSnapshotVisitor(Node* self, Snapshot& snapshot)
 {
-    auto m_snapshot = std::make_shared<sofa::core::objectmodel::Snapshot>();
-    auto visitor = SaveSnapshotVisitor(nullptr,*m_snapshot);
+    auto visitor = SaveSnapshotVisitor(nullptr,snapshot);
     self->execute(visitor);
-    snapshot.push_back(m_snapshot);
 }
 
-void executeLoadSnapshotVisitor(Node* self, Snapshot_Python& snapshot, sofa::Index index)
+void executeLoadSnapshotVisitor(Node* self, Snapshot& snapshot)
 {
-    auto m_loadedsnapshot = std::make_shared<sofa::core::objectmodel::Snapshot>();
-    auto visitor = LoadSnapshotVisitor(nullptr,*snapshot.m_snapshots[index]);
+    auto visitor = LoadSnapshotVisitor(nullptr,snapshot);
     self->execute(visitor);
 }
 

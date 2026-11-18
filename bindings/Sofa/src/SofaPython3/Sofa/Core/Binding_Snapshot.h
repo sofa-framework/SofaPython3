@@ -25,23 +25,6 @@
 using sofa::core::objectmodel::Snapshot;
 
 namespace sofapython3 {
-class Snapshot_Python
-{
-public :
-    std::vector<std::shared_ptr<Snapshot>> m_snapshots;
-
-    Snapshot_Python() = default;
-    ~Snapshot_Python() = default;
-
-    void push_back(const std::shared_ptr<Snapshot>& snapshot) {
-        m_snapshots.push_back(snapshot);
-    }
-
-    int getNumberOfSnapshot() const {
-        return m_snapshots.size();
-    }
-
-};
 
 void moduleAddSnapshot(pybind11::module &m);
 
