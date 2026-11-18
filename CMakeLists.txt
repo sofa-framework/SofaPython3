@@ -194,6 +194,13 @@ SP3_add_python_package(
         Sofa/constants
 )
 
+SP3_add_python_package(
+    SOURCE_DIRECTORY
+        ${CMAKE_CURRENT_SOURCE_DIR}/materials
+    TARGET_DIRECTORY
+        materials
+)
+
 ## This is only to warn users that splib is now relocated in its own repository
 # it just contains a __init__.py rising an exception indicating to where to find the plugin.
 # If splib is available, then splib/__init__.py will be overriden by the one from the real splib.
