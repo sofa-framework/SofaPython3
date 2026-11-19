@@ -179,9 +179,9 @@ py::module addSubmoduleTimer(py::module &m)
        )doc";
 
     timer.def("clear", AdvancedTimer::clear, doc::Timer::clear);
-    timer.def("isEnabled", [](const std::string & name) {AdvancedTimer::isEnabled(name);}, py::arg("id"), doc::Timer::isEnabled);
+    timer.def("isEnabled", [](const std::string & name) {return AdvancedTimer::isEnabled(name);}, py::arg("id"), doc::Timer::isEnabled);
     timer.def("setEnabled", [](const std::string & n, bool e) {AdvancedTimer::setEnabled(n, e);}, py::arg("name"), py::arg("enabled"), doc::Timer::setEnabled);
-    timer.def("getInterval", [](const std::string & name) {AdvancedTimer::getInterval(name);}, py::arg("id"), doc::Timer::getInterval);
+    timer.def("getInterval", [](const std::string & name) {return AdvancedTimer::getInterval(name);}, py::arg("id"), doc::Timer::getInterval);
     timer.def("setInterval", [](const std::string & name, unsigned int interval) {AdvancedTimer::setInterval(name, interval);}, py::arg("id"), py::arg("interval"), doc::Timer::setInterval);
 
     timer.def("begin", [](const std::string& id){ AdvancedTimer::begin(id);}, py::arg("id"));
