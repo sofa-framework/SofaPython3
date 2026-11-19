@@ -43,6 +43,7 @@ using sofa::helper::logging::Message;
 #include <SofaPython3/Sofa/Core/Binding_NodeIterator.h>
 #include <SofaPython3/Sofa/Core/Binding_Prefab.h>
 #include <SofaPython3/Sofa/Core/Binding_BaseLink.h>
+#include <SofaPython3/Sofa/Core/Binding_Snapshot.h>
 #include <SofaPython3/Sofa/Core/Binding_PointSetTopologyModifier.h>
 #include <SofaPython3/Sofa/Core/Binding_PythonScriptEvent.h>
 #include <SofaPython3/Sofa/Core/Binding_Topology.h>
@@ -157,6 +158,7 @@ PYBIND11_MODULE(Core, core)
     moduleAddBaseMeshTopology(core);
     moduleAddPointSetTopologyModifier(core);
     moduleAddTaskScheduler(core);
+    moduleAddSnapshot(core);
     moduleAddVisualParams(core);
 
     // called when the module is unloaded
