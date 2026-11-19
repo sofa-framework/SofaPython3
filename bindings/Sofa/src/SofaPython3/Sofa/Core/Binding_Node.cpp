@@ -20,6 +20,7 @@
 /// Neede to have automatic conversion from pybind types to stl container.
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
+#include <iostream>
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeEnergyVisitor.h>
@@ -67,6 +68,14 @@ using sofapython3::PythonEnvironment;
 #include <SofaPython3/SpellingSuggestionHelper.h>
 
 using sofa::core::objectmodel::BaseObjectDescription;
+
+#include <SofaPython3/Sofa/Core/Binding_Snapshot.h>
+
+#include <sofa/simulation/SaveSnapshotVisitor.h>
+using sofa::simulation::SaveSnapshotVisitor;
+
+#include <sofa/simulation/LoadSnapshotVisitor.h>
+using sofa::simulation::LoadSnapshotVisitor;
 
 #include <queue>
 #include <sofa/core/objectmodel/Link.h>
@@ -660,6 +669,18 @@ void sendEvent(Node* self, py::object pyUserData, char* eventName)
     self->propagateEvent(sofa::core::execparams::defaultInstance(), &event);
 }
 
+void executeSaveSnapshotVisitor(Node* self, Snapshot& snapshot)
+{
+    auto visitor = SaveSnapshotVisitor(nullptr,snapshot);
+    self->execute(visitor);
+}
+
+void executeLoadSnapshotVisitor(Node* self, Snapshot& snapshot)
+{
+    auto visitor = LoadSnapshotVisitor(nullptr,snapshot);
+    self->execute(visitor);
+}
+
 py::object computeEnergy(Node* self)
 {
     sofa::simulation::mechanicalvisitor::MechanicalComputeEnergyVisitor energyVisitor(sofa::core::mechanicalparams::defaultInstance());
@@ -725,6 +746,8 @@ void moduleAddNode(py::module &m) {
     p.def("getMechanicalMapping", &getMechanicalMapping, sofapython3::doc::sofa::core::Node::getMechanicalMapping);
     p.def("sendEvent", &sendEvent, sofapython3::doc::sofa::core::Node::sendEvent);
     p.def("computeEnergy", &computeEnergy, sofapython3::doc::sofa::core::Node::computeEnergy);
+    p.def("executeSaveSnapshotVisitor", &executeSaveSnapshotVisitor);
+    p.def("executeLoadSnapshotVisitor", &executeLoadSnapshotVisitor);
 
     p.def("__enter__", [](py::object self)
     {
