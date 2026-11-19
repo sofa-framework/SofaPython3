@@ -50,8 +50,13 @@ public:
     pybind11::object _addKToMatrix(const sofa::core::MechanicalParams* mparams, int nNodes, int nDofs);
     void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* dfId) override;
 
+    void buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override;
+
     SReal getPotentialEnergy(const sofa::core::MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/) const override { return 0.0; }
 
+private:
+
+    pybind11::object _buildStiffnessMatrix(int nIndices, int nDofs);
 };
 
 void moduleAddForceField(pybind11::module &m);

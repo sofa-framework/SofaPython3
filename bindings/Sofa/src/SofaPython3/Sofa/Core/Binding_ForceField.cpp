@@ -30,6 +30,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/DefaultMultiMatrixAccessor.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 
 #include <pybind11/eigen.h>
 
@@ -136,7 +137,7 @@ namespace sofapython3
     void ForceField_Trampoline<TDOFType>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* dfId)
     {
         PythonEnvironment::gil acquire;
-        
+
         MultiMatrixAccessor::MatrixRef mref = dfId->getMatrix(this->mstate);
         sofa::linearalgebra::BaseMatrix* mat = mref.matrix;
 
@@ -183,8 +184,74 @@ namespace sofapython3
 
     }
 
-
     template<class TDOFType>
+    py::object ForceField_Trampoline<TDOFType>::_buildStiffnessMatrix(int nIndices, int nDofs)
+    {
+        PYBIND11_OVERRIDE_PURE(py::object, ForceField<TDOFType>, buildStiffnessMatrix, nIndices, nDofs);
+    }
+
+    template <class TDOFType>
+    void ForceField_Trampoline<TDOFType>::buildStiffnessMatrix(
+        sofa::core::behavior::StiffnessMatrix *matrix)
+    {
+        PythonEnvironment::gil acquire;
+
+        // nNodes is the number of nodes (positions) of the object whose K matrix we're computing
+        const int nNodes = static_cast<int>(this->mstate->getSize());
+        // nDofs is the number of degrees of freedom per-element of the object whose K matrix we're computing
+        static constexpr int nDofs = Coord::total_size;
+
+        if (py::get_overload(this, "addKToMatrix")
+            && !py::get_overload(this, "buildStiffnessMatrix"))
+        {
+            msg_deprecated_once() << "The method `addKToMatrix` is deprecated. Please use `buildStiffnessMatrix` instead.";
+
+            // Runs the compatibility layer with `addKToMatrix`
+            ForceField<TDOFType>::buildStiffnessMatrix(matrix);
+            return;
+        }
+
+        py::object ret = _buildStiffnessMatrix(nNodes, nDofs);
+
+        if(!py::isinstance<py::array>(ret))
+        {
+            throw py::type_error("Can't read return value of `buildStiffnessMatrix`. A numpy array is expected");
+        }
+
+        auto dfdx =
+            matrix->getForceDerivativeIn(this->mstate)
+            .withRespectToPositionsIn(this->mstate);
+
+        // if ret is numpy array
+        auto r = py::cast<py::array>(ret);
+        if (r.ndim() == 3 && r.shape(2) == 1)
+        {
+            // read K as a plain 2D matrix
+            auto kMatrix = r.unchecked<double, 3>();
+            for (size_t x = 0 ; x < size_t(kMatrix.shape(0)) ; ++x)
+            {
+                for (size_t y = 0 ; y < size_t(kMatrix.shape(1)) ; ++y)
+                {
+                    dfdx(x, y) += kMatrix(x,y, 0);
+                }
+            }
+        }
+        else if (r.ndim() == 2 && r.shape(1) == 3)
+        {
+            // consider ret to be a list of tuples [(i,j,[val])]
+            auto kMatrix = r.unchecked<double, 2>();
+            for (auto x = 0 ; x < kMatrix.shape(0) ; ++x)
+            {
+                dfdx(int(size_t(kMatrix(x,0))), int(size_t(kMatrix(x,1)))) += kMatrix(x,2);
+            }
+        }
+        else
+        {
+            throw py::type_error("Can't read return value of `buildStiffnessMatrix`. The method should return either a plain 2D matrix or a vector of tuples (i, j, val)");
+        }
+    }
+
+    template <class TDOFType>
     void declare_forcefield(py::module &m) {
         const std::string pyclass_name = std::string("ForceField") + TDOFType::Name();
         py::class_<ForceField<TDOFType>, BaseComponent, ForceField_Trampoline<TDOFType>, py_shared_ptr<ForceField<TDOFType>>> f(m, pyclass_name.c_str(), py::dynamic_attr(), py::multiple_inheritance(), sofapython3::doc::forceField::forceFieldClass);
