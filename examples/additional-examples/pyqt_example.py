@@ -1,7 +1,7 @@
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 from qtpy.QtOpenGL import *
-import Sofa.SofaGL
+import Sofa.GL
 import Sofa
 import SofaRuntime
 import Sofa.Simulation as sim
@@ -55,7 +55,7 @@ class glSofaWidget(QGLWidget):
         glEnable(GL_LIGHTING)
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LESS)
-        Sofa.SofaGL.glewInit()
+        Sofa.GL.glewInit()
         Sofa.Simulation.initVisual(self.visuals_node)
         Sofa.Simulation.initTextures(self.visuals_node)
         glMatrixMode(GL_PROJECTION)
@@ -76,7 +76,7 @@ class glSofaWidget(QGLWidget):
         cameraMVM = self.visuals_node.camera.getOpenGLModelViewMatrix()
         glMultMatrixd(cameraMVM)
 
-        Sofa.SofaGL.draw(self.visuals_node)
+        Sofa.GL.draw(self.visuals_node)
 
     def get_depth_image(self):
         _, _, width, height = glGetIntegerv(GL_VIEWPORT)

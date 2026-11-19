@@ -1,7 +1,7 @@
 ﻿# Required import for python
 import Sofa
 import SofaRuntime
-from Sofa import SofaConstraintSolver
+import Sofa.Component.Constraint.Lagrangian.Solver
 import numpy as np
 
 

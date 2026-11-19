@@ -7,6 +7,20 @@ set(SOFABINDINGS_MODULE_LIST
     Types
     )
 
+# Optional framework modules
+sofa_find_package(Sofa.FEM QUIET)
+if(Sofa.FEM_FOUND)
+    list(APPEND SOFABINDINGS_MODULE_LIST FEM)
+else()
+    message(STATUS "Sofa.FEM not found: python bindings Sofa.FEM will not be compiled.")
+endif()
+sofa_find_package(Sofa.GL QUIET)
+if(Sofa.GL_FOUND)
+    list(APPEND SOFABINDINGS_MODULE_LIST GL)
+else()
+    message(STATUS "Sofa.GL not found: python bindings Sofa.GL will not be compiled.")
+endif()
+
 foreach(sofabindings_module ${SOFABINDINGS_MODULE_LIST})
 	add_subdirectory(src/SofaPython3/Sofa/${sofabindings_module})
 endforeach()

@@ -1,6 +1,6 @@
 """Solves a linear elastic problem with a prescribed load on the RHS. The load
 is assembled from a manufactured body-force density. The assembly is done by
-integrating the density using quadrature information provided by the SofaFEM
+integrating the density using quadrature information provided by the Sofa.FEM
 quadrature bindings.
 
 The resulting displacement should match the manufactured solution:
@@ -16,7 +16,7 @@ Red & Green: solved using a load assembled with quadrature order 1 & 2, respecti
 import numpy as np
 import Sofa
 import Sofa.Core
-from Sofa import SofaFEM
+from Sofa import FEM
 
 AMPLITUDE = 0.03
 WAVENUMBER = 2 * np.pi
@@ -42,8 +42,8 @@ def assemble_nodal_force(node_coordinates, node_indices, quadrature_degree, noda
     F_a = sum_q w_q * measure_q * N_a(q) * r(q), with r(q) = sum_a N_a(q) * density_a"""
 
     # First get the quadrature data and mapping information for the corresponding topological element
-    weights, shape_functions, reference_gradients = SofaFEM.quadrature_data("Triangle", 2, quadrature_degree)
-    _, measures = SofaFEM.element_mapping_batch("Triangle", node_coordinates, node_indices, reference_gradients)
+    weights, shape_functions, reference_gradients = FEM.quadrature_data("Triangle", 2, quadrature_degree)
+    _, measures = FEM.element_mapping_batch("Triangle", node_coordinates, node_indices, reference_gradients)
 
     element_density = nodal_density[node_indices]  # density at each element's local nodes, (E, nbNodes, dof)
     nb_nodes_per_element = node_indices.shape[1]

@@ -1,5 +1,5 @@
 import Sofa
-import Sofa.SofaGL
+import Sofa.GL
 import SofaRuntime
 import Sofa.Simulation as sim
 import os
@@ -19,7 +19,7 @@ def init_display(node):
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glEnable(GL_LIGHTING)
     glEnable(GL_DEPTH_TEST)
-    Sofa.SofaGL.glewInit()
+    Sofa.GL.glewInit()
     Sofa.Simulation.initVisual(node)
     Sofa.Simulation.initTextures(node)
     glMatrixMode(GL_PROJECTION)
@@ -44,7 +44,7 @@ def simple_render(rootNode):
 
     cameraMVM = rootNode.camera.getOpenGLModelViewMatrix()
     glMultMatrixd(cameraMVM)
-    Sofa.SofaGL.draw(rootNode)
+    Sofa.GL.draw(rootNode)
 
     pygame.display.get_surface().fill((0,0,0))
     pygame.display.flip()

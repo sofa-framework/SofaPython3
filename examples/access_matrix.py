@@ -1,8 +1,8 @@
 # Required import for python
 import Sofa
 import SofaRuntime
-from Sofa import SofaLinearSystem
-from Sofa import SofaLinearSolver
+import Sofa.Component.LinearSystem
+import Sofa.Component.LinearSolver.Iterative
 from scipy import sparse
 
 def createBeam(root, matrix_type):
