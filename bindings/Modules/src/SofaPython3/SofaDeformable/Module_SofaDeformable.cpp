@@ -23,6 +23,7 @@
 #include <SofaPython3/SofaDeformable/Binding_SpringForceField.h>
 #include <SofaPython3/SofaDeformable/Binding_LameParameters.h>
 #include <SofaPython3/SofaDeformable/Binding_CauchyStress.h>
+#include <SofaPython3/SofaDeformable/Binding_CorotationalFEMForceField.h>
 
 
 namespace py { using namespace pybind11; }
@@ -38,6 +39,7 @@ PYBIND11_MODULE(SofaDeformable, m)
     moduleAddSpringForceField(m);
     moduleAddLameParameters(m);
     moduleAddCauchyStress(m);
+    moduleAddCorotationalFEMForceField(m);
 }
 
 } // namespace sofapython3
