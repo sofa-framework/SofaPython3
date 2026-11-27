@@ -42,7 +42,7 @@ Component_Trampoline::Component_Trampoline()
 void Component_Trampoline::draw(const sofa::core::visual::VisualParams* params)
 {
     PythonEnvironment::executePython(this, [this, params](){
-        PYBIND11_OVERLOAD(void, Component, draw, params);
+        PYBIND11_OVERRIDE(void, Component, draw, params);
     });
 }
 
@@ -50,14 +50,14 @@ void Component_Trampoline::init()
 {
     PythonEnvironment::executePython(this, [this](){
         initializePythonCache();
-        PYBIND11_OVERLOAD(void, Component, init, );
+        PYBIND11_OVERRIDE(void, Component, init, );
     });
 }
 
 void Component_Trampoline::reinit()
 {
     PythonEnvironment::executePython(this, [this](){
-        PYBIND11_OVERLOAD(void, Component, reinit, );
+        PYBIND11_OVERRIDE(void, Component, reinit, );
     });
 }
 
