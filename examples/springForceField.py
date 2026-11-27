@@ -29,7 +29,7 @@ def createScene(root):
     ball_0 = add_ball(root, 'ball_0', (-2, 0, 0), surface_loader)
     ball_1 = add_ball(root, 'ball_1', (2, 0, 0), surface_loader)
 
-    ball_0.addObject('RestShapeSpringsForceField', name='rest_spring', stiffness=1e1, angularStiffness=1e03)
+    ball_0.addObject('FixedWeakConstraint', name='rest_spring', stiffness=1e1, angularStiffness=1e03, fixAll=True)
     springs = root.addObject('SpringForceField',
                              object1=ball_0.dofs.getLinkPath(), object2=ball_1.dofs.getLinkPath(),
                              indices1=[0], indices2=[0],
