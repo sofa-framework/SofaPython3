@@ -35,7 +35,7 @@ class Test(unittest.TestCase):
         root = create_scene("root")
         root.addObject("MechanicalObject", name="t")
         link = root.findLink("mechanicalState")
-        self.assertFalse(link.isMultiLink())
+        self.assertTrue(link.isMultiLink())
         root.addChild("aChild")
         link = root.findLink("child")
         self.assertTrue(link.isMultiLink())

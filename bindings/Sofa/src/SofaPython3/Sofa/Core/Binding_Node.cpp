@@ -621,11 +621,25 @@ py::object getForceField(Node *self, unsigned int index)
 
 py::object getMechanicalState(Node *self)
 {
-    sofa::core::behavior::BaseMechanicalState* state = self->mechanicalState.get();
+    if (self->mechanicalState.empty())
+    {
+        return py::none();
+    }
+    sofa::core::behavior::BaseMechanicalState* state = self->mechanicalState[0];
     if (state) {
         return PythonFactory::toPython(sofa::core::castToBase(state));
     }
     return py::none();
+}
+
+py::list getMechanicalStates(Node *self)
+{
+    py::list states;
+    for (const auto& state : self->mechanicalState)
+    {
+        states.append(PythonFactory::toPython(sofa::core::castToBase(state)));
+    }
+    return states;
 }
 
 
@@ -722,6 +736,7 @@ void moduleAddNode(py::module &m) {
     p.def("hasIntegrationScheme", &hasIntegrationScheme, sofapython3::doc::sofa::core::Node::hasIntegrationScheme);
     p.def("getForceField", &getForceField, sofapython3::doc::sofa::core::Node::getForceField);
     p.def("getMechanicalState", &getMechanicalState, sofapython3::doc::sofa::core::Node::getMechanicalState);
+    p.def("getMechanicalStates", &getMechanicalStates, "Get the list of all the mechanical states of the node.");
     p.def("getMechanicalMapping", &getMechanicalMapping, sofapython3::doc::sofa::core::Node::getMechanicalMapping);
     p.def("sendEvent", &sendEvent, sofapython3::doc::sofa::core::Node::sendEvent);
     p.def("computeEnergy", &computeEnergy, sofapython3::doc::sofa::core::Node::computeEnergy);
